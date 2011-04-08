@@ -1,6 +1,6 @@
 # Luracast Restler
 
-Restler is a simple and effective multi-protocol REST API Server written in PHP.
+Restler is a simple and effective multi-protocol REST API Server written in PHP. Just deal with your business logic in php, restler will take care of the REST!
 
 * [Developer Home](http://luracast.com/products/restler/)
 
