@@ -3,7 +3,6 @@ class SimpleService {
 	/**
 	 * HelloWorld
 	 * @url GET /
-	 * @url GET /index
 	 */
 	function helloworld() {
 		return "HelloWorld";

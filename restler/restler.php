@@ -10,7 +10,7 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    1.0.17 beta
+ * @version    1.0.18 beta
  */
 
 class Restler
@@ -332,10 +332,12 @@ class Restler
 	 */
 	protected function getPath()
 	{
-		$path = substr(preg_replace('/(\.\w+)|(\?.*$)/', '', $_SERVER['REQUEST_URI']), 1);
-		if ($path[strlen($path) - 1] == '/') {
-			$path = substr($path, 0, -1);
-		}
+		$sn = trim($_SERVER['SCRIPT_NAME'], '/');
+		$path = $_SERVER['REQUEST_URI'];
+		$path = str_replace($sn, '', $path);
+		$path = str_replace(dirname($sn), '', $path);
+		$path = trim($path,'/');
+		$path = preg_replace('/(\.\w+)|(\?.*$)/', '', $path);
 		return $path;
 	}
 
@@ -469,10 +471,10 @@ class Restler
 	protected function mapUrlToMethod()
 	{
 		if(!isset($this->url_map[$this->request_method])){
-			return array(null,null,null,null,null);
+			return array(null,null,null,null,null,null);
 		}
 		$urls = $this->url_map[$this->request_method];
-		if (!$urls)return array(null,null,null,null,null);
+		if (!$urls)return array(null,null,null,null,null,null);
 
 		$found=false;
 
@@ -499,14 +501,7 @@ class Restler
 			}
 		}
 		if($found){
-			$optional_index = $call[4];
-			if($optional_index){
-				$p=array_fill(0, $optional_index, null);
-			}elseif (count($params)){
-				$p=array_fill(0, count($params), null);
-			}else{
-				$p=array();
-			}
+			$p = is_null($call[5]) ? array() : $call[5];
 			foreach ($args as $key => $value) {
 				//echo "$key => $value \n";
 				if(isset($params[$key]))$p[$value] = $params[$key];
@@ -544,22 +539,18 @@ class Restler
 					}
 					$call = array($class, $method->getName());
 					$args = array();
+					$defaults = array();
 					$optional_index = $method->getNumberOfRequiredParameters();
 					foreach ($params as $param){
 						$args[$param->getName()] = $param->getPosition();
+						if($param->isDefaultValueAvailable()){
+							$defaults[$param->getPosition()]=$param->getDefaultValue();
+						}
 					}
-					/*
-					 foreach ($params as $param) {
-						$args[$param->getName()] = $param->getPosition();
-						if(!isset($optional_index) && $param->isOptional()){
-						$optional_index =  $param->getPosition();
-						}
-						}
-						if(!isset($optional_index))$optional_index=count($params);
-						*/
 					$call[] = $args;
 					$call[] = $method->isPublic();
 					$call[] = @$optional_index;
+					$call[] = $defaults;
 
 					$this->url_map[$httpMethod][$url] = $call;
 				}
