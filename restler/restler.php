@@ -10,7 +10,7 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    1.0.18 beta
+ * @version    1.0.19 beta
  */
 
 class Restler
@@ -332,12 +332,18 @@ class Restler
 	 */
 	protected function getPath()
 	{
-		$sn = trim($_SERVER['SCRIPT_NAME'], '/');
+		$sn = trim($_SERVER['SCRIPT_NAME'],'/');
 		$path = $_SERVER['REQUEST_URI'];
-		$path = str_replace($sn, '', $path);
-		$path = str_replace(dirname($sn), '', $path);
+		if(strpos($path, $sn)===false){
+			$sn = dirname($sn);
+			if(count($sn)>1)
+				$path = str_replace($sn, '', $path);
+		}else{
+			$path = str_replace($sn, '', $path);
+		}
 		$path = trim($path,'/');
 		$path = preg_replace('/(\.\w+)|(\?.*$)/', '', $path);
+		//echo $path;
 		return $path;
 	}
 
