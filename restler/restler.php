@@ -10,7 +10,7 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    1.0.19 beta
+ * @version    1.0.20 beta
  */
 
 class Restler
@@ -324,24 +324,35 @@ class Restler
 	{
 		header("{$_SERVER['SERVER_PROTOCOL']} $code ".$this->codes[strval($code)]);
 	}
+	/**
+	 * Compare two strings and remove the common 
+	 * sub string from the first string and return it
+	 * @param string $first 
+	 * @param string $second
+	 * @param string $char optional, set it as 
+	 * blank string for char by char comparison
+	 * @return string
+	 */
+	public function removeCommonPath($first, $second, $char='/'){
+		$first = explode($char, $first);
+		$second = explode($char, $second);
+		while (count($second)){
+			if($first[0]==$second[0]){
+				array_shift($first);
+			} else break;
+			array_shift($second);
+		}
+		return implode($char, $first);
+	}
+	
 	///////////////////////////////////////////////////////////////
-
 	/**
 	 * Parses the requst url and get the api path
 	 * @return string api path
 	 */
 	protected function getPath()
 	{
-		$sn = trim($_SERVER['SCRIPT_NAME'],'/');
-		$path = $_SERVER['REQUEST_URI'];
-		if(strpos($path, $sn)===false){
-			$sn = dirname($sn);
-			if(count($sn)>1)
-				$path = str_replace($sn, '', $path);
-		}else{
-			$path = str_replace($sn, '', $path);
-		}
-		$path = trim($path,'/');
+		$path = $this->removeCommonPath($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME']);
 		$path = preg_replace('/(\.\w+)|(\?.*$)/', '', $path);
 		//echo $path;
 		return $path;
