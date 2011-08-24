@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 2.0 Example:- </title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="resources/markdown.css"/>
+
+
+<script type="text/javascript">
+ $(document).ready(function(){
+ 	 //$('a[target*=_blank]').facebox();
+	 $("abbr").click(function(){
+	 	$('#codeviewer').load('resources/getsource.php?file='+$(this).attr("title"), function(){
+	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
+	 		jQuery.facebox({ div: '#codeviewer' });
+	 	});
+ 	 });
+ })
+</script>
+</head>
+<body>
+<div id="codeviewer" style="display:none;"></div>
+<nav id="left">
+<img src="resources/Restler2.gif" width="126" height="126" title="Luracast Restler 2.0"/>
+<h3><a href="index.html">Examples</a></h3>
+<ul>
+<li><a href="_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
+<li><a href="_002_minimal/readme.html" title="Less is more">Minimal</a></li>
+<li><a href="_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
+<li><a href="_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li>
+<li><a href="_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li>
+<li><a href="_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li>
+<li>
+</nav>
+<article id="right">
+<h2>Examples</h2>
+<p>Luracast Restler is a microframework to expose php methods as RESTful API. Best way to learn is by examples, here are the examples that shows the features of Restler and how to use them.</p>
+<p>We have created it in such a way that they can be tested on your local host.</p>
+<p>You can check the source code, try some of the API's exposed at the comfort of your browser</p>
+<ol class="toc">
+	<li><a href="_001_helloworld/readme.html" title="Basic hello world example to get started with Restler 2.0">
+<span>Hello World 
+<small><i>Let's say hello!</i></small>
+</span> <right>Example 1</right>
+</a></li>
+	<li><a href="_002_minimal/readme.html" title="Shows the bare minimum code needed to get your RESTful api server up and running">
+<span>Minimal 
+<small><i>Less is more</i></small>
+</span> <right>Example 2</right>
+</a></li>
+	<li><a href="_003_multiformat/readme.html" title="This BMI calculator service shows how you can serve data in different 
+formats using Rester. This example uses JsonFormat (default) and XmlFormat">
+<span>Multi-format 
+<small><i>Serving what the client wants</i></small>
+</span> <right>Example 3</right>
+</a></li>
+	<li><a href="_004_error_response/readme.html" title="API methods can make use of RestException class to provide 
+error information to the user. 
+
+use `throw new RestException($http_status_code)` to send the error response 
+to the client">
+<span>Error Response 
+<small><i>Making use of HTTP status codes</i></small>
+</span> <right>Example 4</right>
+</a></li>
+	<li><a href="_005_protected_api/readme.html" title="Not all the API exposed needs to be public, we need to protect some of our API. 
+Here are three ways to protect a method
+
+1">
+<span>Protected API 
+<small><i>Creating restricted zone</i></small>
+</span> <right>Example 5</right>
+</a></li>
+	<li><a href="_006_crud/readme.html" title="Create, Retrive, Update and Delete using 
+HTTP methods POST, GET, PUT and DELETE respectively. 
+For simplicity and making it work out of the box it is using
+a session based fake database, thus depending on a client that
+supports PHP Session Cookies">
+<span>CRUD 
+<small><i>using POST, GET, PUT and DELETE</i></small>
+</span> <right>Example 6</right>
+</a></li>
+
+</ol>
+</article>
+</body>
+</html>

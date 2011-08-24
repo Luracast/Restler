@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 2.0 Example:- CRUD</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../resources/markdown.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/facebox.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/hacks.css"/>
+
+<script type="text/javascript" src="../resources/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
+<script type="text/javascript" src="../resources/facebox.js"></script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+ 	 //$('a[target*=_blank]').facebox();
+	 $("abbr").click(function(){
+	 	$('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
+	 		jQuery.facebox({ div: '#codeviewer' });
+	 	});
+ 	 });
+ })
+</script>
+</head>
+<body>
+<div id="codeviewer" style="display:none;"></div>
+<nav id="left">
+<img src="../resources/Restler2.gif" width="126" height="126" title="Luracast Restler 2.0"/>
+<h3><a href="../index.html">Examples</a></h3>
+<ul>
+<li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
+<li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
+<li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
+<li><a href="../_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li>
+<li><a href="../_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li>
+<li><a href="../_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li>
+<li>
+</nav>
+<article id="right">
+<h2>CRUD</h2>
+
+<p>Create, Retrive, Update and Delete using 
+HTTP methods POST, GET, PUT and DELETE respectively. 
+For simplicity and making it work out of the box it is using
+a session based fake database, thus depending on a client that
+supports PHP Session Cookies. You may use <a href="https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#" target="_blank">REST Console</a>
+an extension for Chrome or <a href="https://addons.mozilla.org/en-US/firefox/addon/restclient/" target="_blank">RESTClient</a> 
+a firefox extension</p>
+
+<blockquote>
+  <p>This API Server is made using the following php files/folders</p>
+  
+  <ul>
+  <li><abbr title="_006_crud/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_006_crud/author.php">author.php</abbr>      (api)</li>
+  <li><abbr title="_006_crud/sessiondb.php">sessiondb.php</abbr>      (helper)</li>
+  <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
+  </ul>
+</blockquote>
+
+<p>This API Server exposes the following URIs</p>
+
+<pre><code>GET    author     ⇠ Author::get()
+GET    author/:id ⇠ Author::get()
+POST   author     ⇠ Author::post()
+PUT    author     ⇠ Author::put()
+PUT    author/:id ⇠ Author::put()
+DELETE author     ⇠ Author::delete()
+DELETE author/:id ⇠ Author::delete()
+</code></pre>
+
+<p>Try the following links in your browser</p>
+
+<dl>
+<dt>GET <a href="index.php/author" target="_blank">author</a></dt>
+<dd>
+<pre><code>[
+ {
+   "id": 1,
+   "name": "Jac Wright",
+   "email": "jacwright@gmail.com"
+ },
+ {
+   "id": 2,
+   "name": "Arul Kumaran",
+   "email": "arul@luracast.com"
+ }
+]
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/author/2" target="_blank">author/2</a></dt>
+<dd><pre><code>{
+ "id": 2,
+ "name": "Arul Kumaran",
+ "email": "arul@luracast.com"
+}
+</code></pre></dd>
+
+<h3>Creating new Author</h3>
+
+<p>Typical post request to create a new author will be any of the following</p>
+
+<p><strong>Using query parameters</strong></p>
+
+<pre><code>POST /examples/_006_crud/index.php/author?name=Another&amp;email=another@email.com HTTP/1.1
+Host: restler2.dev
+Content-Length: 0
+Accept-Language: en
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: */*
+Accept-Encoding: gzip,deflate,sdch
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
+Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
+</code></pre>
+
+<p><strong>Using post vars</strong></p>
+
+<pre><code>POST /examples/_006_crud/index.php/author HTTP/1.1
+Host: restler2.dev
+Content-Length: 36
+Accept-Language: en
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Accept: */*
+Accept-Encoding: gzip,deflate,sdch
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
+Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
+
+name=Another&amp;email=another@email.com
+</code></pre>
+
+<p><strong>Using JSON data</strong></p>
+
+<pre><code>POST /examples/_006_crud/index.php/author HTTP/1.1
+Host: restler2.dev
+Content-Length: 46
+Origin: chrome-extension://faceofpmfclkengnkgkgjkcibdbhemoc
+Accept-Language: en
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1
+Content-Type: application/json; charset=UTF-8
+Accept: */*
+Accept-Encoding: gzip,deflate,sdch
+Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
+Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
+
+{"name":"Another","email":"another@email.com"}
+</code></pre>
+
+<p>and the response could be</p>
+
+<pre><code>HTTP/1.1 200 OK
+Date: Fri, 19 Aug 2011 16:34:41 GMT
+Server: Apache/2.2.19 (Unix) mod_ssl/2.2.19 OpenSSL/0.9.8r DAV/2 PHP/5.3.6 with Suhosin-Patch
+X-Powered-By: Luracast Restler v2.0.0
+Expires: 0
+Cache-Control: no-cache, must-revalidate
+Pragma: no-cache
+Content-Length: 66
+Content-Type: application/json
+
+{
+  "name": "Another",
+  "email": "another@email.com",
+  "id": 7
+}
+</code></pre>
+
+</article>
+</body>
+</html>

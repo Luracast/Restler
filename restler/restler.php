@@ -10,11 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    1.0.20 beta
+ * @version    2.0.0
  */
-
-class Restler
-{
+class Restler {
+	const VERSION = '2.0.0';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -38,15 +37,27 @@ class Restler
 
 	/**
 	 * Data sent to the service
-	 * @var string
+	 * @var array
 	 */
-	public $request_data;
+	public $request_data=array();
 
 	/**
 	 * Used in production mode to store the URL Map to disk
 	 * @var string
 	 */
-	public $cache_dir = '.';
+	public $cache_dir;
+
+	/**
+	 * base directory to locate format and auth files
+	 * @var string
+	 */
+	public $base_dir;
+
+	/**
+	 * Name of an iRespond implementation class
+	 * @var string
+	 */
+	public $response = 'DefaultResponse';
 
 	/**
 	 * Response data format. Instance of the current format class
@@ -59,18 +70,17 @@ class Restler
 	///////////////////////////////////////
 
 	/**
-	 * When set to false, it will run in debug mode and parse the
+	 * When set to FALSE, it will run in debug mode and parse the
 	 * class files every time to map it to the URL
 	 * @var boolean
 	 */
 	protected $production_mode;
 
-
 	/**
-	 * Associated array that maps urls to their respective service and function
+	 * Associated array that maps urls to their respective class and method
 	 * @var array
 	 */
-	protected $url_map = array();
+	protected $routes= array();
 
 	/**
 	 * Associated array that maps formats to their respective format class name
@@ -82,7 +92,7 @@ class Restler
 	 * Instance of the current api service class
 	 * @var object
 	 */
-	protected $service_class;
+	protected $service_class_instance;
 
 	/**
 	 * Name of the api method being called
@@ -90,491 +100,22 @@ class Restler
 	 */
 	protected $service_method;
 
+	/**
+	 * list of authentication classes
+	 * @var array
+	 */
 	protected $auth_classes = array();
+
+	/**
+	 * list of error handling classes
+	 * @var array
+	 */
 	protected $error_classes = array();
 
 	/**
-	 * Caching of url map is enabled or not
-	 * @var boolean
+	 * HTTP status codes
+	 * @var array
 	 */
-	protected $cached;
-
-	/**
-	 * Constructor
-	 * @param boolean $production_mode When set to false, it will run in
-	 * debug mode and parse the class files every time to map it to the URL
-	 */
-	public function  __construct($production_mode = false)
-	{
-		$this->production_mode = $production_mode;
-		$this->cache_dir = $this->cache_dir == '.' ? getcwd() : $this->cache_dir;
-	}
-
-	/**
-	 * Store the url map cache if needed
-	 */
-	public function  __destruct()
-	{
-		if ($this->production_mode && !$this->cached) {
-			if (function_exists('apc_store')) {
-				apc_store('urlMap', $this->url_map);
-			} else {
-				file_put_contents($this->cache_dir . '/urlMap.cache', serialize($this->url_map));
-			}
-		}
-	}
-
-	/**
-	 * Use it in production mode to refresh the url map cache
-	 */
-	public function refreshCache()
-	{
-		$this->url_map = array();
-		$this->cached = false;
-	}
-
-	/**
-	 * Call this method and pass all the formats that should be
-	 * supported by the API. Accepts multiple parameters
-	 * @param string class name of the format class (iFormat)
-	 * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
-	 */
-	public function setSupportedFormats()
-	{
-		$args = func_get_args();
-		foreach ($args as $class) {
-			if (is_string($class) && !class_exists($class)){
-				throw new Exception('Invalid format class');
-			} elseif (!is_string($class) && !is_object($class)) {
-				throw new Exception('Invalid format class; must be a classname or object');
-			}
-			/**
-			 * Format Instance
-			 * @var iFormat
-			 */
-			$obj = is_string($class) ? new $class() : $class;
-			if(! $obj instanceof iFormat){
-				throw new Exception('Invalid format class; must be implementing iFormat');
-			}
-			foreach ($obj->getMIMEMap() as $key => $value) {
-				if(!isset($this->format_map[$key]))$this->format_map[$key]=$class;
-				if(!isset($this->format_map[$value]))$this->format_map[$value]=$class;
-			}
-		}
-		$this->format_map['default']=$args[0];
-	}
-
-	/**
-	 * Add api classes throgh this function. All the public methods which have
-	 * url comment will be exposed as the public api.
-	 * All the protected methods with url comment will exposed as protected api
-	 * which will require authentication
-	 * @param string $class name of the service class
-	 * @param string $basePath optional url prefix for mapping
-	 * @throws Exception when supplied with invalid class name
-	 */
-	public function addAPIClass($class, $basePath = '')
-	{
-		$this->loadCache();
-		if (!$this->cached) {
-			if (is_string($class) && !class_exists($class)){
-				throw new Exception('Invalid method or class');
-			} elseif (!is_string($class) && !is_object($class)) {
-				throw new Exception('Invalid method or class; must be a classname or object');
-			}
-
-			if (strlen($basePath) > 0 && $basePath[0] == '/') {
-				$basePath = substr($basePath, 1);
-			}
-			if (strlen($basePath) > 0 && $basePath[strlen($basePath) - 1] != '/') {
-				$basePath .= '/';
-			}
-
-			$this->generateMap($class, $basePath);
-		}
-	}
-
-	/**
-	 * protected methods will need atleast one authentication class to be set
-	 * in order to allow that method to be executed
-	 * @param string $class name of the authentication class
-	 */
-	public function addAuthenticationClass($class)
-	{
-		$this->auth_classes[] = $class;
-		$this->addAPIClass($class);
-	}
-
-	/**
-	 * Add class for custom error handling
-	 * @param string $class name of the error handling class
-	 */
-	public function addErrorClass($class)
-	{
-		$this->errorClasses[] = $class;
-	}
-
-	/**
-	 * Convenience method to respond with an error message
-	 * @param int $statusCode http error code
-	 * @param string $errorMessage optional custom error message
-	 */
-	public function handleError($statusCode, $errorMessage = null)
-	{
-		$method = "handle$statusCode";
-		foreach ($this->error_classes as $class) {
-			$obj = is_string($class) ? new $class() : $class;
-			if (!method_exists($obj, $method)) {
-				$obj->$method();
-				return;
-			}
-		}
-		$message = $this->codes[$statusCode] . (!$errorMessage || $this->production_mode ? '' : ': ' . $errorMessage);
-
-		$this->setStatus($statusCode);
-		$this->sendData(array('error' => array('code' => $statusCode, 'message' => $message)));
-	}
-
-	/**
-	 * Main function for processing the api request
-	 * and return the response
-	 * @throws Exception when the api service class is missing
-	 * @throws RestException to send error response
-	 */
-	public function handle()
-	{
-		$this->url = $this->getPath();
-		$this->request_method = $this->getRequestMethod();
-
-		if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
-		$this->response_format = $this->getResponseFormat();
-		$this->request_format = $this->getRequestFormat();
-		if($this->request_format==null)$this->request_format = $this->response_format;
-		//echo $this->request_format;
-
-		if($this->request_method == 'PUT' || $this->request_method == 'POST')	{
-			$this->request_data = $this->getRequestData();
-		}
-		list($class, $method, $params, $is_public) = $this->mapUrlToMethod();
-
-		if($class) {
-			if(is_string($class) && class_exists($class)){
-				$this->service_class=$obj=new $class();
-				$this->service_method=$method;
-			}else{
-				throw new Exception("Class $class does not exist");
-			}
-		}else{
-			$this->handleError(404);
-			return;
-		}
-		$obj->restler = $this;
-
-		$pre_process = $this->request_format->getExtension().'_'.$method;
-		if(method_exists($obj,$pre_process)) {
-			call_user_func_array(array($obj, $pre_process), $params);
-		}
-		try {
-			if($is_public) {
-				$result = call_user_func_array(array($obj,$method), $params);
-			}else{
-				$auth_method = 'isAuthenticated';
-				if(!count($this->auth_classes))throw new RestException(401);
-				foreach ($this->auth_classes as $auth_class) {
-					$auth_obj = is_string($auth_class) ? new $auth_class() : $auth_class;
-					if (!method_exists($auth_obj, $auth_method) || !$auth_obj->$auth_method()) {
-						throw new RestException(401);
-					}
-				}
-				$reflection_method = new ReflectionMethod($class, $method);
-				$reflection_method->setAccessible(true);
-				$result = $reflection_method->invokeArgs($obj, $params);
-			}
-		} catch (RestException $e) {
-			$this->handleError($e->getCode(), $e->getMessage());
-		}
-		if (isset($result) && $result !== null) {
-			$this->sendData($result);
-		}
-	}
-
-	/**
-	 * Encodes the response in the prefered format
-	 * and sends back
-	 * @param $data array php data
-	 */
-	public function sendData($data)
-	{
-		$data =  $this->response_format->encode($data, !$this->production_mode);
-		$post_process =  $this->service_method .'_'.$this->response_format->getExtension();
-		if(isset($this->service_class) && method_exists($this->service_class,$post_process)){
-			$data = call_user_method($post_process, $this->service_class, $data);
-		}
-		header("Cache-Control: no-cache, must-revalidate");
-		header("Expires: 0");
-		header('Content-Type: ' . $this->response_format->getMIME());
-		echo $data;
-	}
-
-	/**
-	 * Sets the HTTP response status
-	 * @param int $code response code
-	 */
-	public function setStatus($code)
-	{
-		header("{$_SERVER['SERVER_PROTOCOL']} $code ".$this->codes[strval($code)]);
-	}
-	/**
-	 * Compare two strings and remove the common 
-	 * sub string from the first string and return it
-	 * @param string $first 
-	 * @param string $second
-	 * @param string $char optional, set it as 
-	 * blank string for char by char comparison
-	 * @return string
-	 */
-	public function removeCommonPath($first, $second, $char='/'){
-		$first = explode($char, $first);
-		$second = explode($char, $second);
-		while (count($second)){
-			if($first[0]==$second[0]){
-				array_shift($first);
-			} else break;
-			array_shift($second);
-		}
-		return implode($char, $first);
-	}
-	
-	///////////////////////////////////////////////////////////////
-	/**
-	 * Parses the requst url and get the api path
-	 * @return string api path
-	 */
-	protected function getPath()
-	{
-		$path = $this->removeCommonPath($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME']);
-		$path = preg_replace('/(\.\w+)|(\?.*$)/', '', $path);
-		//echo $path;
-		return $path;
-	}
-
-	/**
-	 * Parses the request to figure out the http request type
-	 * @return string which will be one of the following
-	 * [GET, POST, PUT, DELETE]
-	 * @example GET
-	 */
-	protected function getRequestMethod()
-	{
-		$method = $_SERVER['REQUEST_METHOD'];
-		if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])){
-			$method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
-		}elseif ($method == 'POST' && isset($_GET['method'])){
-			switch ($_GET['method']){
-				case 'PUT':
-				case 'DELETE':
-					$method = $_GET['method'];
-			}
-		}
-		return $method;
-	}
-
-	/**
-	 * Parses the request to figure out format of the request data
-	 * @return iFormat any class that implements iFormat
-	 * @example JsonFormat
-	 */
-	protected function getRequestFormat(){
-		$format=null;
-		//check if client has sent any information on request format
-		if(isset($_SERVER['CONTENT_TYPE'])){
-			$mime = $_SERVER['CONTENT_TYPE'];
-			if($mime==UrlEncodedFormat::MIME){
-				$format = new UrlEncodedFormat();
-			}else{
-				if(isset($this->format_map[$mime])){
-					$format = $this->format_map[$mime];
-					$format = is_string($format) ? new $format: $format;
-					$format->setMIME($accept);
-					return $format;
-				}
-			}
-		}
-		return $format;
-	}
-
-	/**
-	 * Parses the request to figure out the best format for response
-	 * @return iFormat any class that implements iFormat
-	 * @example JsonFormat
-	 */
-	protected function getResponseFormat()
-	{
-		//check if client has specified an extension
-		/**
-		* @var iFormat
-		*/
-		$format;
-		$extension = array_pop(explode('.', parse_url($_SERVER['REQUEST_URI'],PHP_URL_PATH)));
-		if($extension && isset($this->format_map[$extension])){
-			$format = $this->format_map[$extension];
-			$format = is_string($format) ? new $format: $format;
-			$format->setExtension($extension);
-			//echo "Extension $extension";
-			return $format;
-		}
-		//check if client has sent list of accepted data formats
-		if(isset($_SERVER['HTTP_ACCEPT'])){
-			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
-			foreach ($accepts as $accept) {
-				if($extension && isset($this->format_map[$accept])){
-					$format = $this->format_map[$accept];
-					$format = is_string($format) ? new $format: $format;
-					$format->setMIME($accept);
-					//echo "MIME $accept";
-					return $format;
-				}
-			}
-		}
-		$format = $this->format_map['default'];
-		//echo "DEFAULT ".$this->format_map['default'];
-		return is_string($format) ? new $format: $format;
-
-	}
-
-	/**
-	 * Parses the request data and returns it
-	 * @return array php data
-	 */
-	protected function getRequestData()
-	{
-		try{
-			$r = file_get_contents('php://input');
-			if(is_null($r))return $_GET;
-			return $this->request_format->decode($r);
-		} catch (RestException $e) {
-			$this->handleError($e->getCode(), $e->getMessage());
-		}
-	}
-
-	protected function loadCache()
-	{
-		if ($this->cached !== null) {
-			return;
-		}
-
-		$this->cached = false;
-
-		if ($this->production_mode) {
-			if (function_exists('apc_fetch')) {
-				$map = apc_fetch('urlMap');
-			} elseif (file_exists($this->cache_dir . '/urlMap.cache')) {
-				$map = unserialize(file_get_contents($this->cache_dir . '/urlMap.cache'));
-			}
-			if (isset($map) && is_array($map)) {
-				$this->url_map = $map;
-				$this->cached = true;
-			}
-		} else {
-			if (function_exists('apc_store')) {
-				apc_delete('urlMap');
-			} else {
-				@unlink($this->cache_dir . '/urlMap.cache');
-			}
-		}
-	}
-
-
-	protected function mapUrlToMethod()
-	{
-		if(!isset($this->url_map[$this->request_method])){
-			return array(null,null,null,null,null,null);
-		}
-		$urls = $this->url_map[$this->request_method];
-		if (!$urls)return array(null,null,null,null,null,null);
-
-		$found=false;
-
-		foreach ($urls as $url => $call) {
-			$params = array('data'=>$this->request_data);
-			if(is_array($this->request_data))$params+=$this->request_data;
-			//use query parameters
-			$params+=$_GET;
-			$args = $call[2];
-			//if it has url based parameters
-			if (strstr($url, ':')) {
-				$regex = preg_replace('/\\\:([^\/]+)/', '(?P<$1>[^/]+)', preg_quote($url));
-				if (preg_match(":^$regex$:", $this->url, $matches)) {
-					foreach ($matches as $arg => $match) {
-						//echo "$arg => $match $args[$arg] \n";
-						if (isset($args[$arg]))$params[$arg] = $match;
-					}
-					$found=true;
-					break;
-				}
-			}elseif ($url == $this->url){
-				$found=true;
-				break;
-			}
-		}
-		if($found){
-			$p = is_null($call[5]) ? array() : $call[5];
-			foreach ($args as $key => $value) {
-				//echo "$key => $value \n";
-				if(isset($params[$key]))$p[$value] = $params[$key];
-			}
-			$call[2]=$p;
-			return $call;
-
-		}
-	}
-
-	protected function generateMap($class, $basePath = '')
-	{
-		if (is_object($class)) {
-			$reflection = new ReflectionObject($class);
-		} elseif (class_exists($class)) {
-			$reflection = new ReflectionClass($class);
-		}
-
-		$methods = $reflection->getMethods(
-		ReflectionMethod::IS_PUBLIC +
-		ReflectionMethod::IS_PROTECTED
-		);
-
-		foreach ($methods as $method) {
-			$doc = $method->getDocComment();
-			if (preg_match_all('/@url\s+(GET|POST|PUT|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s', $doc, $matches, PREG_SET_ORDER)) {
-
-				$params = $method->getParameters();
-
-				foreach ($matches as $match) {
-					$httpMethod = $match[1];
-					$url = $basePath . $match[2];
-					if (strlen($url)>0 && $url[strlen($url) - 1] == '/') {
-						$url = substr($url, 0, -1);
-					}
-					$call = array($class, $method->getName());
-					$args = array();
-					$defaults = array();
-					$optional_index = $method->getNumberOfRequiredParameters();
-					foreach ($params as $param){
-						$args[$param->getName()] = $param->getPosition();
-						if($param->isDefaultValueAvailable()){
-							$defaults[$param->getPosition()]=$param->getDefaultValue();
-						}
-					}
-					$call[] = $args;
-					$call[] = $method->isPublic();
-					$call[] = @$optional_index;
-					$call[] = $defaults;
-
-					$this->url_map[$httpMethod][$url] = $call;
-				}
-			}
-		}
-	}
-
 	private $codes = array(
 	100 => 'Continue',
 	101 => 'Switching Protocols',
@@ -618,7 +159,558 @@ class Restler
 	504 => 'Gateway Timeout',
 	505 => 'HTTP Version Not Supported'
 	);
+
+	/**
+	 * Caching of url map is enabled or not
+	 * @var boolean
+	 */
+	protected $cached;
+
+	/**
+	 * Constructor
+	 * @param boolean $production_mode When set to FALSE, it will run in
+	 * debug mode and parse the class files every time to map it to the URL
+	 */
+	public function __construct ($production_mode = FALSE) {
+		$this->production_mode = $production_mode;
+		$this->cache_dir = getcwd();
+		$this->base_dir = RESTLER_PATH;
+	}
+
+	/**
+	 * Store the url map cache if needed
+	 */
+	public function __destruct () {
+		if ($this->production_mode && !$this->cached) {
+			$this->saveCache();
+		}
+	}
+
+	/**
+	 * Use it in production mode to refresh the url map cache
+	 */
+	public function refreshCache () {
+		$this->routes = array();
+		$this->cached = FALSE;
+	}
+
+	/**
+	 * Call this method and pass all the formats that should be
+	 * supported by the API. Accepts multiple parameters
+	 * @param string class name of the format class that implements iFormat
+	 * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
+	 */
+	public function setSupportedFormats () {
+		$args = func_get_args();
+		$extensions = array();
+		foreach ($args as $class_name) {
+			if(!is_string($class_name) || !class_exists($class_name)){
+				throw new Exception("$class_name is not a vaild Format Class.");
+			}
+			$obj = new $class_name;
+			if(! $obj instanceof iFormat){
+				throw new Exception('Invalid format class; must implement '.
+				'iFormat interface');
+			}
+			foreach ($obj->getMIMEMap() as $extension => $mime) {
+				if(!isset($this->format_map[$extension]))
+				$this->format_map[$extension]=$class_name;
+				if(!isset($this->format_map[$mime]))
+				$this->format_map[$mime]=$class_name;
+				$extensions[".$extension"]=TRUE;
+			}
+		}
+		$this->format_map['default']=$args[0];
+		$this->format_map['extensions']=array_keys($extensions);
+	}
+
+	/**
+	 * Add api classes throgh this method. All the public methods
+	 * that do not start with _ (underscore) will be  will be exposed
+	 * as the public api by default.
+	 *
+	 * All the protected methods that do not start with _ (underscore)
+	 * will exposed as protected api which will require authentication
+	 * @param string $class name of the service class
+	 * @param string $basePath optional url prefix for mapping, uses
+	 * lowercase version of the class name when not specified
+	 * @throws Exception when supplied with invalid class name
+	 */
+	public function addAPIClass($class_name, $base_path = NULL) {
+		if(!class_exists($class_name)){
+			throw new Exception("API class $class_name is missing.");
+		}
+		$this->loadCache();
+		if(!$this->cached){
+			if(is_null($base_path))$base_path=strtolower($class_name);
+			$base_path = trim($base_path,'/');
+			if(strlen($base_path)>0)$base_path .= '/';
+			$this->generateMap($class_name, $base_path);
+		}
+	}
+
+	/**
+	 * protected methods will need atleast one authentication class to be set
+	 * in order to allow that method to be executed
+	 * @param string $class_name of the authentication class
+	 * @param string $base_path optional url prefix for mapping
+	 */
+	public function addAuthenticationClass ($class_name, $base_path = NULL) {
+		$this->auth_classes[] = $class_name;
+		$this->addAPIClass($class_name, $base_path);
+	}
+
+	/**
+	 * Add class for custom error handling
+	 * @param string $class_name of the error handling class
+	 */
+	public function addErrorClass ($class_name) {
+		$this->error_classes[] = $class_name;
+	}
+
+	/**
+	 * Convenience method to respond with an error message
+	 * @param int $statusCode http error code
+	 * @param string $errorMessage optional custom error message
+	 */
+	public function handleError ($status_code, $error_message = NULL) {
+		$method = "handle$status_code";
+		$handled = FALSE;
+		foreach ($this->error_classes as $class_name) {
+			if (method_exists($class_name, $method)) {
+				$obj = new $class_name();
+				$obj->restler = $this;
+				$obj->$method();
+				$handled = TRUE;
+			}
+		}
+		if($handled)return;
+		$message = $this->codes[$status_code] .
+		(!$error_message ? '' : ': ' . $error_message);
+		$this->setStatus($status_code);
+		$this->sendData(
+		call_user_func(
+		array($this->response, '__formatError'), $status_code, $message)
+		);
+	}
+
+	/**
+	 * Main function for processing the api request
+	 * and return the response
+	 * @throws Exception when the api service class is missing
+	 * @throws RestException to send error response
+	 */
+	public function handle () {
+		$this->url = $this->getPath();
+		$this->request_method = $this->getRequestMethod();
+		if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
+		$this->response_format = $this->getResponseFormat();
+		$this->request_format = $this->getRequestFormat();
+		if(is_null($this->request_format)){
+			$this->request_format = $this->response_format;
+		}
+		if($this->request_method == 'PUT' || $this->request_method == 'POST'){
+			$this->request_data = $this->getRequestData();
+		}
+		$o = $this->mapUrlToMethod();
+		if(!isset($o->class_name)){
+			$this->handleError(404);
+		}else{
+			try {
+				if($o->method_flag){
+					$auth_method = '__isAuthenticated';
+					if(!count($this->auth_classes))throw new RestException(401);
+					foreach ($this->auth_classes as $auth_class) {
+						$auth_obj = new $auth_class();
+						$auth_obj->restler=$this;
+						$this->applyClassMetadata($auth_class, $auth_obj, $o);
+						if (!method_exists($auth_obj, $auth_method)) {
+							throw new RestException(401, 'Authentication Class '.
+							'should implement iAuthenticate');
+						}elseif(!$auth_obj->$auth_method()){
+							throw new RestException(401);
+						}
+					}
+				}
+				$this->applyClassMetadata(get_class($this->request_format),
+				$this->request_format, $o);
+				$pre_process = '_'.$this->request_format->getExtension().'_'.
+				$o->method_name;
+				$this->service_method = $o->method_name;
+				if($o->method_flag==2)$o=unprotect($o);
+				$object = $this->service_class_instance = new $o->class_name();
+				if(method_exists($o->class_name, $pre_process)) {
+					call_user_func_array(array($object, $pre_process),
+					$o->arguments);
+				}
+				switch ($o->method_flag) {
+					case 3:
+						$reflection_method = new ReflectionMethod($object,
+						$o->method_name);
+						$reflection_method->setAccessible(TRUE);
+						$result = $reflection_method->invokeArgs($object,
+						$o->arguments);
+						break;
+					case 2:
+					case 1:
+					default:
+						$result = call_user_func_array(array($object,
+						$o->method_name), $o->arguments);
+				}
+			} catch (RestException $e) {
+				$this->handleError($e->getCode(), $e->getMessage());
+			}
+		}
+		if (isset($result) && $result !== NULL) {
+			$this->sendData($result);
+		}
+	}
+
+	/**
+	 * Encodes the response in the prefered format
+	 * and sends back
+	 * @param $data array php data
+	 */
+	public function sendData($data)
+	{
+		$data =  $this->response_format->encode($data, !$this->production_mode);
+		$post_process =  '_'.$this->service_method .'_'.
+		$this->response_format->getExtension();
+		if(isset($this->service_class_instance) &&
+		method_exists($this->service_class_instance,$post_process)){
+			$data = call_user_func(array($this->service_class_instance,
+			$post_process), $data);
+		}
+		header("Cache-Control: no-cache, must-revalidate");
+		header("Expires: 0");
+		header('Content-Type: ' . $this->response_format->getMIME());
+		header("X-Powered-By: Luracast Restler v".Restler::VERSION);
+		die($data);
+	}
+
+	/**
+	 * Sets the HTTP response status
+	 * @param int $code response code
+	 */
+	public function setStatus($code)
+	{
+		header("{$_SERVER['SERVER_PROTOCOL']} $code ".
+		$this->codes[strval($code)]);
+	}
+
+	/**
+	 * Compare two strings and remove the common
+	 * sub string from the first string and return it
+	 * @param string $first
+	 * @param string $second
+	 * @param string $char optional, set it as
+	 * blank string for char by char comparison
+	 * @return string
+	 */
+	public function removeCommonPath($first, $second, $char='/'){
+		$first = explode($char, $first);
+		$second = explode($char, $second);
+		while (count($second)){
+			if($first[0]==$second[0]){
+				array_shift($first);
+			} else break;
+			array_shift($second);
+		}
+		return implode($char, $first);
+	}
+
+	public function saveCache() {
+		$file = $this->cache_dir . '/routes.php';
+		$s = '$o=array();'.PHP_EOL;
+		foreach ($this->routes as $key => $value) {
+			$s .= PHP_EOL.PHP_EOL.PHP_EOL."############### $key ###############"
+			.PHP_EOL.PHP_EOL;
+			$s .= '$o[\''.$key.'\']=array();';
+			foreach ($value as $ke => $va) {
+				$s .= PHP_EOL.PHP_EOL."#==== $key $ke".PHP_EOL.PHP_EOL;
+				$s .= '$o[\''.$key.'\'][\''.$ke.'\']='.str_replace(PHP_EOL,
+				PHP_EOL."\t", var_export($va, TRUE)).';';
+			}
+		}
+		$s .= PHP_EOL.'return $o;';
+		$r=@file_put_contents($file, "<?php $s");
+		@chmod($file, 0777);
+		if($r===FALSE)throw new Exception(
+			"The cache directory located at '$this->cache_dir' needs to have ".
+			"the permissions set to read/write/execute for everyone in order ".
+			"to save cache and improve performance.");
+	}
+
+	///////////////////////////////////////////////////////////////
+	/**
+	* Parses the requst url and get the api path
+	* @return string api path
+	*/
+	protected function getPath () {
+		$path = urldecode($this->removeCommonPath($_SERVER['REQUEST_URI'], 
+		$_SERVER['SCRIPT_NAME']));
+		$path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
+		$path = str_replace($this->format_map['extensions'], '', $path);
+		return $path;
+	}
+
+	/**
+	 * Parses the request to figure out the http request type
+	 * @return string which will be one of the following
+	 * [GET, POST, PUT, DELETE]
+	 * @example GET
+	 */
+	protected function getRequestMethod () {
+		$method = $_SERVER['REQUEST_METHOD'];
+		if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])){
+			$method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
+		}
+		return $method;
+	}
+
+	/**
+	 * Parses the request to figure out format of the request data
+	 * @return iFormat any class that implements iFormat
+	 * @example JsonFormat
+	 */
+	protected function getRequestFormat () {
+		$format=NULL;
+		//check if client has sent any information on request format
+		if(isset($_SERVER['CONTENT_TYPE'])){
+			$mime = explode(';', $_SERVER['CONTENT_TYPE']);
+			$mime = $mime[0];
+			if($mime==UrlEncodedFormat::MIME){
+				$format = new UrlEncodedFormat();
+			}else{
+				if(isset($this->format_map[$mime])){
+					$format = $this->format_map[$mime];
+					$format = is_string($format) ? new $format: $format;
+					$format->setMIME($mime);
+				}
+			}
+		}
+		return $format;
+	}
+
+	/**
+	 * Parses the request to figure out the best format for response
+	 * @return iFormat any class that implements iFormat
+	 * @example JsonFormat
+	 */
+	protected function getResponseFormat () {
+		//check if client has specified an extension
+		/**
+		* @var iFormat
+		*/
+		$format;
+		$extension = explode('.', parse_url($_SERVER['REQUEST_URI'],
+		PHP_URL_PATH));
+		$extension = array_pop($extension);
+		if($extension && isset($this->format_map[$extension])){
+			$format = $this->format_map[$extension];
+			$format = is_string($format) ? new $format: $format;
+			$format->setExtension($extension);
+			//echo "Extension $extension";
+			return $format;
+		}
+		//check if client has sent list of accepted data formats
+		if(isset($_SERVER['HTTP_ACCEPT'])){
+			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
+			foreach ($accepts as $accept) {
+				if($extension && isset($this->format_map[$accept])){
+					$format = $this->format_map[$accept];
+					$format = is_string($format) ? new $format: $format;
+					$format->setMIME($accept);
+					//echo "MIME $accept";
+					return $format;
+				}
+			}
+		}
+		$format = $this->format_map['default'];
+		//echo "DEFAULT ".$this->format_map['default'];
+		return is_string($format) ? new $format: $format;
+	}
+
+	/**
+	 * Parses the request data and returns it
+	 * @return array php data
+	 */
+	protected function getRequestData()
+	{
+		try{
+			$r = file_get_contents('php://input');
+			if(is_null($r))return $_GET;
+			$r =$this->request_format->decode($r);
+			return is_null($r) ? array(): $r;
+		} catch (RestException $e) {
+			$this->handleError($e->getCode(), $e->getMessage());
+		}
+	}
+
+	protected function mapUrlToMethod () {
+		if(!isset($this->routes[$this->request_method])){
+			return array();
+		}
+		$urls = $this->routes[$this->request_method];
+		if(!$urls)return array();
+
+		$found = FALSE;
+		$this->request_data += $_GET;
+		$params = array('request_data'=>$this->request_data);
+		$params += $this->request_data;
+		foreach ($urls as $url => $call) {
+			//echo PHP_EOL.$url.' = '.$this->url.PHP_EOL;
+			$call = (object)$call;
+			if(strstr($url, ':')){
+				$regex = preg_replace('/\\\:([^\/]+)/', '(?P<$1>[^/]+)', 
+				preg_quote($url));
+				if (preg_match(":^$regex$:", $this->url, $matches)) {
+					foreach ($matches as $arg => $match) {
+						if (isset($call->arguments[$arg])){
+							//flog("$arg => $match $args[$arg]");
+							$params[$arg] = $match;
+						}
+					}
+					$found = TRUE;
+					break;
+				}
+			}elseif ($url == $this->url){
+				$found = TRUE;
+				break;
+			}
+		}
+		if($found){
+			//echo PHP_EOL."Found $url ";
+			//print_r($call);
+			$p = is_null($call->defaults) ? array() : $call->defaults;
+			foreach ($call->arguments as $key => $value) {
+				//echo "$key => $value \n";
+				if(isset($params[$key]))$p[$value] = $params[$key];
+			}
+			$call->arguments=$p;
+			return $call;
+		}
+
+	}
+	/**
+	 * Apply static and non-static properties defined in
+	 * the method information anotation
+	 * @param String $class_name
+	 * @param Object $instance instance of that class
+	 * @param Object $method_info method information and metadata
+	 */
+	protected function applyClassMetadata($class_name, $instance, $method_info){
+		if(isset($method_info->metadata[$class_name]) && 
+		is_array($method_info->metadata[$class_name])){
+			foreach ($method_info->metadata[$class_name] 
+			as $property => $value){
+				if(property_exists($class_name, $property)){
+					$reflection_property = 
+					new ReflectionProperty($class_name, $property);
+					$reflection_property->setValue($instance, $value);
+				}
+			}
+		}
+	}
+
+	protected function loadCache()
+	{
+		if ($this->cached !== NULL) {
+			return;
+		}
+		$file = $this->cache_dir . '/routes.php';
+
+		$this->cached = FALSE;
+
+		if ($this->production_mode) {
+			if (file_exists($file)) {
+				$routes = include($file);
+			}
+			if (isset($routes) && is_array($routes)) {
+				$this->routes = $routes;
+				$this->cached = TRUE;
+			}
+		} else {
+			#@unlink($this->cache_dir . "/$name.php");
+		}
+	}
+
+	/**
+	 * Generates cachable url to method mapping
+	 * @param string $class_name
+	 * @param string $base_path
+	 */
+	protected function generateMap ($class_name, $base_path = "") {
+		$reflection = new ReflectionClass($class_name);
+		$class_metadata = parse_doc($reflection->getDocComment());
+		$methods = $reflection->getMethods(
+		ReflectionMethod::IS_PUBLIC + ReflectionMethod::IS_PROTECTED);
+		foreach ($methods as $method) {
+			$doc = $method->getDocComment();
+			$arguments = array();
+			$defaults = array();
+			$metadata = $class_metadata+parse_doc($doc);
+			$params = $method->getParameters();
+			$position=0;
+			foreach ($params as $param){
+				$arguments[$param->getName()] = $position;
+				if($param->isDefaultValueAvailable()){
+					$defaults[$position] = $param->getDefaultValue();
+				}
+				$position++;
+			}
+			$method_flag = $method->isProtected() ?
+			(isRestlerCompatibilityModeEnabled() ? 2 :  3) :
+			(isset($metadata['protected']) ? 1 : 0);
+
+			#take note of the order
+			$call = array(
+			'class_name'=>$class_name,
+			'method_name'=>$method->getName(),
+			'arguments'=>$arguments,
+			'defaults'=>$defaults,
+			'metadata'=>$metadata,
+			'method_flag'=>$method_flag
+			);
+			$method_url = strtolower($method->getName());
+			if (preg_match_all(
+			'/@url\s+(GET|POST|PUT|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s', 
+			$doc, $matches, PREG_SET_ORDER)) {
+				foreach ($matches as $match) {
+					$http_method = $match[1];
+					$url = rtrim($base_path . $match[2],'/');
+					$this->routes[$http_method][$url] = $call;
+				}
+			}elseif($method_url[0] != '_'){ //not prefixed with underscore
+				// no configuration found so use convention
+				if (preg_match_all('/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)/i', 
+				$method_url, $matches)) {
+					$http_method = strtoupper($matches[0][0]);
+					$method_url = substr($method_url, strlen($http_method));
+				}else{
+					$http_method = 'GET';
+				}
+				$url = $base_path. ($method_url=='index' || 
+				$method_url=='default' ? '' : $method_url);
+				$url = rtrim($url,'/');
+				$this->routes[$http_method][$url] = $call;
+				foreach ($params as $param){
+					if($param->getName()=='request_data'){
+						break;
+					}
+					$url .= $url=='' ? ':' : '/:';
+					$url .= $param->getName();
+					$this->routes[$http_method][$url] = $call;
+				}
+			}
+		}
+	}
 }
+
+if(version_compare(PHP_VERSION, '5.3.0') < 0){
+	require_once 'compat.php';
+}
+
 /**
  * Special Exception for raising API errors
  * that can be used in API methods
@@ -633,41 +725,57 @@ class Restler
 class RestException extends Exception
 {
 
-	public function __construct($code, $message = null)
+	public function __construct($http_status_code, $error_message = NULL)
 	{
-		parent::__construct($message, $code);
+		parent::__construct($error_message, $http_status_code);
 	}
 
 }
 
 /**
- * Conveniance function that converts the given object
- * in to associative array
- * @param object $object that needs to be converted
+ * Interface for creating response classes
  * @category   Framework
  * @package    restler
- * @subpackage format
+ * @subpackage result
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-function object_to_array($object, $utf_encode=true)
+interface iRespond
 {
-	if(is_array($object) || is_object($object))
-	{
-		$array = array();
-		foreach($object as $key => $value)
-		{
-			$value = object_to_array($value, $utf_encode);
-			if($utf_encode && is_string($value)){
-				$value = utf8_encode($value);
-			}
-			$array[$key] = $value;
-		}
-		return $array;
+	/**
+	 * Result of an api call is passed to this method
+	 * to create a standard structure for the data
+	 * @param unknown_type $result can be a primitive or array or object
+	 */
+	public function __formatResponse($result);
+	/**
+	 * When the api call results in RestException this method
+	 * will be called to return the error message
+	 * @param int $status_code
+	 * @param String $message
+	 */
+	public function __formatError($status_code, $message);
+}
+/**
+ * Default response formating class
+ * @category   Framework
+ * @package    restler
+ * @subpackage result
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ */
+class DefaultResponse implements iRespond {
+	function __formatResponse($result) {
+		return $result;
 	}
-	return $object;
+	function __formatError($statusCode, $message) {
+		return array('error' => array('code' => $statusCode, 
+		'message' => $message));
+	}
 }
 
 /**
@@ -684,11 +792,10 @@ interface iAuthenticate
 {
 	/**
 	 * Auth function that is called when a protected method is requested
-	 * @return boolean true or false
+	 * @return boolean TRUE or FALSE
 	 */
-	public function isAuthenticated();
+	public function __isAuthenticated();
 }
-
 
 /**
  * Interface for creating custom data formats
@@ -736,12 +843,12 @@ interface iFormat
 	 * Encode the given data in the format
 	 * @param array $data resulting data that needs to
 	 * be encoded in the given format
-	 * @param boolean $human_readable set to true when restler
+	 * @param boolean $human_readable set to TRUE when restler
 	 * is not running in production mode. Formatter has to
 	 * make the encoded output more human readable
 	 * @return string encoded string
 	 */
-	public function encode($data, $human_readable=false);
+	public function encode($data, $human_readable=FALSE);
 
 	/**
 	 * Decode the given data from the format
@@ -782,7 +889,7 @@ class UrlEncodedFormat implements iFormat
 	public function setExtension($extension){
 		//do nothing
 	}
-	public function encode($data, $human_readable=false){
+	public function encode($data, $human_readable=FALSE){
 		return http_build_query($data);
 	}
 	public function decode($data){
@@ -824,11 +931,13 @@ class JsonFormat implements iFormat
 	public function setExtension($extension){
 		//do nothing
 	}
-	public function encode($data, $human_readable=false){
-		return $human_readable ? $this->json_format(json_encode(object_to_array($data))) : json_encode(object_to_array($data));
+	public function encode($data, $human_readable=FALSE){
+		return $human_readable ? 
+		$this->json_format(json_encode(object_to_array($data))) : 
+		json_encode(object_to_array($data));
 	}
 	public function decode($data){
-		return json_decode($data);
+		return object_to_array(json_decode($data));
 	}
 
 	/**
@@ -841,7 +950,7 @@ class JsonFormat implements iFormat
 		$tab = "  ";
 		$new_json = "";
 		$indent_level = 0;
-		$in_string = false;
+		$in_string = FALSE;
 
 		$len = strlen($json);
 
@@ -851,7 +960,8 @@ class JsonFormat implements iFormat
 				case '{':
 				case '[':
 					if(!$in_string) {
-						$new_json .= $char . "\n" . str_repeat($tab, $indent_level+1);
+						$new_json .= $char . "\n" . 
+						str_repeat($tab, $indent_level+1);
 						$indent_level++;
 					} else {
 						$new_json .= $char;
@@ -861,7 +971,7 @@ class JsonFormat implements iFormat
 				case ']':
 					if(!$in_string) {
 						$indent_level--;
-						$new_json .= "\n" . str_repeat($tab, $indent_level) . $char;
+						$new_json .= "\n".str_repeat($tab, $indent_level).$char;
 					} else {
 						$new_json .= $char;
 					}
@@ -881,7 +991,9 @@ class JsonFormat implements iFormat
 					}
 					break;
 				case '"':
-					if($c > 0 && $json[$c-1] != '\\') {
+					if($c==0){
+						$in_string = TRUE;
+					}elseif($c > 0 && $json[$c-1] != '\\') {
 						$in_string = !$in_string;
 					}
 				default:
@@ -897,3 +1009,186 @@ class JsonFormat implements iFormat
 		return $this->getExtension();
 	}
 }
+
+/**
+ * Parses the PHPDoc comments for metadata. Inspired by Documentor code base
+ * @category   Framework
+ * @package    restler
+ * @subpackage helper
+ * @author     Murray Picton <info@murraypicton.com>
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.gnu.org/licenses/ GNU General Public License
+ * @link       https://github.com/murraypicton/Doqumentor
+ */
+class DocParser {
+	private $params=array();
+	function parse($doc='') {
+		if($doc==''){
+			return $this->params;
+		}
+		//Get the comment
+		if(preg_match('#^/\*\*(.*)\*/#s', $doc, $comment) === false)
+		return  $this->params;
+		$comment = trim($comment[1]);
+		//Get all the lines and strip the * from the first character
+		if(preg_match_all('#^\s*\*(.*)#m', $comment, $lines) === false)
+		return  $this->params;
+		$this->parseLines($lines[1]);
+		return  $this->params;
+	}
+
+	private function parseLines($lines) {
+		foreach($lines as $line) {
+			$parsedLine = $this->parseLine($line); //Parse the line
+
+			if($parsedLine === false && !isset($this->params['description'])) {
+				if(isset($desc)){
+					//Store the first line in the short description
+					$this->params['description'] = implode(PHP_EOL, $desc); 
+				}
+				$desc = array();
+			} elseif($parsedLine !== false) {
+				$desc[] = $parsedLine; //Store the line in the long description
+			}
+		}
+		$desc = implode(' ', $desc);
+		if(!empty($desc))$this->params['long_description'] = $desc;
+	}
+
+	private function parseLine($line) {
+		//trim the whitespace from the line
+		$line = trim($line);
+
+		if(empty($line)) return false; //Empty line
+
+		if(strpos($line, '@') === 0) {
+			if(strpos($line, ' ')>0){
+				//Get the parameter name
+				$param = substr($line, 1, strpos($line, ' ') - 1); 
+				$value = substr($line, strlen($param) + 2); //Get the value
+			}else{
+				$param = substr($line, 1);
+				$value = '';
+			}
+			//Parse the line and return false if the parameter is valid
+			if($this->setParam($param, $value)) return false; 
+		}
+
+		return $line;
+	}
+	private function setParam($param, $value) {
+		if($param == 'param' || $param == 'return') 
+		$value = $this->formatParamOrReturn($value);
+		if($param == 'class') 
+		list($param, $value) = $this->formatClass($value);
+
+		if(empty($this->params[$param])) {
+			$this->params[$param] = $value;
+		} else if($param == 'param'){
+			$arr = array($this->params[$param], $value);
+			$this->params[$param] = $arr;
+		} else {
+			$this->params[$param] = $value + $this->params[$param];
+		}
+		return true;
+	}
+	private function formatClass($value) {
+		$r = preg_split("[\(|\)]",$value);
+		if(is_array($r)){
+			$param = $r[0];
+			parse_str($r[1],$value);
+			foreach ($value as $key => $val) {
+				$val = explode(',', $val);
+				if(count($val)>1)$value[$key]=$val;
+			}
+		}else{
+			$param='Unknown';
+		}
+		return array($param, $value);
+	}
+	private function formatParamOrReturn($string) {
+
+		$pos = strpos($string, ' ');
+
+		$type = substr($string, 0, $pos);
+		return '(' . $type . ')' . substr($string, $pos+1);
+	}
+}
+
+function parse_doc($php_doc_comment){
+	$p = new DocParser();
+	return $p->parse($php_doc_comment);
+	$p = new Parser($php_doc_comment);
+	return $p;
+	$php_doc_comment = preg_replace("/(^[\\s]*\\/\\*\\*)
+                                 |(^[\\s]\\*\\/)
+                                 |(^[\\s]*\\*?\\s)
+                                 |(^[\\s]*)
+                                 |(^[\\t]*)/ixm", "", $php_doc_comment);
+
+	$php_doc_comment = str_replace("\r", "", $php_doc_comment);
+	$php_doc_comment = preg_replace("/([\\t])+/", "\t", $php_doc_comment);
+	return explode("\n", $php_doc_comment);
+
+
+	$php_doc_comment =  trim(preg_replace('/\r?\n *\* */', ' ',
+	 $php_doc_comment));
+	return $php_doc_comment;
+	preg_match_all('/@([a-z]+)\s+(.*?)\s*(?=$|@[a-z]+\s)/s', 
+	$php_doc_comment, $matches);
+	return array_combine($matches[1], $matches[2]);
+}
+
+/**
+ * Conveniance function that converts the given object
+ * in to associative array
+ * @param object $object that needs to be converted
+ * @category   Framework
+ * @package    restler
+ * @subpackage format
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ */
+function object_to_array($object, $utf_encode=TRUE)
+{
+	if(is_array($object) || is_object($object))
+	{
+		$array = array();
+		foreach($object as $key => $value)
+		{
+			$value = object_to_array($value, $utf_encode);
+			if($utf_encode && is_string($value)){
+				$value = utf8_encode($value);
+			}
+			$array[$key] = $value;
+		}
+		return $array;
+	}
+	return $object;
+}
+/**
+ * an autoloader function for loading format classes
+ * @param String $class_name class name of a class that implements iFormat
+ */
+function autoload_formats($class_name)
+{
+	$class_name=strtolower($class_name);
+	$file = RESTLER_PATH."/$class_name/$class_name.php";
+	if (file_exists($file))
+	{
+		require_once($file);
+	}
+}
+spl_autoload_register('autoload_formats');
+/**
+ * Manage compatibility with PHP 5 < PHP 5.3
+ */
+if(!function_exists('isRestlerCompatibilityModeEnabled')){
+	function isRestlerCompatibilityModeEnabled(){
+		return FALSE;
+	}
+}
+define('RESTLER_PATH', dirname(__FILE__));

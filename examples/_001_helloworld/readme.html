@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 2.0 Example:- Hello World Example</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../resources/markdown.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/facebox.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/hacks.css"/>
+
+<script type="text/javascript" src="../resources/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
+<script type="text/javascript" src="../resources/facebox.js"></script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+ 	 //$('a[target*=_blank]').facebox();
+	 $("abbr").click(function(){
+	 	$('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
+	 		jQuery.facebox({ div: '#codeviewer' });
+	 	});
+ 	 });
+ })
+</script>
+</head>
+<body>
+<div id="codeviewer" style="display:none;"></div>
+<nav id="left">
+<img src="../resources/Restler2.gif" width="126" height="126" title="Luracast Restler 2.0"/>
+<h3><a href="../index.html">Examples</a></h3>
+<ul>
+<li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
+<li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
+<li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
+<li><a href="../_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li>
+<li><a href="../_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li>
+<li><a href="../_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li>
+<li>
+</nav>
+<article id="right">
+<h2>Hello World Example</h2>
+
+<p>Basic hello world example to get started with Restler 2.0</p>
+
+<blockquote>
+  <p>This API Server is made using the following php files/folders</p>
+  
+  <ul>
+  <li><abbr title="_001_helloworld/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_001_helloworld/say.php">say.php</abbr>      (api)</li>
+  <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
+  </ul>
+</blockquote>
+
+<p>This API Server exposes the following URIs</p>
+
+<pre><code>GET say/hello     ⇠ Say::hello()
+GET say/hello/:to ⇠ Say::hello()
+</code></pre>
+
+<p>Try the following links in your browser</p>
+
+<dl>
+<dt>GET <a href="say/hello" target="_blank">say/hello</a></dt>
+<dd>
+<pre><code>"Hello world!"
+</code></pre>
+</dd>
+
+<dt>GET <a href="say/hello/restler2.0" target="_blank">say/hello/restler2.0</a></dt>
+<dd><pre><code>"Hello Restler2.0!"
+</code></pre></dd>
+
+<dl>
+<dt>GET <a href="say/hello?to=R.Arul%20Kumaran" target="_blank">say/hello?to=R.Arul%20Kumaran</a></dt>
+<dd>
+<pre><code>"Hello R.Arul Kumaran!"
+</code></pre>
+</dd>
+</dl>
+
+<p>If the above links fail, it could be due to missing <code>.htaccess</code> file or URL Rewriting is not supported in your server. 
+Try the following links instead</p>
+
+<dl>
+<dt>GET <a href="index.php/say/hello" target="_blank"><abbr title="_001_helloworld/index.php">index.php</abbr>/say/hello</a></dt>
+<dd>
+<pre><code>"Hello world!"
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/say/hello/restler2.0" target="_blank"><abbr title="_001_helloworld/index.php">index.php</abbr>/say/hello/restler2.0</a></dt>
+<dd><pre><code>"Hello Restler2.0!"
+</code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/say/hello?to=R.Arul%20Kumaran" target="_blank"><abbr title="_001_helloworld/index.php">index.php</abbr>/say/hello?to=R.Arul%20Kumaran</a></dt>
+<dd>
+<pre><code>"Hello R.Arul Kumaran!"
+</code></pre>
+</dd>
+</dl>
+
+</article>
+</body>
+</html>

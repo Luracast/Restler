@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 2.0 Example:- Error Response</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../resources/markdown.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/facebox.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/hacks.css"/>
+
+<script type="text/javascript" src="../resources/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
+<script type="text/javascript" src="../resources/facebox.js"></script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+ 	 //$('a[target*=_blank]').facebox();
+	 $("abbr").click(function(){
+	 	$('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
+	 		jQuery.facebox({ div: '#codeviewer' });
+	 	});
+ 	 });
+ })
+</script>
+</head>
+<body>
+<div id="codeviewer" style="display:none;"></div>
+<nav id="left">
+<img src="../resources/Restler2.gif" width="126" height="126" title="Luracast Restler 2.0"/>
+<h3><a href="../index.html">Examples</a></h3>
+<ul>
+<li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
+<li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
+<li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
+<li><a href="../_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li>
+<li><a href="../_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li>
+<li><a href="../_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li>
+<li>
+</nav>
+<article id="right">
+<h2>Error Response</h2>
+
+<p>API methods can make use of RestException class to provide 
+error information to the user.</p>
+
+<p>use <code>throw new RestException($http_status_code)</code> to send the error response 
+to the client.</p>
+
+<p>For the list of HTTP Status codes and their meaning take a look at 
+<a href="http://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank">Wikipedia</a></p>
+
+<blockquote>
+  <p>This API Server is made using the following php files/folders</p>
+  
+  <ul>
+  <li><abbr title="_004_error_response/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_004_error_response/currency.php">currency.php</abbr>      (api)</li>
+  <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
+  </ul>
+</blockquote>
+
+<p>This API Server exposes the following URIs</p>
+
+<pre><code>GET currency/format         ⇠ Currency::format()
+GET currency/format/:number ⇠ Currency::format()
+</code></pre>
+
+<p>Try the following links in your browser</p>
+
+<dl>
+<dt>GET <a href="index.php/currency/format" target="_blank">currency/format</a></dt>
+<dd>
+<pre><code>{
+ "error": {
+   "code": 400,
+   "message": "Bad Request"
+ }
+}
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/currency/format/not_a_number" target="_blank">currency/format/not_a_number</a></dt>
+<dd><pre><code>{
+ "error": {
+   "code": 412,
+   "message": "Precondition Failed: not a valid number"
+ }
+}
+</code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/currency/format?number=55" target="_blank">currency/format?number=55</a></dt>
+<dd>
+<pre><code>"USD55.00"
+</code></pre>
+</dd>
+</dl>
+
+</article>
+</body>
+</html>
