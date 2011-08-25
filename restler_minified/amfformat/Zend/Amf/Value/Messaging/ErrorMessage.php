@@ -1,0 +1,2 @@
+<?php
+ require_once 'Zend/Amf/Value/Messaging/AcknowledgeMessage.php'; class Zend_Amf_Value_Messaging_ErrorMessage extends Zend_Amf_Value_Messaging_AcknowledgeMessage { public $extendedData = null; public $faultCode; public $faultDetail; public $faultString = ''; public $rootCause = null; } 

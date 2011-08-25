@@ -1,0 +1,2 @@
+<?php
+ require_once 'Zend/Amf/Value/Messaging/AbstractMessage.php'; class Zend_Amf_Value_Messaging_RemotingMessage extends Zend_Amf_Value_Messaging_AbstractMessage { public $source; public $operation; public $parameters; public function __construct() { $this->clientId = $this->generateId(); $this->destination = null; $this->messageId = $this->generateId(); $this->timestamp = time().'00'; $this->timeToLive = 0; $this->headers = new stdClass(); $this->body = null; } } 
