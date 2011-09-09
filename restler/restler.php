@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.0
+ * @version    2.0.1
  */
 class Restler {
-	const VERSION = '2.0.0';
+	const VERSION = '2.0.1';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -301,9 +301,9 @@ class Restler {
 	 * @throws RestException to send error response
 	 */
 	public function handle () {
+		if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
 		$this->url = $this->getPath();
 		$this->request_method = $this->getRequestMethod();
-		if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
 		$this->response_format = $this->getResponseFormat();
 		$this->request_format = $this->getRequestFormat();
 		if(is_null($this->request_format)){
@@ -582,7 +582,7 @@ class Restler {
 		if($found){
 			//echo PHP_EOL."Found $url ";
 			//print_r($call);
-			$p = is_null($call->defaults) ? array() : $call->defaults;
+			$p = $call->defaults;
 			foreach ($call->arguments as $key => $value) {
 				//echo "$key => $value \n";
 				if(isset($params[$key]))$p[$value] = $params[$key];
@@ -654,9 +654,8 @@ class Restler {
 			$position=0;
 			foreach ($params as $param){
 				$arguments[$param->getName()] = $position;
-				if($param->isDefaultValueAvailable()){
-					$defaults[$position] = $param->getDefaultValue();
-				}
+				$defaults[$position] = $param->isDefaultValueAvailable() ?
+					$param->getDefaultValue() : NULL;
 				$position++;
 			}
 			$method_flag = $method->isProtected() ?
