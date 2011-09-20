@@ -17,13 +17,15 @@ a firefox extension
 
 This API Server exposes the following URIs
 
-	GET    author     ⇠ Author::get()
-	GET    author/:id ⇠ Author::get()
-	POST   author     ⇠ Author::post()
-	PUT    author     ⇠ Author::put()
-	PUT    author/:id ⇠ Author::put()
-	DELETE author     ⇠ Author::delete()
-	DELETE author/:id ⇠ Author::delete()
+	GET    author                   ⇠ Author::get()
+	GET    author/:id               ⇠ Author::get()
+	POST   author                   ⇠ Author::post()
+	POST   author/:request_data     ⇠ Author::post()
+	PUT    author                   ⇠ Author::put()
+	PUT    author/:id               ⇠ Author::put()
+	PUT    author/:id/:request_data ⇠ Author::put()
+	DELETE author                   ⇠ Author::delete()
+	DELETE author/:id               ⇠ Author::delete()
 
 
 Try the following links in your browser

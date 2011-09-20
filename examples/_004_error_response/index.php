@@ -5,11 +5,11 @@
  Description: API methods can make use of RestException class to provide 
  error information to the user. 
  
- use `throw new RestException($http_status_code)` to send the error response 
+ use `throw new RestException($httpStatusCode)` to send the error response 
  to the client. 
  
  For the list of HTTP Status codes and their meaning take a look at 
- [Wikipedia](http://en.wikipedia.org/wiki/List_of_HTTP_status_codes).
+ [Wikipedia](http://en.wikipedia.org/wiki/List_of_httpStatusCodes).
  
  Example 1: GET currency/format returns 
  
