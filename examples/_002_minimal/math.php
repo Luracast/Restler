@@ -1,9 +1,10 @@
 <?php
 class Math
 {
+    public $restler;
     function add ($n1 = 1, $n2 = 1)
     {
-        $this->_validate($n1, $n2);
+        $this->_validate(func_get_args());
         return $n1 + $n2;
     }
     function multiply ($n1 = 5, $n2 = 2)
