@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.1
+ * @version    2.0.2
  */
 class Restler {
-	const VERSION = '2.0.1';
+	const VERSION = '2.0.2';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -339,6 +339,7 @@ class Restler {
 				$this->service_method = $o->method_name;
 				if($o->method_flag==2)$o=unprotect($o);
 				$object = $this->service_class_instance = new $o->class_name();
+				$object->restler=$this;
 				if(method_exists($o->class_name, $pre_process)) {
 					call_user_func_array(array($object, $pre_process),
 					$o->arguments);
@@ -1179,7 +1180,9 @@ function autoload_formats($class_name)
 	if (file_exists($file))
 	{
 		require_once($file);
-	}
+	} elseif (file_exists("$class_name.php")) {
+        require_once ("$class_name.php");
+    }
 }
 spl_autoload_register('autoload_formats');
 /**
