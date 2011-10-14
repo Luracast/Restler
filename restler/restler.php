@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.2
+ * @version    2.0.3
  */
 class Restler {
-	const VERSION = '2.0.2';
+	const VERSION = '2.0.3';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -503,7 +503,7 @@ class Restler {
 		/**
 		* @var iFormat
 		*/
-		$format;
+		$format=NULL;
 		$extension = explode('.', parse_url($_SERVER['REQUEST_URI'],
 		PHP_URL_PATH));
 		$extension = array_pop($extension);
@@ -529,7 +529,7 @@ class Restler {
 		}
 		$format = $this->format_map['default'];
 		//echo "DEFAULT ".$this->format_map['default'];
-		return is_string($format) ? new $format: $format;
+		return $format;
 	}
 
 	/**
@@ -632,7 +632,7 @@ class Restler {
 				$this->cached = TRUE;
 			}
 		} else {
-			#@unlink($this->cache_dir . "/$name.php");
+			//@unlink($this->cache_dir . "/$name.php");
 		}
 	}
 
@@ -663,7 +663,7 @@ class Restler {
 			(isRestlerCompatibilityModeEnabled() ? 2 :  3) :
 			(isset($metadata['protected']) ? 1 : 0);
 
-			#take note of the order
+			//take note of the order
 			$call = array(
 			'class_name'=>$class_name,
 			'method_name'=>$method->getName(),
