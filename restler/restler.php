@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.3
+ * @version    2.0.4
  */
 class Restler {
-	const VERSION = '2.0.3';
+	const VERSION = '2.0.4';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -527,7 +527,7 @@ class Restler {
 				}
 			}
 		}
-		$format = $this->format_map['default'];
+		$format = new $this->format_map['default'];
 		//echo "DEFAULT ".$this->format_map['default'];
 		return $format;
 	}
