@@ -3,11 +3,46 @@ CRUD
 
 Create, Retrive, Update and Delete using 
 HTTP methods POST, GET, PUT and DELETE respectively. 
-For simplicity and making it work out of the box it is using
+
+**How the automatic routing is done?**
+
+Restler uses *get, put, post, and delete* as prefix to map PHP methods to 
+respective HTTP methods. When they are the only method names they map at
+the class level similar to *index* and *default*
+
+	GET/POST/PUT/DELETE class_name
+
+
+GET is the default HTTP method so all public functions without any of 
+these prefixes will be mapped to GET request. This means functions 
+*getResult* and *result* will both be mapped to
+
+	GET class_name/result
+
+Similarly method *postSomething* will be mapped to 
+
+	POST class_name/something
+
+For simplicity and making it work out of the box this example is using
 a session based fake database, thus depending on a client that
-supports PHP Session Cookies. You may use [REST Console](https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#)
-an extension for Chrome or [RESTClient](https://addons.mozilla.org/en-US/firefox/addon/restclient/) 
-a firefox extension
+supports PHP Session Cookies. You may use 
+[REST Console](https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#)
+an extension for Chrome or 
+[RESTClient](https://addons.mozilla.org/en-US/firefox/addon/restclient/) 
+a firefox extension. 
+
+Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the command line. 
+
+	curl-X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+	
+	{
+     "name": "Another",
+     "email": "another@email.com",
+     "id": 5
+	}
+
+But since the session wont be working next request wont reflect the 
+change done by previous request, anyway you get the idea.
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
@@ -17,15 +52,13 @@ a firefox extension
 
 This API Server exposes the following URIs
 
-	GET    author                   ⇠ Author::get()
-	GET    author/:id               ⇠ Author::get()
-	POST   author                   ⇠ Author::post()
-	POST   author/:request_data     ⇠ Author::post()
-	PUT    author                   ⇠ Author::put()
-	PUT    author/:id               ⇠ Author::put()
-	PUT    author/:id/:request_data ⇠ Author::put()
-	DELETE author                   ⇠ Author::delete()
-	DELETE author/:id               ⇠ Author::delete()
+	GET    author     ⇠ Author::get()
+	GET    author/:id ⇠ Author::get()
+	POST   author     ⇠ Author::post()
+	PUT    author     ⇠ Author::put()
+	PUT    author/:id ⇠ Author::put()
+	DELETE author     ⇠ Author::delete()
+	DELETE author/:id ⇠ Author::delete()
 
 
 Try the following links in your browser

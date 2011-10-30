@@ -35,7 +35,7 @@
 <li><a title="Restler Home" href="http://luracast.com/products/restler/">Home</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
 <li><a class="active" href="../index.html">Examples</a></li>
-<li><a title="Share your knowledge by answering user questions in Stack Overflow." href="http://bit.ly/RestlerSupport">Support</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." href="http://bit.ly/Restler-QA">Support</a></li>
 <li><a title="Contribute and Fork Restler on GitHub" href="http://bit.ly/LuracastRestler">GitHub</a></li>
 <li><a title="Get updated on Twitter" href="http://twitter.com/Luracast">Twitter</a></li>
 </ul>
@@ -51,12 +51,50 @@
 <h2>CRUD</h2>
 
 <p>Create, Retrive, Update and Delete using 
-HTTP methods POST, GET, PUT and DELETE respectively. 
-For simplicity and making it work out of the box it is using
+HTTP methods POST, GET, PUT and DELETE respectively.</p>
+
+<p><strong>How the automatic routing is done?</strong></p>
+
+<p>Restler uses <em>get, put, post, and delete</em> as prefix to map PHP methods to 
+respective HTTP methods. When they are the only method names they map at
+the class level similar to <em>index</em> and <em>default</em></p>
+
+<pre><code>GET/POST/PUT/DELETE class_name
+</code></pre>
+
+<p>GET is the default HTTP method so all public functions without any of 
+these prefixes will be mapped to GET request. This means functions 
+<em>getResult</em> and <em>result</em> will both be mapped to</p>
+
+<pre><code>GET class_name/result
+</code></pre>
+
+<p>Similarly method <em>postSomething</em> will be mapped to</p>
+
+<pre><code>POST class_name/something
+</code></pre>
+
+<p>For simplicity and making it work out of the box this example is using
 a session based fake database, thus depending on a client that
-supports PHP Session Cookies. You may use <a href="https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#" target="_blank">REST Console</a>
-an extension for Chrome or <a href="https://addons.mozilla.org/en-US/firefox/addon/restclient/" target="_blank">RESTClient</a> 
-a firefox extension</p>
+supports PHP Session Cookies. You may use 
+<a href="https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#" target="_blank">REST Console</a>
+an extension for Chrome or 
+<a href="https://addons.mozilla.org/en-US/firefox/addon/restclient/" target="_blank">RESTClient</a> 
+a firefox extension.</p>
+
+<p>Alternatively you can use <a href="http://en.wikipedia.org/wiki/CURL" target="_blank">cURL</a> on the command line.</p>
+
+<pre><code>curl-X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+
+{
+ "name": "Another",
+ "email": "another@email.com",
+ "id": 5
+}
+</code></pre>
+
+<p>But since the session wont be working next request wont reflect the 
+change done by previous request, anyway you get the idea.</p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
@@ -71,15 +109,13 @@ a firefox extension</p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    author                   ⇠ Author::get()
-GET    author/:id               ⇠ Author::get()
-POST   author                   ⇠ Author::post()
-POST   author/:request_data     ⇠ Author::post()
-PUT    author                   ⇠ Author::put()
-PUT    author/:id               ⇠ Author::put()
-PUT    author/:id/:request_data ⇠ Author::put()
-DELETE author                   ⇠ Author::delete()
-DELETE author/:id               ⇠ Author::delete()
+<pre><code>GET    author     ⇠ Author::get()
+GET    author/:id ⇠ Author::get()
+POST   author     ⇠ Author::post()
+PUT    author     ⇠ Author::put()
+PUT    author/:id ⇠ Author::put()
+DELETE author     ⇠ Author::delete()
+DELETE author/:id ⇠ Author::delete()
 </code></pre>
 
 <p>Try the following links in your browser</p>

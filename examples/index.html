@@ -30,7 +30,7 @@
 <li><a title="Restler Home" href="http://luracast.com/products/restler/">Home</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
 <li><a class="active" href="index.html">Examples</a></li>
-<li><a title="Share your knowledge by answering user questions in Stack Overflow." href="http://bit.ly/RestlerSupport">Support</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." href="http://bit.ly/Restler-QA">Support</a></li>
 <li><a title="Contribute and Fork Restler on GitHub" href="http://bit.ly/LuracastRestler">GitHub</a></li>
 <li><a title="Get updated on Twitter" href="http://twitter.com/Luracast">Twitter</a></li>
 </ul>
@@ -42,11 +42,17 @@
 <ul><li><a href="_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li><li><a href="_002_minimal/readme.html" title="Less is more">Minimal</a></li><li><a href="_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li><li><a href="_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li><li><a href="_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li><li><a href="_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li></ul>
 </nav>
 <article id="right">
-<h2>Examples</h2>
-<p>Luracast Restler is a microframework to expose php methods as RESTful API. Best way to learn is by examples, 
-here you can find the examples that shows every feature of Restler and how to use them.</p>
-<p>We have created it in such a way that they can be tested on your local host.</p>
-<p>You can check the source code, try some of the API's exposed at the comfort of your browser</p>
+<h2>Live Examples</h2>
+
+<p>Luracast Restler is a single file framework that can expose any PHP class (with zero arguments constructor)
+and its public and protected methods (that manage their own dependencies) as RESTful API.</p>
+
+<p><strong>Learn by the examples</strong></p>
+
+<p>Here you can find the examples that shows many features of Restler and 
+how to use them. It is created in such a way that they can be tested 
+on your local host. You can check the source code, try some of the API's 
+exposed all at the comfort of your browser</p>
 <ol class="toc">
 	<li><a href="_001_helloworld/readme.html" title="Basic hello world example to get started with Restler 2.0">
 <span>Hello World 
@@ -78,14 +84,23 @@ Here are three ways to protect a method
 </span> <span class="right">&nbsp;5</span></a></li>
 	<li><a href="_006_crud/readme.html" title="Create, Retrive, Update and Delete using 
 HTTP methods POST, GET, PUT and DELETE respectively. 
-For simplicity and making it work out of the box it is using
-a session based fake database, thus depending on a client that
-supports PHP Session Cookies">
+
+**How the automatic routing is done?**
+
+Restler uses *get, put, post, and delete* as prefix to map PHP methods to 
+respective HTTP methods">
 <span>CRUD 
 <small><i>using POST, GET, PUT and DELETE</i></small>
 </span> <span class="right">&nbsp;6</span></a></li>
 
 </ol>
+<p> </p>
+<p> <img src="resources/restler_flow.png" alt="Restler Flow Diagram" title="Restler Flow" width="100%">
+<strong>Restler Execution Flow</strong>
+</p>
+<p> </p>
+<p> </p>
+<p> </p>
 </article>
 <footer>
 &#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
