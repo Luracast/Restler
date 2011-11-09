@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.4
+ * @version    2.0.5
  */
 class Restler {
-	const VERSION = '2.0.4';
+	const VERSION = '2.0.5';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -936,8 +936,36 @@ class JsonFormat implements iFormat
 		$this->json_format(json_encode(object_to_array($data))) : 
 		json_encode(object_to_array($data));
 	}
-	public function decode($data){
-		return object_to_array(json_decode($data));
+	public function decode($data) {
+		$decoded = json_decode ( $data );
+		if (function_exists ( 'json_last_error' )) {
+			$message = '';
+			switch (json_last_error ()) {
+				case JSON_ERROR_NONE :
+					return object_to_array ( $decoded );
+					break;
+				case JSON_ERROR_DEPTH :
+					$message = 'maximum stack depth exceeded';
+					break;
+				case JSON_ERROR_STATE_MISMATCH :
+					$message = 'underflow or the modes mismatch';
+					break;
+				case JSON_ERROR_CTRL_CHAR :
+					$message = 'unexpected control character found';
+					break;
+				case JSON_ERROR_SYNTAX :
+					$message = 'malformed JSON';
+					break;
+				case JSON_ERROR_UTF8 :
+					$message = 'malformed UTF-8 characters, possibly incorrectly encoded';
+					break;
+				default :
+					$message = 'unknown error';
+					break;
+			}
+			throw new RestException ( 400, 'Error parsing JSON, ' . $message );
+		}
+		return object_to_array ( $decoded );
 	}
 
 	/**
