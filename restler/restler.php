@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.5
+ * @version    2.0.6
  */
 class Restler {
-	const VERSION = '2.0.5';
+	const VERSION = '2.0.6';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -964,6 +964,8 @@ class JsonFormat implements iFormat
 					break;
 			}
 			throw new RestException ( 400, 'Error parsing JSON, ' . $message );
+		} else if (strlen ( $data ) && $decoded === NULL || $decoded === $data) {
+			throw new RestException ( 400, 'Error parsing JSON' );
 		}
 		return object_to_array ( $decoded );
 	}
