@@ -13,7 +13,7 @@
  * @version    2.0.6
  */
 class Restler {
-	const VERSION = '2.0.6';
+	const VERSION = '2.0.7';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -466,6 +466,8 @@ class Restler {
 		if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])){
 			$method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
 		}
+		//support for HEAD request
+		if($method=='HEAD')$method='GET';
 		return $method;
 	}
 
