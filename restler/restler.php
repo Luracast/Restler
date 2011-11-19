@@ -13,7 +13,7 @@
  * @version    2.0.6
  */
 class Restler {
-	const VERSION = '2.0.7';
+	const VERSION = '2.0.8';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -506,15 +506,18 @@ class Restler {
 		* @var iFormat
 		*/
 		$format=NULL;
-		$extension = explode('.', parse_url($_SERVER['REQUEST_URI'],
+		$extensions = explode('.', parse_url($_SERVER['REQUEST_URI'],
 		PHP_URL_PATH));
-		$extension = array_pop($extension);
-		if($extension && isset($this->format_map[$extension])){
-			$format = $this->format_map[$extension];
-			$format = is_string($format) ? new $format: $format;
-			$format->setExtension($extension);
-			//echo "Extension $extension";
-			return $format;
+		while($extensions){
+			$extension = array_pop($extensions);
+			$extension = array_shift(explode('/', $extension));
+			if($extension && isset($this->format_map[$extension])){
+				$format = $this->format_map[$extension];
+				$format = is_string($format) ? new $format: $format;
+				$format->setExtension($extension);
+				//echo "Extension $extension";
+				return $format;
+			}
 		}
 		//check if client has sent list of accepted data formats
 		if(isset($_SERVER['HTTP_ACCEPT'])){
@@ -1184,7 +1187,7 @@ function parse_doc($php_doc_comment){
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-function object_to_array($object, $utf_encode=TRUE)
+function object_to_array($object, $utf_encode=FALSE)
 {
 	if(is_array($object) || is_object($object))
 	{

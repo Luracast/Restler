@@ -115,9 +115,7 @@ class XmlFormat implements iFormat
 					$this->toXML($value, $key, $human_readable, $node);
 				} else {
 
-					// add single node.
-					$value = utf8_encode(htmlentities($value));
-					//$xml->addChild( $key, $value );
+					// add single node or attribute
 					in_array($key,XmlFormat::$attribute_names) ?
 					$xml->addAttribute($key,$value) :
 					$xml->addChild( $key, $value);
