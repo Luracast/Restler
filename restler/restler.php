@@ -13,7 +13,7 @@
  * @version    2.0.6
  */
 class Restler {
-	const VERSION = '2.0.8';
+	const VERSION = '2.0.9';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -482,7 +482,7 @@ class Restler {
 		if(isset($_SERVER['CONTENT_TYPE'])){
 			$mime = explode(';', $_SERVER['CONTENT_TYPE']);
 			$mime = $mime[0];
-			if($mime==UrlEncodedFormat::MIME){
+			if($mime==self::MIME){
 				$format = new UrlEncodedFormat();
 			}else{
 				if(isset($this->format_map[$mime])){
@@ -880,13 +880,13 @@ class UrlEncodedFormat implements iFormat
 	const EXTENSION = 'post';
 	public function getMIMEMap()
 	{
-		return array(UrlEncodedFormat::EXTENSION=>UrlEncodedFormat::MIME);
+		return array(self::EXTENSION=>self::MIME);
 	}
 	public function getMIME(){
-		return  UrlEncodedFormat::MIME;
+		return  self::MIME;
 	}
 	public function getExtension(){
-		return UrlEncodedFormat::EXTENSION;
+		return self::EXTENSION;
 	}
 	public function setMIME($mime){
 		//do nothing
@@ -922,13 +922,13 @@ class JsonFormat implements iFormat
 	const EXTENSION = 'json';
 	public function getMIMEMap()
 	{
-		return array(JsonFormat::EXTENSION=>JsonFormat::MIME);
+		return array(self::EXTENSION=>self::MIME);
 	}
 	public function getMIME(){
-		return  JsonFormat::MIME;
+		return  self::MIME;
 	}
 	public function getExtension(){
-		return JsonFormat::EXTENSION;
+		return self::EXTENSION;
 	}
 	public function setMIME($mime){
 		//do nothing

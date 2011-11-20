@@ -26,13 +26,13 @@ class XmlFormat implements iFormat
 
 	public function getMIMEMap()
 	{
-		return array(XmlFormat::EXTENSION=>XmlFormat::MIME);
+		return array(self::EXTENSION=>self::MIME);
 	}
 	public function getMIME(){
-		return  XmlFormat::MIME;
+		return  self::MIME;
 	}
 	public function getExtension(){
-		return XmlFormat::EXTENSION;
+		return self::EXTENSION;
 	}
 	public function setMIME($mime){
 		//do nothing
@@ -43,7 +43,7 @@ class XmlFormat implements iFormat
 
 	public function encode($data, $human_readable=false){
 		return $this->toXML( object_to_array($data, false),
-		XmlFormat::$root_name, $human_readable);
+		self::$root_name, $human_readable);
 	}
 
 	public function decode($data){
@@ -81,14 +81,12 @@ class XmlFormat implements iFormat
 	 */
 	public function toXML( $data, $root_node_name = 'result',
 	$human_readable=false, &$xml=null) {
-
 		// turn off compatibility mode as simple xml
 		//throws a wobbly if you don't.
 		if (ini_get('zend.ze1_compatibility_mode') == 1)
 		ini_set ('zend.ze1_compatibility_mode', 0);
 		if (is_null($xml))
 		$xml = @simplexml_load_string("<$root_node_name/>");
-
 		if(is_array($data)){
 			$numeric=0;
 			// loop through the data passed in.
@@ -97,8 +95,8 @@ class XmlFormat implements iFormat
 				// no numeric keys in our xml please!
 				if ( is_numeric( $key ) ) {
 					$numeric = 1;
-					$key = XmlFormat::$root_name == $root_node_name ?
-					XmlFormat::$default_tag_name : $root_node_name;
+					$key = self::$root_name == $root_node_name ?
+					self::$default_tag_name : $root_node_name;
 				}
 
 				// delete any char not allowed in XML element names
@@ -114,9 +112,9 @@ class XmlFormat implements iFormat
 					if ( $numeric ) $key = 'anon';
 					$this->toXML($value, $key, $human_readable, $node);
 				} else {
-
 					// add single node or attribute
-					in_array($key,XmlFormat::$attribute_names) ?
+					$value=htmlspecialchars($value);
+					in_array($key,self::$attribute_names) ?
 					$xml->addAttribute($key,$value) :
 					$xml->addChild( $key, $value);
 				}
@@ -125,7 +123,7 @@ class XmlFormat implements iFormat
 			//simply wrap it as text node to root
 			if(is_bool($data)) $data = $data ? 'true' : 'false';
 			$xml = @simplexml_load_string(
-			"<$root_node_name>$data</$root_node_name>");
+			"<$root_node_name>".htmlspecialchars($data)."</$root_node_name>");
 			//$xml->{0} = $data;
 		}
 		if(!$human_readable){
@@ -159,20 +157,20 @@ class XmlFormat implements iFormat
 
 		if($firstCall){
 			//reset the attribute names list
-			XmlFormat::$attribute_names=array();
-			XmlFormat::$root_name = $xml->getName();
-			if (XmlFormat::$parse_namespaces){
+			self::$attribute_names=array();
+			self::$root_name = $xml->getName();
+			if (self::$parse_namespaces){
 				foreach($xml->getDocNamespaces(TRUE) as $namepace => $uri) {
 					$arr[$namepace=='' ? 'xmlns' :
 					'xmlns:'.$namepace] = (string)$uri;
 				}
 			}
 		}
-		if(XmlFormat::$parse_attributes){
+		if(self::$parse_attributes){
 			foreach($xml->attributes() as $attName => $attValue) {
 				$arr[$attName] = (string)$attValue;
 				//add to attribute list for round trip support
-				XmlFormat::$attribute_names[]=$attName;
+				self::$attribute_names[]=$attName;
 			}
 		}
 		foreach ($children as $key => $node) {
@@ -199,16 +197,16 @@ class XmlFormat implements iFormat
 	 * @return string PHP source code to reproduce the configuration
 	 */
 	public static function exportCurrentSettings() {
-		$s = 'XmlFormat::$root_name = "'.
-		(XmlFormat::$root_name)."\";\n";
-		$s .= 'XmlFormat::$attribute_names = '.
-		(var_export(XmlFormat::$attribute_names, true)).";\n";
-		$s .= 'XmlFormat::$default_tag_name = "'.
-		XmlFormat::$default_tag_name."\";\n";
-		$s .= 'XmlFormat::$parse_attributes = '.
-		(XmlFormat::$parse_attributes ? 'true' : 'false').";\n";
-		$s .= 'XmlFormat::$parse_namespaces = '.
-		(XmlFormat::$parse_namespaces ? 'true' : 'false').";\n\n\n";
+		$s = 'self::$root_name = "'.
+		(self::$root_name)."\";\n";
+		$s .= 'self::$attribute_names = '.
+		(var_export(self::$attribute_names, true)).";\n";
+		$s .= 'self::$default_tag_name = "'.
+		self::$default_tag_name."\";\n";
+		$s .= 'self::$parse_attributes = '.
+		(self::$parse_attributes ? 'true' : 'false').";\n";
+		$s .= 'self::$parse_namespaces = '.
+		(self::$parse_namespaces ? 'true' : 'false').";\n\n\n";
 		return $s;
 	}
 
