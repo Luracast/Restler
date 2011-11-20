@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.0.6
+ * @version    2.1.0
  */
 class Restler {
-	const VERSION = '2.0.9';
+	const VERSION = '2.1.0';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -482,7 +482,7 @@ class Restler {
 		if(isset($_SERVER['CONTENT_TYPE'])){
 			$mime = explode(';', $_SERVER['CONTENT_TYPE']);
 			$mime = $mime[0];
-			if($mime==self::MIME){
+			if($mime==UrlEncodedFormat::MIME){
 				$format = new UrlEncodedFormat();
 			}else{
 				if(isset($this->format_map[$mime])){
