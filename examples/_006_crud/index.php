@@ -2,14 +2,14 @@
 /*
  Title: CRUD.
  Tagline: using POST, GET, PUT and DELETE.
- Description: Create, Retrive, Update and Delete using 
+ Description: Create, Retrieve, Update and Delete using 
  HTTP methods POST, GET, PUT and DELETE respectively. 
  
 **How the automatic routing is done?**
 
 Restler uses *get, put, post, and delete* as prefix to map PHP methods to 
 respective HTTP methods. When they are the only method names they map at
-the class level similar to *index* and *default*
+the class level similar to *index*
 
 	GET/POST/PUT/DELETE class_name
 
@@ -34,7 +34,7 @@ For simplicity and making it work out of the box this example is using
  
  Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the command line. 
  
- 	curl-X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+ 	curl -X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
  	
  	{
       "name": "Another",
@@ -42,8 +42,15 @@ For simplicity and making it work out of the box this example is using
       "id": 5
 	}
 
-But since the session wont be working next request wont reflect the 
-change done by previous request, anyway you get the idea. 
+But since the session wont be working, next request wont reflect the 
+change done by previous request, anyway you get the idea. You may use any of the following files 
+instead of db_session.php to get full functionality. 
+
+> * db_serialized_file.php (File)
+> * db_pdo_sqlite.php      (SQlite)
+> * db_pdo_mysql.php      (MySQL)
+
+by uncommenting the respective line in author.php and commenting others. 
 .
 
  Example 1: GET author returns 
@@ -140,10 +147,15 @@ and the response could be
 	  "name": "Another",
 	  "email": "another@email.com",
 	  "id": 7
-	}.
-	
- Helper Classes: SessionDB.
- */
+	}
+ 
+ *[db_pdo_sqlite.php]: _006_crud/db_pdo_sqlite.php
+ *[db_serialized_file.php]: _006_crud/db_serialized_file.php
+ *[db_pdo_mysql.php]: _006_crud/db_pdo_mysql.php
+	.
+ 
+ Helper Classes: DB_Session.
+  */
 
 require_once '../../restler/restler.php';
 

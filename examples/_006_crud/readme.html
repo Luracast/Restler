@@ -14,13 +14,20 @@
 
 <script type="text/javascript">
  $(document).ready(function(){
- 	 //$('a[target*=_blank]').facebox();
-	 $("abbr").click(function(){
-	 	$('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
-	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
-	 		jQuery.facebox({ div: '#codeviewer' });
-	 	});
- 	 });
+    //$('a[target*=_blank]').facebox();
+    $("abbr").click(function(){
+        $('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+        	$("pre#php").snippet("php",{style:"acid",showNum:false});
+        	jQuery.facebox({ div: '#codeviewer' });
+        });
+    });
+    var curURL = window.location.pathname.split('/examples/')[1];
+    if(curURL=='')curURL='index.html';
+    $("a").each(function(){
+        if ($(this).attr("href").indexOf(curURL)>-1){
+            $(this).addClass("active");
+        }  
+    });
  })
 </script>
 <!--[if lte IE 8]>
@@ -50,14 +57,14 @@
 <div class="right"><small>6</small></div>
 <h2>CRUD</h2>
 
-<p>Create, Retrive, Update and Delete using 
+<p>Create, Retrieve, Update and Delete using 
 HTTP methods POST, GET, PUT and DELETE respectively.</p>
 
 <p><strong>How the automatic routing is done?</strong></p>
 
 <p>Restler uses <em>get, put, post, and delete</em> as prefix to map PHP methods to 
 respective HTTP methods. When they are the only method names they map at
-the class level similar to <em>index</em> and <em>default</em></p>
+the class level similar to <em>index</em></p>
 
 <pre><code>GET/POST/PUT/DELETE class_name
 </code></pre>
@@ -84,7 +91,7 @@ a firefox extension.</p>
 
 <p>Alternatively you can use <a href="http://en.wikipedia.org/wiki/CURL" target="_blank">cURL</a> on the command line.</p>
 
-<pre><code>curl-X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+<pre><code>curl -X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
 
 {
  "name": "Another",
@@ -93,8 +100,19 @@ a firefox extension.</p>
 }
 </code></pre>
 
-<p>But since the session wont be working next request wont reflect the 
-change done by previous request, anyway you get the idea.</p>
+<p>But since the session wont be working, next request wont reflect the 
+change done by previous request, anyway you get the idea. You may use any of the following files 
+instead of <abbr title="_006_crud/db_session.php">db_session.php</abbr> to get full functionality.</p>
+
+<blockquote>
+  <ul>
+  <li><abbr title="_006_crud/db_serialized_file.php">db_serialized_file.php</abbr> (File)</li>
+  <li><abbr title="_006_crud/db_pdo_sqlite.php">db_pdo_sqlite.php</abbr>      (SQlite)</li>
+  <li><abbr title="_006_crud/db_pdo_mysql.php">db_pdo_mysql.php</abbr>      (MySQL)</li>
+  </ul>
+</blockquote>
+
+<p>by uncommenting the respective line in <abbr title="_006_crud/author.php">author.php</abbr> and commenting others.</p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
@@ -102,7 +120,7 @@ change done by previous request, anyway you get the idea.</p>
   <ul>
   <li><abbr title="_006_crud/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_006_crud/author.php">author.php</abbr>      (api)</li>
-  <li><abbr title="_006_crud/sessiondb.php">sessiondb.php</abbr>      (helper)</li>
+  <li><abbr title="_006_crud/db_session.php">db_session.php</abbr>      (helper)</li>
   <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
   </ul>
 </blockquote>

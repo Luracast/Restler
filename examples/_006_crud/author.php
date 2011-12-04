@@ -5,7 +5,12 @@ class Author {
 	static $FIELDS = array('name', 'email');
 
 	function __construct(){
-		$this->dp = new SessionDB();
+	    /**
+		* $this->dp = new DB_PDO_Sqlite();
+		* $this->dp = new DB_PDO_MySQL();
+		* $this->dp = new DB_Serialized_File();
+		*/
+		$this->dp = new DB_Session();
 	}
 
 	function get($id=NULL) {

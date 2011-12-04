@@ -1,14 +1,14 @@
 CRUD
 ----
 
-Create, Retrive, Update and Delete using 
+Create, Retrieve, Update and Delete using 
 HTTP methods POST, GET, PUT and DELETE respectively. 
 
 **How the automatic routing is done?**
 
 Restler uses *get, put, post, and delete* as prefix to map PHP methods to 
 respective HTTP methods. When they are the only method names they map at
-the class level similar to *index* and *default*
+the class level similar to *index*
 
 	GET/POST/PUT/DELETE class_name
 
@@ -33,7 +33,7 @@ a firefox extension.
 
 Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the command line. 
 
-	curl-X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+	curl -X POST http://help.luracast.com/restler/examples/_006_crud/index.php/author -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
 	
 	{
      "name": "Another",
@@ -41,13 +41,20 @@ Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the comma
      "id": 5
 	}
 
-But since the session wont be working next request wont reflect the 
-change done by previous request, anyway you get the idea.
+But since the session wont be working, next request wont reflect the 
+change done by previous request, anyway you get the idea. You may use any of the following files 
+instead of db_session.php to get full functionality. 
+
+> * db_serialized_file.php (File)
+> * db_pdo_sqlite.php      (SQlite)
+> * db_pdo_mysql.php      (MySQL)
+
+by uncommenting the respective line in author.php and commenting others.
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * author.php      (api)
-> * sessiondb.php      (helper)
+> * db_session.php      (helper)
 > * restler.php      (framework)
 
 This API Server exposes the following URIs
@@ -162,7 +169,11 @@ and the response could be
 	  "id": 7
 	}
 
+*[db_pdo_sqlite.php]: _006_crud/db_pdo_sqlite.php
+*[db_serialized_file.php]: _006_crud/db_serialized_file.php
+*[db_pdo_mysql.php]: _006_crud/db_pdo_mysql.php
+
 *[index.php]: _006_crud/index.php
 *[author.php]: _006_crud/author.php
-*[sessiondb.php]: _006_crud/sessiondb.php
+*[db_session.php]: _006_crud/db_session.php
 *[restler.php]: ../restler/restler.php

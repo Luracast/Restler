@@ -9,13 +9,20 @@
 
 <script type="text/javascript">
  $(document).ready(function(){
- 	 //$('a[target*=_blank]').facebox();
-	 $("abbr").click(function(){
-	 	$('#codeviewer').load('resources/getsource.php?file='+$(this).attr("title"), function(){
-	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
-	 		jQuery.facebox({ div: '#codeviewer' });
-	 	});
- 	 });
+    //$('a[target*=_blank]').facebox();
+    $("abbr").click(function(){
+        $('#codeviewer').load('resources/getsource.php?file='+$(this).attr("title"), function(){
+        	$("pre#php").snippet("php",{style:"acid",showNum:false});
+        	jQuery.facebox({ div: '#codeviewer' });
+        });
+    });
+    var curURL = window.location.pathname.split('/examples/')[1];
+    if(curURL=='')curURL='index.html';
+    $("a").each(function(){
+        if ($(this).attr("href").indexOf(curURL)>-1){
+            $(this).addClass("active");
+        }  
+    });
  })
 </script>
 <!--[if lte IE 8]>
@@ -82,7 +89,7 @@ Here are three ways to protect a method
 <span>Protected API 
 <small><i>Creating restricted zone</i></small>
 </span> <span class="right">&nbsp;5</span></a></li>
-	<li><a href="_006_crud/readme.html" title="Create, Retrive, Update and Delete using 
+	<li><a href="_006_crud/readme.html" title="Create, Retrieve, Update and Delete using 
 HTTP methods POST, GET, PUT and DELETE respectively. 
 
 **How the automatic routing is done?**
