@@ -118,7 +118,7 @@ class sfYaml
    */
   public static function dump($array, $inline = 2)
   {
-    require_once dirname(__FILE__).'/sfYamlDumper.php';
+    require_once dirname(__FILE__).'/sfyamldumper.php';
 
     $yaml = new sfYamlDumper();
 
