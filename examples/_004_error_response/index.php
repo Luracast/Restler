@@ -9,7 +9,7 @@
  to the client. 
  
  For the list of HTTP Status codes and their meaning take a look at 
- [Wikipedia](http://en.wikipedia.org/wiki/List_of_httpStatusCodes).
+ [Wikipedia](http://en.wikipedia.org/wiki/Http_status_codes).
  
  Example 1: GET currency/format returns 
  

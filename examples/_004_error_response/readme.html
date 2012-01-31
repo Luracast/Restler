@@ -14,13 +14,20 @@
 
 <script type="text/javascript">
  $(document).ready(function(){
- 	 //$('a[target*=_blank]').facebox();
-	 $("abbr").click(function(){
-	 	$('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
-	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
-	 		jQuery.facebox({ div: '#codeviewer' });
-	 	});
- 	 });
+    //$('a[target*=_blank]').facebox();
+    $("abbr").click(function(){
+        $('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+        	$("pre#php").snippet("php",{style:"acid",showNum:false});
+        	jQuery.facebox({ div: '#codeviewer' });
+        });
+    });
+    var curURL = window.location.pathname.split('/examples/')[1];
+    if(curURL=='')curURL='index.html';
+    $("a").each(function(){
+        if ($(this).attr("href").indexOf(curURL)>-1){
+            $(this).addClass("active");
+        }  
+    });
  })
 </script>
 <!--[if lte IE 8]>
@@ -57,7 +64,7 @@ error information to the user.</p>
 to the client.</p>
 
 <p>For the list of HTTP Status codes and their meaning take a look at 
-<a href="http://en.wikipedia.org/wiki/List_of_httpStatusCodes" target="_blank">Wikipedia</a></p>
+<a href="http://en.wikipedia.org/wiki/Http_status_codes" target="_blank">Wikipedia</a></p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
