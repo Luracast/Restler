@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.0
+ * @version    2.1.2
  */
 class Restler {
-	const VERSION = '2.1.0';
+	const VERSION = '2.1.2';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -510,7 +510,8 @@ class Restler {
 		PHP_URL_PATH));
 		while($extensions){
 			$extension = array_pop($extensions);
-			$extension = array_shift(explode('/', $extension));
+            $extension = explode('/', $extension);
+            $extension = array_shift($extensions);
 			if($extension && isset($this->format_map[$extension])){
 				$format = $this->format_map[$extension];
 				$format = is_string($format) ? new $format: $format;
@@ -646,7 +647,7 @@ class Restler {
 	 * @param string $class_name
 	 * @param string $base_path
 	 */
-	protected function generateMap ($class_name, $base_path = "") {
+	protected function generateMap ($class_name, $base_path = '') {
 		$reflection = new ReflectionClass($class_name);
 		$class_metadata = parse_doc($reflection->getDocComment());
 		$methods = $reflection->getMethods(
