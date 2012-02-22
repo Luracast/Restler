@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.2
+ * @version    2.1.3
  */
 class Restler {
-	const VERSION = '2.1.2';
+	const VERSION = '2.1.3';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -511,7 +511,7 @@ class Restler {
 		while($extensions){
 			$extension = array_pop($extensions);
             $extension = explode('/', $extension);
-            $extension = array_shift($extensions);
+            $extension = array_shift($extension);
 			if($extension && isset($this->format_map[$extension])){
 				$format = $this->format_map[$extension];
 				$format = is_string($format) ? new $format: $format;
