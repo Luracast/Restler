@@ -231,7 +231,8 @@ class Restler {
 	* @param array of string(s) $class_names an array of all the api class names
 	* @param string $basePath optional url prefix for mapping, uses
 	* lowercase version of the class name when not specified
-	* @throws Exception when $class_names is not of type 
+	* @throws Exception when $class_names is not of type array
+	* @throws Exception when any element in $class_names is not of type string
 	*/
 	public function addAPIs($class_names, $base_path = NULL) {
 		if(!is_array($class_names)) {
