@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.3
+ * @version    2.1.4
  */
 class Restler {
-	const VERSION = '2.1.3';
+	const VERSION = '2.1.4';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -288,10 +288,9 @@ class Restler {
 		$message = $this->codes[$status_code] .
 		(!$error_message ? '' : ': ' . $error_message);
 		$this->setStatus($status_code);
-		$this->sendData(
-		call_user_func(
-		array($this->response, '__formatError'), $status_code, $message)
-		);
+		$responder = new $this->response();
+		$responder->restler = $this;
+		$this->sendData($responder->__formatError($status_code, $message));
 	}
 
 	/**
@@ -362,6 +361,10 @@ class Restler {
 				$this->handleError($e->getCode(), $e->getMessage());
 			}
 		}
+		$responder = new $this->response();
+		$responder->restler = $this;
+		$this->applyClassMetadata($this->response, $responder, $o);
+		$result = $responder->__formatResponse($result);
 		if (isset($result) && $result !== NULL) {
 			$this->sendData($result);
 		}
