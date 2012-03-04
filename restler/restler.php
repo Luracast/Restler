@@ -223,6 +223,29 @@ class Restler {
 		$this->format_map['default']=$args[0];
 		$this->format_map['extensions']=array_keys($extensions);
 	}
+	
+	/**
+	* Add multiple api classes through this method.
+	* Restrictions regarding the api classes are specified in addAPIClass() method.
+	*
+	* @param array of string(s) $class_names an array of all the api class names
+	* @param string $basePath optional url prefix for mapping, uses
+	* lowercase version of the class name when not specified
+	* @throws Exception when $class_names is not of type array
+	* @throws Exception when any element in $class_names is not of type string
+	*/
+	public function addAPIs($class_names, $base_path = NULL) {
+		if(!is_array($class_names)) {
+			throw new Exception("API classes should be supplied in an array");
+		}
+		
+		foreach($class_names as $class_name) {
+			if(!is_string($class_name)) { // might want to put this in addAPIClass() ?
+				throw new Exception("API class name should be supplied as a string");
+			}
+			$this->addAPIClass($class_name, $base_path);
+		}
+	}
 
 	/**
 	 * Add api classes throgh this method. All the public methods
