@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.3
+ * @version    2.1.4
  */
 class Restler {
-	const VERSION = '2.1.3';
+	const VERSION = '2.1.4';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -34,6 +34,13 @@ class Restler {
 	 * @example jsonFormat, xmlFormat, yamlFormat etc
 	 */
 	public $request_format;
+    
+	/**
+     * Items ranges if headers contain Range header (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35)
+     * @var string
+     * @example '0-24' if header contain 'Range: items=0-24'
+     */
+	public $request_range_items;
 
 	/**
 	 * Data sent to the service
@@ -288,10 +295,9 @@ class Restler {
 		$message = $this->codes[$status_code] .
 		(!$error_message ? '' : ': ' . $error_message);
 		$this->setStatus($status_code);
-		$this->sendData(
-		call_user_func(
-		array($this->response, '__formatError'), $status_code, $message)
-		);
+		$responder = new $this->response();
+		$responder->restler = $this;
+		$this->sendData($responder->__formatError($status_code, $message));
 	}
 
 	/**
@@ -306,6 +312,7 @@ class Restler {
 		$this->request_method = $this->getRequestMethod();
 		$this->response_format = $this->getResponseFormat();
 		$this->request_format = $this->getRequestFormat();
+		$this->request_range_items = $this->getRequestRangeItems();
 		if(is_null($this->request_format)){
 			$this->request_format = $this->response_format;
 		}
@@ -362,6 +369,10 @@ class Restler {
 				$this->handleError($e->getCode(), $e->getMessage());
 			}
 		}
+		$responder = new $this->response();
+		$responder->restler = $this;
+		$this->applyClassMetadata($this->response, $responder, $o);
+		$result = $responder->__formatResponse($result);
 		if (isset($result) && $result !== NULL) {
 			$this->sendData($result);
 		}
@@ -494,6 +505,18 @@ class Restler {
 		}
 		return $format;
 	}
+    
+	/**
+     * Return items ranges if headers contain Range header
+     * @return string items range (http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.35)
+     * @example 'Range: items=0-24' will return string '0-24'
+     */
+    protected function getRequestRangeItems() {
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            $items = explode('=', $_SERVER['HTTP_RANGE']);
+            if (strtolower(trim($items[0])) == 'items') return trim($items[1]);
+        } else return null;
+    }
 
 	/**
 	 * Parses the request to figure out the best format for response
@@ -564,6 +587,7 @@ class Restler {
 		$found = FALSE;
 		$this->request_data += $_GET;
 		$params = array('request_data'=>$this->request_data);
+        $params += array('request_range_items'=>$this->request_range_items);
 		$params += $this->request_data;
 		foreach ($urls as $url => $call) {
 			//echo PHP_EOL.$url.' = '.$this->url.PHP_EOL;
@@ -590,8 +614,8 @@ class Restler {
 			//echo PHP_EOL."Found $url ";
 			//print_r($call);
 			$p = $call->defaults;
-			foreach ($call->arguments as $key => $value) {
-				//echo "$key => $value \n";
+			foreach ($call->arguments as $key => $value) {  
+                //echo "$key => $value \n";
 				if(isset($params[$key]))$p[$value] = $params[$key];
 			}
 			$call->arguments=$p;
