@@ -1,0 +1,27 @@
+#sidebar small {
+	font-size: 9px;
+	font-family: courier;
+	color: #666;
+	padding-left: 6px;
+}
+
+#sidebar .active {
+	background: #FF9;
+}
+
+dt {
+	margin-top: 20px;
+}
+
+#apiurl {
+	width: 100%;
+}
+
+form.row, form.row input  {
+	margin-bottom: 0;
+}
+
+#result {
+	width: 100%;
+	margin-bottom: 20px;
+}

@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+</head>
+<body>
+<article>
+<h1>Luracast Restler 3.0</h1>
+
+<p>Restler is a simple and effective multi-protocol REST API Server written in PHP.<br />
+Just deal with your business logic in php, restler will take care of the REST!</p>
+
+<ul>
+<li><a href="http://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
+<li><a href="http://bit.ly/RestlerLiveExamples" target="_blank">Live Examples</a></li>
+<li><a href="http://bit.ly/TakingCareOfTheREST" target="_blank">Taking Care of the REST - Presentation</a></li>
+<li><a href="http://bit.ly/SingMood" target="_blank">Open Sourced Real World Example - SingMood</a></li>
+<li><a href="http://twitter.com/Luracast" target="_blank">Updates on Twitter</a></li>
+</ul>
+
+<h2>Features</h2>
+
+<ul>
+<li>Light weight</li>
+<li>Flexible</li>
+<li>Customizable</li>
+<li>Supports HTTP request methods  GET, POST, PUT, and DELETE</li>
+<li>Clients can use X-HTTP-Method-Override header</li>
+<li>Two way format conversion</li>
+<li>Pluggable Formatters</li>
+<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats</li>
+<li>Pluggable Authentication schemes</li>
+<li>Comes with many <a href="http://bit.ly/RestlerLiveExamples" target="_blank">Examples</a><br />
+that can be tried on your localhost to get started</li>
+<li>URL to Method mapping</li>
+<li>URL part to Method parameter mapping</li>
+<li>Supports URLEncoded format for simplified input</li>
+<li>Query parameters to Method parameter mapping</li>
+<li>Source code distributed under LGPL</li>
+</ul>
+
+<h2>Changes from Restler 2.0</h2>
+
+<p>Restler 3.0 is completly rewriten from Restler 2.0 with best practices and pragmatic REST in mind</p>
+
+<ul>
+<li>API method parameters that have default values are no longer mapped to the URL, instead they are<br />
+mapped to query strings to reduce ambiquity in the url.</li>
+<li>supports <code>suppress_response_codes</code> as query string, when set to true; all http responses will be returned with HTTP OK<br />
+with the errors in the body to accomodate mobile and less privilaged clients.</li>
+<li>...</li>
+</ul>
+
+<h2>Changes from Restler 1.0</h2>
+
+<p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized<br />
+for performance. Here are some of the major changes and improvements</p>
+
+<ul>
+<li>PHPDoc comments to map a method to URI are now optional.</li>
+<li>All public methods that does not begin with an underscore are mapped<br />
+automatically to the method name (<code>gateway\classname\methodname\param1\...</code>)</li>
+<li>If we do not specify the second parameter for <code>$restler-&gt;addAPIClass</code> it will be mapped to the<br />
+class name instead of mapping it to the root</li>
+<li>Restler 2 is written for PHP 5.3 and above but it make use of compat.php and work on<br />
+any version of PHP starting from PHP 5.0</li>
+</ul>
+
+<p>more information is available on the<br />
+<a href="http://luracast.com/products/restler/features/" target="_blank">features page</a></p>
+
+</article>
+</body>
+</html>

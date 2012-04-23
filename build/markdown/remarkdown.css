@@ -1,0 +1,354 @@
+/* ============================================================
+   ReMarkdown, a stylesheet displaying HTML text as if it were
+   plain Markdown text. — By Florent Verschelde (fvsch.com).
+   Documentation: http://covertprestige.info/css/remarkdown/
+   License: http://covertprestige.info/css/remarkdown/COPYING
+            This file is published under the Do What The Fuck
+            You Want To Public License (WTFPL), Version 2.
+   ============================================================ */
+
+/* --- HOW TO USE --- */
+
+/* Add the `rmd-on` class to an element which contains your article. It could
+   be the BODY element, or an ARTICLE element, or a DIV.
+
+   There are some options available using classes:
+   - Uppercase H1 with `rmd-h1-uppercase`.
+   - Underlined H1 with `rmd-h1-underline` (default is "#" prefix).
+   - Underlined H2 with `rmd-h2-underline` (default is "##" prefix).
+   - EM style: `rmd-em-star` (default) or `rmd-em-underscore`.
+   - STRONG style: `rmd-strong-star` (default) or `rmd-strong-underscore`.
+   - Square brackets around links and remove underline: `rmd-a-bracket`.
+   - Show URL after link (screen + print): `rmd-a-showurl`.
+   - Show URL after link (print only): `rmd-a-printurl`.
+   - Bullet styles for unordered lists with `rmd-ul-star` (default),
+     `rmd-ul-plus`, `rmd-ul-minus`.
+   - HR styles: `rmd-hr-star` (default), `rmd-hr-minus`, `rmd-hr-center`.
+
+   Important notes on option classes:
+   1. Words in the class name are always singular: `bracket`, not `brackets`.
+   2. You may use the option classes on on container element.
+   3. Alternatively, each option class has an equivalent which can be used
+      on the affected element itself, and which omits the element name,
+      e.g. `rmd-underscore` on STRONG, `rmd-showurl` on A, etc.
+
+   This is an example of how you can use options:
+       <article class="rmd-on rmd-h1-uppercase rmd-bullet-minus">
+         <h1 class="rmd-underline">Hello World</h1>
+         <p>Goodnight, and good luck.</p>
+       </article>
+*/
+
+/* --- PAGE LAYOUT - OPTIONAL --- */
+/* Uncomment if you're using this stylesheet with no other CSS,
+   and want a basic page layout. */
+/*
+@media screen {
+  html { font-size: 13px; }
+  body {
+    max-width: 45em; margin: 0; padding: 2em 3em 4em 9em;
+    font-size: 100%; color: #222; background: white;
+  }
+}
+@media screen and (max-width:40em) {
+  body { max-width: none; padding: 2em; }
+}
+@media print {
+  body { font-size: 10pt; }
+}
+*/
+
+/* --- COMMON TEXT STYLES --- */
+
+.rmd-on {
+  /* Better results with a monospace font, obviously. Feel free to pick
+     a Courier-based font stack, or a custom Web Font if you want. */
+  font-family: Monaco, "DejaVu Sans Mono", "Lucida Console", monospace;
+  /* To maintain a good vertical rhythm, the value for the text's line-height
+     is used throughout the stylesheet for top and bottom margins of elements.
+     E.g. if we have a line-height of 1.5 (or 1.5em or 150%), we should have
+     top and bottom margins of n × 1.5em. */
+  line-height: 1.4;
+}
+
+/* --- TITLES --- */
+
+/* Titles - common styles */
+.rmd-on h1,
+.rmd-on h2,
+.rmd-on h3,
+.rmd-on h4,
+.rmd-on h5,
+.rmd-on h6 {
+  margin: 1.4em 0;
+  font-weight: normal;
+  font-size: 100%;
+}
+
+/* Titles - with `#` prefixes (default for all titles) */
+.rmd-on h1:before {
+  content: "# ";
+}
+.rmd-on h2:before {
+  content: "## ";
+}
+.rmd-on h3:before {
+  content: "### ";
+}
+.rmd-on h4:before {
+  content: "#### ";
+}
+.rmd-on h5:before {
+  content: "##### ";
+}
+.rmd-on h6:before {
+  content: "###### ";
+}
+
+/* Titles - with underlines for H1, H2 */
+.rmd-h1-underline h1, h1.rmd-underline,
+.rmd-h2-underline h2, h2.rmd-underline {
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 1.4em;
+}
+/* Because of display:inline-block, heading and paragraph margins won't
+   collapse anymore, which may result in doubled margins. Fixing that.
+*/
+.rmd-h1-underline h1 + *, h1.rmd-underline + *,
+.rmd-h2-underline h2 + *, h2.rmd-underline + * {
+  margin-top: 0 !important;
+}
+/* Another dirty fix for display:inline-block woes: when we have a H1
+   followed by a H2, they may end up on the same line. Not really a fix. */
+.rmd-h2-underline h1 + h2, h1.rmd-underline + h2.rmd-underline {
+  display: block !important;
+}
+/* The top offset can be trashed if you want a full empty line before AND
+   after the H2. The offset value here is half the line-height. */
+.rmd-h2-underline h2, h2.rmd-underline {
+  top: .7em;
+  margin-top: 0;
+}
+.rmd-h1-underline h1:before, h1.rmd-underline:before,
+.rmd-h2-underline h2:before, h2.rmd-underline:before {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 1.4em;
+  overflow: hidden;
+}
+.rmd-h1-underline h1:before, h1.rmd-underline:before {
+  content: "================================================================"
+  "=========================================================================";
+}
+.rmd-h2-underline h2:before, h2.rmd-underline:before {
+  content: "----------------------------------------------------------------"
+  "-------------------------------------------------------------------------";
+}
+
+/* Titles - option for H1 */
+.rmd-h1-uppercase h1, h1.rmd-uppercase {
+  text-transform: uppercase;
+}
+
+/* --- PARAGRAPHS AND INLINE CONTENT --- */
+
+/* Paragraphs */
+.rmd-on p {
+  margin: 1.4em 0;
+}
+
+/* Emphasis */
+.rmd-on em,
+.rmd-on strong {
+  font-style: normal;
+  font-weight: normal;
+}
+.rmd-on em:before, .rmd-em-star em:before, em.rmd-star:before,
+.rmd-on em:after, .rmd-em-star em:after, em.rmd-star:after {
+  content: "*";
+}
+.rmd-em-underscore em:before, em.rmd-underscore:before,
+.rmd-em-underscore em:after, em.rmd-underscore:after {
+  content: "_";
+}
+.rmd-on strong:before, .rmd-strong-star strong:before, strong.rmd-star:before,
+.rmd-on strong:after, .rmd-strong-star strong:after, strong.rmd-star:after {
+  content: "**";
+}
+.rmd-strong-underscore strong:before, strong.rmd-underscore:before,
+.rmd-strong-underscore strong:after, strong.rmd-underscore:after {
+  content: "__";
+}
+
+/* Options for links */
+.rmd-a-bracket a:before, a.rmd-bracket:before,
+.rmd-a-showurl a[href]:before, a[href].rmd-showurl:before {
+  content: "[";
+}
+.rmd-a-bracket a:after, a.rmd-bracket:after {
+  content: "]";
+}
+.rmd-a-showurl a[href]:after, a[href].rmd-showurl:after {
+  content: "](" attr(href) ")";
+}
+/* Print URLs after the link */
+@media print {
+  .rmd-a-printurl a[href]:before, a[href].rmd-printurl:before {
+    content: "[";
+  }
+  .rmd-a-printurl a[href]:after, a[href].rmd-printurl:after {
+    content: "](" attr(href) ")";
+  }
+}
+/* Print list of URLs at end of section -- requires a JS script */
+@media print {
+  .rmd-a-printref a[data-rmd-linkref]:before {
+    content: "[";
+  }
+  .rmd-a-printref a[data-rmd-linkref]:after {
+    content: "][" attr(data-rmd-linkref) "]";
+  }
+  .rmd-a-printref .rmd-references {
+    color: #555;
+    margin-left: 3em;
+    margin-left: 5ch;
+  }
+  .rmd-a-printref .rmd-references > li:before {
+    content: "[" attr(data-rmd-linknum) "]:";
+    margin-left: -3em;
+    margin-left: -5ch;
+  }
+}
+@media screen {
+  .rmd-a-printref .rmd-references {display: none;}
+}
+/* Remove underline when we’re using Markdown-style brackets */
+.rmd-a-bracket a, a.rmd-bracket {
+  text-decoration: none;
+}
+@media print {
+  .rmd-a-showurl a, a.rmd-showurl,
+  .rmd-a-printurl a, a.rmd-printurl,
+  .rmd-a-printref a[data-rmd-linkref] {
+    text-decoration: none;
+  }
+}
+
+/* --- LISTS --- */
+
+/* Common */
+.rmd-on ul,
+.rmd-on ol {
+  margin: 1.4em 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Ordered lists (with options for bullets) */
+.rmd-on ul {
+  margin-left: 2.4em;
+  margin-left: 4ch;
+}
+.rmd-on ul > li:before {
+  float: left;
+  margin-left: -2.4em;
+  margin-left: -4ch;
+}
+.rmd-on ul > li:before, .rmd-ul-star ul > li:before, ul.rmd-star > li:before {
+  content: "*";
+}
+.rmd-ul-plus ul > li:before, ul.rmd-plus > li:before {
+  content: "+";
+}
+.rmd-ul-minus ul > li:before, ul.rmd-minus > li:before {
+  content: "-";
+}
+
+/* Ordered lists (with generated counter) */
+.rmd-on ol {
+  margin-left: 2.4em;
+  margin-left: 4ch;
+  counter-reset: item;
+}
+.rmd-on ol > li {
+  counter-increment: item;
+}
+.rmd-on ol > li:before {
+  float: left;
+  margin-left: -2.4em;
+  margin-left: -4ch;
+  margin-right: 1ch;
+  content: counter(item) ".";
+}
+
+/* --- QUOTATIONS --- */
+
+.rmd-on blockquote {
+  position: relative;
+  overflow: hidden;
+  margin: 1.4em 0;
+  padding: 0 0 0 1.8em;
+  padding-left: 3ch;
+}
+.rmd-on blockquote:before {
+  position: absolute;
+  top: 0; left: 0;
+  white-space: pre;
+  content: ">\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A"
+  ">\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A"
+  ">\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A"
+  ">\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A>\A";
+}
+.rmd-on blockquote > *:first-child {
+  margin-top: 0;
+}
+.rmd-on blockquote > *:last-child {
+  margin-bottom: 0;
+}
+
+/* --- CODE (INLINE AND BLOCKS) --- */
+
+.rmd-on pre,
+.rmd-on code {
+  font-family: inherit;
+}
+.rmd-on pre {
+  margin: 1.4em 0 1.4em 2.4em;
+  margin-left: 4ch;
+  -o-tab-size: 4;
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+.rmd-on code:before,
+.rmd-on code:after {
+  content: "`";
+}
+.rmd-on pre code:before,
+.rmd-on pre code:after {
+  content: "";
+}
+
+/* --- HORIZONTAL RULES --- */
+
+.rmd-on hr {
+  height: 1.4em;
+  margin: 2.8em 0;
+  border: none;
+  line-height: 1.4em;
+  color: inherit;
+}
+.rmd-on hr:before, .rmd-hr-star hr:before, hr.rmd-star:before {
+  content: "* * * *";
+  position: relative;
+  top: .25em;
+}
+.rmd-hr-minus hr:before, hr.rmd-minus:before {
+  content: "-------";
+  top: 0;
+}
+.rmd-hr-center hr, hr.rmd-center {
+  text-align: center;
+}
