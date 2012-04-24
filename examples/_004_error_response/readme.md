@@ -3,6 +3,7 @@ Error Response
 
 <tag>exception</tag>
 <tag>http status</tag>
+<tag>validation</tag>
 
 API methods can make use of RestException class to provide 
 error information to the user. 

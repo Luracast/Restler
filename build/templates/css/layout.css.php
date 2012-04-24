@@ -227,7 +227,7 @@ ol.toc small {
 }
 
 #right h3 a {
-	font: normal 20px Helvetica, Verdana, Tahoma;
+	/*font: normal 20px Helvetica, Verdana, Tahoma;*/
 	overflow: hidden;
 	background-color:#cfc4ba;
 	color: white;
@@ -237,6 +237,8 @@ ol.toc small {
 	border-color:#BF9573;
 	border-width:1px;
 	border-style: dotted;
+	outline: 1px rgba(0, 0, 0, .1) dashed;
+	outline-offset: -6px;
 
 	/* Firefox v1.0+ */
 	-moz-border-radius:10px 0px 0px 10px;

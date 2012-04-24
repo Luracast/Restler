@@ -2,7 +2,7 @@
 /*
  Title: Error Response.
  Tagline: Making use of HTTP status codes.
- Tags: exception, http status.
+ Tags: exception, http status, validation.
  Description: API methods can make use of RestException class to provide 
  error information to the user. 
  
