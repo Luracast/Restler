@@ -864,6 +864,7 @@ class Restler
             $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = FALSE;
+            $allowAmbiguity = isset($metadata['allowAmbiguity']);
             if (isset($classMetadata['description']))
                 $metadata['classDescription'] = $classMetadata['description'];
             if (isset($classMetadata['classLongDescription']))
@@ -882,7 +883,7 @@ class Restler
                     $metadata['param'][$position]['required'] = FALSE;
                 } else {
                     $metadata['param'][$position]['required'] = TRUE;
-                    if ($param->getName() != 'request_data')
+                    if (!$allowAmbiguity && $param->getName() != 'request_data')
                         $ignorePathTill = $position + 1;
                 }
                 $position ++;
@@ -922,20 +923,23 @@ class Restler
                     $methodUrl = '';
                 $url = empty($methodUrl) ? rtrim($basePath, '/') : $basePath .
                  $methodUrl;
-        //$url = rtrim($basePath.($methodUrl == 'index' ? '' : $methodUrl),'/');
-                if (! $ignorePathTill)
+        		//$url = rtrim($basePath.($methodUrl == 'index' ? '' : $methodUrl),'/');
+                if (!$ignorePathTill){
                     $this->_routes[$httpMethod][$url] = $call;
+			        trigger_error("$httpMethod $url =  $call");
+                }
                 $position = 1;
                 foreach ($params as $param) {
-                    if ($param->isOptional() ||
+                    if (($param->isOptional() && !$allowAmbiguity) ||
                      $param->getName() == 'request_data') {
                         break;
                     }
                     if (! empty($url))
                         $url .= '/';
                     $url .= '{' . $param->getName() . '}';
-                    if ($position == $ignorePathTill)
+                    if ($allowAmbiguity || $position == $ignorePathTill){
                         $this->_routes[$httpMethod][$url] = $call;
+                    }
                     $position ++;
                 }
             }
@@ -1646,9 +1650,11 @@ if (! function_exists('isRestlerCompatibilityModeEnabled')) {
         return FALSE;
     }
 }
-if(! function_exists('trace')){
+
+if(!defined('RESTLER_PATH'))define('RESTLER_PATH', dirname(__FILE__));
+
+if(!class_exists('DebugFormat') && ! function_exists('trace')){
 	function trace($o,$level=LOG_NOTICE){
 		//ignore;
 	}
 }
-if(!defined('RESTLER_PATH'))define('RESTLER_PATH', dirname(__FILE__));
