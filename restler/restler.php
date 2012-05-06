@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.4
+ * @version    2.1.5
  */
 class Restler {
-	const VERSION = '2.1.4';
+	const VERSION = '2.1.5';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -364,8 +364,8 @@ class Restler {
 		$responder = new $this->response();
 		$responder->restler = $this;
 		$this->applyClassMetadata($this->response, $responder, $o);
-		$result = $responder->__formatResponse($result);
 		if (isset($result) && $result !== NULL) {
+			$result = $responder->__formatResponse($result);
 			$this->sendData($result);
 		}
 	}
@@ -1133,8 +1133,8 @@ class DocParser {
 		return true;
 	}
 	private function formatClass($value) {
-		$r = preg_split("[\(|\)]",$value);
-		if(is_array($r)){
+		$r = preg_split("[\(|\)]", $value);
+		if(count($r)>1){
 			$param = $r[0];
 			parse_str($r[1],$value);
 			foreach ($value as $key => $val) {
