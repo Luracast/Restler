@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.5
+ * @version    2.1.6
  */
 class Restler {
-	const VERSION = '2.1.5';
+	const VERSION = '2.1.6';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -301,7 +301,7 @@ class Restler {
 	 */
 	public function handle () {
 		if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
-		$this->url = $this->getPath();
+		$this->url = strtolower($this->getPath());
 		$this->request_method = $this->getRequestMethod();
 		$this->response_format = $this->getResponseFormat();
 		$this->request_format = $this->getRequestFormat();
@@ -388,6 +388,7 @@ class Restler {
 		header("Cache-Control: no-cache, must-revalidate");
 		header("Expires: 0");
 		header('Content-Type: ' . $this->response_format->getMIME());
+		//header('Content-Type: ' . $this->response_format->getMIME().'; charset=utf-8');
 		header("X-Powered-By: Luracast Restler v".Restler::VERSION);
 		die($data);
 	}
