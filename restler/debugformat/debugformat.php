@@ -47,6 +47,7 @@ if (! function_exists('trace')) {
             // This error code is not included in error_reporting
             //return;
         }
+        echo "$errno $errstr $errfile $errline <hr/>";
         DebugFormat::$traces[] = $errstr;
         $level = LOG_NOTICE;
         $info = array(
@@ -58,6 +59,7 @@ if (! function_exists('trace')) {
             case E_COMPILE_ERROR:
             case E_ERROR:
             case E_RECOVERABLE_ERROR:
+            case E_CORE_ERROR:
                 return FALSE;                
             case E_USER_ERROR:
                 $level = LOG_ALERT;
@@ -133,11 +135,10 @@ class DebugFormat implements iFormat
 
     public function encode ($data, $humanReadable = FALSE, $wrapHtml = TRUE)
     {
-        $r = '';
         if ($wrapHtml) {
             $data = object_to_array($data);
-            $r .= $this->header();
         }
+        $r = '';
         $r .= "<ul>\n";
         if (is_array($data)) {
             // field name
@@ -171,8 +172,10 @@ class DebugFormat implements iFormat
             $r .= "<li><strong>$data</strong></li>";
         }
         $r .= "</ul>\n";
-        if ($wrapHtml)
+        if ($wrapHtml){
+            $r = $this->header(). $r;
             $r .= $this->footer();
+        }
         return $r;
     }
 
@@ -202,6 +205,7 @@ class DebugFormat implements iFormat
         
         $notices ='';
         $styles=array(1=>'error', 5=>'info', 4=>'warning', 8=>'success');
+        //die(print_r(self::$traces,TRUE)) ;
         foreach (self::$traces as $i => $o) {
             $style = $styles[self::$traceInfos[$i]['level']];
             $notices .= "<a class=\"{$style}\"><strong>"
@@ -225,7 +229,6 @@ EOT;
 
     public function footer ()
     {
-        global $traces;
         $all_traces = print_r(self::$traces, TRUE);
         $all_trace_infos = print_r(self::$traceInfos, TRUE);
         $reqHeadersArr = apache_request_headers();
