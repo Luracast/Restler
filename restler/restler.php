@@ -369,7 +369,7 @@ class Restler
     {
         if (empty($this->_formatMap))
             $this->setSupportedFormats('JsonFormat');
-        $this->url = $this->getPath();
+        $this->url = strtolower($this->getPath());
         $this->requestMethod = $this->getRequestMethod();
         $this->responseFormat = $this->getResponseFormat();
         $this->requestFormat = $this->getRequestFormat();
@@ -1517,7 +1517,7 @@ class DocParser
     private function formatClass ($value)
     {
         $r = preg_split("[{|}]", $value);
-        if (is_array($r)) {
+        if (count($r)>1) {
             $param = trim($r[0]);
             parse_str($r[1], $value);
             foreach ($value as $key => $val) {
