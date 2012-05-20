@@ -1113,6 +1113,18 @@ interface iFormat
      * @param string $mime MIME type
      */
     public function setMIME ($mime);
+    
+    /**
+     * Content-Type field of the HTTP header can send a charset 
+     * parameter in the HTTP header to specify the character 
+     * encoding of the document. This information is passed
+     * here so that Format class can encode data accordingly
+     * Format class may choose to ignore this and use its
+     * default character set.
+     * 
+     * @param string $charset
+     */
+    public function setCharset ($charset);
 
     /**
      * Get selected MIME type
