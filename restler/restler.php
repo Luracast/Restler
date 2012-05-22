@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.6
+ * @version    2.1.7
  */
-class Restler {
-	const VERSION = '2.1.6';
+class Restler { 
+	const VERSION = '2.1.7';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -242,8 +242,14 @@ class Restler {
 		}
 		$this->loadCache();
 		if(!$this->cached){
-			if(is_null($base_path))$base_path=strtolower($class_name);
-			$base_path = trim($base_path,'/');
+			if(is_null($base_path)){
+				$base_path=strtolower($class_name);
+				$index = strrpos($class_name, '\\');
+				if($index!==FALSE){
+					$base_path=substr($base_path, $index+1);
+				}
+			}else			
+				$base_path = trim($base_path,'/');
 			if(strlen($base_path)>0)$base_path .= '/';
 			$this->generateMap($class_name, $base_path);
 		}
