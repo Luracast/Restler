@@ -215,8 +215,12 @@ class Restler {
 			foreach ($obj->getMIMEMap() as $extension => $mime) {
 				if(!isset($this->format_map[$extension]))
 				$this->format_map[$extension]=$class_name;
-				if(!isset($this->format_map[$mime]))
-				$this->format_map[$mime]=$class_name;
+				$mime = explode(',', $mime);
+				if (!is_array($mime)) $mime = array($mime);
+				foreach ($mime as $value) {
+				if(!isset($this->format_map[$value]))
+					$this->format_map[$value]=$class_name;
+				}
 				$extensions[".$extension"]=TRUE;
 			}
 		}
@@ -532,9 +536,10 @@ class Restler {
 		}
 		//check if client has sent list of accepted data formats
 		if(isset($_SERVER['HTTP_ACCEPT'])){
-			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
+			$accepts = explode(',', strtolower($_SERVER['HTTP_ACCEPT']));
+			if (!is_array($accepts)) $accepts = array($accepts);
 			foreach ($accepts as $accept) {
-				if($extension && isset($this->format_map[$accept])){
+				if(isset($this->format_map[$accept])){
 					$format = $this->format_map[$accept];
 					$format = is_string($format) ? new $format: $format;
 					$format->setMIME($accept);
@@ -929,20 +934,21 @@ class UrlEncodedFormat implements iFormat
  */
 class JsonFormat implements iFormat
 {
-	const MIME ='application/json';
+	const MIME ='application/json,application/javascript';
+	static $mime = 'application/json';
 	const EXTENSION = 'json';
 	public function getMIMEMap()
 	{
 		return array(self::EXTENSION=>self::MIME);
 	}
 	public function getMIME(){
-		return  self::MIME;
+		return  self::$mime;
 	}
 	public function getExtension(){
 		return self::EXTENSION;
 	}
 	public function setMIME($mime){
-		//do nothing
+		self::$mime = $mime;
 	}
 	public function setExtension($extension){
 		//do nothing

@@ -20,8 +20,8 @@ class XmlFormat implements iFormat
 	 */
 	public static  $root_name='response';
 	public static  $default_tag_name='item';
-
-	const MIME ='application/xml';
+	public static  $mime = 'application/xml';
+	const MIME = 'application/xml,text/xml';
 	const EXTENSION = 'xml';
 
 	public function getMIMEMap()
@@ -29,13 +29,13 @@ class XmlFormat implements iFormat
 		return array(self::EXTENSION=>self::MIME);
 	}
 	public function getMIME(){
-		return  self::MIME;
+		return  self::$mime;
 	}
 	public function getExtension(){
 		return self::EXTENSION;
 	}
 	public function setMIME($mime){
-		//do nothing
+		self::$mime = $mime;
 	}
 	public function setExtension($extension){
 		//do nothing
