@@ -552,13 +552,39 @@ class Restler {
 					$format = is_string($format) ? new $format: $format;
 					$format->setMIME($accept);
 					//echo "MIME $accept";
+					header("Vary: Accept"); // Tell cache content is based ot Accept header
 					return $format;
 				}
 			}
 		}
-		$format = new $this->format_map['default'];
-		//echo "DEFAULT ".$this->format_map['default'];
-		return $format;
+		else {
+			$_SERVER['HTTP_ACCEPT'] = '*/*'; // RFC 2616: If no Accept header field is
+							 // present, then it is assumed that the
+							 // client accepts all media types.
+		}
+		if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== FALSE) {
+			if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== FALSE) {
+				$format = new JsonFormat;
+			}
+			elseif (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== FALSE) {
+				$format = new XmlFormat;
+			}
+			elseif (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== FALSE) {
+				$format = new $this->format_map['default'];
+			}
+		}
+		if (empty($format)) {
+			// RFC 2616: If an Accept header field is present, and if the server
+			// cannot send a response which is acceptable according to the combined
+			// Accept field value, then the server SHOULD send a 406 (not acceptable)
+			// response.
+			header('HTTP/1.1 406 Not Acceptable');
+			die('406 Not Acceptable: The server was unable to negotiate content for this request.');
+		}
+		else {
+			header("Vary: Accept"); // Tell cache content is based ot Accept header
+			return $format;
+		}
 	}
 
 	/**
