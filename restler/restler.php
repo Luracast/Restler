@@ -536,10 +536,18 @@ class Restler {
 		}
 		//check if client has sent list of accepted data formats
 		if(isset($_SERVER['HTTP_ACCEPT'])){
+			$acceptList = array();
 			$accepts = explode(',', strtolower($_SERVER['HTTP_ACCEPT']));
 			if (!is_array($accepts)) $accepts = array($accepts);
-			foreach ($accepts as $accept) {
-				if(isset($this->format_map[$accept])){
+			foreach ($accepts as $pos => $accept) {
+				$parts = explode(';q=', trim($accept));
+				$type = array_shift($parts);
+				$quality = array_shift($parts) ? : (1000 - $pos) / 1000;
+				$acceptList[$type] = $quality;
+			}
+			arsort($acceptList);
+			foreach ($acceptList as $accept => $quality) {
+			if(isset($this->format_map[$accept])){
 					$format = $this->format_map[$accept];
 					$format = is_string($format) ? new $format: $format;
 					$format->setMIME($accept);
