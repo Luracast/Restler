@@ -215,8 +215,12 @@ class Restler {
 			foreach ($obj->getMIMEMap() as $extension => $mime) {
 				if(!isset($this->format_map[$extension]))
 				$this->format_map[$extension]=$class_name;
-				if(!isset($this->format_map[$mime]))
-				$this->format_map[$mime]=$class_name;
+				$mime = explode(',', $mime);
+				if (!is_array($mime)) $mime = array($mime);
+				foreach ($mime as $value) {
+				if(!isset($this->format_map[$value]))
+					$this->format_map[$value]=$class_name;
+				}
 				$extensions[".$extension"]=TRUE;
 			}
 		}
@@ -532,20 +536,55 @@ class Restler {
 		}
 		//check if client has sent list of accepted data formats
 		if(isset($_SERVER['HTTP_ACCEPT'])){
-			$accepts = explode(',', $_SERVER['HTTP_ACCEPT']);
-			foreach ($accepts as $accept) {
-				if($extension && isset($this->format_map[$accept])){
+			$acceptList = array();
+			$accepts = explode(',', strtolower($_SERVER['HTTP_ACCEPT']));
+			if (!is_array($accepts)) $accepts = array($accepts);
+			foreach ($accepts as $pos => $accept) {
+				$parts = explode(';q=', trim($accept));
+				$type = array_shift($parts);
+				$quality = array_shift($parts) ? : (1000 - $pos) / 1000;
+				$acceptList[$type] = $quality;
+			}
+			arsort($acceptList);
+			foreach ($acceptList as $accept => $quality) {
+			if(isset($this->format_map[$accept])){
 					$format = $this->format_map[$accept];
 					$format = is_string($format) ? new $format: $format;
 					$format->setMIME($accept);
 					//echo "MIME $accept";
+					header("Vary: Accept"); // Tell cache content is based ot Accept header
 					return $format;
 				}
 			}
 		}
-		$format = new $this->format_map['default'];
-		//echo "DEFAULT ".$this->format_map['default'];
-		return $format;
+		else {
+			$_SERVER['HTTP_ACCEPT'] = '*/*'; // RFC 2616: If no Accept header field is
+							 // present, then it is assumed that the
+							 // client accepts all media types.
+		}
+		if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== FALSE) {
+			if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== FALSE) {
+				$format = new JsonFormat;
+			}
+			elseif (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== FALSE) {
+				$format = new XmlFormat;
+			}
+			elseif (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== FALSE) {
+				$format = new $this->format_map['default'];
+			}
+		}
+		if (empty($format)) {
+			// RFC 2616: If an Accept header field is present, and if the server
+			// cannot send a response which is acceptable according to the combined
+			// Accept field value, then the server SHOULD send a 406 (not acceptable)
+			// response.
+			header('HTTP/1.1 406 Not Acceptable');
+			die('406 Not Acceptable: The server was unable to negotiate content for this request.');
+		}
+		else {
+			header("Vary: Accept"); // Tell cache content is based ot Accept header
+			return $format;
+		}
 	}
 
 	/**
@@ -929,20 +968,21 @@ class UrlEncodedFormat implements iFormat
  */
 class JsonFormat implements iFormat
 {
-	const MIME ='application/json';
+	const MIME ='application/json,application/javascript';
+	static $mime = 'application/json';
 	const EXTENSION = 'json';
 	public function getMIMEMap()
 	{
 		return array(self::EXTENSION=>self::MIME);
 	}
 	public function getMIME(){
-		return  self::MIME;
+		return  self::$mime;
 	}
 	public function getExtension(){
 		return self::EXTENSION;
 	}
 	public function setMIME($mime){
-		//do nothing
+		self::$mime = $mime;
 	}
 	public function setExtension($extension){
 		//do nothing
