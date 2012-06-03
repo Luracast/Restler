@@ -1228,7 +1228,8 @@ function parse_doc($php_doc_comment){
 
 /**
  * Conveniance function that converts the given object
- * in to associative array
+ * in to associative array, leaves object alone if
+ * JsonSerializable interface is detected
  * @param object $object that needs to be converted
  * @category   Framework
  * @package    restler
@@ -1240,7 +1241,7 @@ function parse_doc($php_doc_comment){
  */
 function object_to_array($object, $utf_encode=FALSE)
 {
-	if(is_array($object) || is_object($object))
+	if(is_array($object) || (is_object($object) && !($object instanceof JsonSerializable)))
 	{
 		$array = array();
 		foreach($object as $key => $value)
