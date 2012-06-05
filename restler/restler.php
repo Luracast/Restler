@@ -307,9 +307,14 @@ class Restler
         }
         $this->loadCache();
         if (! $this->_cached) {
-            if (is_null($basePath))
+            if (is_null($basePath)){
                 $basePath = str_replace('__v', '/v', strtolower($className));
-            $basePath = trim($basePath, '/');
+                $index = strrpos($className, '\\');
+                if($index!==FALSE){
+                	$basePath=substr($basePath, $index+1);
+                }            	
+            }else
+            	$basePath = trim($basePath, '/');
             if (strlen($basePath) > 0)
                 $basePath .= '/';
             $this->generateMap($className, $basePath);
@@ -1122,9 +1127,15 @@ interface iFormat
      * Format class may choose to ignore this and use its
      * default character set.
      * 
-     * @param string $charset
+     * @param string $charset Example utf-8
      */
     public function setCharset ($charset);
+
+    /**
+     * Content-Type accepted by the Format class
+     * @return string $charset Example utf-8
+     */
+    public function getCharset ();
 
     /**
      * Get selected MIME type
@@ -1221,6 +1232,13 @@ class UrlEncodedFormat implements iFormat
     {
         return $this->getExtension();
     }
+	public function setCharset($charset) {
+		
+	}
+	public function getCharset() {
+		
+	}
+
 }
 
 //TODO: define JSON_BIGINT_AS_STRING, JSON_PRETTY_PRINT, JSON_UNESCAPED_SLASHES,
@@ -1326,6 +1344,13 @@ class JsonFormat implements iFormat
                 throw new RestException(400, 'Error parsing JSON');
             }
         return object_to_array($decoded);
+    }
+    
+    public function setCharset($charset) {
+    
+    }
+    public function getCharset() {
+    
     }
 
     /**
@@ -1587,20 +1612,6 @@ function parse_doc ($phpDocComment)
 {
     $p = new DocParser();
     return $p->parse($phpDocComment);
-    $p = new Parser($phpDocComment);
-    return $p;
-    $phpDocComment = preg_replace(
-    "/(^[\\s]*\\/\\*\\*)|(^[\\s]\\*\\/)|
-    (^[\\s]*\\*?\\s)|(^[\\s]*)(^[\\t]*)/ixm", "", 
-    $phpDocComment);
-    $phpDocComment = str_replace("\r", '', $phpDocComment);
-    $phpDocComment = preg_replace("/([\\t])+/", "\t", $phpDocComment);
-    return explode("\n", $phpDocComment);
-    $phpDocComment = trim(preg_replace('/\r?\n *\* */', ' ', $phpDocComment));
-    return $phpDocComment;
-    preg_match_all('/@([a-z]+)\s+(.*?)\s*(?=$|@[a-z]+\s)/s', $phpDocComment, 
-    $matches);
-    return array_combine($matches[1], $matches[2]);
 }
 
 /**
