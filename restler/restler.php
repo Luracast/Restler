@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.7
+ * @version    2.1.8
  */
 class Restler { 
-	const VERSION = '2.1.7';
+	const VERSION = '2.1.8';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -542,7 +542,7 @@ class Restler {
 			foreach ($accepts as $pos => $accept) {
 				$parts = explode(';q=', trim($accept));
 				$type = array_shift($parts);
-				$quality = array_shift($parts) ? : (1000 - $pos) / 1000;
+				$quality = count($parts) ? floatval(array_shift($parts)) : (1000 - $pos) / 1000;
 				$acceptList[$type] = $quality;
 			}
 			arsort($acceptList);
@@ -552,15 +552,16 @@ class Restler {
 					$format = is_string($format) ? new $format: $format;
 					$format->setMIME($accept);
 					//echo "MIME $accept";
-					header("Vary: Accept"); // Tell cache content is based ot Accept header
+					header("Vary: Accept"); // Tell cache content is based on Accept header
 					return $format;
 				}
 			}
 		}
 		else {
-			$_SERVER['HTTP_ACCEPT'] = '*/*'; // RFC 2616: If no Accept header field is
-							 // present, then it is assumed that the
-							 // client accepts all media types.
+			// RFC 2616: If no Accept header field is
+			// present, then it is assumed that the
+			// client accepts all media types.
+			$_SERVER['HTTP_ACCEPT'] = '*/*'; 
 		}
 		if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== FALSE) {
 			if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== FALSE) {
