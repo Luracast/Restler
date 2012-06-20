@@ -10,10 +10,10 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.8
+ * @version    2.1.9
  */
 class Restler { 
-	const VERSION = '2.1.8';
+	const VERSION = '2.1.9';
 	/**
 	 * URL of the currently mapped service
 	 * @var string
@@ -311,7 +311,7 @@ class Restler {
 	 */
 	public function handle () {
 		if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
-		$this->url = strtolower($this->getPath());
+		$this->url = $this->getPath();
 		$this->request_method = $this->getRequestMethod();
 		$this->response_format = $this->getResponseFormat();
 		$this->request_format = $this->getRequestFormat();
@@ -615,13 +615,14 @@ class Restler {
 		$this->request_data += $_GET;
 		$params = array('request_data'=>$this->request_data);
 		$params += $this->request_data;
+		$lc = strtolower($this->url);
 		foreach ($urls as $url => $call) {
 			//echo PHP_EOL.$url.' = '.$this->url.PHP_EOL;
 			$call = (object)$call;
 			if(strstr($url, ':')){
 				$regex = preg_replace('/\\\:([^\/]+)/', '(?P<$1>[^/]+)', 
 				preg_quote($url));
-				if (preg_match(":^$regex$:", $this->url, $matches)) {
+				if (preg_match(":^$regex$:i", $this->url, $matches)) {
 					foreach ($matches as $arg => $match) {
 						if (isset($call->arguments[$arg])){
 							//flog("$arg => $match $args[$arg]");
@@ -631,7 +632,7 @@ class Restler {
 					$found = TRUE;
 					break;
 				}
-			}elseif ($url == $this->url){
+			}elseif ($url == $lc){
 				$found = TRUE;
 				break;
 			}
