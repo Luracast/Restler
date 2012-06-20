@@ -374,7 +374,7 @@ class Restler
     {
         if (empty($this->_formatMap))
             $this->setSupportedFormats('JsonFormat');
-        $this->url = strtolower($this->getPath());
+        $this->url = $this->getPath();
         $this->requestMethod = $this->getRequestMethod();
         $this->responseFormat = $this->getResponseFormat();
         $this->requestFormat = $this->getRequestFormat();
@@ -749,6 +749,7 @@ class Restler
         $params = array(
         'request_data' => $this->requestData);
         $params += $this->requestData;
+        $lc = strtolower($this->url);
         foreach ($urls as $url => $call) {
             //echo PHP_EOL.$url.' = '.$this->url.PHP_EOL;
             $call = (object) $call;
@@ -758,7 +759,7 @@ class Restler
                 '}'), array(
                 '(?P<', 
                 '>[^/]+)'), $url);
-                if (preg_match(":^$regex$:", $this->url, $matches)) {
+                if (preg_match(":^$regex$:i", $this->url, $matches)) {
                     foreach ($matches as $arg => $match) {
                         if (isset($call->arguments[$arg])) {
                             //flog("$arg => $match $args[$arg]");
@@ -771,7 +772,7 @@ class Restler
             } elseif (strstr($url, ':')) {
                 $regex = preg_replace('/\\\:([^\/]+)/', '(?P<$1>[^/]+)', 
                 preg_quote($url));
-                if (preg_match(":^$regex$:", $this->url, $matches)) {
+                if (preg_match(":^$regex$:i", $this->url, $matches)) {
                     foreach ($matches as $arg => $match) {
                         if (isset($call->arguments[$arg])) {
                             //flog("$arg => $match $args[$arg]");
@@ -781,7 +782,7 @@ class Restler
                     $found = TRUE;
                     break;
                 }
-            } elseif ($url == $this->url) {
+            } elseif ($url == $lc) {
                 $found = TRUE;
                 break;
             }
