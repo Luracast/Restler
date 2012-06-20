@@ -254,4 +254,12 @@ EOT;
 
 EOT;
     }
+	public function setCharset($charset) {
+	// TODO Auto-generated method stub
+	}
+
+	public function getCharset() {
+	// TODO Auto-generated method stub
+	}
+
 }
