@@ -22,7 +22,7 @@ GET [say/hello](say/hello)
 "Hello world!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [say/hello/restler2.0](say/hello/restler2.0)
+GET [say/hello/Restler2.0](say/hello/Restler2.0)
 :	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "Hello Restler2.0!"
@@ -44,7 +44,7 @@ GET [index.php/say/hello](index.php/say/hello)
 "Hello world!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [index.php/say/hello/restler2.0](index.php/say/hello/restler2.0)
+GET [index.php/say/hello/Restler2.0](index.php/say/hello/Restler2.0)
 :	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "Hello Restler2.0!"
