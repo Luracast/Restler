@@ -10,7 +10,7 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.1.9
+ * @version    2.2.0
  */
 class Restler
 {
@@ -20,7 +20,7 @@ class Restler
     //
     // ------------------------------------------------------------------
 
-    const VERSION = '2.1.9';
+    const VERSION = '2.2.0';
 
     /**
      * URL of the currently mapped service
@@ -1422,10 +1422,15 @@ function autoload_formats($class_name)
 {
     $class_name = strtolower($class_name);
     $file = RESTLER_PATH . "/$class_name/$class_name.php";
-    if (file_exists($file)) {
-        require_once($file);
-    } else if (file_exists("$class_name.php")) {
-        require_once ("$class_name.php");
+    if (file_exists ($file)) {
+        require_once ($file);
+    } else {
+        $file = RESTLER_PATH . "/$class_name.php";
+        if (file_exists ($file)) {
+            require_once ($file);
+        } elseif (file_exists ("$class_name.php")) {
+            require_once ("$class_name.php");
+        }
     }
 }
 
