@@ -338,27 +338,33 @@ class Restler
     }
 
     /**
-     * Main function for processing the api request
-     * and return the response
-     * @throws Exception when the api service class is missing
-     * @throws RestException to send error response
+     * An initialize function to allow use of the restler error generation functions
+     * for pre-processing and pre-routing of requests.
      */
-    public function handle()
-    {
-        if (empty($this->format_map)) {
-            $this->setSupportedFormats('JsonFormat');
-        }
-        $this->url             = $this->getPath();
-        $this->request_method  = $this->getRequestMethod();
-        $this->response_format = $this->getResponseFormat();
-        $this->request_format  = $this->getRequestFormat();
-        if (is_null($this->request_format)) {
-            $this->request_format = $this->response_format;
-        }
-        if ($this->request_method == 'PUT' || $this->request_method == 'POST') {
-            $this->request_data = $this->getRequestData();
-        }
-        $o = $this->mapUrlToMethod();
+    public function init () {
+        if(empty($this->format_map))$this->setSupportedFormats('JsonFormat');
+                $this->url = $this->getPath();
+                $this->request_method = $this->getRequestMethod();
+                $this->response_format = $this->getResponseFormat();
+                $this->request_format = $this->getRequestFormat();
+                if(is_null($this->request_format)){
+                        $this->request_format = $this->response_format;
+                }
+                if($this->request_method == 'PUT' || $this->request_method == 'POST'){
+                        $this->request_data = $this->getRequestData();
+                }
+    }
+
+        /**
+         * Main function for processing the api request
+         * and return the response
+         * @throws Exception when the api service class is missing
+         * @throws RestException to send error response
+         */
+        public function handle () {
+                $this->init();
+                $o = $this->mapUrlToMethod();
+
         if (!isset($o->class_name)) {
             $this->handleError(404);
         } else {
