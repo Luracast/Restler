@@ -707,7 +707,11 @@ class Restler
                     $found = TRUE;
                     break;
                 }
-            } else if ($url == $lc) {
+            // The commented line replaced the following line, but it breaks for
+            // for cases where the api is not at the root uri.
+            // we aren't necessarily looking for an exact match!
+            //} else if ($url == $lc) {
+            }elseif (strpos($lc,$url) !== false){
                 $found = TRUE;
                 break;
             }
