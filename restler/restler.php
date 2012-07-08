@@ -2,7 +2,8 @@
 
 /**
  * REST API Server. It is the server part of the Restler framework.
- * Based on the RestServer code from <http://jacwright.com/blog/resources/RestServer.txt>
+ * Based on the RestServer code from 
+ * <http://jacwright.com/blog/resources/RestServer.txt>
  *
  * @category   Framework
  * @package    restler
@@ -11,7 +12,7 @@
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    2.2.0
+ * @version    2.2.1
  */
 class Restler
 {
@@ -21,7 +22,7 @@ class Restler
     //
     // ------------------------------------------------------------------
 
-    const VERSION = '2.2.0';
+    const VERSION = '2.2.1';
 
     /**
      * URL of the currently mapped service
@@ -83,7 +84,7 @@ class Restler
     // ------------------------------------------------------------------
 
     /**
-     * When set to FALSE, it will run in debug mode and parse the
+     * When set to false, it will run in debug mode and parse the
      * class files every time to map it to the URL
      * @var boolean
      */
@@ -188,10 +189,10 @@ class Restler
 
     /**
      * Constructor
-     * @param boolean $production_mode When set to FALSE, it will run in
+     * @param boolean $production_mode When set to false, it will run in
      * debug mode and parse the class files every time to map it to the URL
      */
-    public function __construct($production_mode = FALSE)
+    public function __construct($production_mode = false)
     {
         $this->production_mode = $production_mode;
         $this->cache_dir = getcwd();
@@ -216,7 +217,7 @@ class Restler
     public function refreshCache()
     {
         $this->routes = array();
-        $this->cached = FALSE;
+        $this->cached = false;
     }
 
 
@@ -248,10 +249,11 @@ class Restler
                     $mime = array($mime);
                 }
                 foreach ($mime as $value) {
-                    if (!isset($this->format_map[$value]))
+                    if (!isset($this->format_map[$value])) {
                         $this->format_map[$value] = $class_name;
+                    }
                 }
-                $extensions[".$extension"] = TRUE;
+                $extensions[".$extension"] = true;
             }
         }
         $this->format_map['default'] = $args[0];
@@ -271,7 +273,7 @@ class Restler
      * lowercase version of the class name when not specified
      * @throws Exception when supplied with invalid class name
      */
-    public function addAPIClass($class_name, $base_path = NULL)
+    public function addAPIClass($class_name, $base_path = null)
     {
         if (!class_exists($class_name)) {
             throw new Exception("API class $class_name is missing.");
@@ -281,7 +283,7 @@ class Restler
             if (is_null($base_path)) {
                 $base_path = strtolower($class_name);
                 $index = strrpos($class_name, '\\');
-                if ($index !== FALSE) {
+                if ($index !== false) {
                     $base_path = substr($base_path, $index + 1);
                 }
             } else {
@@ -301,7 +303,7 @@ class Restler
      * @param string $class_name of the authentication class
      * @param string $base_path optional url prefix for mapping
      */
-    public function addAuthenticationClass($class_name, $base_path = NULL)
+    public function addAuthenticationClass($class_name, $base_path = null)
     {
         $this->auth_classes[] = $class_name;
         $this->addAPIClass($class_name, $base_path);
@@ -323,16 +325,16 @@ class Restler
      * @param int $statusCode http error code
      * @param string $errorMessage optional custom error message
      */
-    public function handleError($status_code, $error_message = NULL)
+    public function handleError($status_code, $error_message = null)
     {
         $method = "handle$status_code";
-        $handled = FALSE;
+        $handled = false;
         foreach ($this->error_classes as $class_name) {
             if (method_exists($class_name, $method)) {
                 $obj = new $class_name();
                 $obj->restler = $this;
                 $obj->$method();
-                $handled = TRUE;
+                $handled = true;
             }
         }
         if ($handled) {
@@ -348,13 +350,14 @@ class Restler
 
 
     /**
-     * An initialize function to allow use of the restler error generation functions
-     * for pre-processing and pre-routing of requests.
+     * An initialize function to allow use of the restler error generation 
+     * functions for pre-processing and pre-routing of requests.
      */
     public function init()
     {
-        if (empty($this->format_map))
+        if (empty($this->format_map)) {
             $this->setSupportedFormats('JsonFormat');
+        }
         $this->url = $this->getPath();
         $this->request_method = $this->getRequestMethod();
         $this->response_format = $this->getResponseFormat();
@@ -411,13 +414,15 @@ class Restler
                 $object = $this->service_class_instance = new $o->class_name();
                 $object->restler = $this;
                 if (method_exists($o->class_name, $pre_process)) {
-                    call_user_func_array(array($object, $pre_process), $o->arguments);
+                    call_user_func_array(
+                        array($object, $pre_process), $o->arguments
+                    );
                 }
                 switch ($o->method_flag) {
                     case 3:
                         $reflection_method = new ReflectionMethod($object,
                                 $o->method_name);
-                        $reflection_method->setAccessible(TRUE);
+                        $reflection_method->setAccessible(true);
                         $result = $reflection_method->invokeArgs($object,
                             $o->arguments);
                         break;
@@ -437,7 +442,7 @@ class Restler
         $responder = new $this->response();
         $responder->restler = $this;
         $this->applyClassMetadata($this->response, $responder, $o);
-        if (isset($result) && $result !== NULL) {
+        if (isset($result) && $result !== null) {
             $result = $responder->__formatResponse($result);
             $this->sendData($result);
         }
@@ -451,7 +456,9 @@ class Restler
      */
     public function sendData($data)
     {
-        $data = $this->response_format->encode($data, !($this->production_mode));
+        $data = $this->response_format->encode($data, 
+            !($this->production_mode)
+        );
         $post_process = '_' . $this->service_method . '_'
             . $this->response_format->getExtension();
         if (isset($this->service_class_instance)
@@ -463,7 +470,7 @@ class Restler
         header("Cache-Control: no-cache, must-revalidate");
         header("Expires: 0");
         header('Content-Type: ' . $this->response_format->getMIME());
-        //header('Content-Type: ' . $this->response_format->getMIME().'; charset=utf-8');
+        //.'; charset=utf-8');
         header("X-Powered-By: Luracast Restler v" . Restler::VERSION);
         die($data);
     }
@@ -475,7 +482,8 @@ class Restler
      */
     public function setStatus($code)
     {
-        header("{$_SERVER['SERVER_PROTOCOL']} $code " . $this->codes[strval($code)]);
+        header("{$_SERVER['SERVER_PROTOCOL']} $code " . 
+            $this->codes[strval($code)]);
     }
 
 
@@ -512,24 +520,24 @@ class Restler
         $file = $this->cache_dir . '/routes.php';
         $s = '$o=array();' . PHP_EOL;
         foreach ($this->routes as $key => $value) {
-            $s .= PHP_EOL . PHP_EOL . PHP_EOL . "############### $key ###############"
-                . PHP_EOL . PHP_EOL;
+            $s .= PHP_EOL . PHP_EOL . PHP_EOL . 
+                "############### $key ###############" . PHP_EOL . PHP_EOL;
             $s .= '$o[\'' . $key . '\']=array();';
             foreach ($value as $ke => $va) {
                 $s .= PHP_EOL . PHP_EOL . "#==== $key $ke" . PHP_EOL . PHP_EOL;
                 $s .= '$o[\'' . $key . '\'][\'' . $ke . '\']=' . str_replace(
-                        PHP_EOL, PHP_EOL . "\t", var_export($va, TRUE)
+                        PHP_EOL, PHP_EOL . "\t", var_export($va, true)
                     ) . ';';
             }
         }
         $s .= PHP_EOL . 'return $o;';
         $r = @file_put_contents($file, "<?php $s");
         @chmod($file, 0777);
-        if ($r === FALSE) {
+        if ($r === false) {
             throw new Exception(
-                "The cache directory located at '$this->cache_dir' needs to have "
-                . "the permissions set to read/write/execute for everyone in order "
-                . "to save cache and improve performance.");
+                "The cache directory located at '$this->cache_dir' needs to "
+                . "have the permissions set to read/write/execute for everyone"
+                . " in order to save cache and improve performance.");
         }
     }
 
@@ -581,7 +589,7 @@ class Restler
      */
     protected function getRequestFormat()
     {
-        $format = NULL;
+        $format = null;
         //check if client has sent any information on request format
         if (isset($_SERVER['CONTENT_TYPE'])) {
             $mime = explode(';', $_SERVER['CONTENT_TYPE']);
@@ -611,7 +619,7 @@ class Restler
         /**
          * @var iFormat
          */
-        $format = NULL;
+        $format = null;
         $extensions = explode('.',
             parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
         while ($extensions) {
@@ -636,7 +644,9 @@ class Restler
             foreach ($accepts as $pos => $accept) {
                 $parts = explode(';q=', trim($accept));
                 $type = array_shift($parts);
-                $quality = count($parts) ? floatval(array_shift($parts)) : (1000 - $pos) / 1000;
+                $quality = count($parts) ? 
+                    floatval(array_shift($parts)) : 
+                    (1000 - $pos) / 1000;
                 $acceptList[$type] = $quality;
             }
             arsort($acceptList);
@@ -646,7 +656,8 @@ class Restler
                     $format = is_string($format) ? new $format : $format;
                     $format->setMIME($accept);
                     //echo "MIME $accept";
-                    header("Vary: Accept"); // Tell cache content is based on Accept header
+                    // Tell cache content is based on Accept header
+                    header("Vary: Accept"); 
                     return $format;
                 }
             }
@@ -656,24 +667,26 @@ class Restler
             // client accepts all media types.
             $_SERVER['HTTP_ACCEPT'] = '*/*';
         }
-        if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== FALSE) {
-            if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== FALSE) {
+        if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== false) {
+            if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== false) {
                 $format = new JsonFormat;
-            } else if (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== FALSE) {
+            } else if (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
                 $format = new XmlFormat;
-            } else if (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== FALSE) {
+            } else if (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
                 $format = new $this->format_map['default'];
             }
         }
         if (empty($format)) {
-            // RFC 2616: If an Accept header field is present, and if the server
-            // cannot send a response which is acceptable according to the combined
-            // Accept field value, then the server SHOULD send a 406 (not acceptable)
-            // response.
+            // RFC 2616: If an Accept header field is present, and if the 
+            // server cannot send a response which is acceptable according to 
+            // the combined Accept field value, then the server SHOULD send 
+            // a 406 (not acceptable) response.
             header('HTTP/1.1 406 Not Acceptable');
-            die('406 Not Acceptable: The server was unable to negotiate content for this request.');
+            die('406 Not Acceptable: The server was unable to ' . 
+                    'negotiate content for this request.');
         } else {
-            header("Vary: Accept"); // Tell cache content is based ot Accept header
+            // Tell cache content is based ot Accept header
+            header("Vary: Accept"); 
             return $format;
         }
     }
@@ -708,7 +721,7 @@ class Restler
             return array();
         }
 
-        $found = FALSE;
+        $found = false;
         $this->request_data += $_GET;
         $params = array('request_data' => $this->request_data);
         $params += $this->request_data;
@@ -726,15 +739,11 @@ class Restler
                             $params[$arg] = $match;
                         }
                     }
-                    $found = TRUE;
+                    $found = true;
                     break;
                 }
-                // The commented line replaced the following line, but it breaks for
-                // for cases where the api is not at the root uri.
-                // we aren't necessarily looking for an exact match!
-                //} else if ($url == $lc) {
-            } elseif (strpos($lc, $url) !== false) {
-                $found = TRUE;
+            } else if ($url == $lc) {
+                $found = true;
                 break;
             }
         }
@@ -766,9 +775,11 @@ class Restler
         if (isset($method_info->metadata[$class_name])
             && is_array($method_info->metadata[$class_name])
         ) {
-            foreach ($method_info->metadata[$class_name] as $property => $value) {
+            foreach ($method_info->metadata[$class_name] as
+                    $property => $value) {
                 if (property_exists($class_name, $property)) {
-                    $reflection_property = new ReflectionProperty($class_name, $property);
+                    $reflection_property = 
+                        new ReflectionProperty($class_name, $property);
                     $reflection_property->setValue($instance, $value);
                 }
             }
@@ -778,11 +789,11 @@ class Restler
 
     protected function loadCache()
     {
-        if ($this->cached !== NULL) {
+        if ($this->cached !== null) {
             return;
         }
         $file = $this->cache_dir . '/routes.php';
-        $this->cached = FALSE;
+        $this->cached = false;
 
         if ($this->production_mode) {
             if (file_exists($file)) {
@@ -790,7 +801,7 @@ class Restler
             }
             if (isset($routes) && is_array($routes)) {
                 $this->routes = $routes;
-                $this->cached = TRUE;
+                $this->cached = true;
             }
         } else {
             //@unlink($this->cache_dir . "/$name.php");
@@ -819,10 +830,13 @@ class Restler
             $position = 0;
             foreach ($params as $param) {
                 $arguments[$param->getName()] = $position;
-                $defaults[$position] = $param->isDefaultValueAvailable() ? $param->getDefaultValue() : NULL;
+                $defaults[$position] = $param->isDefaultValueAvailable() ? 
+                    $param->getDefaultValue() : null;
                 $position++;
             }
-            $method_flag = $method->isProtected() ? (isRestlerCompatibilityModeEnabled() ? 2 : 3) : (isset($metadata['protected']) ? 1 : 0);
+            $method_flag = $method->isProtected() ? 
+                (isRestlerCompatibilityModeEnabled() ? 2 : 3) : 
+                (isset($metadata['protected']) ? 1 : 0);
 
             //take note of the order
             $call = array(
@@ -835,7 +849,7 @@ class Restler
             );
             $method_url = strtolower($method->getName());
             if (preg_match_all(
-                    '/@url\s+(GET|POST|PUT|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s',
+                '/@url\s+(GET|POST|PUT|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s',
                     $doc, $matches, PREG_SET_ORDER)
             ) {
                 foreach ($matches as $match) {
@@ -843,7 +857,8 @@ class Restler
                     $url = rtrim($base_path . $match[2], '/');
                     $this->routes[$http_method][$url] = $call;
                 }
-            } else if ($method_url[0] != '_') { //not prefixed with underscore
+            } elseif ($method_url[0] != '_') { 
+                //not prefixed with underscore
                 // no configuration found so use convention
                 if (preg_match_all('/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)/i',
                         $method_url, $matches)
@@ -854,7 +869,8 @@ class Restler
                     $http_method = 'GET';
                 }
                 $url = $base_path
-                    . ($method_url == 'index' || $method_url == 'default' ? '' : $method_url);
+                    . ($method_url == 'index' || $method_url == 'default' ? '' :
+                        $method_url);
                 $url = rtrim($url, '/');
                 $this->routes[$http_method][$url] = $call;
                 foreach ($params as $param) {
@@ -896,7 +912,7 @@ class RestException extends Exception
 {
 
 
-    public function __construct($http_status_code, $error_message = NULL)
+    public function __construct($http_status_code, $error_message = null)
     {
         parent::__construct($error_message, $http_status_code);
     }
@@ -982,7 +998,7 @@ interface iAuthenticate
 
     /**
      * Auth function that is called when a protected method is requested
-     * @return boolean TRUE or FALSE
+     * @return boolean true or false
      */
     public function __isAuthenticated();
 }
@@ -1041,12 +1057,12 @@ interface iFormat
      * Encode the given data in the format
      * @param array $data resulting data that needs to
      * be encoded in the given format
-     * @param boolean $human_readable set to TRUE when restler
+     * @param boolean $human_readable set to true when restler
      * is not running in production mode. Formatter has to
      * make the encoded output more human readable
      * @return string encoded string
      */
-    public function encode($data, $human_readable = FALSE);
+    public function encode($data, $human_readable = false);
 
 
     /**
@@ -1105,7 +1121,7 @@ class UrlEncodedFormat implements iFormat
     }
 
 
-    public function encode($data, $human_readable = FALSE)
+    public function encode($data, $human_readable = false)
     {
         return http_build_query($data);
     }
@@ -1175,9 +1191,11 @@ class JsonFormat implements iFormat
     }
 
 
-    public function encode($data, $human_readable = FALSE)
+    public function encode($data, $human_readable = false)
     {
-        return $human_readable ? $this->json_format(json_encode(object_to_array($data))) : json_encode(object_to_array($data));
+        return $human_readable ? 
+            $this->json_format(json_encode(object_to_array($data))) : 
+            json_encode(object_to_array($data));
     }
 
 
@@ -1203,14 +1221,15 @@ class JsonFormat implements iFormat
                     $message = 'malformed JSON';
                     break;
                 case JSON_ERROR_UTF8:
-                    $message = 'malformed UTF-8 characters, possibly incorrectly encoded';
+                    $message = 'malformed UTF-8 characters, '.
+                        'possibly incorrectly encoded';
                     break;
                 default:
                     $message = 'unknown error';
                     break;
             }
             throw new RestException(400, 'Error parsing JSON, ' . $message);
-        } else if (strlen($data) && $decoded === NULL || $decoded === $data) {
+        } else if (strlen($data) && $decoded === null || $decoded === $data) {
             throw new RestException(400, 'Error parsing JSON');
         }
         return object_to_array($decoded);
@@ -1227,7 +1246,7 @@ class JsonFormat implements iFormat
         $tab = "  ";
         $new_json = "";
         $indent_level = 0;
-        $in_string = FALSE;
+        $in_string = false;
         $len = strlen($json);
 
         for ($c = 0; $c < $len; $c++) {
@@ -1247,7 +1266,8 @@ class JsonFormat implements iFormat
                 case ']':
                     if (!$in_string) {
                         $indent_level--;
-                        $new_json .= "\n" . str_repeat($tab, $indent_level) . $char;
+                        $new_json .= "\n" . str_repeat($tab, $indent_level) 
+                            . $char;
                     } else {
                         $new_json .= $char;
                     }
@@ -1268,7 +1288,7 @@ class JsonFormat implements iFormat
                     break;
                 case '"':
                     if ($c == 0) {
-                        $in_string = TRUE;
+                        $in_string = true;
                     } else if ($c > 0 && $json[$c - 1] != '\\') {
                         $in_string = !$in_string;
                     }
@@ -1366,8 +1386,9 @@ class DocParser
                 $value = '';
             }
             //Parse the line and return false if the parameter is valid
-            if ($this->setParam($param, $value))
+            if ($this->setParam($param, $value)) {
                 return false;
+            }
         }
         return $line;
     }
@@ -1448,7 +1469,8 @@ function parse_doc($php_doc_comment)
     $php_doc_comment = preg_replace("/([\\t])+/", "\t", $php_doc_comment);
     return explode("\n", $php_doc_comment);
 
-    $php_doc_comment = trim(preg_replace('/\r?\n *\* */', ' ', $php_doc_comment));
+    $php_doc_comment = trim(preg_replace('/\r?\n *\* */', ' ', 
+            $php_doc_comment));
     return $php_doc_comment;
 
     preg_match_all('/@([a-z]+)\s+(.*?)\s*(?=$|@[a-z]+\s)/s', $php_doc_comment,
@@ -1470,7 +1492,7 @@ function parse_doc($php_doc_comment)
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-function object_to_array($object, $utf_encode = FALSE)
+function object_to_array($object, $utf_encode = false)
 {
     if (is_array($object)
         || (is_object($object)
@@ -1526,7 +1548,7 @@ if (!function_exists('isRestlerCompatibilityModeEnabled')) {
 
     function isRestlerCompatibilityModeEnabled()
     {
-        return FALSE;
+        return false;
     }
 
 }
