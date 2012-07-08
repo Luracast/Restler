@@ -972,8 +972,10 @@ class DefaultResponse implements iRespond
     {
         return array(
             'error' => array(
-                'code' => $statusCode,
-                'message' => $message
+                'code'       => $statusCode,
+                'message'    => $message,
+                'request'    => $_SERVER['REQUEST_METHOD'],
+                'parameters' => $_SERVER['REQUEST_URI']
             )
         );
     }
