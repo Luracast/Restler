@@ -2,7 +2,7 @@
 
 /**
  * REST API Server. It is the server part of the Restler framework.
- * Based on the RestServer code from 
+ * Based on the RestServer code from
  * <http://jacwright.com/blog/resources/RestServer.txt>
  *
  * @category   Framework
@@ -186,7 +186,6 @@ class Restler
     //
     // ------------------------------------------------------------------
 
-
     /**
      * Constructor
      * @param boolean $production_mode When set to false, it will run in
@@ -350,7 +349,7 @@ class Restler
 
 
     /**
-     * An initialize function to allow use of the restler error generation 
+     * An initialize function to allow use of the restler error generation
      * functions for pre-processing and pre-routing of requests.
      */
     public function init()
@@ -456,7 +455,7 @@ class Restler
      */
     public function sendData($data)
     {
-        $data = $this->response_format->encode($data, 
+        $data = $this->response_format->encode($data,
             !($this->production_mode)
         );
         $post_process = '_' . $this->service_method . '_'
@@ -482,7 +481,7 @@ class Restler
      */
     public function setStatus($code)
     {
-        header("{$_SERVER['SERVER_PROTOCOL']} $code " . 
+        header("{$_SERVER['SERVER_PROTOCOL']} $code " .
             $this->codes[strval($code)]);
     }
 
@@ -520,7 +519,7 @@ class Restler
         $file = $this->cache_dir . '/routes.php';
         $s = '$o=array();' . PHP_EOL;
         foreach ($this->routes as $key => $value) {
-            $s .= PHP_EOL . PHP_EOL . PHP_EOL . 
+            $s .= PHP_EOL . PHP_EOL . PHP_EOL .
                 "############### $key ###############" . PHP_EOL . PHP_EOL;
             $s .= '$o[\'' . $key . '\']=array();';
             foreach ($value as $ke => $va) {
@@ -546,7 +545,6 @@ class Restler
     // Protected functions
     //
     // ------------------------------------------------------------------
-
 
     /**
      * Parses the requst url and get the api path
@@ -644,8 +642,8 @@ class Restler
             foreach ($accepts as $pos => $accept) {
                 $parts = explode(';q=', trim($accept));
                 $type = array_shift($parts);
-                $quality = count($parts) ? 
-                    floatval(array_shift($parts)) : 
+                $quality = count($parts) ?
+                    floatval(array_shift($parts)) :
                     (1000 - $pos) / 1000;
                 $acceptList[$type] = $quality;
             }
@@ -657,7 +655,7 @@ class Restler
                     $format->setMIME($accept);
                     //echo "MIME $accept";
                     // Tell cache content is based on Accept header
-                    header("Vary: Accept"); 
+                    header("Vary: Accept");
                     return $format;
                 }
             }
@@ -677,16 +675,16 @@ class Restler
             }
         }
         if (empty($format)) {
-            // RFC 2616: If an Accept header field is present, and if the 
-            // server cannot send a response which is acceptable according to 
-            // the combined Accept field value, then the server SHOULD send 
+            // RFC 2616: If an Accept header field is present, and if the
+            // server cannot send a response which is acceptable according to
+            // the combined Accept field value, then the server SHOULD send
             // a 406 (not acceptable) response.
             header('HTTP/1.1 406 Not Acceptable');
-            die('406 Not Acceptable: The server was unable to ' . 
+            die('406 Not Acceptable: The server was unable to ' .
                     'negotiate content for this request.');
         } else {
             // Tell cache content is based ot Accept header
-            header("Vary: Accept"); 
+            header("Vary: Accept");
             return $format;
         }
     }
@@ -778,7 +776,7 @@ class Restler
             foreach ($method_info->metadata[$class_name] as
                     $property => $value) {
                 if (property_exists($class_name, $property)) {
-                    $reflection_property = 
+                    $reflection_property =
                         new ReflectionProperty($class_name, $property);
                     $reflection_property->setValue($instance, $value);
                 }
@@ -830,12 +828,12 @@ class Restler
             $position = 0;
             foreach ($params as $param) {
                 $arguments[$param->getName()] = $position;
-                $defaults[$position] = $param->isDefaultValueAvailable() ? 
+                $defaults[$position] = $param->isDefaultValueAvailable() ?
                     $param->getDefaultValue() : null;
                 $position++;
             }
-            $method_flag = $method->isProtected() ? 
-                (isRestlerCompatibilityModeEnabled() ? 2 : 3) : 
+            $method_flag = $method->isProtected() ?
+                (isRestlerCompatibilityModeEnabled() ? 2 : 3) :
                 (isset($metadata['protected']) ? 1 : 0);
 
             //take note of the order
@@ -857,7 +855,7 @@ class Restler
                     $url = rtrim($base_path . $match[2], '/');
                     $this->routes[$http_method][$url] = $call;
                 }
-            } elseif ($method_url[0] != '_') { 
+            } elseif ($method_url[0] != '_') {
                 //not prefixed with underscore
                 // no configuration found so use convention
                 if (preg_match_all('/^(GET|POST|PUT|DELETE|HEAD|OPTIONS)/i',
@@ -1193,8 +1191,8 @@ class JsonFormat implements iFormat
 
     public function encode($data, $human_readable = false)
     {
-        return $human_readable ? 
-            $this->json_format(json_encode(object_to_array($data))) : 
+        return $human_readable ?
+            $this->json_format(json_encode(object_to_array($data))) :
             json_encode(object_to_array($data));
     }
 
@@ -1266,7 +1264,7 @@ class JsonFormat implements iFormat
                 case ']':
                     if (!$in_string) {
                         $indent_level--;
-                        $new_json .= "\n" . str_repeat($tab, $indent_level) 
+                        $new_json .= "\n" . str_repeat($tab, $indent_level)
                             . $char;
                     } else {
                         $new_json .= $char;
@@ -1469,7 +1467,7 @@ function parse_doc($php_doc_comment)
     $php_doc_comment = preg_replace("/([\\t])+/", "\t", $php_doc_comment);
     return explode("\n", $php_doc_comment);
 
-    $php_doc_comment = trim(preg_replace('/\r?\n *\* */', ' ', 
+    $php_doc_comment = trim(preg_replace('/\r?\n *\* */', ' ',
             $php_doc_comment));
     return $php_doc_comment;
 
@@ -1511,6 +1509,11 @@ function object_to_array($object, $utf_encode = false)
     return $object;
 }
 
+// ==================================================================
+//
+// Autoload
+//
+// ------------------------------------------------------------------
 
 /**
  * an autoloader function for loading format classes
@@ -1531,12 +1534,6 @@ function autoload_formats($class_name)
         }
     }
 }
-
-// ==================================================================
-//
-// Autoload
-//
-// ------------------------------------------------------------------
 
 spl_autoload_register('autoload_formats');
 
