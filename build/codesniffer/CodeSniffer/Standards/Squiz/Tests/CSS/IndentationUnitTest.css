@@ -1,0 +1,23 @@
+body {
+
+        font-family: Arial, Helvetica, sans-serif;
+    margin: 40px 0 0 0;
+padding: 0;
+  background: #8FB7DB url(diag_lines_bg.gif) top left;
+    
+}
+
+td {
+    margin: 40px;
+
+    padding: 20px;
+}
+
+/*
+#AdminScreenModeWidgetType-tab_pane-containers .TabPaneWidgetType-tab-selected-left {
+    background: transparent url(images/ScreenImages/tab_on_left.png) no-repeat;
+}
+#AdminScreenModeWidgetType-tab_pane-containers .TabPaneWidgetType-tab-selected-right {
+    background: transparent url(images/ScreenImages/tab_on_right.png) no-repeat;
+}
+*/
