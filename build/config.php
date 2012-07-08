@@ -7,7 +7,7 @@ define('DOCS_DIR', 'docs');
 define('EXAMPLES_DIR', 'examples');
 define('BUILD_DIR', 'build');
 define('APIGEN_DIR', 'apigen');
-define('CODE_SNIFFER_DIR', 'PHP_CodeSniffer'); //-1.3.0
+define('CODE_SNIFFER_DIR', 'codesniffer');
 
 define('RESTLER_PATH', PROJECT_ROOT.DIRECTORY_SEPARATOR.RESTLER_DIR);
 define('MINIFIED_PATH', PROJECT_ROOT.DIRECTORY_SEPARATOR.MINIFIED_DIR);
