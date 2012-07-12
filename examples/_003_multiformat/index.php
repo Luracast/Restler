@@ -10,22 +10,27 @@
  format when client does not specify the format. 
  
  Client can specify the format either using  extension like .json or specify 
- the MIME type in HTTP Accept Header.
+ the MIME type in HTTP Accept Header. 
+
+ When we make the request from the browser we will get xml when we 
+ skip the extension because XML is one of the requested formats specifed in
+ the HTTP Accept Header where as a AJAX request or CURL will return JSON.
  
  Example 1: GET bmi returns 
  
- {
-  "bmi": 31.77,
-  "message": "Obesity",
-  "metric": {
-    "height": "162.6 centimeter",
-    "weight": "84 kilograms"
-  },
-  "imperial": {
-    "height": "5 feet 4 inches",
-    "weight": "185.19 pounds"
-  }
-}.
+<?xml version="1.0"?>
+<response>
+  <bmi>31.77</bmi>
+  <message>Obesity</message>
+  <metric>
+    <height>162.6 centimeter</height>
+    <weight>84 kilograms</weight>
+  </metric>
+  <imperial>
+    <height>5 feet 4 inches</height>
+    <weight>185.19 pounds</weight>
+  </imperial>
+</response>.
 
  Example 2: GET bmi.xml returns 
   

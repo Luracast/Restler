@@ -21,7 +21,7 @@
   }
 }.
 
- Example 2: GET currency/format/not_a_number returns 
+ Example 2: GET currency/format?number=not_a_number returns 
   
 {
   "error": {

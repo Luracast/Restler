@@ -37,7 +37,7 @@ GET [currency/format](index.php/currency/format)
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [currency/format/not_a_number](index.php/currency/format/not_a_number)
+GET [currency/format?number=not_a_number](index.php/currency/format?number=not_a_number)
 :	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {

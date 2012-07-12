@@ -24,11 +24,12 @@ for example [SimpleAuth::key](simpleauth/key). It can be used to create login/lo
 
 This API Server exposes the following URIs
 
-	GET normal         ⇠ Simple::normal()
-	GET restricted     ⇠ Simple::restricted()
-	GET restricted2    ⇠ Simple::restricted2()
-	GET secured        ⇠ Secured::index()
-	GET simpleauth/key ⇠ SimpleAuth::key()
+	GET normal                     ⇠ Simple::normal()
+	GET restricted                 ⇠ Simple::restricted()
+	GET restricted2                ⇠ Simple::restricted2()
+	GET secured                    ⇠ Secured::index()
+	GET simpleauth/isauthenticated ⇠ SimpleAuth::isAuthenticated()
+	GET simpleauth/key             ⇠ SimpleAuth::key()
 
 
 Try the following links in your browser
