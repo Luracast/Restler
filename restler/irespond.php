@@ -9,7 +9,7 @@
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-interface iRespond {
+interface IRespond {
 
 	/**
 	 * Result of an api call is passed to this method
@@ -18,7 +18,7 @@ interface iRespond {
 	 * @param unknown_type $result
 	 *        	can be a primitive or array or object
 	 */
-	public function __formatResponse($result);
+	public function formatResponse($result);
 
 	/**
 	 * When the api call results in RestException this method
@@ -27,5 +27,5 @@ interface iRespond {
 	 * @param int $statusCode        	
 	 * @param String $message        	
 	 */
-	public function __formatError($statusCode, $message);
+	public function formatError($statusCode, $message);
 }
