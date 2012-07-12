@@ -553,7 +553,7 @@ class Restler {
         if ($statusCode == 0) {
             $data = $this->responseFormat->encode ( $data, 
                     ! $this->_productionMode );
-            $data = $responder->__formatResponse ( $data );
+            $data = $responder->formatResponse ( $data );
             $postProcess = '_' . $this->_serviceMethod . '_' . 
             $this->responseFormat->getExtension ();
             if (isset ( $this->_serviceClassInstance ) && 
@@ -569,7 +569,7 @@ class Restler {
             (empty ( $statusMessage ) ? '' : ': ' . $statusMessage);
             $this->setStatus ( $statusCode );
             $data = $this->responseFormat->encode 
-            ( $responder->__formatError ( $statusCode, $message ), 
+            ( $responder->formatError ( $statusCode, $message ), 
                     ! $this->_productionMode );
         }
         die ( $data );
