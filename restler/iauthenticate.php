@@ -9,12 +9,12 @@
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-interface iAuthenticate {
+interface IAuthenticate {
 
-	/**
-	 * Auth function that is called when a protected method is requested
-	 * 
-	 * @return boolean TRUE or FALSE
-	 */
-	public function __isAuthenticated();
+    /**
+     * Auth function that is called when a protected method is requested
+     *
+     * @return boolean TRUE or FALSE
+     */
+    public function isAuthenticated();
 }

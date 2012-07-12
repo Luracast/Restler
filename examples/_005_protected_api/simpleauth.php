@@ -1,7 +1,7 @@
 <?php
 class SimpleAuth implements iAuthenticate{
 	const KEY = 'rEsTlEr2';
-	function __isAuthenticated() {
+	function isAuthenticated() {
 		return isset($_GET['key']) && $_GET['key']==SimpleAuth::KEY ? TRUE : FALSE;
 	}
 	function key(){

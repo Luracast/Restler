@@ -12,7 +12,7 @@
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-class PlistFormat implements iFormat {
+class PlistFormat implements IFormat {
 	public static $binary_mode = false;
 	const MIME_BINARY = 'application/x-plist';
 	const MIME_XML = 'application/xml';

@@ -10,7 +10,7 @@
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-class AmfFormat implements iFormat {
+class AmfFormat implements IFormat {
 	const PATH = '/Zend/Amf/Parse/';
 	const MIME = 'application/x-amf';
 	const EXTENSION = 'amf';

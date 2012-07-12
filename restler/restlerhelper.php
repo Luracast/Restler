@@ -12,25 +12,26 @@
  */
 class RestlerHelper {
 
-	/**
-	 * Conveniance function that converts the given object
-	 * in to associative array
-	 *
-	 * @param object $object
-	 *        	that needs to be converted
-	 */
-	static function objectToArray($object, $encoderFunctionName = FALSE) {
-		if (is_array ( $object ) || is_object ( $object )) {
-			$array = array ();
-			foreach ( $object as $key => $value ) {
-				$value = self::objectToArray ( $value, $encoderFunctionName );
-				if ($encoderFunctionName && is_string ( $value )) {
-					$value = $$encoderFunctionName ( $value );
-				}
-				$array [$key] = $value;
-			}
-			return $array;
-		}
-		return $object;
-	}
+    /**
+     * Conveniance function that converts the given object
+     * in to associative array
+     *
+     * @param object $object
+     *            that needs to be converted
+     */
+    public static function objectToArray($object, $encoderFunctionName = false)
+    {
+        if (is_array ( $object ) || is_object ( $object )) {
+            $array = array ();
+            foreach ($object as $key => $value) {
+                $value = self::objectToArray ( $value, $encoderFunctionName );
+                if ($encoderFunctionName && is_string ( $value )) {
+                    $value = $$encoderFunctionName ( $value );
+                }
+                $array [$key] = $value;
+            }
+            return $array;
+        }
+        return $object;
+    }
 }

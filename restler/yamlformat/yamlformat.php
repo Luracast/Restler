@@ -9,7 +9,7 @@
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-class YamlFormat implements iFormat
+class YamlFormat implements IFormat
 {
 	const MIME ='text/plain';
 	const EXTENSION = 'yaml';

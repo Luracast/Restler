@@ -93,7 +93,7 @@ if (! function_exists ( 'trace' )) {
 		}
 	}
 }
-class DebugFormat implements iFormat {
+class DebugFormat implements IFormat {
 	public static $traces = array ();
 	public static $traceInfos = array ();
 	const MIME = 'text/html';

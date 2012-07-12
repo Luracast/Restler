@@ -11,21 +11,21 @@
  */
 interface IRespond {
 
-	/**
-	 * Result of an api call is passed to this method
-	 * to create a standard structure for the data
-	 *
-	 * @param unknown_type $result
-	 *        	can be a primitive or array or object
-	 */
-	public function formatResponse($result);
+    /**
+     * Result of an api call is passed to this method
+     * to create a standard structure for the data
+     *
+     * @param unknown_type $result
+     *            can be a primitive or array or object
+     */
+    public function formatResponse($result);
 
-	/**
-	 * When the api call results in RestException this method
-	 * will be called to return the error message
-	 *
-	 * @param int $statusCode        	
-	 * @param String $message        	
-	 */
-	public function formatError($statusCode, $message);
+    /**
+     * When the api call results in RestException this method
+     * will be called to return the error message
+     *
+     * @param int $statusCode            
+     * @param String $message            
+     */
+    public function formatError($statusCode, $message);
 }

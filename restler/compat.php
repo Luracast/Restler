@@ -1,55 +1,60 @@
 <?php
-if (version_compare('5.0.0', PHP_VERSION) > 0) {
-    die('Restler requires PHP 5.x.x');
+if (version_compare ( '5.0.0', PHP_VERSION ) > 0) {
+    die ( 'Restler requires PHP 5.x.x' );
 }
-#requires 5.3.2
-if (! method_exists('ReflectionMethod', 'setAccessible')) {
-    #echo'RESTLER_METHOD_UNPROTECTION_MODE';
-    function isRestlerCompatibilityModeEnabled ()
+// equires 5.3.2
+if (! method_exists ( 'ReflectionMethod', 'setAccessible' )) {
+    // cho'RESTLER_METHOD_UNPROTECTION_MODE';
+    function isRestlerCompatibilityModeEnabled()
     {
-        return TRUE;
+        return true;
     }
-    function unprotect ($methodInfo)
+
+    function unprotect($methodInfo)
     {
         $className = $methodInfo->className;
         $method = $methodInfo->methodName;
         $params = $methodInfo->arguments;
-        $unique = uniqid('Dynamic') . "_";
+        $unique = uniqid ( 'Dynamic' ) . "_";
         $classCode = "class $unique$className extends $className {";
-        $p = array();
-        for ($i = 0; $i < count($params); $i ++) {
-            $p[] = '$' . "P$i";
+        $p = array ();
+        for ($i = 0; $i < count ( $params ); $i ++) {
+            $p [] = '$' . "P$i";
         }
-        $p = implode(',', $p);
+        $p = implode ( ',', $p );
         $classCode .= "function $unique$method($p)
         {return parent::$method($p);}";
         $classCode .= "}";
-        #echo $classCode;
-        eval($classCode);
+        // cho $classCode;
+        eval ( $classCode );
         $methodInfo->className = "$unique$className";
         $methodInfo->methodName = "$unique$method";
         return $methodInfo;
     }
-    function call_protected_user_method_array ($className, $method, $params)
+
+    function callProtectedUserMethodArray($className, $method, $params)
     {
-        if (is_object($className))
-            $className = get_class($className);
-        $unique = uniqid('Dynamic') . "_";
-        $classCode = 
-        "class $unique$className  extends  $className {";
-        $p = array();
-        for ($i = 0; $i < count($params); $i ++) {
-            $p[] = '$' . "P$i";
+        if (is_object ( $className )) {
+            $className = get_class ( $className );
         }
-        $p = implode(',', $p);
+        $unique = uniqid ( 'Dynamic' ) . "_";
+        $classCode = "class $unique$className  extends  $className {";
+        $p = array ();
+        for ($i = 0; $i < count ( $params ); $i ++) {
+            $p [] = '$' . "P$i";
+        }
+        $p = implode ( ',', $p );
         $classCode .= "function $unique$method($p)
         {return parent::$method($p);}";
         $classCode .= "}";
-        #echo $classCode;
-        eval($classCode);
+        // cho $classCode;
+        eval ( $classCode );
         $obj = $unique . $className;
-        $obj = new $obj();
-        return call_user_func_array(array($obj, $unique . $method), $params);
+        $obj = new $obj ();
+        return call_user_func_array ( array (
+                $obj,
+                $unique . $method 
+        ), $params );
     }
 }
 

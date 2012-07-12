@@ -12,7 +12,8 @@
  */
 class RestException extends Exception {
 
-	public function __construct($httpStatusCode, $errorMessage = NULL) {
-		parent::__construct ( $errorMessage, $httpStatusCode );
-	}
+    public function __construct($httpStatusCode, $errorMessage = null)
+    {
+        parent::__construct ( $errorMessage, $httpStatusCode );
+    }
 }
