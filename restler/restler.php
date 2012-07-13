@@ -15,6 +15,13 @@
  * @version    3.0.0
  */
 class Restler {
+    
+    // ==================================================================
+    //
+    // Public variables
+    //
+    // ------------------------------------------------------------------
+    
     const VERSION = '3.0.0';
     
     /**
@@ -87,7 +94,12 @@ class Restler {
      */
     public $responseFormat;
     
-    // /////////////////////////////////////
+    // ==================================================================
+    //
+    // Private & Protected variables
+    //
+    // ------------------------------------------------------------------
+    
     /**
      * When set to false, it will run in debug mode and parse the
      * class files every time to map it to the URL
@@ -146,6 +158,19 @@ class Restler {
     protected $_errorClasses = array ();
     
     /**
+     * Caching of url map is enabled or not
+     *
+     * @var boolean
+     */
+    protected $_cached;
+    
+    protected $_apiVersion = 0;
+    protected $_requestedApiVersion = 0;
+    protected $_apiMinimumVersion = 0;
+    protected $_apiClassPath = '';
+    protected $_log = '';
+    
+    /**
      * HTTP status codes
      *
      * @var array
@@ -194,12 +219,11 @@ class Restler {
             505 => 'HTTP Version Not Supported' 
     );
     
-    /**
-     * Caching of url map is enabled or not
-     *
-     * @var boolean
-     */
-    protected $_cached;
+    // ==================================================================
+    //
+    // Public functions
+    //
+    // ------------------------------------------------------------------
 
     /**
      * Constructor
@@ -234,11 +258,6 @@ class Restler {
             $this->saveCache ();
         }
     }
-    protected $_apiVersion = 0;
-    protected $_requestedApiVersion = 0;
-    protected $_apiMinimumVersion = 0;
-    protected $_apiClassPath = '';
-    protected $_log = '';
 
     public function setApiClassPath($path)
     {
@@ -421,15 +440,12 @@ class Restler {
         }
         $this->sendData ( null, $statusCode, $errorMessage );
     }
-
+    
     /**
-     * Main function for processing the api request
-     * and return the response
-     *
-     * @throws Exception when the api service class is missing
-     * @throws RestException to send error response
+     * An initialize function to allow use of the restler error generation
+     * functions for pre-processing and pre-routing of requests.
      */
-    public function handle()
+    public function init()
     {
         if (empty ( $this->_formatMap )) {
             $this->setSupportedFormats ( 'JsonFormat' );
@@ -449,7 +465,20 @@ class Restler {
             $this->requestMethod == 'POST') {
             $this->requestData = $this->getRequestData ();
         }
+    }
+
+    /**
+     * Main function for processing the api request
+     * and return the response
+     *
+     * @throws Exception when the api service class is missing
+     * @throws RestException to send error response
+     */
+    public function handle()
+    {
+        $this->init();
         $this->_serviceMethodInfo = $o = $this->mapUrlToMethod ();
+        
         if (! isset ( $o->className )) {
             $this->handleError ( 404 );
         } else {
@@ -656,7 +685,12 @@ class Restler {
         }
     }
     
-    // /////////////////////////////////////////////////////////////
+    // ==================================================================
+    //
+    // Protected functions
+    //
+    // ------------------------------------------------------------------
+    
     /**
      * Parses the requst url and get the api path
      *
@@ -1096,6 +1130,13 @@ class Restler {
         }
     }
 }
+
+// ==================================================================
+//
+// Individual functions
+//
+// ------------------------------------------------------------------
+
 if (version_compare ( PHP_VERSION, '5.3.0' ) < 0) {
     require_once 'compat.php';
 }
