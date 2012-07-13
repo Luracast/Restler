@@ -783,22 +783,61 @@ class Restler {
                 return $format;
             }
         }
-        // check if client has sent list of accepted data formats
-        if (isset ( $_SERVER ['HTTP_ACCEPT'] )) {
-            $accepts = explode ( ',', $_SERVER ['HTTP_ACCEPT'] );
-            foreach ($accepts as $accept) {
-                if ($extension && isset ( $this->_formatMap [$accept] )) {
-                    $format = $this->_formatMap [$accept];
-                    $format = is_string ( $format ) ? new $format () : $format;
-                    $format->setMIME ( $accept );
-                    // echo "MIME $accept";
+        //check if client has sent list of accepted data formats
+        if (isset($_SERVER['HTTP_ACCEPT'])) {
+            $acceptList = array();
+            $accepts = explode(',', strtolower($_SERVER['HTTP_ACCEPT']));
+            if (!is_array($accepts)) {
+                $accepts = array($accepts);
+            }
+            foreach ($accepts as $pos => $accept) {
+                $parts = explode(';q=', trim($accept));
+                $type = array_shift($parts);
+                $quality = count($parts) ?
+                floatval(array_shift($parts)) :
+                (1000 - $pos) / 1000;
+                $acceptList[$type] = $quality;
+            }
+            arsort($acceptList);
+            foreach ($acceptList as $accept => $quality) {
+                if (isset($this->formatMap[$accept])) {
+                    $format = $this->formatMap[$accept];
+                    $format = is_string($format) ? new $format : $format;
+                    $format->setMIME($accept);
+                    //echo "MIME $accept";
+                    // Tell cache content is based on Accept header
+                    header("Vary: Accept");
                     return $format;
                 }
             }
+        } else {
+            // RFC 2616: If no Accept header field is
+            // present, then it is assumed that the
+            // client accepts all media types.
+            $_SERVER['HTTP_ACCEPT'] = '*/*';
         }
-        $format = new $this->_formatMap ['default'] ();
-        // echo "DEFAULT ".$this->_formatMap['default'];
-        return $format;
+        if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== false) {
+            if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== false) {
+                $format = new JsonFormat;
+            } else if (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
+                $format = new XmlFormat;
+            } else if (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
+                $format = new $this->formatMap['default'];
+            }
+        }
+        if (empty($format)) {
+            // RFC 2616: If an Accept header field is present, and if the
+            // server cannot send a response which is acceptable according to
+            // the combined Accept field value, then the server SHOULD send
+            // a 406 (not acceptable) response.
+            header('HTTP/1.1 406 Not Acceptable');
+            die('406 Not Acceptable: The server was unable to ' .
+                    'negotiate content for this request.');
+        } else {
+            // Tell cache content is based ot Accept header
+            header("Vary: Accept");
+            return $format;
+        }
     }
 
     /**
@@ -1036,7 +1075,7 @@ class Restler {
                 // $methodUrl),'/');
                 if (! $ignorePathTill) {
                     $this->_routes [$httpMethod] [$url] = $call;
-                    trigger_error ( "$httpMethod $url =  $call" );
+                    //trigger_error ( "$httpMethod $url =  $call" );
                 }
                 $position = 1;
                 foreach ($params as $param) {
