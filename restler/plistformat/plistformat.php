@@ -29,12 +29,14 @@ class PlistFormat implements IFormat {
 
     public function getMIME()
     {
-        return self::$binary_mode ? self::MIME_BINARY : self::MIME_XML;
+        return self::$binary_mode ? 
+            self::MIME_BINARY : self::MIME_XML;
     }
 
     public function getExtension()
     {
-        return self::$binary_mode ? self::EXTENSION_BINARY : self::EXTENSION_XML;
+        return self::$binary_mode ? 
+            self::EXTENSION_BINARY : self::EXTENSION_XML;
     }
 
     public function setMIME($mime)
@@ -71,11 +73,11 @@ class PlistFormat implements IFormat {
          */
         $plist = new CFPropertyList ();
         $td = new CFTypeDetector ();
-        $guessedStructure = $td->toCFType ( 
-                RestlerHelper::objectToArray ( $data ) );
+        $guessedStructure = 
+            $td->toCFType ( RestlerHelper::objectToArray ( $data ) );
         $plist->add ( $guessedStructure );
-        return self::$binary_mode ? $plist->toBinary () : 
-            $plist->toXML ( true );
+        return self::$binary_mode ? 
+            $plist->toBinary () : $plist->toXML ( true );
     }
 
     /**
