@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Amf
  * @subpackage Value
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: RemotingMessage.php 20096 2010-01-06 02:05:09Z bkarwin $
+ * @version    $Id: RemotingMessage.php 24594 2012-01-05 21:27:01Z matthew $
  */
 
 /** Zend_Amf_Value_Messaging_AbstractMessage */
@@ -31,7 +31,7 @@ require_once 'Zend/Amf/Value/Messaging/AbstractMessage.php';
  *
  * @package    Zend_Amf
  * @subpackage Value
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2012 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Amf_Value_Messaging_RemotingMessage extends Zend_Amf_Value_Messaging_AbstractMessage
