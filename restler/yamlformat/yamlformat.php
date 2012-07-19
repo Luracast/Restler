@@ -9,39 +9,59 @@
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-class YamlFormat implements IFormat
-{
-	const MIME ='text/plain';
-	const EXTENSION = 'yaml';
+class YamlFormat implements IFormat {
+    const MIME = 'text/plain';
+    const EXTENSION = 'yaml';
 
-	public function getMIMEMap()
-	{
-		return array(YamlFormat::EXTENSION=>YamlFormat::MIME);
-	}
-	public function getMIME(){
-		return  YamlFormat::MIME;
-	}
-	public function getExtension(){
-		return YamlFormat::EXTENSION;
-	}
-	public function setMIME($mime){
-		//do nothing
-	}
-	public function setExtension($extension){
-		//do nothing
-	}
+    public function getMIMEMap()
+    {
+        return array (
+                YamlFormat::EXTENSION => YamlFormat::MIME 
+        );
+    }
 
-	public function encode($data, $humanReadable=false){
-		require_once 'sfyaml.php';
-		return sfYaml::dump(object_to_array($data));
-	}
+    public function getMIME()
+    {
+        return YamlFormat::MIME;
+    }
 
-	public function decode($data){
-		require_once 'sfyaml.php';
-		return sfYaml::load($data);
-	}
+    public function getExtension()
+    {
+        return YamlFormat::EXTENSION;
+    }
 
-	public function __toString(){
-		return $this->getExtension();
-	}
+    public function setMIME($mime)
+    {
+        // do nothing
+    }
+
+    public function setExtension($extension)
+    {
+        // do nothing
+    }
+
+    public function encode($data, $humanReadable = false)
+    {
+        require_once 'sfyaml.php';
+        return sfYaml::dump ( RestlerHelper::objectToArray ( $data ) );
+    }
+
+    public function decode($data)
+    {
+        require_once 'sfyaml.php';
+        return sfYaml::load ( $data );
+    }
+
+    public function __toString()
+    {
+        return $this->getExtension ();
+    }
+    
+    public function setCharset($charset) {
+        // TODO Auto-generated method stub
+    }
+    
+    public function getCharset() {
+        // TODO Auto-generated method stub
+    }
 }
