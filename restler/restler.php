@@ -513,7 +513,20 @@ class Restler {
                 $object->restler = $this;
                 // TODO:check if the api version requested is allowed by class
                 trace ( $o );
-                // TODO: validate params using iValidate
+                // TODO: validate params using IValidate
+                $validator = new DefaultValidator();
+                foreach ($o->metadata ['param'] as $index => $param) {
+                    if (isset ( $param ['validate'] )) {
+                        $info = ValidationInfo::__set_state($param);
+                        $valid = $validator->validate(
+                                $o->arguments[$index], $info);
+                        if(!$valid)
+                        {
+                            throw new RestException ( 404 );
+                        }
+                        $o->arguments[$index] = $valid;
+                    }
+                }
                 if (method_exists ( $o->className, $preProcess )) {
                     call_user_func_array ( array (
                             $object,
@@ -1155,7 +1168,7 @@ if (! function_exists ( 'isRestlerCompatibilityModeEnabled' )) {
 if (! defined ( 'RESTLER_PATH' )) {
     define ( 'RESTLER_PATH', dirname ( __FILE__ ) );
 }
-
+/*
 if (! class_exists ( 'DebugFormat' ) && ! function_exists ( 'trace' )) {
 
     function trace($o, $level = LOG_NOTICE)
@@ -1163,3 +1176,4 @@ if (! class_exists ( 'DebugFormat' ) && ! function_exists ( 'trace' )) {
         // ignore;
     }
 }
+*/
