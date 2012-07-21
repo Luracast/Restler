@@ -124,7 +124,7 @@ class DebugFormat implements IFormat {
 
 	public function encode($data, $humanReadable = FALSE, $wrapHtml = TRUE) {
 		if ($wrapHtml) {
-			$data = object_to_array ( $data );
+			$data = RestlerHelper::objectToArray( $data );
 		}
 		$r = '';
 		$r .= "<ul>\n";
