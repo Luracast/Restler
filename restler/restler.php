@@ -520,8 +520,7 @@ class Restler {
                         $info = ValidationInfo::__set_state($param);
                         $valid = $validator->validate(
                                 $o->arguments[$index], $info);
-                        if(!$valid)
-                        {
+                        if (! $valid) {
                             throw new RestException ( 404 );
                         }
                         $o->arguments[$index] = $valid;
