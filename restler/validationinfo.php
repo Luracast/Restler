@@ -168,7 +168,7 @@ class ValidationInfo implements IValueObject {
         if (count ( $type > 1 )) {
             $o->type = $type;
         }
-        if($o->type=='integer'){
+        if ($o->type=='integer') {
             $o->type = 'int';
         }
         return $o;

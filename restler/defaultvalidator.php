@@ -20,8 +20,9 @@ class DefaultValidator implements IValidate {
                 $info->type = $type;
                 try {
                     $r = $this->validate ( $input, $info );
-                    if ($r !== false)
+                    if ($r !== false) {
                         return $r;
+                    }
                 } catch ( RestException $e ) {
                     // just continue
                 }
@@ -73,7 +74,7 @@ class DefaultValidator implements IValidate {
                     }
                 }
                 return $info->type=='int'
-                            ? (int)$r 
+                            ? (int) $r 
                             : ($info->type=='float' ? floatval($r) : $r);
             
             case 'string' :
