@@ -24,7 +24,6 @@ class DefaultValidator implements IValidate {
                         return $r;
                 } catch ( RestException $e ) {
                     // just continue
-                    trace("exception thrown for $type ");
                 }
             }
             throw new RestException ( 400, $error );
