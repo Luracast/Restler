@@ -4,22 +4,43 @@ class DefaultValidator implements IValidate {
     public function validate($input, ValidationInfo $info)
     {
         /*
-        header("Content-type: text/plain");
-        var_dump($info);
-        exit;
+         * header("Content-type: text/plain"); 
+         * var_dump($info);
+         * exit;
          */
+        
         $error = isset ( $info->rules ['message'] ) 
             ? $info->rules ['message'] 
             : "invalid value was specified for '$info->name'";
         
-        if (isset ( $info->pattern )) {
+        // when type is an array check if it passes for any type
+        if (is_array ( $info->type )) {
+            $types = $info->type;
+            foreach ($types as $type) {
+                $info->type = $type;
+                try {
+                    $r = $this->validate ( $input, $info );
+                    if ($r !== false)
+                        return $r;
+                } catch ( RestException $e ) {
+                    // just continue
+                    trace("exception thrown for $type ");
+                }
+            }
+            throw new RestException ( 400, $error );
+        }
+        //patterns are supported only for non numeric types
+        if (isset ( $info->pattern ) 
+                && $info->type != 'int' 
+                && $info->type != 'float' 
+                && $info->type != 'number') {
             if (! preg_match ( $info->pattern, $input )) {
                 throw new RestException ( 400, $error );
             }
         }
-   
+        
         if (isset ( $info->choice )) {
-            if (!in_array ( $input, $info->choice )) {
+            if (! in_array ( $input, $info->choice )) {
                 throw new RestException ( 400, $error );
             }
         }
@@ -31,10 +52,9 @@ class DefaultValidator implements IValidate {
                     return $r;
                 }
                 break;
-            case 'int':
-            case 'float':
-            case 'number':
-            case 'integer':
+            case 'int' :
+            case 'float' :
+            case 'number' :
                 if (! is_numeric ( $input )) {
                     break;
                 }
@@ -53,8 +73,10 @@ class DefaultValidator implements IValidate {
                         break;
                     }
                 }
-                return $r;
-                
+                return $info->type=='int'
+                            ? (int)$r 
+                            : ($info->type=='float' ? floatval($r) : $r);
+            
             case 'string' :
                 $r = strlen ( $input );
                 if (isset ( $info->min ) && $r < $info->min) {
@@ -72,7 +94,7 @@ class DefaultValidator implements IValidate {
                     }
                 }
                 return $input;
-            
+            case 'mixed':
             default :
                 return $input;
         }

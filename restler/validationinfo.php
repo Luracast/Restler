@@ -4,7 +4,19 @@
  * @author arulkumaran
  */
 class ValidationInfo implements IValueObject {
+    /**
+     * Name of the variable being validated
+     * 
+     * @var string variable name
+     */
     public $name;
+    /**
+     * Data type of the variable being validated.
+     * It will be mostly string
+     * 
+     * @var string array multiple types are specified it will be of
+     *      type array otherwise it will be a string
+     */
     public $type;
     
     /**
@@ -93,7 +105,9 @@ class ValidationInfo implements IValueObject {
 
     public static function numericValue($value)
     {
-        return ( int ) $value == $value ? ( int ) $value : floatval ( $value );
+        return ( int ) $value == $value 
+            ? ( int ) $value 
+            : floatval ( $value );
     }
 
     public static function arrayValue($value)
@@ -105,7 +119,9 @@ class ValidationInfo implements IValueObject {
 
     public static function stringValue($value)
     {
-        return is_array ( $value ) ? implode ( ',', $value ) : ( string ) $value;
+        return is_array ( $value ) 
+            ? implode ( ',', $value ) 
+            : ( string ) $value;
     }
 
     /**
@@ -117,7 +133,8 @@ class ValidationInfo implements IValueObject {
         $o->name = $info ['name'];
         $o->rules = $rules = $info ['validate'];
         $o->type = $info ['type'];
-        $o->rules ['fix'] = $o->fix = isset ( $rules ['fix'] ) && $rules ['fix'] == 'true';
+        $o->rules ['fix'] = $o->fix 
+            = isset ( $rules ['fix'] ) && $rules ['fix'] == 'true';
         unset ( $rules ['fix'] );
         if (isset ( $rules ['min'] )) {
             $o->rules ['min'] = $o->min = self::numericValue ( $rules ['min'] );
@@ -128,19 +145,31 @@ class ValidationInfo implements IValueObject {
             unset ( $rules ['max'] );
         }
         if (isset ( $rules ['pattern'] )) {
-            $o->rules ['pattern'] = $o->pattern = is_array ( $rules ['pattern'] ) ? implode ( ',', $rules ['pattern'] ) : ( string ) $rules ['pattern'];
+            $o->rules ['pattern'] = $o->pattern 
+                = is_array ( $rules ['pattern'] ) 
+                ? implode ( ',', $rules ['pattern'] ) 
+                : ( string ) $rules ['pattern'];
             unset ( $rules ['pattern'] );
         }
         if (isset ( $rules ['choice'] )) {
-            $o->rules ['choice'] = $o->choice = is_array ( $rules ['choice'] ) ? $rules ['choice'] : array (
+            $o->rules ['choice'] = $o->choice 
+                = is_array ( $rules ['choice'] ) 
+                ? $rules ['choice'] : array (
                     $rules ['pattern'] 
-            );
+                );
             unset ( $rules ['pattern'] );
         }
         foreach ($rules as $key => $value) {
             if (property_exists ( $o, $key )) {
                 $o->{$key} = $value;
             }
+        }
+        $type = explode ( '|', $o->type );
+        if (count ( $type > 1 )) {
+            $o->type = $type;
+        }
+        if($o->type=='integer'){
+            $o->type = 'int';
         }
         return $o;
     }
