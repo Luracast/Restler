@@ -553,7 +553,7 @@ class Restler {
                 $this->handleError ( $e->getCode (), $e->getMessage () );
             }
         }
-        if (isset ( $result ) && $result !== null) {
+        if (isset ( $result ) || $result === null) {
             $this->sendData ( $result );
         }
     }
