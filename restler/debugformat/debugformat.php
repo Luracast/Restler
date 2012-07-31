@@ -139,6 +139,9 @@ class DebugFormat implements IFormat {
 					$r .= $this->encode ( $value, $humanReadable, FALSE );
 				} else {
 					// value, with hyperlinked hyperlinks
+					if(is_bool($value)){
+					    $value = $value ? 'true' : 'false';
+					}
 					$value = htmlentities ( $value, ENT_COMPAT, 'UTF-8' );
 					if (strpos ( $value, 'http://' ) === 0) {
 						$r .= '<a href=\"' . $value . '\">' . $value . '</a>';
