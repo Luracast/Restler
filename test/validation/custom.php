@@ -1,8 +1,10 @@
 <?php
-class Custom extends ValueObject{
-    public $name;
-    private $age;
-	/**
+class Custom extends ValueObject {
+    public $name = 'Unknown';
+    private $age = 0;
+
+    /**
+     *
      * @return the $age
      */
     public function getAge()
@@ -10,12 +12,17 @@ class Custom extends ValueObject{
         return $this->age;
     }
 
-	/**
-     * @param int $age
+    /**
+     *
+     * @param int $age            
      */
     public function setAge($age)
     {
-        $this->age = $age;
+        $this->age = ( int ) $age;
     }
 
+    public function getUnderAge()
+    {
+        return $this->age < 26;
+    }
 }

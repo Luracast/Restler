@@ -123,6 +123,10 @@ class ValidationInfo implements IValueObject {
             ? implode ( ',', $value ) 
             : ( string ) $value;
     }
+    
+    public function __toString(){
+        return ' new ValidationInfo() ';
+    }
 
     /**
      * Magic Method used for creating instance at run time
@@ -165,7 +169,7 @@ class ValidationInfo implements IValueObject {
             }
         }
         $type = explode ( '|', $o->type );
-        if (count ( $type > 1 )) {
+        if (count ( $type ) > 1) {
             $o->type = $type;
         }
         if ($o->type=='integer') {
