@@ -178,7 +178,7 @@ class DebugFormat implements IFormat {
 		$info = $this->restler->serviceMethodInfo;
 		if (! is_null ( $info )) {
 			$arguments = implode ( ', ', $info->arguments );
-			$title = "{$info->className}::" . "{$info->methodName}({$arguments})";
+			$title = "{$info->className}->" . "{$info->methodName}({$arguments})";
 		} else {
 			$title = 'No Matching Resource';
 		}
@@ -200,7 +200,7 @@ class DebugFormat implements IFormat {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Restler Version $version</title>
+    <title>Restler v$version - {$title}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link type="text/css" rel="stylesheet" media="all" href="{$path}/debug.css">
 </head>
