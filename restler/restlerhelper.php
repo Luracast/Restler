@@ -21,6 +21,9 @@ class RestlerHelper {
      */
     public static function objectToArray($object, $encoderFunctionName = false)
     {
+        if($object instanceof JsonSerializable){
+            $object = $object->jsonSerialize();
+        }
         if (is_array ( $object ) || is_object ( $object )) {
             $array = array ();
             foreach ($object as $key => $value) {
