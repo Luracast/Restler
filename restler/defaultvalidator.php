@@ -4,9 +4,12 @@ class DefaultValidator implements IValidate {
     public function validate($input, ValidationInfo $info)
     {
         /*
-         * header("Content-type: text/plain"); 
-         * var_dump($info);
-         * exit;
+         header("Content-type: text/plain"); 
+         var_dump($info);
+         exit;
+        trace ( "validating \$$info->name with " 
+                . var_export( $input, true )
+                . ' for type '.$info->type );
          */
         
         $error = isset ( $info->rules ['message'] ) 
@@ -15,6 +18,7 @@ class DefaultValidator implements IValidate {
         
         // when type is an array check if it passes for any type
         if (is_array ( $info->type )) {
+            trace("types are ".print_r($info->type, true));
             $types = $info->type;
             foreach ($types as $type) {
                 $info->type = $type;
@@ -94,9 +98,29 @@ class DefaultValidator implements IValidate {
                     }
                 }
                 return $input;
+            case 'bool':
+            case 'boolean':
+                if($input=='true')return true;
+                if(is_numeric($input))return $input > 0;
+                return fale;
+            case 'array':
+                if(is_array($input)){
+                    return $input;
+                }
+                if($info->fix){
+                    return array($input);
+                }
+                break;
             case 'mixed':
-            default :
                 return $input;
+            default :
+                if(!is_array($input)){
+                    break;
+                }
+                //do type conversion
+                if(class_exists($info->type) && is_array(class_implements($info->type))){
+                    return call_user_func("{$info->type}::__set_state", $input);
+                }
         }
         throw new RestException ( 400, $error );
         return false;
