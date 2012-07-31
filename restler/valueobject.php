@@ -1,12 +1,16 @@
 <?php
-class ValueObject implements IValueObject {
+class ValueObject implements IValueObject, JsonSerializable {
+
+    public function __toString()
+    {
+        return ' new ' . get_called_class () . '() ';
+    }
 
     public static function __set_state(array $properties)
     {
         $class = get_called_class ();
         $instance = new $class ();
         $vars = get_object_vars ( $instance );
-        print_r ( $vars );
         foreach ($properties as $property => $value) {
             if (property_exists ( $instance, $property )) {
                 // see if the property is accessible
@@ -18,11 +22,23 @@ class ValueObject implements IValueObject {
                         call_user_func ( array (
                                 $instance,
                                 $method 
-                        ), $property );
+                        ), $value );
                     }
                 }
             }
         }
         return $instance;
+    }
+
+    public function jsonSerialize()
+    {
+        $r = get_object_vars ( $this );
+        $methods = get_class_methods ( $this );
+        foreach ($methods as $m) {
+            if (substr ( $m, 0, 3 ) == 'get') {
+                $r [lcfirst ( substr ( $m, 3 ) )] = @$this->{$m} ();
+            }
+        }
+        return $r;
     }
 }
