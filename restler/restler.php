@@ -512,17 +512,18 @@ class Restler {
                 $object = $this->_serviceClassInstance = new $o->className ();
                 $object->restler = $this;
                 // TODO:check if the api version requested is allowed by class
-                trace ( $o );
+                //trace ( $o );
                 // TODO: validate params using IValidate
                 $validator = new DefaultValidator();
                 foreach ($o->metadata ['param'] as $index => $param) {
                     if (isset ( $param ['validate'] )) {
+                        /*
+                        trace("created ValidationInfo for $index "
+                                . var_export($param, true));
+                                */
                         $info = ValidationInfo::__set_state($param);
                         $valid = $validator->validate(
                                 $o->arguments[$index], $info);
-                        if (! $valid) {
-                            throw new RestException ( 404 );
-                        }
                         $o->arguments[$index] = $valid;
                     }
                 }
