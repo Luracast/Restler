@@ -16,6 +16,14 @@ class DefaultValidator implements IValidate {
             ? $info->rules ['message'] 
             : "invalid value was specified for '$info->name'";
         
+        //if a validation method is specified
+        if (!empty( $info->method )) {
+            $method = $info->method;
+            $info->method = '';
+            $r = $this->validate ( $input, $info );
+            return $info->apiClassInstance->{$method} ( $r );
+        }
+        
         // when type is an array check if it passes for any type
         if (is_array ( $info->type )) {
             trace("types are ".print_r($info->type, true));
@@ -33,6 +41,7 @@ class DefaultValidator implements IValidate {
             }
             throw new RestException ( 400, $error );
         }
+        
         //patterns are supported only for non numeric types
         if (isset ( $info->pattern ) 
                 && $info->type != 'int' 
@@ -112,6 +121,7 @@ class DefaultValidator implements IValidate {
                 }
                 break;
             case 'mixed':
+            case 'unknown_type':
                 return $input;
             default :
                 if(!is_array($input)){

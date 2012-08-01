@@ -509,8 +509,7 @@ class Restler {
                 if ($o->methodFlag == 2) {
                     $o = unprotect ( $o );
                 }
-                $object = $this->_serviceClassInstance = new $o->className ();
-                $object->restler = $this;
+                $object = $this->_serviceClassInstance = null;
                 // TODO:check if the api version requested is allowed by class
                 //trace ( $o );
                 // TODO: validate params using IValidate
@@ -520,12 +519,25 @@ class Restler {
                         /*
                         trace("created ValidationInfo for $index "
                                 . var_export($param, true));
-                                */
+                        */
+                        if($param['validate']['method']){
+                            if(!isset($object)){
+                                $object = $this->_serviceClassInstance
+                                = new $o->className ();
+                                $object->restler = $this;
+                            }
+                            $param['validate']['apiClassInstance'] = $object;
+                        }
                         $info = ValidationInfo::__set_state($param);
                         $valid = $validator->validate(
                                 $o->arguments[$index], $info);
                         $o->arguments[$index] = $valid;
                     }
+                }
+                if(!isset($object)){
+                    $object = $this->_serviceClassInstance 
+                        = new $o->className ();
+                    $object->restler = $this;
                 }
                 if (method_exists ( $o->className, $preProcess )) {
                     call_user_func_array ( array (

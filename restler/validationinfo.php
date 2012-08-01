@@ -102,6 +102,14 @@ class ValidationInfo implements IValueObject {
      * @var string validation method name
      */
     public $method;
+    
+    /**
+     * Instance of the API class currently being called. It will be null most of
+     * the time. Only when method is defined it will contain an instance.
+     * This behavior is for lazy loading of the API class
+     * @var unknown_type will be null or api class instance
+     */
+    public $apiClassInstance = null;
 
     public static function numericValue($value)
     {
