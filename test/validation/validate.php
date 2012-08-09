@@ -53,7 +53,7 @@ class Validate {
     }
 
     /**
-     * @param int $num
+     * @param int $num {@min 100} {@fix true}
      * @return string
      */
     function number($num)
@@ -66,7 +66,11 @@ class Validate {
      * @param Custom $instance instance of Custom class {validate=true}
      * @return unknown
      */
-    function custom ($instance=null){
+    /**
+     *
+     */
+    function custom (Custom $instance=null, array $arr=null,
+                     Luracast\Restler\AnotherCustom $c=null){
         return $instance;
     }
 

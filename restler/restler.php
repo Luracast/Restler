@@ -1095,7 +1095,7 @@ class Restler
                 }
                 $m = &$metadata ['param'] [$position];
                 if (isset($type)) {
-                    trace($param->getName() . " is of type `$type`");
+                    //trace($param->getName() . " is of type `$type`");
                     $m['type'] = $type;
                 }
                 $m ['name'] =
