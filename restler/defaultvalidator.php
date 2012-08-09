@@ -4,14 +4,14 @@ class DefaultValidator implements IValidate {
     public function validate($input, ValidationInfo $info)
     {
         /*
-         header("Content-type: text/plain"); 
-         var_dump($info);
-         exit;
-        trace ( "validating \$$info->name with " 
-                . var_export( $input, true )
-                . ' for type '.$info->type );
+        header("Content-type: text/plain");
+        var_dump($info);
+        exit;
+        trace ( "validating \$$info->name with "
+        . var_export( $input, true )
+        . ' for type '.$info->type );
          */
-        
+
         $error = isset ( $info->rules ['message'] ) 
             ? $info->rules ['message'] 
             : "invalid value was specified for '$info->name'";

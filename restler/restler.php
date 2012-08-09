@@ -2,7 +2,7 @@
 
 /**
  * REST API Server. It is the server part of the Restler framework.
- * Based on the RestServer code from 
+ * Based on the RestServer code from
  * <http://jacwright.com/blog/resources/RestServer.txt>
  *
  * @category   Framework
@@ -14,30 +14,31 @@
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-class Restler {
-    
+class Restler
+{
+
     // ==================================================================
     //
     // Public variables
     //
     // ------------------------------------------------------------------
-    
+
     const VERSION = '3.0.0';
-    
+
     /**
      * Base URL currently being used
      *
      * @var string
      */
     public $baseUrl;
-    
+
     /**
      * URL of the currently mapped service
      *
      * @var string
      */
     public $url;
-    
+
     /**
      * Http request method of the current request.
      * Any value between [GET, PUT, POST, DELETE]
@@ -45,7 +46,7 @@ class Restler {
      * @var string
      */
     public $requestMethod;
-    
+
     /**
      * Requested data format.
      * Instance of the current format class
@@ -55,35 +56,35 @@ class Restler {
      * @example jsonFormat, xmlFormat, yamlFormat etc
      */
     public $requestFormat;
-    
+
     /**
      * Data sent to the service
      *
      * @var array
      */
-    public $requestData = array ();
-    
+    public $requestData = array();
+
     /**
      * Used in production mode to store the URL Map to disk
      *
      * @var string
      */
     public $cacheDir;
-    
+
     /**
      * base directory to locate format and auth files
      *
      * @var string
      */
     public $baseDir;
-    
+
     /**
      * Name of an iRespond implementation class
      *
      * @var string
      */
     public $responder = 'DefaultResponder';
-    
+
     /**
      * Response data format.
      * Instance of the current format class
@@ -93,13 +94,13 @@ class Restler {
      * @example jsonFormat, xmlFormat, yamlFormat etc
      */
     public $responseFormat;
-    
+
     // ==================================================================
     //
     // Private & Protected variables
     //
     // ------------------------------------------------------------------
-    
+
     /**
      * When set to false, it will run in debug mode and parse the
      * class files every time to map it to the URL
@@ -107,118 +108,118 @@ class Restler {
      * @var boolean
      */
     protected $_productionMode;
-    
+
     /**
      * Associated array that maps urls to their respective class and method
      *
      * @var array
      */
-    protected $_routes = array ();
-    
+    protected $_routes = array();
+
     /**
      * Associated array that maps formats to their respective format class name
      *
      * @var array
      */
-    protected $_formatMap = array ();
-    
+    protected $_formatMap = array();
+
     /**
      * Instance of the current api service class
      *
      * @var object
      */
     protected $_serviceClassInstance;
-    
+
     /**
      * Name of the api method being called
      *
      * @var string
      */
     protected $_serviceMethod;
-    
+
     /**
      * method information including metadata
      *
      * @var stdClass
      */
     protected $_serviceMethodInfo;
-    
+
     /**
      * list of authentication classes
      *
      * @var array
      */
-    protected $_authClasses = array ();
-    
+    protected $_authClasses = array();
+
     /**
      * list of error handling classes
      *
      * @var array
      */
-    protected $_errorClasses = array ();
-    
+    protected $_errorClasses = array();
+
     /**
      * Caching of url map is enabled or not
      *
      * @var boolean
      */
     protected $_cached;
-    
+
     protected $_apiVersion = 0;
     protected $_requestedApiVersion = 0;
     protected $_apiMinimumVersion = 0;
     protected $_apiClassPath = '';
     protected $_log = '';
-    
+
     /**
      * HTTP status codes
      *
      * @var array
      */
-    private $_codes = array (
-            100 => 'Continue',
-            101 => 'Switching Protocols',
-            200 => 'OK',
-            201 => 'Created',
-            202 => 'Accepted',
-            203 => 'Non-Authoritative Information',
-            204 => 'No Content',
-            205 => 'Reset Content',
-            206 => 'Partial Content',
-            300 => 'Multiple Choices',
-            301 => 'Moved Permanently',
-            302 => 'Found',
-            303 => 'See Other',
-            304 => 'Not Modified',
-            305 => 'Use Proxy',
-            306 => '(Unused)',
-            307 => 'Temporary Redirect',
-            400 => 'Bad Request',
-            401 => 'Unauthorized',
-            402 => 'Payment Required',
-            403 => 'Forbidden',
-            404 => 'Not Found',
-            405 => 'Method Not Allowed',
-            406 => 'Not Acceptable',
-            407 => 'Proxy Authentication Required',
-            408 => 'Request Timeout',
-            409 => 'Conflict',
-            410 => 'Gone',
-            411 => 'Length Required',
-            412 => 'Precondition Failed',
-            413 => 'Request Entity Too Large',
-            414 => 'Request-URI Too Long',
-            415 => 'Unsupported Media Type',
-            416 => 'Requested Range Not Satisfiable',
-            417 => 'Expectation Failed',
-            500 => 'Internal Server Error',
-            501 => 'Not Implemented',
-            502 => 'Bad Gateway',
-            503 => 'Service Unavailable',
-            504 => 'Gateway Timeout',
-            505 => 'HTTP Version Not Supported' 
+    private $_codes = array(
+        100 => 'Continue',
+        101 => 'Switching Protocols',
+        200 => 'OK',
+        201 => 'Created',
+        202 => 'Accepted',
+        203 => 'Non-Authoritative Information',
+        204 => 'No Content',
+        205 => 'Reset Content',
+        206 => 'Partial Content',
+        300 => 'Multiple Choices',
+        301 => 'Moved Permanently',
+        302 => 'Found',
+        303 => 'See Other',
+        304 => 'Not Modified',
+        305 => 'Use Proxy',
+        306 => '(Unused)',
+        307 => 'Temporary Redirect',
+        400 => 'Bad Request',
+        401 => 'Unauthorized',
+        402 => 'Payment Required',
+        403 => 'Forbidden',
+        404 => 'Not Found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
+        407 => 'Proxy Authentication Required',
+        408 => 'Request Timeout',
+        409 => 'Conflict',
+        410 => 'Gone',
+        411 => 'Length Required',
+        412 => 'Precondition Failed',
+        413 => 'Request Entity Too Large',
+        414 => 'Request-URI Too Long',
+        415 => 'Unsupported Media Type',
+        416 => 'Requested Range Not Satisfiable',
+        417 => 'Expectation Failed',
+        500 => 'Internal Server Error',
+        501 => 'Not Implemented',
+        502 => 'Bad Gateway',
+        503 => 'Service Unavailable',
+        504 => 'Gateway Timeout',
+        505 => 'HTTP Version Not Supported'
     );
-    
+
     // ==================================================================
     //
     // Public functions
@@ -235,13 +236,13 @@ class Restler {
      */
     public function __construct($productionMode = false, $refreshCache = false)
     {
-        ob_start ();
-        if (! class_exists ( 'RestlerAutoLoader', false )) {
+        ob_start();
+        if (!class_exists('RestlerAutoLoader', false)) {
             require_once 'restlerautoloader.php';
         }
-        RestlerAutoLoader::register ();
+        RestlerAutoLoader::register();
         $this->_productionMode = $productionMode;
-        $this->cacheDir = getcwd ();
+        $this->cacheDir = getcwd();
         $this->baseDir = RESTLER_PATH;
         // use this to rebuid cache everytime in production mode
         if ($productionMode && $refreshCache) {
@@ -254,58 +255,58 @@ class Restler {
      */
     public function __destruct()
     {
-        if ($this->_productionMode && ! $this->_cached) {
-            $this->saveCache ();
+        if ($this->_productionMode && !$this->_cached) {
+            $this->saveCache();
         }
     }
 
     public function setApiClassPath($path)
     {
-        $this->_apiClassPath = ! empty ( $path ) && 
-        $path {0} == '/' ? $path : $_SERVER ['DOCUMENT_ROOT'] . 
-        dirname ( $_SERVER ['SCRIPT_NAME'] ) . '/' . $path;
-        $this->_apiClassPath = rtrim ( $this->_apiClassPath, '/' );
+        $this->_apiClassPath = !empty ($path) &&
+            $path{0} == '/' ? $path : $_SERVER ['DOCUMENT_ROOT'] .
+            dirname($_SERVER ['SCRIPT_NAME']) . '/' . $path;
+        $this->_apiClassPath = rtrim($this->_apiClassPath, '/');
     }
 
     public function setAPIVersion($version, $minimum = 0, $apiClassPath = '')
     {
-        if (! is_int ( $version )) {
-            throw new InvalidArgumentException 
-                ( 'version should be an integer' );
+        if (!is_int($version)) {
+            throw new InvalidArgumentException
+            ('version should be an integer');
         }
         $this->_apiVersion = $version;
-        if (is_int ( $minimum )) {
+        if (is_int($minimum)) {
             $this->_apiMinimumVersion = $minimum;
         }
-        if (! empty ( $apiClassPath )) {
-            $this->setAPIClassPath ( $apiClassPath );
+        if (!empty ($apiClassPath)) {
+            $this->setAPIClassPath($apiClassPath);
         }
-        spl_autoload_register ( array (
-                $this,
-                'versionedAPIAutoLoader' 
-        ) );
+        spl_autoload_register(array(
+            $this,
+            'versionedAPIAutoLoader'
+        ));
     }
 
     public function versionedAPIAutoLoader($className)
     {
         $path = $this->_apiClassPath;
-        $className = strtolower ( $className );
+        $className = strtolower($className);
         $apiVersion = $this->_apiVersion;
-        while ( $apiVersion ) {
+        while ($apiVersion) {
             $file = "{$path}/v{$apiVersion}/{$className}.php";
-            if (file_exists ( $file )) {
+            if (file_exists($file)) {
                 require_once ($file);
                 return true;
             }
             $file = "{$path}/{$className}__v{$apiVersion}.php";
-            if (file_exists ( $file )) {
+            if (file_exists($file)) {
                 require_once ($file);
                 return true;
             }
-            $apiVersion --;
+            $apiVersion--;
         }
         $file = "{$path}/{$className}.php";
-        if (file_exists ( $file )) {
+        if (file_exists($file)) {
             require_once ($file);
             return true;
         }
@@ -323,30 +324,30 @@ class Restler {
      */
     public function setSupportedFormats()
     {
-        $args = func_get_args ();
-        $extensions = array ();
+        $args = func_get_args();
+        $extensions = array();
         foreach ($args as $className) {
-            if (! is_string ( $className ) || ! class_exists ( $className )) {
-                throw new Exception 
-                    ( "$className is not a vaild Format Class." );
+            if (!is_string($className) || !class_exists($className)) {
+                throw new Exception
+                ("$className is not a vaild Format Class.");
             }
             $obj = new $className ();
-            if (! $obj instanceof IFormat) {
-                throw new Exception ( 'Invalid format class; must implement ' . 
-                        'iFormat interface' );
+            if (!$obj instanceof IFormat) {
+                throw new Exception ('Invalid format class; must implement ' .
+                    'iFormat interface');
             }
-            foreach ($obj->getMIMEMap () as $extension => $mime) {
-                if (! isset ( $this->_formatMap [$extension] )) {
+            foreach ($obj->getMIMEMap() as $extension => $mime) {
+                if (!isset ($this->_formatMap [$extension])) {
                     $this->_formatMap [$extension] = $className;
                 }
-                if (! isset ( $this->_formatMap [$mime] )) {
+                if (!isset ($this->_formatMap [$mime])) {
                     $this->_formatMap [$mime] = $className;
                 }
                 $extensions [".$extension"] = true;
             }
         }
         $this->_formatMap ['default'] = $args [0];
-        $this->_formatMap ['extensions'] = array_keys ( $extensions );
+        $this->_formatMap ['extensions'] = array_keys($extensions);
     }
 
     /**
@@ -367,25 +368,25 @@ class Restler {
      */
     public function addAPIClass($className, $basePath = null)
     {
-        if (! class_exists ( $className, true )) {
-            throw new Exception ( "API class $className is missing." );
+        if (!class_exists($className, true)) {
+            throw new Exception ("API class $className is missing.");
         }
-        $this->loadCache ();
-        if (! $this->_cached) {
-            if (is_null ( $basePath )) {
-                $basePath = str_replace ( '__v', '/v', 
-                        strtolower ( $className ) );
-                $index = strrpos ( $className, '\\' );
+        $this->loadCache();
+        if (!$this->_cached) {
+            if (is_null($basePath)) {
+                $basePath = str_replace('__v', '/v',
+                    strtolower($className));
+                $index = strrpos($className, '\\');
                 if ($index !== false) {
-                    $basePath = substr ( $basePath, $index + 1 );
+                    $basePath = substr($basePath, $index + 1);
                 }
             } else {
-                $basePath = trim ( $basePath, '/' );
+                $basePath = trim($basePath, '/');
             }
-            if (strlen ( $basePath ) > 0) {
+            if (strlen($basePath) > 0) {
                 $basePath .= '/';
             }
-            $this->generateMap ( $className, $basePath );
+            $this->generateMap($className, $basePath);
         }
     }
 
@@ -401,7 +402,7 @@ class Restler {
     public function addAuthenticationClass($className, $basePath = null)
     {
         $this->_authClasses [] = $className;
-        $this->addAPIClass ( $className, $basePath );
+        $this->addAPIClass($className, $basePath);
     }
 
     /**
@@ -428,7 +429,7 @@ class Restler {
         $method = "handle$statusCode";
         $handled = false;
         foreach ($this->_errorClasses as $className) {
-            if (method_exists ( $className, $method )) {
+            if (method_exists($className, $method)) {
                 $obj = new $className ();
                 $obj->restler = $this;
                 $obj->$method ();
@@ -438,32 +439,33 @@ class Restler {
         if ($handled) {
             return;
         }
-        $this->sendData ( null, $statusCode, $errorMessage );
+        $this->sendData(null, $statusCode, $errorMessage);
     }
-    
+
     /**
      * An initialize function to allow use of the restler error generation
      * functions for pre-processing and pre-routing of requests.
      */
     public function init()
     {
-        if (empty ( $this->_formatMap )) {
-            $this->setSupportedFormats ( 'JsonFormat' );
+        if (empty ($this->_formatMap)) {
+            $this->setSupportedFormats('JsonFormat');
         }
-        $this->url = $this->getPath ();
-        $this->requestMethod = $this->getRequestMethod ();
-        $this->responseFormat = $this->getResponseFormat ();
-        $this->requestFormat = $this->getRequestFormat ();
+        $this->url = $this->getPath();
+        $this->requestMethod = $this->getRequestMethod();
+        $this->responseFormat = $this->getResponseFormat();
+        $this->requestFormat = $this->getRequestFormat();
         $this->responseFormat->restler = $this;
-        if (is_null ( $this->requestFormat )) {
+        if (is_null($this->requestFormat)) {
             $this->requestFormat = $this->responseFormat;
         } else {
             $this->requestFormat->restler = $this;
         }
-        if ($this->requestMethod == 'PUT' || 
-            $this->requestMethod == 'PATCH' || 
-            $this->requestMethod == 'POST') {
-            $this->requestData = $this->getRequestData ();
+        if ($this->requestMethod == 'PUT' ||
+            $this->requestMethod == 'PATCH' ||
+            $this->requestMethod == 'POST'
+        ) {
+            $this->requestData = $this->getRequestData();
         }
     }
 
@@ -477,37 +479,37 @@ class Restler {
     public function handle()
     {
         $this->init();
-        $this->_serviceMethodInfo = $o = $this->mapUrlToMethod ();
-        
-        if (! isset ( $o->className )) {
-            $this->handleError ( 404 );
+        $this->_serviceMethodInfo = $o = $this->mapUrlToMethod();
+
+        if (!isset ($o->className)) {
+            $this->handleError(404);
         } else {
             try {
                 if ($o->methodFlag) {
                     $authMethod = 'isAuthenticated';
-                    if (! count ( $this->_authClasses )) {
-                        throw new RestException ( 401 );
+                    if (!count($this->_authClasses)) {
+                        throw new RestException (401);
                     }
                     foreach ($this->_authClasses as $authClass) {
                         $authObj = new $authClass ();
                         $authObj->restler = $this;
-                        $this->applyClassMetadata ( $authClass, $authObj, $o );
-                        if (! method_exists ( $authObj, $authMethod )) {
-                            throw new RestException ( 
-                                    401, 'Authentication Class ' . 
-                                    'should implement iAuthenticate' );
-                        } elseif (! $authObj->$authMethod ()) {
-                            throw new RestException ( 401 );
+                        $this->applyClassMetadata($authClass, $authObj, $o);
+                        if (!method_exists($authObj, $authMethod)) {
+                            throw new RestException (
+                                401, 'Authentication Class ' .
+                                'should implement iAuthenticate');
+                        } elseif (!$authObj->$authMethod ()) {
+                            throw new RestException (401);
                         }
                     }
                 }
-                $this->applyClassMetadata ( get_class ( $this->requestFormat ), 
-                        $this->requestFormat, $o );
-                $preProcess = '_' . $this->requestFormat->getExtension () . 
-                '_' . $o->methodName;
+                $this->applyClassMetadata(get_class($this->requestFormat),
+                    $this->requestFormat, $o);
+                $preProcess = '_' . $this->requestFormat->getExtension() .
+                    '_' . $o->methodName;
                 $this->_serviceMethod = $o->methodName;
                 if ($o->methodFlag == 2) {
-                    $o = unprotect ( $o );
+                    $o = unprotect($o);
                 }
                 $object = $this->_serviceClassInstance = null;
                 // TODO:check if the api version requested is allowed by class
@@ -515,58 +517,63 @@ class Restler {
                 // TODO: validate params using IValidate
                 $validator = new DefaultValidator();
                 foreach ($o->metadata ['param'] as $index => $param) {
-                    if (isset ( $param ['validate'] )) {
+                    $info = &$param [CommentParser::$embeddedDataName];
+                    if (
+                        !isset ($info['validate'])
+                        || $info['validate'] != false
+                    ) {
                         /*
                         trace("created ValidationInfo for $index "
                                 . var_export($param, true));
                         */
-                        if($param['validate']['method']){
-                            if(!isset($object)){
+                        if (isset($info['method'])) {
+                            if (!isset($object)) {
                                 $object = $this->_serviceClassInstance
-                                = new $o->className ();
+                                    = new $o->className ();
                                 $object->restler = $this;
                             }
-                            $param['validate']['apiClassInstance'] = $object;
+                            $info ['apiClassInstance'] = $object;
                         }
+                        //convert to instance of ValidationInfo
                         $info = ValidationInfo::__set_state($param);
                         $valid = $validator->validate(
-                                $o->arguments[$index], $info);
+                            $o->arguments[$index], $info);
                         $o->arguments[$index] = $valid;
                     }
                 }
-                if(!isset($object)){
-                    $object = $this->_serviceClassInstance 
+                if (!isset($object)) {
+                    $object = $this->_serviceClassInstance
                         = new $o->className ();
                     $object->restler = $this;
                 }
-                if (method_exists ( $o->className, $preProcess )) {
-                    call_user_func_array ( array (
-                            $object,
-                            $preProcess 
-                    ), $o->arguments );
+                if (method_exists($o->className, $preProcess)) {
+                    call_user_func_array(array(
+                        $object,
+                        $preProcess
+                    ), $o->arguments);
                 }
                 switch ($o->methodFlag) {
                     case 3 :
-                        $reflectionMethod = new ReflectionMethod 
-                        ( $object, $o->methodName );
-                        $reflectionMethod->setAccessible ( true );
-                        $result = $reflectionMethod->invokeArgs 
-                        ( $object, $o->arguments );
+                        $reflectionMethod = new ReflectionMethod
+                        ($object, $o->methodName);
+                        $reflectionMethod->setAccessible(true);
+                        $result = $reflectionMethod->invokeArgs
+                        ($object, $o->arguments);
                         break;
                     case 2 :
                     case 1 :
                     default :
-                        $result = call_user_func_array ( array (
-                                $object,
-                                $o->methodName 
-                        ), $o->arguments );
+                        $result = call_user_func_array(array(
+                            $object,
+                            $o->methodName
+                        ), $o->arguments);
                 }
-            } catch ( RestException $e ) {
-                $this->handleError ( $e->getCode (), $e->getMessage () );
+            } catch (RestException $e) {
+                $this->handleError($e->getCode(), $e->getMessage());
             }
         }
-        if (isset ( $result ) || $result === null) {
-            $this->sendData ( $result );
+        if (isset ($result) || $result === null) {
+            $this->sendData($result);
         }
     }
 
@@ -579,21 +586,21 @@ class Restler {
      */
     public function sendData($data, $statusCode = 0, $statusMessage = null)
     {
-        $this->_log = ob_get_clean ();
-        header ( 'Cache-Control: no-cache, must-revalidate' );
-        header ( 'Expires: 0' );
-        header ( 'Content-Type: ' . $this->responseFormat->getMIME () );
-        header ( 'X-Powered-By: Luracast Restler v' . Restler::VERSION );
-        if (isset ( $this->_serviceMethodInfo->metadata ['status'] )) {
-            call_user_func_array ( array (
-                    $this,
-                    'setStatus' 
-            ), $this->_serviceMethodInfo->metadata ['status'] );
+        $this->_log = ob_get_clean();
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Expires: 0');
+        header('Content-Type: ' . $this->responseFormat->getMIME());
+        header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+        if (isset ($this->_serviceMethodInfo->metadata ['status'])) {
+            call_user_func_array(array(
+                $this,
+                'setStatus'
+            ), $this->_serviceMethodInfo->metadata ['status']);
         }
-        if (isset ( $this->_serviceMethodInfo->metadata ['header'] )) {
-            foreach ($this->_serviceMethodInfo->metadata 
-                    ['header'] as $header) {
-                header ( $header, true );
+        if (isset ($this->_serviceMethodInfo->metadata ['header'])) {
+            foreach ($this->_serviceMethodInfo->metadata
+                     ['header'] as $header) {
+                header($header, true);
             }
         }
         /**
@@ -602,31 +609,32 @@ class Restler {
          */
         $responder = new $this->responder ();
         $responder->restler = $this;
-        $this->applyClassMetadata ( $this->responder, $responder, 
-                $this->_serviceMethodInfo );
+        $this->applyClassMetadata($this->responder, $responder,
+            $this->_serviceMethodInfo);
         if ($statusCode == 0) {
-            $data = $this->responseFormat->encode ( $data, 
-                    ! $this->_productionMode );
-            $data = $responder->formatResponse ( $data );
-            $postProcess = '_' . $this->_serviceMethod . '_' . 
-            $this->responseFormat->getExtension ();
-            if (isset ( $this->_serviceClassInstance ) && 
-                    method_exists ( $this->_serviceClassInstance, 
-                            $postProcess )) {
-                $data = call_user_func ( array (
-                        $this->_serviceClassInstance,
-                        $postProcess 
-                ), $data );
+            $data = $this->responseFormat->encode($data,
+                !$this->_productionMode);
+            $data = $responder->formatResponse($data);
+            $postProcess = '_' . $this->_serviceMethod . '_' .
+                $this->responseFormat->getExtension();
+            if (isset ($this->_serviceClassInstance) &&
+                method_exists($this->_serviceClassInstance,
+                    $postProcess)
+            ) {
+                $data = call_user_func(array(
+                    $this->_serviceClassInstance,
+                    $postProcess
+                ), $data);
             }
         } else {
-            $message = $this->_codes [$statusCode] . 
-            (empty ( $statusMessage ) ? '' : ': ' . $statusMessage);
-            $this->setStatus ( $statusCode );
-            $data = $this->responseFormat->encode 
-            ( $responder->formatError ( $statusCode, $message ), 
-                    ! $this->_productionMode );
+            $message = $this->_codes [$statusCode] .
+                (empty ($statusMessage) ? '' : ': ' . $statusMessage);
+            $this->setStatus($statusCode);
+            $data = $this->responseFormat->encode
+            ($responder->formatError($statusCode, $message),
+                !$this->_productionMode);
         }
-        die ( $data );
+        die ($data);
     }
 
     /**
@@ -637,20 +645,21 @@ class Restler {
      */
     public function setStatus($code)
     {
-        if (isset ( $_GET ['suppress_response_codes'] ) && 
-                $_GET ['suppress_response_codes'] == 'true') {
+        if (isset ($_GET ['suppress_response_codes']) &&
+            $_GET ['suppress_response_codes'] == 'true'
+        ) {
             $code = 200;
         }
-        header ( "{$_SERVER['SERVER_PROTOCOL']} $code " . 
-        $this->_codes [strval ( $code )] );
+        header("{$_SERVER['SERVER_PROTOCOL']} $code " .
+            $this->_codes [strval($code)]);
     }
 
     /**
      * Compare two strings and remove the common
      * sub string from the first string and return it
      *
-     * @param string $first            
-     * @param string $second            
+     * @param string $first
+     * @param string $second
      * @param string $char
      *            optional, set it as
      *            blank string for char by char comparison
@@ -658,17 +667,17 @@ class Restler {
      */
     public function removeCommonPath($first, $second, $char = '/')
     {
-        $first = explode ( $char, $first );
-        $second = explode ( $char, $second );
-        while ( count ( $second ) ) {
+        $first = explode($char, $first);
+        $second = explode($char, $second);
+        while (count($second)) {
             if ($first [0] == $second [0]) {
-                array_shift ( $first );
+                array_shift($first);
             } else {
                 break;
             }
-            array_shift ( $second );
+            array_shift($second);
         }
-        return implode ( $char, $first );
+        return implode($char, $first);
     }
 
     public function saveCache()
@@ -676,46 +685,46 @@ class Restler {
         $file = $this->cacheDir . '/routes.php';
         $s = '$o=array();' . PHP_EOL;
         foreach ($this->_routes as $key => $value) {
-            $s .= PHP_EOL . PHP_EOL . PHP_EOL . 
-            "//############### $key ###############" . PHP_EOL . PHP_EOL;
+            $s .= PHP_EOL . PHP_EOL . PHP_EOL .
+                "//############### $key ###############" . PHP_EOL . PHP_EOL;
             $s .= '$o[\'' . $key . '\']=array();';
             foreach ($value as $ke => $va) {
                 $s .= PHP_EOL . PHP_EOL . "//==== $key $ke" . PHP_EOL . PHP_EOL;
-                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\']=' . 
-                str_replace ( PHP_EOL, PHP_EOL . "\t", 
-                        var_export ( $va, true ) ) . ';';
+                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\']=' .
+                    str_replace(PHP_EOL, PHP_EOL . "\t",
+                        var_export($va, true)) . ';';
             }
         }
         $s .= PHP_EOL . 'return $o;';
-        $r = @file_put_contents ( $file, "<?php $s" );
-        @chmod ( $file, 0777 );
+        $r = @file_put_contents($file, "<?php $s");
+        @chmod($file, 0777);
         if ($r === false) {
-            throw new Exception ( "The cache directory located at ".
-                    "'$this->cacheDir' needs to have " . 'the permissions ".
-                    "set to read/write/execute for everyone ' . 
-                    'in order to save cache and improve performance.' );
+            throw new Exception ("The cache directory located at " .
+                "'$this->cacheDir' needs to have " . 'the permissions ".
+                    "set to read/write/execute for everyone ' .
+                'in order to save cache and improve performance.');
         }
     }
 
     /**
      * Magic method to expose some protected variables
      *
-     * @param String $name            
+     * @param String $name
      */
     public function __get($name)
     {
         $privateProperty = "_$name";
-        if (isset ( $this->$privateProperty )) {
+        if (isset ($this->$privateProperty)) {
             return $this->$privateProperty;
         }
     }
-    
+
     // ==================================================================
     //
     // Protected functions
     //
     // ------------------------------------------------------------------
-    
+
     /**
      * Parses the requst url and get the api path
      *
@@ -724,26 +733,26 @@ class Restler {
     protected function getPath()
     {
         $fullPath = $_SERVER ['REQUEST_URI'];
-        $path = urldecode ( $this->removeCommonPath 
-                ( $fullPath, $_SERVER ['SCRIPT_NAME'] ) );
-        $baseUrl = isset ( $_SERVER ['HTTPS'] ) && 
-        $_SERVER ['HTTPS'] == 'on' ? 'https://' : 'http://';
+        $path = urldecode($this->removeCommonPath
+        ($fullPath, $_SERVER ['SCRIPT_NAME']));
+        $baseUrl = isset ($_SERVER ['HTTPS']) &&
+            $_SERVER ['HTTPS'] == 'on' ? 'https://' : 'http://';
         if ($_SERVER ['SERVER_PORT'] != '80') {
-            $baseUrl .= $_SERVER ['SERVER_NAME'] . ':' 
-                    . $_SERVER ['SERVER_PORT'];
+            $baseUrl .= $_SERVER ['SERVER_NAME'] . ':'
+                . $_SERVER ['SERVER_PORT'];
         } else {
             $baseUrl .= $_SERVER ['SERVER_NAME'];
         }
-        $this->baseUrl = $baseUrl . rtrim ( substr ( 
-                $fullPath, 0, strlen ( $fullPath ) - strlen ( $path ) ), '/' );
-        
-        $path = preg_replace ( '/(\/*\?.*$)|(\/$)/', '', $path );
-        $path = str_replace ( $this->_formatMap ['extensions'], '', $path );
-        if ($this->_apiVersion && $path {0} == 'v') {
-            $version = intval ( substr ( $path, 1 ) );
+        $this->baseUrl = $baseUrl . rtrim(substr(
+            $fullPath, 0, strlen($fullPath) - strlen($path)), '/');
+
+        $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
+        $path = str_replace($this->_formatMap ['extensions'], '', $path);
+        if ($this->_apiVersion && $path{0} == 'v') {
+            $version = intval(substr($path, 1));
             if ($version && $version <= $this->_apiVersion) {
                 $this->_requestedApiVersion = $version;
-                $path = explode ( '/', $path, 2 );
+                $path = explode('/', $path, 2);
                 $path = $path [1];
             }
         } elseif ($this->_apiVersion) {
@@ -766,13 +775,14 @@ class Restler {
     protected function getRequestMethod()
     {
         $method = $_SERVER ['REQUEST_METHOD'];
-        if (isset ( $_SERVER ['HTTP_X_HTTP_METHOD_OVERRIDE'] )) {
+        if (isset ($_SERVER ['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
             $method = $_SERVER ['HTTP_X_HTTP_METHOD_OVERRIDE'];
-        } elseif (isset ( $_GET ['method'] )) {
+        } elseif (isset ($_GET ['method'])) {
             // support for exceptional clients who can't set the header
-            $m = strtoupper ( $_GET ['method'] );
-            if ($m == 'PUT' || $m == 'DELETE' || 
-                    $m == 'POST' || $m == 'PATCH') {
+            $m = strtoupper($_GET ['method']);
+            if ($m == 'PUT' || $m == 'DELETE' ||
+                $m == 'POST' || $m == 'PATCH'
+            ) {
                 $method = $m;
             }
         }
@@ -793,19 +803,19 @@ class Restler {
     {
         $format = null;
         // check if client has sent any information on request format
-        if (isset ( $_SERVER ['CONTENT_TYPE'] )) {
-            $mime = explode ( ';', $_SERVER ['CONTENT_TYPE'] );
+        if (isset ($_SERVER ['CONTENT_TYPE'])) {
+            $mime = explode(';', $_SERVER ['CONTENT_TYPE']);
             $mime = $mime [0];
             if ($mime == UrlEncodedFormat::MIME) {
                 $format = new UrlEncodedFormat ();
             } else {
-                if (isset ( $this->_formatMap [$mime] )) {
+                if (isset ($this->_formatMap [$mime])) {
                     $format = $this->_formatMap [$mime];
-                    $format = is_string ( $format ) ? new $format () : $format;
-                    $format->setMIME ( $mime );
+                    $format = is_string($format) ? new $format () : $format;
+                    $format->setMIME($mime);
                 } else {
-                    $this->handleError ( 
-                            403, "Content type $mime is not supported." );
+                    $this->handleError(
+                        403, "Content type $mime is not supported.");
                     return;
                 }
             }
@@ -828,16 +838,16 @@ class Restler {
          * @var iFormat
          */
         $format = null;
-        $extensions = explode ( '.', 
-                parse_url ( $_SERVER ['REQUEST_URI'], PHP_URL_PATH ) );
-        while ( $extensions ) {
-            $extension = array_pop ( $extensions );
-            $extension = explode ( '/', $extension );
-            $extension = array_shift ( $extension );
-            if ($extension && isset ( $this->_formatMap [$extension] )) {
+        $extensions = explode('.',
+            parse_url($_SERVER ['REQUEST_URI'], PHP_URL_PATH));
+        while ($extensions) {
+            $extension = array_pop($extensions);
+            $extension = explode('/', $extension);
+            $extension = array_shift($extension);
+            if ($extension && isset ($this->_formatMap [$extension])) {
                 $format = $this->_formatMap [$extension];
-                $format = is_string ( $format ) ? new $format () : $format;
-                $format->setExtension ( $extension );
+                $format = is_string($format) ? new $format () : $format;
+                $format->setExtension($extension);
                 // echo "Extension $extension";
                 return $format;
             }
@@ -853,8 +863,8 @@ class Restler {
                 $parts = explode(';q=', trim($accept));
                 $type = array_shift($parts);
                 $quality = count($parts) ?
-                floatval(array_shift($parts)) :
-                (1000 - $pos) / 1000;
+                    floatval(array_shift($parts)) :
+                    (1000 - $pos) / 1000;
                 $acceptList[$type] = $quality;
             }
             arsort($acceptList);
@@ -891,7 +901,7 @@ class Restler {
             // a 406 (not acceptable) response.
             header('HTTP/1.1 406 Not Acceptable');
             die('406 Not Acceptable: The server was unable to ' .
-                    'negotiate content for this request.');
+                'negotiate content for this request.');
         } else {
             // Tell cache content is based ot Accept header
             header("Vary: Accept");
@@ -907,47 +917,47 @@ class Restler {
     protected function getRequestData()
     {
         try {
-            $r = file_get_contents ( 'php://input' );
-            if (is_null ( $r )) {
+            $r = file_get_contents('php://input');
+            if (is_null($r)) {
                 return $_GET;
             }
-            $r = $this->requestFormat->decode ( $r );
-            return is_null ( $r ) ? array () : $r;
-        } catch ( RestException $e ) {
-            $this->handleError ( $e->getCode (), $e->getMessage () );
+            $r = $this->requestFormat->decode($r);
+            return is_null($r) ? array() : $r;
+        } catch (RestException $e) {
+            $this->handleError($e->getCode(), $e->getMessage());
         }
     }
 
     protected function mapUrlToMethod()
     {
-        if (! isset ( $this->_routes [$this->requestMethod] )) {
+        if (!isset ($this->_routes [$this->requestMethod])) {
             return new stdClass ();
         }
         $urls = $this->_routes [$this->requestMethod];
-        if (! $urls) {
+        if (!$urls) {
             return new stdClass ();
         }
         $found = false;
         $this->requestData += $_GET;
-        $params = array (
-                'request_data' => $this->requestData 
+        $params = array(
+            'request_data' => $this->requestData
         );
         $params += $this->requestData;
-        $lc = strtolower ( $this->url );
+        $lc = strtolower($this->url);
         foreach ($urls as $url => $call) {
             // echo PHP_EOL.$url.' = '.$this->url.PHP_EOL;
-            $call = ( object ) $call;
-            if (strstr ( $url, '{' )) {
-                $regex = str_replace ( array (
-                        '{',
-                        '}' 
-                ), array (
-                        '(?P<',
-                        '>[^/]+)' 
-                ), $url );
-                if (preg_match ( ":^$regex$:i", $this->url, $matches )) {
+            $call = ( object )$call;
+            if (strstr($url, '{')) {
+                $regex = str_replace(array(
+                    '{',
+                    '}'
+                ), array(
+                    '(?P<',
+                    '>[^/]+)'
+                ), $url);
+                if (preg_match(":^$regex$:i", $this->url, $matches)) {
                     foreach ($matches as $arg => $match) {
-                        if (isset ( $call->arguments [$arg] )) {
+                        if (isset ($call->arguments [$arg])) {
                             // flog("$arg => $match $args[$arg]");
                             $params [$arg] = $match;
                         }
@@ -955,12 +965,12 @@ class Restler {
                     $found = true;
                     break;
                 }
-            } elseif (strstr ( $url, ':' )) {
-                $regex = preg_replace ( '/\\\:([^\/]+)/', '(?P<$1>[^/]+)', 
-                        preg_quote ( $url ) );
-                if (preg_match ( ":^$regex$:i", $this->url, $matches )) {
+            } elseif (strstr($url, ':')) {
+                $regex = preg_replace('/\\\:([^\/]+)/', '(?P<$1>[^/]+)',
+                    preg_quote($url));
+                if (preg_match(":^$regex$:i", $this->url, $matches)) {
                     foreach ($matches as $arg => $match) {
-                        if (isset ( $call->arguments [$arg] )) {
+                        if (isset ($call->arguments [$arg])) {
                             // flog("$arg => $match $args[$arg]");
                             $params [$arg] = $match;
                         }
@@ -979,7 +989,7 @@ class Restler {
             $p = $call->defaults;
             foreach ($call->arguments as $key => $value) {
                 // echo "$key => $value \n";
-                if (isset ( $params [$key] )) {
+                if (isset ($params [$key])) {
                     $p [$value] = $params [$key];
                 }
             }
@@ -990,9 +1000,9 @@ class Restler {
 
     /**
      * Apply static and non-static properties defined in
-     * the method information anotation
+     * the method information annotation
      *
-     * @param String $className            
+     * @param String $className
      * @param Object $instance
      *            instance of that class
      * @param Object $methodInfo
@@ -1000,14 +1010,15 @@ class Restler {
      */
     protected function applyClassMetadata($className, $instance, $methodInfo)
     {
-        if (isset ( $methodInfo->metadata [$className] ) && 
-                is_array ( $methodInfo->metadata [$className] )) {
-            foreach ($methodInfo->metadata 
-                    [$className] as $property => $value) {
-                if (property_exists ( $className, $property )) {
-                    $reflectionProperty = new ReflectionProperty ( 
-                            $className, $property );
-                    $reflectionProperty->setValue ( $instance, $value );
+        if (isset ($methodInfo->metadata [$className]) &&
+            is_array($methodInfo->metadata [$className])
+        ) {
+            foreach ($methodInfo->metadata
+                     [$className] as $property => $value) {
+                if (property_exists($className, $property)) {
+                    $reflectionProperty = new ReflectionProperty (
+                        $className, $property);
+                    $reflectionProperty->setValue($instance, $value);
                 }
             }
         }
@@ -1021,10 +1032,10 @@ class Restler {
         $file = $this->cacheDir . '/routes.php';
         $this->_cached = false;
         if ($this->_productionMode) {
-            if (file_exists ( $file )) {
+            if (file_exists($file)) {
                 $routes = include ($file);
             }
-            if (isset ( $routes ) && is_array ( $routes )) {
+            if (isset ($routes) && is_array($routes)) {
                 $this->_routes = $routes;
                 $this->_cached = true;
             }
@@ -1036,8 +1047,8 @@ class Restler {
     /**
      * Generates cachable url to method mapping
      *
-     * @param string $className            
-     * @param string $basePath            
+     * @param string $className
+     * @param string $basePath
      */
     protected function generateMap($className, $basePath = '')
     {
@@ -1047,109 +1058,113 @@ class Restler {
          * create routes with out it - if a required parameter is not primitive
          * type - Do not inlcude it in URL
          */
-        $reflection = new ReflectionClass ( $className );
-        $classMetadata = DocParser::parse ( $reflection->getDocComment () );
-        $methods = $reflection->getMethods ( ReflectionMethod::IS_PUBLIC + 
-                ReflectionMethod::IS_PROTECTED );
+        $reflection = new ReflectionClass ($className);
+        $classMetadata = CommentParser::parse($reflection->getDocComment());
+        $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC +
+            ReflectionMethod::IS_PROTECTED);
         foreach ($methods as $method) {
-            $doc = $method->getDocComment ();
-            $arguments = array ();
-            $defaults = array ();
-            $metadata = DocParser::parse ( $doc ) + $classMetadata;
-            $params = $method->getParameters ();
+            $doc = $method->getDocComment();
+            $arguments = array();
+            $defaults = array();
+            $metadata = CommentParser::parse($doc) + $classMetadata;
+            $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = false;
-            $allowAmbiguity = isset ( $metadata ['allowAmbiguity'] );
-            if (isset ( $classMetadata ['description'] )) {
+            $allowAmbiguity = isset ($metadata ['allowAmbiguity']);
+            if (isset ($classMetadata ['description'])) {
                 $metadata ['classDescription'] = $classMetadata ['description'];
             }
-            if (isset ( $classMetadata ['classLongDescription'] )) {
-                $metadata ['classLongDescription'] = 
+            if (isset ($classMetadata ['classLongDescription'])) {
+                $metadata ['classLongDescription'] =
                     $classMetadata ['longDescription'];
             }
-            if (! isset ( $metadata ['param'] )) {
-                $metadata ['param'] = array ();
+            if (!isset ($metadata ['param'])) {
+                $metadata ['param'] = array();
             }
             foreach ($params as $param) {
-                $arguments [$param->getName ()] = $position;
-                $defaults [$position] = $param->isDefaultValueAvailable () ? 
-                $param->getDefaultValue () : null;
-                if (! isset ( $metadata ['param'] [$position] )) {
-                    $metadata ['param'] [$position] = array ();
+                $arguments [$param->getName()] = $position;
+                $defaults [$position] = $param->isDefaultValueAvailable() ?
+                    $param->getDefaultValue() : null;
+                if (!isset ($metadata ['param'] [$position])) {
+                    $metadata ['param'] [$position] = array();
                 }
-                $metadata ['param'] [$position] ['name'] = 
-                trim ( $param->getName (), '$ ' );
-                $metadata ['param'] [$position] ['default'] = 
-                $defaults [$position];
-                if ($param->isOptional ()) {
+                $metadata ['param'] [$position] ['name'] =
+                    trim($param->getName(), '$ ');
+                $metadata ['param'] [$position] ['default'] =
+                    $defaults [$position];
+                if ($param->isOptional()) {
                     $metadata ['param'] [$position] ['required'] = false;
                 } else {
                     $metadata ['param'] [$position] ['required'] = true;
-                    if (! $allowAmbiguity && 
-                            $param->getName () != 'request_data') {
+                    if (!$allowAmbiguity &&
+                        $param->getName() != 'request_data'
+                    ) {
                         $ignorePathTill = $position + 1;
                     }
                 }
-                $position ++;
+                $position++;
             }
-            $methodFlag = $method->isProtected () ? 
-            (isRestlerCompatibilityModeEnabled () ? 2 : 3) : 
-            (isset ( $metadata ['protected'] ) ? 1 : 0);
+            $methodFlag = $method->isProtected() ?
+                (isRestlerCompatibilityModeEnabled() ? 2 : 3) :
+                (isset ($metadata ['protected']) ? 1 : 0);
             // take note of the order
-            $call = array (
-                    'className' => $className,
-                    'path' => rtrim ( $basePath, '/' ),
-                    'methodName' => $method->getName (),
-                    'arguments' => $arguments,
-                    'defaults' => $defaults,
-                    'metadata' => $metadata,
-                    'methodFlag' => $methodFlag 
+            $call = array(
+                'className' => $className,
+                'path' => rtrim($basePath, '/'),
+                'methodName' => $method->getName(),
+                'arguments' => $arguments,
+                'defaults' => $defaults,
+                'metadata' => $metadata,
+                'methodFlag' => $methodFlag
             );
-            $methodUrl = strtolower ( $method->getName () );
-            if (preg_match_all ( 
-            '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s', 
-                    $doc, $matches, PREG_SET_ORDER )) {
+            $methodUrl = strtolower($method->getName());
+            if (preg_match_all(
+                '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s',
+                $doc, $matches, PREG_SET_ORDER)
+            ) {
                 foreach ($matches as $match) {
                     $httpMethod = $match [1];
-                    $url = rtrim ( $basePath . $match [2], '/' );
+                    $url = rtrim($basePath . $match [2], '/');
                     $this->_routes [$httpMethod] [$url] = $call;
                 }
-            } elseif ($methodUrl [0] != '_' && ! isset ( $metadata ['url-'] )) {
+            } elseif ($methodUrl [0] != '_' && !isset ($metadata ['url-'])) {
                 // not prefixed with underscore
                 // no configuration found so use convention
-                if (preg_match_all ( 
-                        '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i', 
-                        $methodUrl, $matches )) {
-                    $httpMethod = strtoupper ( $matches [0] [0] );
-                    $methodUrl = substr ( $methodUrl, strlen ( $httpMethod ) );
+                if (preg_match_all(
+                    '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i',
+                    $methodUrl, $matches)
+                ) {
+                    $httpMethod = strtoupper($matches [0] [0]);
+                    $methodUrl = substr($methodUrl, strlen($httpMethod));
                 } else {
                     $httpMethod = 'GET';
                 }
                 if ($methodUrl == 'index') {
                     $methodUrl = '';
                 }
-                $url = empty ( $methodUrl ) ? rtrim ( $basePath, '/' ) : 
+                $url = empty ($methodUrl) ? rtrim($basePath, '/') :
                     $basePath . $methodUrl;
                 // $url = rtrim($basePath.($methodUrl == 'index' ? '' :
                 // $methodUrl),'/');
-                if (! $ignorePathTill) {
+                if (!$ignorePathTill) {
                     $this->_routes [$httpMethod] [$url] = $call;
                     //trigger_error ( "$httpMethod $url =  $call" );
                 }
                 $position = 1;
                 foreach ($params as $param) {
-                    if (($param->isOptional () && ! $allowAmbiguity) || 
-                            $param->getName () == 'request_data') {
+                    if (($param->isOptional() && !$allowAmbiguity) ||
+                        $param->getName() == 'request_data'
+                    ) {
                         break;
                     }
-                    if (! empty ( $url )) {
+                    if (!empty ($url)) {
                         $url .= '/';
                     }
-                    $url .= '{' . $param->getName () . '}';
+                    $url .= '{' . $param->getName() . '}';
                     if ($allowAmbiguity || $position == $ignorePathTill) {
                         $this->_routes [$httpMethod] [$url] = $call;
                     }
-                    $position ++;
+                    $position++;
                 }
             }
         }
@@ -1162,14 +1177,14 @@ class Restler {
 //
 // ------------------------------------------------------------------
 
-if (version_compare ( PHP_VERSION, '5.3.0' ) < 0) {
+if (version_compare(PHP_VERSION, '5.3.0') < 0) {
     require_once 'compat.php';
 }
 
 /**
  * Manage compatibility with PHP 5 < PHP 5.3
  */
-if (! function_exists ( 'isRestlerCompatibilityModeEnabled' )) {
+if (!function_exists('isRestlerCompatibilityModeEnabled')) {
 
     function isRestlerCompatibilityModeEnabled()
     {
@@ -1177,8 +1192,8 @@ if (! function_exists ( 'isRestlerCompatibilityModeEnabled' )) {
     }
 }
 
-if (! defined ( 'RESTLER_PATH' )) {
-    define ( 'RESTLER_PATH', dirname ( __FILE__ ) );
+if (!defined('RESTLER_PATH')) {
+    define ('RESTLER_PATH', dirname(__FILE__));
 }
 /*
 if (! class_exists ( 'DebugFormat' ) && ! function_exists ( 'trace' )) {

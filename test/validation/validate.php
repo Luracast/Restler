@@ -16,7 +16,7 @@ class Validate {
      * three lines
      *
      * @param string $str
-     *            {choice=one,two,three&message=str+should+be+one+or+two+or+three}
+     *   ``` choice=one,two,three&message=str+should+be+one+or+two+or+three```
      * @return string
      * 
      * {@inheritDoc}
@@ -29,11 +29,12 @@ class Validate {
     /**
      *
      * @param string $email
-     *            {type=email&response=exception}
+     *            ``` type=email&response=exception```
      * @return string
      */
     function email($email)
     {
+        //return $this->restler->serviceMethodInfo;
         return "'$email' is a valid email id";
     }
 
@@ -41,7 +42,9 @@ class Validate {
      * Check the password strength
      * using regex <pre>/^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/</pre>
      *
-     * @param string|number $password {fix=true&min=15&message=Given+password+is+very+week&pattern=%2F%5E.*(%3F%3D.%7B8%2C%7D)(%3F%3D.*%5Cd)(%3F%3D.*%5Ba-z%5D)(%3F%3D.*%5BA-Z%5D).*%24%2F}
+     * @param string|number $password
+     * ``` fix=true&min=15&message=Given+password+is+very+week&
+     * &pattern=%2F%5E.*(%3F%3D.%7B8%2C%7D)(%3F%3D.*%5Cd)(%3F%3D.*%5Ba-z%5D)(%3F%3D.*%5BA-Z%5D).*%24%2F```
      * @return string
      */
     function password($password)
@@ -66,7 +69,7 @@ class Validate {
     /**
      *
      * @param int $num
-     *            {min=10&max=20.2&fix=true}
+     *            ``` {"min":10,"max":20.2,"fix":true}```
      * @return string
      */
     function int($num)
