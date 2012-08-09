@@ -891,7 +891,7 @@ class Restler
             } else if (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
                 $format = new XmlFormat;
             } else if (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
-                $format = new $this->formatMap['default'];
+                $format = new $this->_formatMap['default'];
             }
         }
         if (empty($format)) {
@@ -1045,7 +1045,7 @@ class Restler
     }
 
     /**
-     * Generates cachable url to method mapping
+     * Generates cacheable url to method mapping
      *
      * @param string $className
      * @param string $basePath
@@ -1056,7 +1056,7 @@ class Restler
          * Mapping Rules - Optional parameters should not be mapped to URL - if
          * a required parameter is of primitive type - Map them to URL - Do not
          * create routes with out it - if a required parameter is not primitive
-         * type - Do not inlcude it in URL
+         * type - Do not include it in URL
          */
         $reflection = new ReflectionClass ($className);
         $classMetadata = CommentParser::parse($reflection->getDocComment());
@@ -1082,20 +1082,30 @@ class Restler
                 $metadata ['param'] = array();
             }
             foreach ($params as $param) {
+                $type =
+                    $param->isArray() ? 'array' : $param->getClass();
+                if ($type instanceof ReflectionClass) {
+                    $type = $type->getName();
+                }
                 $arguments [$param->getName()] = $position;
                 $defaults [$position] = $param->isDefaultValueAvailable() ?
                     $param->getDefaultValue() : null;
                 if (!isset ($metadata ['param'] [$position])) {
                     $metadata ['param'] [$position] = array();
                 }
-                $metadata ['param'] [$position] ['name'] =
+                $m = &$metadata ['param'] [$position];
+                if (isset($type)) {
+                    trace($param->getName() . " is of type `$type`");
+                    $m['type'] = $type;
+                }
+                $m ['name'] =
                     trim($param->getName(), '$ ');
-                $metadata ['param'] [$position] ['default'] =
+                $m ['default'] =
                     $defaults [$position];
                 if ($param->isOptional()) {
-                    $metadata ['param'] [$position] ['required'] = false;
+                    $m ['required'] = false;
                 } else {
-                    $metadata ['param'] [$position] ['required'] = true;
+                    $m ['required'] = true;
                     if (!$allowAmbiguity &&
                         $param->getName() != 'request_data'
                     ) {
