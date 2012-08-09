@@ -3,22 +3,23 @@
  * ValueObject for validation information
  * @author arulkumaran
  */
-class ValidationInfo implements IValueObject {
+class ValidationInfo implements IValueObject
+{
     /**
      * Name of the variable being validated
-     * 
+     *
      * @var string variable name
      */
     public $name;
     /**
      * Data type of the variable being validated.
      * It will be mostly string
-     * 
+     *
      * @var string array multiple types are specified it will be of
      *      type array otherwise it will be a string
      */
     public $type;
-    
+
     /**
      * Should we attempt to fix the value?
      * When set to false validation class should throw
@@ -29,7 +30,7 @@ class ValidationInfo implements IValueObject {
      * @var boolean true or false
      */
     public $fix = false;
-    
+
     // ==================================================================
     //
     // VALUE RANGE
@@ -55,7 +56,7 @@ class ValidationInfo implements IValueObject {
      * @var number maximim value
      */
     public $max;
-    
+
     // ==================================================================
     //
     // REGEX VALIDATION
@@ -67,7 +68,7 @@ class ValidationInfo implements IValueObject {
      * @var string regular expression
      */
     public $pattern;
-    
+
     // ==================================================================
     //
     // CUSTOM VALIDATION
@@ -80,7 +81,7 @@ class ValidationInfo implements IValueObject {
      * @var array custom rule set
      */
     public $rules;
-    
+
     /**
      * Specifying a custom error message will override the standard error
      * message return by the validator class
@@ -88,13 +89,13 @@ class ValidationInfo implements IValueObject {
      * @var string custom error respose
      */
     public $message;
-    
+
     // ==================================================================
     //
     // METHODS
     //
     // ------------------------------------------------------------------
-    
+
     /**
      * Name of the method to be used for validation.
      * It will be receiving two parameters $input, $rules (array)
@@ -102,7 +103,7 @@ class ValidationInfo implements IValueObject {
      * @var string validation method name
      */
     public $method;
-    
+
     /**
      * Instance of the API class currently being called. It will be null most of
      * the time. Only when method is defined it will contain an instance.
@@ -113,26 +114,27 @@ class ValidationInfo implements IValueObject {
 
     public static function numericValue($value)
     {
-        return ( int ) $value == $value 
-            ? ( int ) $value 
-            : floatval ( $value );
+        return ( int )$value == $value
+            ? ( int )$value
+            : floatval($value);
     }
 
     public static function arrayValue($value)
     {
-        return is_array ( $value ) ? $value : array (
-                $value 
+        return is_array($value) ? $value : array(
+            $value
         );
     }
 
     public static function stringValue($value)
     {
-        return is_array ( $value ) 
-            ? implode ( ',', $value ) 
-            : ( string ) $value;
+        return is_array($value)
+            ? implode(',', $value)
+            : ( string )$value;
     }
-    
-    public function __toString(){
+
+    public function __toString()
+    {
         return ' new ValidationInfo() ';
     }
 
@@ -143,44 +145,45 @@ class ValidationInfo implements IValueObject {
     {
         $o = new self ();
         $o->name = $info ['name'];
-        $o->rules = $rules = $info ['validate'];
-        $o->type = $info ['type'];
-        $o->rules ['fix'] = $o->fix 
-            = isset ( $rules ['fix'] ) && $rules ['fix'] == 'true';
-        unset ( $rules ['fix'] );
-        if (isset ( $rules ['min'] )) {
-            $o->rules ['min'] = $o->min = self::numericValue ( $rules ['min'] );
-            unset ( $rules ['min'] );
+        $o->rules = $rules = isset($info [CommentParser::$embeddedDataName])
+            ? $info [CommentParser::$embeddedDataName] : array();
+        $o->type = isset($info['type']) ? $info ['type'] : 'mixed';
+        $o->rules ['fix'] = $o->fix
+            = isset ($rules ['fix']) && $rules ['fix'] == 'true';
+        unset ($rules ['fix']);
+        if (isset ($rules ['min'])) {
+            $o->rules ['min'] = $o->min = self::numericValue($rules ['min']);
+            unset ($rules ['min']);
         }
-        if (isset ( $rules ['max'] )) {
-            $o->rules ['max'] = $o->max = self::numericValue ( $rules ['max'] );
-            unset ( $rules ['max'] );
+        if (isset ($rules ['max'])) {
+            $o->rules ['max'] = $o->max = self::numericValue($rules ['max']);
+            unset ($rules ['max']);
         }
-        if (isset ( $rules ['pattern'] )) {
-            $o->rules ['pattern'] = $o->pattern 
-                = is_array ( $rules ['pattern'] ) 
-                ? implode ( ',', $rules ['pattern'] ) 
-                : ( string ) $rules ['pattern'];
-            unset ( $rules ['pattern'] );
+        if (isset ($rules ['pattern'])) {
+            $o->rules ['pattern'] = $o->pattern
+                = is_array($rules ['pattern'])
+                ? implode(',', $rules ['pattern'])
+                : ( string )$rules ['pattern'];
+            unset ($rules ['pattern']);
         }
-        if (isset ( $rules ['choice'] )) {
-            $o->rules ['choice'] = $o->choice 
-                = is_array ( $rules ['choice'] ) 
-                ? $rules ['choice'] : array (
-                    $rules ['pattern'] 
+        if (isset ($rules ['choice'])) {
+            $o->rules ['choice'] = $o->choice
+                = is_array($rules ['choice'])
+                ? $rules ['choice'] : array(
+                    $rules ['pattern']
                 );
-            unset ( $rules ['pattern'] );
+            unset ($rules ['pattern']);
         }
         foreach ($rules as $key => $value) {
-            if (property_exists ( $o, $key )) {
+            if (property_exists($o, $key)) {
                 $o->{$key} = $value;
             }
         }
-        $type = explode ( '|', $o->type );
-        if (count ( $type ) > 1) {
+        $type = explode('|', $o->type);
+        if (count($type) > 1) {
             $o->type = $type;
         }
-        if ($o->type=='integer') {
+        if ($o->type == 'integer') {
             $o->type = 'int';
         }
         return $o;

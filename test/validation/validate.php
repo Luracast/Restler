@@ -52,6 +52,10 @@ class Validate {
         return "'$password' is a valid strong password";
     }
 
+    /**
+     * @param int $num
+     * @return string
+     */
     function number($num)
     {
         return "Number : $num";
