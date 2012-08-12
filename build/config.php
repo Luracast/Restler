@@ -1,7 +1,7 @@
 <?php
 define('PROJECT_ROOT', realpath('../'));
 
-define('RESTLER_DIR', 'restler');
+define('RESTLER_DIR', 'vendor/Luracast/Restler');
 define('MINIFIED_DIR', 'restler_minified');
 define('DOCS_DIR', 'docs');
 define('EXAMPLES_DIR', 'examples');

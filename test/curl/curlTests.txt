@@ -1,0 +1,9 @@
+curl -X POST http://restler3.dev/public/examples/_006_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+
+{
+ "name": "Another",
+ "email": "another@email.com",
+ "id": 5
+}
+
+curl -X POST http://restler3.dev/public/examples/_006_crud/index.php/authors -H "Content-Type: application/x-www-form-urlencoded" -d 'request_data[name]=Another&request_data[email]=another@email.com'
