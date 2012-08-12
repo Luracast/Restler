@@ -63,7 +63,7 @@ class Validate {
     
     /**
      * Custom instance for our functions
-     * @param Custom $instance instance of Custom class {validate=true}
+     * @param Custom $instance instance of Custom class {@validate true}
      * @return unknown
      */
     /**

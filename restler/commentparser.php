@@ -257,6 +257,9 @@ class CommentParser
 
         while (preg_match('/{@(\w+)\s([^}]*)}/ms', $subject, $matches)) {
             $subject = str_replace($matches[0], '', $subject);
+            if ($matches[2] == 'true' || $matches[2] == 'false') {
+                $matches[2] = $matches[2] == 'true';
+            }
             $data[$matches[1]] = $matches[2];
         }
 
