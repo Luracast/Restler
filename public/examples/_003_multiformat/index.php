@@ -1,8 +1,8 @@
 <?php
 /*
- Title: Multi-format.
- Tagline: Serving what the client wants.
- Tags: json, xml.
+ Title: Multi-format
+ Tagline: Serving what the client wants
+ Tags: json, xml
  Description: This BMI calculator service shows how you can serve data in different
  formats using Restler. This example uses JsonFormat (default) and XmlFormat.
 
@@ -30,7 +30,8 @@
     <height>5 feet 4 inches</height>
     <weight>185.19 pounds</weight>
   </imperial>
-</response>.
+</response>
+
 
  Example 2: GET bmi.xml returns
 
@@ -46,7 +47,8 @@
     <height>5 feet 4 inches</height>
     <weight>185.19 pounds</weight>
   </imperial>
-</response>.
+</response>
+
 
  Example 3: GET bmi.json returns
 
@@ -62,8 +64,7 @@
     "weight": "185.19 pounds"
   }
 }
-.
- */
+*/
 
 require_once '../../restler/restler.php';
 

@@ -5,18 +5,18 @@ Error Response
 <tag>http status</tag>
 <tag>validation</tag>
 
-API methods can make use of RestException class to provide 
-error information to the user. 
+API methods can make use of RestException class to provide
+ error information to the user.
 
-use `throw new RestException($httpStatusCode)` to send the error response 
-to the client. 
+ use `throw new RestException($httpStatusCode)` to send the error response
+ to the client.
 
-For the list of HTTP Status codes and their meaning take a look at 
-[Wikipedia](http://en.wikipedia.org/wiki/Http_status_codes)
+ For the list of HTTP Status codes and their meaning take a look at
+ [Wikipedia](http://en.wikipedia.org/wiki/Http_status_codes)
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
-> * currency.php      (api)
+> * Currency.php      (api)
 > * restler.php      (framework)
 
 This API Server exposes the following URIs
@@ -30,10 +30,10 @@ GET [currency/format](index.php/currency/format)
 :	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
- "error": {
-   "code": 400,
-   "message": "Bad Request"
- }
+  "error": {
+    "code": 400,
+    "message": "Bad Request"
+  }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -41,10 +41,10 @@ GET [currency/format?number=not_a_number](index.php/currency/format?number=not_a
 :	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
- "error": {
-   "code": 412,
-   "message": "Precondition Failed: not a valid number"
- }
+  "error": {
+    "code": 412,
+    "message": "Precondition Failed: not a valid number"
+  }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -57,7 +57,9 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 
 
 
+
+
 *[index.php]: _004_error_response/index.php
-*[currency.php]: _004_error_response/currency.php
+*[Currency.php]: _004_error_response/currency.php
 *[restler.php]: ../restler/restler.php
 

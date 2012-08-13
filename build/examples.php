@@ -1,4 +1,5 @@
 <?php
+
 header('Content-Type: text/plain');
 error_reporting(E_ALL & ~E_NOTICE);
 echo 'building Examples...
@@ -6,7 +7,10 @@ echo 'building Examples...
 include_once 'config.php';
 include_once 'markdown/markdown_extended.php';
 include_once 'templates/templateengine.php';
-include_once RESTLER_PATH.'/restler.php';
+include_once PROJECT_ROOT.'/vendor/Luracast/Restler/Restler.php';
+include_once PROJECT_ROOT.'/public/restler/restler.php';
+
+use Luracast\Restler\Restler;
 
 $styles = array(
 		'resources/bootstrap.min.css',
@@ -59,12 +63,16 @@ foreach($files as $filename){
 		chdir($fullpath);
 		set_include_path($fullpath . PATH_SEPARATOR . get_include_path());
 		$metadata=get_metadata($fullpath.DIRECTORY_SEPARATOR.'index.php');
-		$content = file_get_contents($fullpath.DIRECTORY_SEPARATOR.'index.php');
-		$content = explode(PHP_EOL, $content);
-		array_pop($content);
-		$content = implode(PHP_EOL, $content);
+        /*
+        echo PHP_EOL;
+        print_r($metadata);
+        echo PHP_EOL;
+        */
+        $content = file_get_contents($fullpath.DIRECTORY_SEPARATOR.'index.php');
+        $content = str_replace(array('<?php','$r->handle();'),'', $content);
 		//echo $content;
-		eval(substr($content,5));
+        //continue;
+		eval($content);
         $isRestler2 = intval(Restler::VERSION)==2;
 		//include_once $fullpath.DIRECTORY_SEPARATOR.'index.php';
 		#$r = new Restler();
@@ -79,6 +87,7 @@ foreach($files as $filename){
 		$o->summary = null;		
 		$o->tags = $metadata['tags'];	
 		$o->usage = $metadata['usage'];
+		$o->content = $metadata['content'];
 		$helpers = $metadata['helpers'];
 		$helpers = empty($helpers) ? array() : explode(',', str_replace(' ', '', $helpers));
 		$o->routes=array();
@@ -121,6 +130,12 @@ foreach($files as $filename){
 		$api_classes=",".implode(',',array_keys($api_classes)).",";
 		$authClasses = ",".implode(',', get_protected_property('Restler', $isRestler2 ? 'auth_classes' : '_authClasses', $r)).",";
 		$api_files = array();
+        $classes = array();
+        foreach(get_declared_classes() as $class){
+            $parts = explode('\\',$class);
+            $className = end($parts);
+            $classes[strtolower($className)]=array($className, $class);
+        }
 		foreach (get_included_files() as $api_file) {
 			if(strpos($api_file,$filename)>0){
 				$api = pathinfo($api_file, PATHINFO_FILENAME);
@@ -130,13 +145,20 @@ foreach($files as $filename){
 				}elseif (stripos($api_classes, ",$api,")!==FALSE){
 					$type='api';
 				}
+                if(isset($classes[$api])){
+                    $api = $classes[$api][0];
+                }
 				$api.='.'.pathinfo($api_file, PATHINFO_EXTENSION);
 				$api_files[$api] = array('type'=>$type,'path'=>$r->removeCommonPath($api_file, EXAMPLES_PATH));
 			}
 		}
 		foreach ($helpers as $helper){
-			$api = strtolower($helper).'.php';
-			$api_files[$api] = array('type'=>'helper','path'=>$filename.DIRECTORY_SEPARATOR.$api);
+            $parts = explode('\\',$helper);
+            $helperName = end($parts);
+            $helper = implode('/', $parts);
+            $api = $helperName.'.php';
+			$api_files[$api] = array('type'=>'helper',
+                'path'=>$filename.DIRECTORY_SEPARATOR.$helper.'.php');
 
 		}
 		$o->local_files=array('index.php'=>array('type'=>'gateway','path'=>$filename.DIRECTORY_SEPARATOR.'index.php'));
@@ -267,14 +289,23 @@ function get_metadata($file){
 		'e9'=>'Example 9',
 		'e10'=>'Example 10',
 		'usage'=>'Usage',
-		'helpers'=>'Helper Classes',
+		'helpers'=>'Helpers',
+		'content'=>'Content',
 	);
 	$m = get_file_data($file, $default_headers);
-	$r = array('e'=>array());
+    /*
+    echo PHP_EOL;
+    print_r($m);
+    echo PHP_EOL;
+    */
+    $r = array('e'=>array());
 	foreach ($m as $key => $value) {
 		if($key[0]=='e'){
 			if(!empty($value)){
-				$valarr = explode(' ', $value, 4);
+                $parts = explode('returns',$value);
+				$valarr = explode(' ', $parts[0], 3);
+                $valarr[2] ='returns';
+                $valarr []= $parts[1];
 				foreach ($valarr as $vkey => $vvalue) {
 					$valarr[$vkey] = str_replace('*//*', '*/*',trim($vvalue));
 				}
@@ -282,10 +313,10 @@ function get_metadata($file){
 			}
 		}else if($key=='tags'){
 			$r[$key] = explode(',', $value);
-			foreach ($r[$key] as $k => $v) {
-				$r[$key][$k]=trim($v);
-			}
-		}else{
+            foreach ($r[$key] as $k => $v) {
+                $r[$key][$k]=trim($v);
+            }
+        }else{
 			$r[$key] = str_replace('*//*', '*/*',trim($value));
 		}
 	}
@@ -335,19 +366,37 @@ function get_file_data( $file, $default_headers) {
 	// PHP will close file handle, but we are good citizens.
 	fclose( $fp );
 
+    $file_data = explode('*/',$file_data);
+    array_pop($file_data);
+    $file_data = implode('',$file_data);
+
 	$all_headers = $default_headers;
 
-	foreach ($all_headers as $field => $regex ) {
-		$full_regex = '/'.preg_quote( $regex, '/' ) . ': ([\s\S]*?)\.[\n\r]/';
-		#echo $full_regex.PHP_EOL;
-		preg_match( $full_regex, $file_data, ${$field});
-		if ( !empty( ${$field} ) )
-		${$field} =  trim(str_replace(PHP_EOL.' ', PHP_EOL, ${$field}[1]));
-		else
-		${$field} = '';
-	}
+    $r = array();
+    foreach ($all_headers as $field => $name ) {
+        $r[$field]='';
+    }
 
-	$file_data = compact( array_keys( $all_headers ) );
-
-	return $file_data;
+    $lastKey='';
+    while (preg_match('/^ ?(\w+ ?\d{0,1}): ?/m',$file_data,$matches)){
+        list($subject, $key) = $matches;
+        $parts = explode($subject,$file_data,2);
+        $file_data = end($parts);
+        if(!empty($lastKey) && !empty($parts[0])){
+            //extract body
+            $name = array_search($lastKey,$all_headers);
+            if($name!==false){
+                $r[$name]= trim($parts[0]);
+            }
+        }
+        $lastKey=$key;
+    }
+    if(!empty($lastKey) && !empty($file_data)){
+        //extract body for the final one
+        $name = array_search($lastKey,$all_headers);
+        if($name!==false){
+            $r[$name]= trim($file_data);
+        }
+    }
+    return $r;
 }

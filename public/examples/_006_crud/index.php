@@ -1,8 +1,8 @@
 <?php
 /*
- Title: CRUD.
- Tagline: using POST, GET, PUT and DELETE.
- Tags: create, retrieve, read, update, delete, post, get, put, routing.
+ Title: CRUD
+ Tagline: using POST, GET, PUT and DELETE
+ Tags: create, retrieve, read, update, delete, post, get, put, routing
  Description: Create, Retrieve, Update and Delete using
  HTTP methods POST, GET, PUT and DELETE respectively.
 
@@ -45,14 +45,13 @@ For simplicity and making it work out of the box this example is using
 
 But since the session wont be working, next request wont reflect the
 change done by previous request, anyway you get the idea. You may use any of the following files
-instead of db_session.php to get full functionality.
+instead of Session.php to get full functionality.
 
-> * db_serialized_file.php (File)
-> * db_pdo_sqlite.php      (SQlite)
-> * db_pdo_mysql.php      (MySQL)
+> * SerializedFile.php (helper)
+> * Sqlite.php (helper)
+> * MySQL.php (helper)
 
-by un-commenting the respective line in authors.php and commenting others.
-.
+by un-commenting the respective line in Authors.php and commenting others.
 
  Example 1: GET authors returns
 
@@ -67,7 +66,7 @@ by un-commenting the respective line in authors.php and commenting others.
     "name": "Arul Kumaran",
     "email": "arul@luracast.com"
   }
-].
+]
 
  Example 2: GET authors/2 returns
 
@@ -75,18 +74,17 @@ by un-commenting the respective line in authors.php and commenting others.
   "id": 2,
   "name": "Arul Kumaran",
   "email": "arul@luracast.com"
-}.
+}
 
  Usage:
-
- ###Creating new Author
-
- Typical post request to create a new author will be any of the following
 
  > Note: When we want the entire data that is sent to the API,
  > we need to use `$request_data` as the name of the parameter any other name
  > will only get partial data under the specified key
 
+###Creating new Author
+
+ Typical post request to create a new author will be any of the following
 
 **Using query parameters**
 
@@ -154,13 +152,15 @@ and the response could be
 	  "id": 7
 	}
 
- *[db_pdo_sqlite.php]: _006_crud/db_pdo_sqlite.php
- *[db_serialized_file.php]: _006_crud/db_serialized_file.php
- *[db_pdo_mysql.php]: _006_crud/db_pdo_mysql.php
-	.
+ Helpers: DB\Session
 
- Helper Classes: DB_Session.
-  */
+ Content:
+
+*[MySQL.php]: _006_crud//DB/PDO/MySQL.php
+*[Sqlite.php]: _006_crud/DB/PDO/Sqlite.php
+*[SerializedFile.php]: _006_crud/DB/SerializedFile.php
+
+*/
 require_once '../../restler/restler.php';
 
 $r = new Restler();

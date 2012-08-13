@@ -129,7 +129,7 @@
 
 <li><tag title="Read Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">read</tag></li>
 
-<li><tag title="Retrive Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">retrive</tag></li>
+<li><tag title="Retrieve Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">retrieve</tag></li>
 
 <li><tag title="Routing Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">routing</tag></li>
 
@@ -147,28 +147,26 @@
 <p><tag>json</tag>
 <tag>xml</tag></p>
 
-<p>This BMI calculator service shows how you can serve data in different 
-formats using Rester. This example uses JsonFormat (default) and XmlFormat.</p>
+<p>This BMI calculator service shows how you can serve data in different
+ formats using Restler. This example uses JsonFormat (default) and XmlFormat.</p>
 
-<p>First  format specified in <code>Restler::setSuportedFormats</code> is used as the default 
-format when client does not specify the format.</p>
+<p>First  format specified in <code>Restler::setSupportedFormats</code> is used as the
+ default format when client does not specify the format.</p>
 
-<p>Client can specify the format either using  extension like .json or specify 
-the MIME type in HTTP Accept Header.</p>
+<p>Client can specify the format either using  extension like .json or specify
+ the MIME type in HTTP Accept Header.</p>
 
-<p>When we make the request from the browser we will get xml when we 
-skip the extension because XML is one of the requested formats specifed in
-the HTTP Accept Header where as a AJAX request or CURL will return JSON</p>
+<p>When we make the request from the browser we will get xml when we
+ skip the extension because XML is one of the requested formats specified in
+ the HTTP Accept Header where as a AJAX request or CURL will return JSON.</p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
   
   <ul>
   <li><abbr title="_003_multiformat/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="_003_multiformat/bmi.php">bmi.php</abbr>      (api)</li>
+  <li><abbr title="_003_multiformat/bmi.php">BMI.php</abbr>      (api)</li>
   <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
-  <li><abbr title="../restler/jsonformat.php">jsonformat.php</abbr>      (format)</li>
-  <li><abbr title="../restler/xmlformat.php">xmlformat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 
@@ -184,16 +182,16 @@ the HTTP Accept Header where as a AJAX request or CURL will return JSON</p>
 <dd>
 <pre><code>&lt;?xml version="1.0"?&gt;
 &lt;response&gt;
- &lt;bmi&gt;31.77&lt;/bmi&gt;
- &lt;message&gt;Obesity&lt;/message&gt;
- &lt;metric&gt;
-   &lt;height&gt;162.6 centimeter&lt;/height&gt;
-   &lt;weight&gt;84 kilograms&lt;/weight&gt;
- &lt;/metric&gt;
- &lt;imperial&gt;
-   &lt;height&gt;5 feet 4 inches&lt;/height&gt;
-   &lt;weight&gt;185.19 pounds&lt;/weight&gt;
- &lt;/imperial&gt;
+  &lt;bmi&gt;31.77&lt;/bmi&gt;
+  &lt;message&gt;Obesity&lt;/message&gt;
+  &lt;metric&gt;
+    &lt;height&gt;162.6 centimeter&lt;/height&gt;
+    &lt;weight&gt;84 kilograms&lt;/weight&gt;
+  &lt;/metric&gt;
+  &lt;imperial&gt;
+    &lt;height&gt;5 feet 4 inches&lt;/height&gt;
+    &lt;weight&gt;185.19 pounds&lt;/weight&gt;
+  &lt;/imperial&gt;
 &lt;/response&gt;
 </code></pre>
 </dd>
@@ -201,16 +199,16 @@ the HTTP Accept Header where as a AJAX request or CURL will return JSON</p>
 <dt>GET <a href="index.php/bmi.xml" target="_blank">bmi.xml</a></dt>
 <dd><pre><code>&lt;?xml version="1.0"?&gt;
 &lt;response&gt;
- &lt;bmi&gt;31.77&lt;/bmi&gt;
- &lt;message&gt;Obesity&lt;/message&gt;
- &lt;metric&gt;
-   &lt;height&gt;162.6 centimeter&lt;/height&gt;
-   &lt;weight&gt;84 kilograms&lt;/weight&gt;
- &lt;/metric&gt;
- &lt;imperial&gt;
-   &lt;height&gt;5 feet 4 inches&lt;/height&gt;
-   &lt;weight&gt;185.19 pounds&lt;/weight&gt;
- &lt;/imperial&gt;
+  &lt;bmi&gt;31.77&lt;/bmi&gt;
+  &lt;message&gt;Obesity&lt;/message&gt;
+  &lt;metric&gt;
+    &lt;height&gt;162.6 centimeter&lt;/height&gt;
+    &lt;weight&gt;84 kilograms&lt;/weight&gt;
+  &lt;/metric&gt;
+  &lt;imperial&gt;
+    &lt;height&gt;5 feet 4 inches&lt;/height&gt;
+    &lt;weight&gt;185.19 pounds&lt;/weight&gt;
+  &lt;/imperial&gt;
 &lt;/response&gt;
 </code></pre></dd>
 
@@ -218,16 +216,16 @@ the HTTP Accept Header where as a AJAX request or CURL will return JSON</p>
 <dt>GET <a href="index.php/bmi.json" target="_blank">bmi.json</a></dt>
 <dd>
 <pre><code>{
- "bmi": 31.77,
- "message": "Obesity",
- "metric": {
-   "height": "162.6 centimeter",
-   "weight": "84 kilograms"
- },
- "imperial": {
-   "height": "5 feet 4 inches",
-   "weight": "185.19 pounds"
- }
+  "bmi": 31.77,
+  "message": "Obesity",
+  "metric": {
+    "height": "162.6 centimeter",
+    "weight": "84 kilograms"
+  },
+  "imperial": {
+    "height": "5 feet 4 inches",
+    "weight": "185.19 pounds"
+  }
 }
 </code></pre>
 </dd>

@@ -28,6 +28,8 @@ $value->result
 ')}
 $usage
 
+
+$content
 {$_('repeat_foreach', $local_files, '*[$key]: $value->path
 ')}{$_('repeat_foreach', $restler_files, '*[$key]: $value->path
 ')}

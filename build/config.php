@@ -4,7 +4,7 @@ define('PROJECT_ROOT', realpath('../'));
 define('RESTLER_DIR', 'vendor/Luracast/Restler');
 define('MINIFIED_DIR', 'restler_minified');
 define('DOCS_DIR', 'docs');
-define('EXAMPLES_DIR', 'examples');
+define('EXAMPLES_DIR', 'public/examples');
 define('BUILD_DIR', 'build');
 define('APIGEN_DIR', 'apigen');
 define('CODE_SNIFFER_DIR', 'codesniffer');

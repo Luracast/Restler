@@ -9,7 +9,7 @@ Shows the bare minimum code needed to get your RESTful api server up and running
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
-> * math.php      (api)
+> * Math.php      (api)
 > * restler.php      (framework)
 
 This API Server exposes the following URIs
@@ -41,7 +41,9 @@ GET [math/multiply/4/3](index.php/math/multiply/4/3)
 
 
 
+
+
 *[index.php]: _002_minimal/index.php
-*[math.php]: _002_minimal/math.php
+*[Math.php]: _002_minimal/math.php
 *[restler.php]: ../restler/restler.php
 

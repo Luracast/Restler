@@ -129,7 +129,7 @@
 
 <li><tag title="Read Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">read</tag></li>
 
-<li><tag title="Retrive Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">retrive</tag></li>
+<li><tag title="Retrieve Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">retrieve</tag></li>
 
 <li><tag title="Routing Example(s)" data-content="&lt;a href=&quot;../_006_crud/readme.html&quot;&gt;CRUD&lt;/a&gt;">routing</tag></li>
 
@@ -148,21 +148,21 @@
 <tag>http status</tag>
 <tag>validation</tag></p>
 
-<p>API methods can make use of RestException class to provide 
-error information to the user.</p>
+<p>API methods can make use of RestException class to provide
+ error information to the user.</p>
 
-<p>use <code>throw new RestException($httpStatusCode)</code> to send the error response 
-to the client.</p>
+<p>use <code>throw new RestException($httpStatusCode)</code> to send the error response
+ to the client.</p>
 
-<p>For the list of HTTP Status codes and their meaning take a look at 
-<a href="http://en.wikipedia.org/wiki/Http_status_codes" target="_blank">Wikipedia</a></p>
+<p>For the list of HTTP Status codes and their meaning take a look at
+ <a href="http://en.wikipedia.org/wiki/Http_status_codes" target="_blank">Wikipedia</a></p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
   
   <ul>
   <li><abbr title="_004_error_response/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="_004_error_response/currency.php">currency.php</abbr>      (api)</li>
+  <li><abbr title="_004_error_response/currency.php">Currency.php</abbr>      (api)</li>
   <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
   </ul>
 </blockquote>
@@ -178,20 +178,20 @@ to the client.</p>
 <dt>GET <a href="index.php/currency/format" target="_blank">currency/format</a></dt>
 <dd>
 <pre><code>{
- "error": {
-   "code": 400,
-   "message": "Bad Request"
- }
+  "error": {
+    "code": 400,
+    "message": "Bad Request"
+  }
 }
 </code></pre>
 </dd>
 
 <dt>GET <a href="index.php/currency/format?number=not_a_number" target="_blank">currency/format?number=not_a_number</a></dt>
 <dd><pre><code>{
- "error": {
-   "code": 412,
-   "message": "Precondition Failed: not a valid number"
- }
+  "error": {
+    "code": 412,
+    "message": "Precondition Failed: not a valid number"
+  }
 }
 </code></pre></dd>
 

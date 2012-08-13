@@ -4,25 +4,23 @@ Multi-format
 <tag>json</tag>
 <tag>xml</tag>
 
-This BMI calculator service shows how you can serve data in different 
-formats using Rester. This example uses JsonFormat (default) and XmlFormat. 
+This BMI calculator service shows how you can serve data in different
+ formats using Restler. This example uses JsonFormat (default) and XmlFormat.
 
-First  format specified in `Restler::setSuportedFormats` is used as the default 
-format when client does not specify the format. 
+ First  format specified in `Restler::setSupportedFormats` is used as the
+ default format when client does not specify the format.
 
-Client can specify the format either using  extension like .json or specify 
-the MIME type in HTTP Accept Header. 
+ Client can specify the format either using  extension like .json or specify
+ the MIME type in HTTP Accept Header.
 
-When we make the request from the browser we will get xml when we 
-skip the extension because XML is one of the requested formats specifed in
-the HTTP Accept Header where as a AJAX request or CURL will return JSON
+ When we make the request from the browser we will get xml when we
+ skip the extension because XML is one of the requested formats specified in
+ the HTTP Accept Header where as a AJAX request or CURL will return JSON.
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
-> * bmi.php      (api)
+> * BMI.php      (api)
 > * restler.php      (framework)
-> * jsonformat.php      (format)
-> * xmlformat.php      (format)
 
 This API Server exposes the following URIs
 
@@ -36,16 +34,16 @@ GET [bmi](index.php/bmi)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?xml version="1.0"?>
 <response>
- <bmi>31.77</bmi>
- <message>Obesity</message>
- <metric>
-   <height>162.6 centimeter</height>
-   <weight>84 kilograms</weight>
- </metric>
- <imperial>
-   <height>5 feet 4 inches</height>
-   <weight>185.19 pounds</weight>
- </imperial>
+  <bmi>31.77</bmi>
+  <message>Obesity</message>
+  <metric>
+    <height>162.6 centimeter</height>
+    <weight>84 kilograms</weight>
+  </metric>
+  <imperial>
+    <height>5 feet 4 inches</height>
+    <weight>185.19 pounds</weight>
+  </imperial>
 </response>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -54,16 +52,16 @@ GET [bmi.xml](index.php/bmi.xml)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 <?xml version="1.0"?>
 <response>
- <bmi>31.77</bmi>
- <message>Obesity</message>
- <metric>
-   <height>162.6 centimeter</height>
-   <weight>84 kilograms</weight>
- </metric>
- <imperial>
-   <height>5 feet 4 inches</height>
-   <weight>185.19 pounds</weight>
- </imperial>
+  <bmi>31.77</bmi>
+  <message>Obesity</message>
+  <metric>
+    <height>162.6 centimeter</height>
+    <weight>84 kilograms</weight>
+  </metric>
+  <imperial>
+    <height>5 feet 4 inches</height>
+    <weight>185.19 pounds</weight>
+  </imperial>
 </response>
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -71,25 +69,25 @@ GET [bmi.json](index.php/bmi.json)
 :	
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
- "bmi": 31.77,
- "message": "Obesity",
- "metric": {
-   "height": "162.6 centimeter",
-   "weight": "84 kilograms"
- },
- "imperial": {
-   "height": "5 feet 4 inches",
-   "weight": "185.19 pounds"
- }
+  "bmi": 31.77,
+  "message": "Obesity",
+  "metric": {
+    "height": "162.6 centimeter",
+    "weight": "84 kilograms"
+  },
+  "imperial": {
+    "height": "5 feet 4 inches",
+    "weight": "185.19 pounds"
+  }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
 
+
+
 *[index.php]: _003_multiformat/index.php
-*[bmi.php]: _003_multiformat/bmi.php
+*[BMI.php]: _003_multiformat/bmi.php
 *[restler.php]: ../restler/restler.php
-*[jsonformat.php]: ../restler/jsonformat.php
-*[xmlformat.php]: ../restler/xmlformat.php
 

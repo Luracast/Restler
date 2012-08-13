@@ -1,8 +1,8 @@
 <?php
 /*
- Title: Protected API.
- Tagline: Creating restricted zone.
- Tags: authentication, authorization.
+ Title: Protected API
+ Tagline: Creating restricted zone
+ Tags: authentication, authorization
  Description: Not all the API exposed needs to be public, we need to protect some of our API.
  Here are three ways to protect a method
 
@@ -14,7 +14,6 @@
  An Authentication class is also an API class so all public methods that does not begin with `_` will be exposed as API
  for example [SimpleAuth::key](simpleauth/key). It can be used to create login/logout methods.
 
-
  Example 1: GET restricted returns
 
 {
@@ -22,11 +21,11 @@
     "code": 401,
     "message": "Unauthorized"
   }
-}.
+}
 
- Example 2: GET restricted?key=rEsTlEr2 returns "protected method".
+ Example 2: GET restricted?key=rEsTlEr2 returns "protected method"
 
- Example 3: GET secured?key=rEsTlEr2 returns "protected class".
+ Example 3: GET secured?key=rEsTlEr2 returns "protected class"
 */
 
 require_once '../../restler/restler.php';

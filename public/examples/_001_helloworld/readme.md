@@ -3,11 +3,11 @@ Hello World Example
 
 <tag>basic</tag>
 
-Basic hello world example to get started with Restler 3
+Basic hello world example to get started with Restler 3.
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
-> * say.php      (api)
+> * Say.php      (api)
 > * restler.php      (framework)
 
 This API Server exposes the following URIs
@@ -61,5 +61,5 @@ GET [index.php/say/hi/restler3.0](index.php/say/hi/restler3.0)
 
 
 *[index.php]: _001_helloworld/index.php
-*[say.php]: _001_helloworld/say.php
+*[Say.php]: _001_helloworld/Say.php
 *[restler.php]: ../restler/restler.php
