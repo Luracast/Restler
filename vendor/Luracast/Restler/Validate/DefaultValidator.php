@@ -30,7 +30,7 @@ class DefaultValidator implements iValidate {
 
         // when type is an array check if it passes for any type
         if (is_array ( $info->type )) {
-            trace("types are ".print_r($info->type, true));
+            //trace("types are ".print_r($info->type, true));
             $types = $info->type;
             foreach ($types as $type) {
                 $info->type = $type;
