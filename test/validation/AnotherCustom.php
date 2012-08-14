@@ -10,9 +10,7 @@
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-namespace Luracast\Restler;
-class AnotherCustom extends \ValueObject
+class AnotherCustom extends Luracast\Restler\Data\ValueObject
 {
-
 
 }
