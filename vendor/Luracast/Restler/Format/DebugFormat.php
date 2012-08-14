@@ -100,7 +100,7 @@ namespace Luracast\Restler\Format {
 
     use Luracast\Restler\RestException;
     use Luracast\Restler\Restler;
-    use Luracast\Restler\RestlerHelper;
+    use Luracast\Restler\Data\Util;
 
     class DebugFormat implements iFormat
     {
@@ -140,7 +140,7 @@ namespace Luracast\Restler\Format {
         public function encode($data, $humanReadable = FALSE, $wrapHtml = TRUE)
         {
             if ($wrapHtml) {
-                $data = RestlerHelper::objectToArray( $data );
+                $data = Util::objectToArray( $data );
             }
             $r = '';
             $r .= "<ul>\n";

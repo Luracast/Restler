@@ -1,7 +1,7 @@
 <?php
 namespace Luracast\Restler\Format;
 
-use Luracast\Restler\RestlerHelper;
+use Luracast\Restler\Data\Util;
 use MustacheTemplate;
 use Luracast\Restler\RestException;
 
@@ -36,7 +36,7 @@ class MustacheFormat implements iFormat
 
     public function encode($data, $humanReadable = false)
     {
-        $data = RestlerHelper::objectToArray ( $data );
+        $data = Util::objectToArray ( $data );
         $metadata = $this->restler->serviceMethodInfo->metadata;
         $params = $metadata ['param'];
         foreach ($params as $index => &$param) {

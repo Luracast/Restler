@@ -1,21 +1,6 @@
 <?php
 namespace Luracast\Restler;
 
-/**
- * REST API Server. It is the server part of the Restler framework.
- * Based on the RestServer code from
- * <http://jacwright.com/blog/resources/RestServer.txt>
- *
- * @category   Framework
- * @package    restler
- * @author     Jac Wright <jacwright@gmail.com>
- * @author     R.Arul Kumaran <arul@luracast.com>
- * @copyright  2010 Luracast
- * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link       http://luracast.com/products/restler/
- * @version    3.0.0
- */
-
 use stdClass;
 use Exception;
 use Reflection;
@@ -25,10 +10,25 @@ use ReflectionProperty;
 use InvalidArgumentException;
 use Luracast\Restler\Format\iFormat;
 use Luracast\Restler\Format\UrlEncodedFormat;
-use Luracast\Restler\Validate\iValidate;
-use Luracast\Restler\Validate\DefaultValidator;
-use Luracast\Restler\Validate\ValidationInfo;
+use Luracast\Restler\Data\iValidate;
+use Luracast\Restler\Data\DefaultValidator;
+use Luracast\Restler\Data\ValidationInfo;
+use Luracast\Restler\Data\Util;
 
+/**
+ * REST API Server. It is the server part of the Restler framework.
+ * inspired by the RestServer code from
+ * <http://jacwright.com/blog/resources/RestServer.txt>
+ *
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @author     Jac Wright <jacwright@gmail.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0
+ */
 class Restler
 {
 
@@ -248,9 +248,11 @@ class Restler
      *            When set to false, it will run in
      *            debug mode and parse the class files every time to map it to
      *            the URL
+     * @param bool    $refreshCache will update the cache when set to true
      */
     public function __construct($productionMode = false, $refreshCache = false)
     {
+
         $this->_productionMode = $productionMode;
         $this->cacheDir = dirname(__DIR__).DIRECTORY_SEPARATOR.
             '..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'scratch' ;
@@ -336,19 +338,19 @@ class Restler
 
     /**
      * Add api classes through this method.
-     * All the public methods
-     * that do not start with _ (undersco re) will be will be exposed
-     * as the public api by default.
+     *
+     * All the public methods that do not start with _ (underscore)
+     * will be will be exposed as the public api by default.
      *
      * All the protected methods that do not start with _ (underscore)
      * will exposed as protected api which will require authentication
      *
-     * @param string $class
+     * @param string $className
      *            name of the service class
      * @param string $basePath
      *            optional url prefix for mapping, uses
      *            lowercase version of the class name when not specified
-     * @throws Exception when supplied with invalid class name
+     * @throws \Exception when supplied with invalid class name
      */
     public function addAPIClass($className, $basePath = null)
     {
@@ -398,12 +400,12 @@ class Restler
     }
 
     /**
-     * Convenience method to respond with an error message
+     * Convenience method to respond with an error message.
      *
-     * @param int $statusCode
-     *            http error code
-     * @param string $errorMessage
-     *        	optional custom error message
+     * @param int    $statusCode http error code
+     * @param string $errorMessage optional custom error message
+     *
+     * @return null
      */
     public function handleError($statusCode, $errorMessage = null)
     {
@@ -452,7 +454,7 @@ class Restler
      * Main function for processing the api request
      * and return the response
      *
-     * @throws Exception     when the api service class is missing
+     * @throws \Exception     when the api service class is missing
      * @throws RestException to send error response
      */
     public function handle()
@@ -549,10 +551,11 @@ class Restler
     }
 
     /**
-     * Encodes the response in the preferred format and sends back
+     * Encodes the response in the preferred format and sends back.
      *
-     * @param $data array
-     *            php data
+     * @param mixed       $data array or scalar value or iValueObject or null
+     * @param int         $statusCode
+     * @param string|null $statusMessage
      */
     public function sendData($data, $statusCode = 0, $statusMessage = null)
     {
@@ -679,7 +682,9 @@ class Restler
     /**
      * Magic method to expose some protected variables
      *
-     * @param String $name
+     * @param string $name
+     *
+     * @return null
      */
     public function __get($name)
     {
@@ -866,7 +871,8 @@ class Restler
             } elseif (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
                 $format = new XmlFormat;
             } elseif (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
-                $format = new $this->_formatMap['default'];
+                $format = $this->_formatMap['default'];
+                $format = new $format;
             }
         }
         if (empty($format)) {
@@ -903,6 +909,11 @@ class Restler
         }
     }
 
+    /**
+     * Find the api method to execute for the requested Url
+     *
+     * @return \stdClass
+     */
     protected function mapUrlToMethod()
     {
         if (!isset($this->_routes[$this->requestMethod])) {
@@ -998,6 +1009,11 @@ class Restler
             }
     }
 
+    /**
+     * Load routes from cache
+     *
+     * @return null
+     */
     protected function loadCache()
     {
         if ($this->_cached !== null)

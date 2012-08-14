@@ -1,32 +1,31 @@
 <?php
-namespace Luracast\Restler\Validate;
+namespace Luracast\Restler\Data;
 
-use JsonSerializable;
-
-class ValueObject implements iValueObject, JsonSerializable {
+class ValueObject implements iValueObject
+{
 
     public function __toString()
     {
-        return ' new ' . get_called_class () . '() ';
+        return ' new ' . get_called_class() . '() ';
     }
 
     public static function __set_state(array $properties)
     {
-        $class = get_called_class ();
+        $class = get_called_class();
         $instance = new $class ();
-        $vars = get_object_vars ( $instance );
+        $vars = get_object_vars($instance);
         foreach ($properties as $property => $value) {
-            if (property_exists ( $instance, $property )) {
+            if (property_exists($instance, $property)) {
                 // see if the property is accessible
-                if (array_key_exists ( $property, $vars )) {
+                if (array_key_exists($property, $vars)) {
                     $instance->{$property} = $value;
                 } else {
-                    $method = 'set' . ucfirst ( $property );
-                    if (method_exists ( $instance, $method )) {
-                        call_user_func ( array (
-                                $instance,
-                                $method
-                        ), $value );
+                    $method = 'set' . ucfirst($property);
+                    if (method_exists($instance, $method)) {
+                        call_user_func(array(
+                            $instance,
+                            $method
+                        ), $value);
                     }
                 }
             }
@@ -34,7 +33,7 @@ class ValueObject implements iValueObject, JsonSerializable {
         return $instance;
     }
 
-    public function jsonSerialize()
+    public function __toArray()
     {
         $r = get_object_vars ( $this );
         $methods = get_class_methods ( $this );
@@ -45,4 +44,5 @@ class ValueObject implements iValueObject, JsonSerializable {
         }
         return $r;
     }
+
 }

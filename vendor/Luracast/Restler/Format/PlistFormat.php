@@ -14,7 +14,7 @@ namespace Luracast\Restler\Format;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-use Luracast\Restler\RestlerHelper;
+use Luracast\Restler\Data\Util;
 use CFPropertyList\CFTypeDetector;
 use CFPropertyList\CFPropertyList;
 
@@ -83,7 +83,7 @@ class PlistFormat implements iFormat
         $plist = new CFPropertyList ();
         $td = new CFTypeDetector ();
         $guessedStructure = $td->toCFType (
-            RestlerHelper::objectToArray ( $data )
+            Util::objectToArray ( $data )
         );
         $plist->add ( $guessedStructure );
 

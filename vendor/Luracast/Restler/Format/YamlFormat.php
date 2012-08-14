@@ -12,7 +12,7 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  */
 use Symfony\Component\Yaml\Yaml;
-use Luracast\Restler\RestlerHelper;
+use Luracast\Restler\Data\Util;
 
 class YamlFormat implements iFormat
 {
@@ -43,7 +43,7 @@ class YamlFormat implements iFormat
     public function encode($data, $humanReadable = false)
     {
 //		require_once 'sfyaml.php';
-        return @Yaml::dump ( RestlerHelper::objectToArray ( $data ) );
+        return @Yaml::dump ( Util::objectToArray ( $data ) );
     }
 
     public function decode($data)

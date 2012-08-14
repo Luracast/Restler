@@ -11,7 +11,7 @@ namespace Luracast\Restler\Format;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-use Luracast\Restler\RestlerHelper;
+use Luracast\Restler\Data\Util;
 use Luracast\Restler\RestException;
 use \Exception;
 use \SimpleXMLElement;
@@ -64,7 +64,7 @@ class XmlFormat implements iFormat
     public function encode($data, $humanReadable = false)
     {
         return $this->toXML (
-                RestlerHelper::objectToArray ($data, false ),
+                Util::objectToArray ($data, false ),
                 self::$rootName, $humanReadable
         );
     }

@@ -5,6 +5,7 @@ namespace Luracast\Restler\Format;
 // JSON_UNESCAPED_SLASHES,
 // and JSON_UNESCAPED_UNICODE if not defined (PHP version <5.4) and handle the
 // options manually to get the same result
+
 /**
  * Javascript Object Notation Format
  *
@@ -16,7 +17,7 @@ namespace Luracast\Restler\Format;
  * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link http://luracast.com/products/restler/
  */
-use Luracast\Restler\RestlerHelper;
+use Luracast\Restler\Data\Util;
 use Luracast\Restler\RestException;
 
 class JsonFormat implements iFormat
@@ -70,7 +71,7 @@ class JsonFormat implements iFormat
             $customHumanReadable = false;
         }
         $result = json_encode (
-                RestlerHelper::objectToArray ( $data ),
+                Util::objectToArray ( $data ),
                 self::$encodeOptions
         );
         if ($humanReadable && $customHumanReadable) {
@@ -89,7 +90,7 @@ class JsonFormat implements iFormat
         if (function_exists ( 'json_last_error' )) {
             switch (json_last_error ()) {
                 case JSON_ERROR_NONE :
-                    return RestlerHelper::objectToArray ( $decoded );
+                    return Util::objectToArray ( $decoded );
                     break;
                 case JSON_ERROR_DEPTH :
                     $message = 'maximum stack depth exceeded';
@@ -116,7 +117,7 @@ class JsonFormat implements iFormat
             throw new RestException ( 400, 'Error parsing JSON' );
         }
 
-        return RestlerHelper::objectToArray ( $decoded );
+        return Util::objectToArray ( $decoded );
     }
 
     public function setCharset($charset)
@@ -131,7 +132,7 @@ class JsonFormat implements iFormat
      * Pretty print JSON string
      *
      * @param  string $json
-     * @return string formated json
+     * @return string formatted json
      */
     private function formatJson($json)
     {

@@ -1,5 +1,5 @@
 <?php
-namespace Luracast\Restler\Validate;
+namespace Luracast\Restler\Data;
 
 use Luracast\Restler\RestException;
 
