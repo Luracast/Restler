@@ -304,9 +304,10 @@ class Restler
      * supported by the API.
      * Accepts multiple parameters
      *
-     * @param
-     *            string class name of the format class that implements iFormat
+     * @param string,... $formatName class name of the format class that
+     *               implements iFormat
      * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
+     * @throws \Exception
      */
     public function setSupportedFormats()
     {
