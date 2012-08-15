@@ -49,7 +49,7 @@ class Util
             return $array;
 
         }
-        if (!is_scalar($object)) {
+        if (is_array($object) || is_object($object)) {
             $array = array();
             foreach ($object as $key => $value) {
                 $value = self::objectToArray($value);
