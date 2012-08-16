@@ -376,14 +376,19 @@ class CommentParser
 
     private function formatParam(array $value)
     {
-        $r = array(
-            'type' => array_shift($value)
-        );
-
-        if (count($value) > 0) {
-            if ($value[0]{0} == '$') {
-                $r['name'] = substr(array_shift($value), 1);
+        $r = array();
+        $data = array_shift($value);
+        if ($data{0} == '$') {
+            $r['name'] = substr($data, 1);
+            $r['type'] = 'mixed';
+        } else {
+            $r['type'] = $data;
+            $data = array_shift($value);
+            if ($data{0} == '$') {
+                $r['name'] = substr($data, 1);
             }
+        }
+        if ($value) {
             $r['description'] = implode(' ', $value);
         }
         return $r;
