@@ -143,21 +143,21 @@ class Restler
      *
      * @var object
      */
-    protected $_serviceClassInstance;
+    protected $_apiClassInstance;
 
     /**
      * Name of the api method being called
      *
      * @var string
      */
-    protected $_serviceMethod;
+    protected $_apiMethod;
 
     /**
      * method information including metadata
      *
      * @var stdClass
      */
-    protected $_serviceMethodInfo;
+    protected $_apiMethodInfo;
 
     /**
      * list of authentication classes
@@ -461,7 +461,7 @@ class Restler
     public function handle()
     {
         $this->init();
-        $this->_serviceMethodInfo = $o = $this->mapUrlToMethod ();
+        $this->_apiMethodInfo = $o = $this->mapUrlToMethod ();
         $result = null;
         if (!isset($o->className)) {
             $this->handleError(404);
@@ -489,8 +489,8 @@ class Restler
                         $this->requestFormat, $o);
                 $preProcess = '_' . $this->requestFormat->getExtension () .
                         '_' . $o->methodName;
-                $this->_serviceMethod = $o->methodName;
-                $object = $this->_serviceClassInstance = null;
+                $this->_apiMethod = $o->methodName;
+                $object = $this->_apiClassInstance = null;
                 // TODO:check if the api version requested is allowed by class
                 // TODO: validate params using iValidate
                 $validator = new DefaultValidator();
@@ -500,7 +500,7 @@ class Restler
                         || $info['validate'] != false) {
                         if (isset($info['method'])) {
                             if (!isset($object)) {
-                                $object = $this->_serviceClassInstance
+                                $object = $this->_apiClassInstance
                                     = new $o->className ();
                                 $object->restler = $this;
                             }
@@ -514,7 +514,7 @@ class Restler
                     }
                 }
                 if (!isset($object)) {
-                    $object = $this->_serviceClassInstance
+                    $object = $this->_apiClassInstance
                             = new $o->className ();
                     $object->restler = $this;
                 }
@@ -565,14 +565,14 @@ class Restler
         @header('Expires: 0');
         @header('Content-Type: ' . $this->responseFormat->getMIME ());
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
-        if (isset($this->_serviceMethodInfo->metadata['status'])) {
+        if (isset($this->_apiMethodInfo->metadata['status'])) {
             call_user_func_array(array(
                 $this,
                 'setStatus'
-            ), $this->_serviceMethodInfo->metadata['status']);
+            ), $this->_apiMethodInfo->metadata['status']);
         }
-        if (isset($this->_serviceMethodInfo->metadata['header'])) {
-            foreach ($this->_serviceMethodInfo->metadata['header'] as $header)
+        if (isset($this->_apiMethodInfo->metadata['header'])) {
+            foreach ($this->_apiMethodInfo->metadata['header'] as $header)
                 @header($header, true);
         }
 
@@ -583,20 +583,20 @@ class Restler
         $responder = new $this->responder ();
         $responder->restler = $this;
         $this->applyClassMetadata($this->responder, $responder,
-            $this->_serviceMethodInfo);
+            $this->_apiMethodInfo);
         if ($statusCode == 0) {
             $data = $responder->formatResponse($data);
             $data = $this->responseFormat->encode($data,
                 !$this->_productionMode);
-            $postProcess = '_' . $this->_serviceMethod . '_' .
+            $postProcess = '_' . $this->_apiMethod . '_' .
                 $this->responseFormat->getExtension ();
-            if (isset($this->_serviceClassInstance)
+            if (isset($this->_apiClassInstance)
                     && method_exists(
-                        $this->_serviceClassInstance,
+                        $this->_apiClassInstance,
                         $postProcess
                 )) {
                     $data = call_user_func(array(
-                        $this->_serviceClassInstance,
+                        $this->_apiClassInstance,
                         $postProcess
                     ), $data);
             }
