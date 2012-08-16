@@ -45,6 +45,16 @@ class CommentParser
     public static $arrayDelimiter = ',';
 
     /**
+     * character sequence used to escape \@
+     */
+    const escapedAtChar = '\\@';
+
+    /**
+     * character sequence used to escape end of comment
+     */
+    const escapedCommendEnd = ' {@*}';
+
+    /**
      * Instance of Restler class injected at runtime.
      *
      * @var Restler
@@ -103,6 +113,12 @@ class CommentParser
      */
     private function extractData($comment)
     {
+        //to use @ as part of comment we need to
+        $comment = str_replace(
+            array(self::escapedCommendEnd, self::escapedAtChar),
+            array('*/', '@'),
+            $comment);
+
         $description = array();
         $longDescription = array();
         $params = array();
