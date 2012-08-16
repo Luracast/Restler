@@ -16,7 +16,7 @@ interface iAuthenticate
     /**
      * Auth function that is called when a protected method is requested
      *
-     * @return boolean TRUE or FALSE
+     * @return boolean true when authenticated, false otherwise
      */
     public function isAuthenticated();
 }
