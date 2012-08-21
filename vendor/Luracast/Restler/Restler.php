@@ -325,7 +325,7 @@ class Restler
                 throw new Exception('Invalid format class; must implement ' .
                         'iFormat interface');
 
-            foreach ($obj->getMIMEMap () as $extension => $mime) {
+            foreach ($obj->getMIMEMap () as $mime => $extension) {
                 if (!isset($this->_formatMap[$extension]))
                     $this->_formatMap[$extension] = $className;
                 if (!isset($this->_formatMap[$mime]))
@@ -565,12 +565,7 @@ class Restler
         @header('Expires: 0');
         @header('Content-Type: ' . $this->responseFormat->getMIME ());
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
-        if (isset($this->_apiMethodInfo->metadata['status'])) {
-            call_user_func_array(array(
-                $this,
-                'setStatus'
-            ), $this->_apiMethodInfo->metadata['status']);
-        }
+
         if (isset($this->_apiMethodInfo->metadata['header'])) {
             foreach ($this->_apiMethodInfo->metadata['header'] as $header)
                 @header($header, true);
@@ -585,6 +580,9 @@ class Restler
         $this->applyClassMetadata($this->responder, $responder,
             $this->_apiMethodInfo);
         if ($statusCode == 0) {
+            if (isset($this->_apiMethodInfo->metadata['status'])) {
+                $this->setStatus($this->_apiMethodInfo->metadata['status']);
+            }
             $data = $responder->formatResponse($data);
             $data = $this->responseFormat->encode($data,
                 !$this->_productionMode);
@@ -933,6 +931,8 @@ class Restler
         $lc = strtolower($this->url);
         $call = new stdClass;
         foreach ($urls as $url => $call) {
+            Events::trigger('onRoute',array('url'=>$url, 'target'=>$call),
+                __CLASS__);
             $call = (object) $call;
             if (strstr($url, '{')) {
                 $regex = str_replace(array(
