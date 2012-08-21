@@ -9,7 +9,7 @@ namespace {
         function debug_backtrace_callee($o, $index)
         {
             $n = $o [$index];
-            if ($n ['type'] == '')
+            if (empty($n ['type']))
                 return $n ['function'];
             return $n ['class'] . $n ['type'] . $n ['function'];
         }
@@ -42,7 +42,7 @@ namespace {
                 // This error code is not included in error_reporting
                 // return;
             }
-            echo "$errno $errstr $errfile $errline <hr/>";
+            //echo "$errno $errstr $errfile $errline <hr/>";
             DebugFormat::$traces [] = $errstr;
             $level = LOG_NOTICE;
             $info = array (
@@ -66,7 +66,7 @@ namespace {
                     break;
 
                 case E_USER_NOTICE :
-                    $level = LOG_NOTICE; // 5
+                    $level = LOG_ALERT; //LOG_NOTICE; // 5
                     break;
             }
             $info ['level'] = $level;
@@ -77,7 +77,6 @@ namespace {
         }
         set_error_handler ( 'trace_error_handler' );
 
-        // register_shutdown_function('handleShutdown');
         function handleShutdown()
         {
             $error = error_get_last ();
@@ -87,9 +86,11 @@ namespace {
                 $info = "[SHUTDOWN] file:" . $error ['file'] . " | ln:" . $error ['line'] . " | msg:" . $error ['message'] . PHP_EOL;
                 echo ( $info );
             } else {
-                echo ( "SHUTDOWN" );
+                //echo ( "SHUTDOWN" );
             }
-            file_put_contents(dirname(__DIR__)."/../../../scratch/restler.out.log",Restler::$log."\n$info\n===================\n",FILE_APPEND);
+            //file_put_contents(dirname(__DIR__)."/../../../scratch/restler
+            //.out.log",Restler::$log."\n$info\n===================\n",
+            //FILE_APPEND);
             exit;
         }
         register_shutdown_function('handleShutdown');
@@ -151,7 +152,7 @@ namespace Luracast\Restler\Format {
                     $r .= is_numeric ( $key ) ? "[ <strong>$key</strong> ] " : "<strong>$key: </strong>";
                     $r .= '<span>';
                     if (is_array ( $value )) {
-                        // recurse
+                        // recursive
                         $r .= $this->encode ( $value, $humanReadable, FALSE );
                     } else {
                         // value, with hyperlinked hyperlinks
@@ -195,10 +196,11 @@ namespace Luracast\Restler\Format {
         {
             // print_r($this->restler->serviceMethodInfo);
             $version = Restler::VERSION;
-            $info = $this->restler->serviceMethodInfo;
+            $info = $this->restler->apiMethodInfo;
             if (! is_null ( $info )) {
                 $arguments = implode ( ', ', $info->arguments );
-                $title = "{$info->className}->" . "{$info->methodName}({$arguments})";
+                $title = "{$info->className}->"
+                    . "{$info->methodName}({$arguments})";
             } else {
                 $title = 'No Matching Resource';
             }
@@ -215,7 +217,9 @@ namespace Luracast\Restler\Format {
                 $style = $styles [self::$traceInfos [$i] ['level']];
                 $notices .= "<a class=\"{$style}\"><strong>" . self::$traceInfos [$i] ['source'] . "</strong>: {$o} </a>";
             }
-            $path = substr ( __DIR__, strlen ( $_SERVER ['DOCUMENT_ROOT'] ) );
+            //TODO: Alter the path to avoid hard coding
+            $path = '/restler3.dev/public/debug';
+                //substr ( __DIR__, strlen ( $_SERVER ['DOCUMENT_ROOT'] ) );
 
             return <<<EOT
 <!DOCTYPE html>
