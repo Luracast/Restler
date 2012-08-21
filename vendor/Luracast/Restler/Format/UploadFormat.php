@@ -3,12 +3,12 @@ namespace Luracast\Restler\Format;
 
 use Luracast\Restler\RestException;
 
-class UploadFormat implements iFormat
+class UploadFormat extends Format
 {
     /**
      * use it if you need to restrict uploads based on file type
      * setting it as an empty array allows all file types
-     * default is to alow only png and jpeg images
+     * default is to allow only png and jpeg images
      *
      * @var array
      */
@@ -38,33 +38,6 @@ class UploadFormat implements iFormat
     public static $customValidationFunction;
     const MIME = 'multipart/form-data';
     const EXTENSION = 'post';
-
-    public function getMIMEMap()
-    {
-        return array (
-                self::EXTENSION => self::MIME
-        );
-    }
-
-    public function getMIME()
-    {
-        return self::MIME;
-    }
-
-    public function getExtension()
-    {
-        return self::EXTENSION;
-    }
-
-    public function setMIME($mime)
-    {
-        // do nothing
-    }
-
-    public function setExtension($extension)
-    {
-        // do nothing
-    }
 
     public function encode($data, $humanReadable = false)
     {
@@ -101,20 +74,5 @@ class UploadFormat implements iFormat
         }
         // sort file order if needed;
         return $_FILES + $_POST;
-    }
-
-    public function __toString()
-    {
-        return $this->getExtension ();
-    }
-
-    public function setCharset($charset)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    public function getCharset()
-    {
-        // TODO Auto-generated method stub
     }
 }

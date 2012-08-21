@@ -1,8 +1,7 @@
 <?php
 namespace Luracast\Restler\Format;
-
 /**
- * Abstract class to implement common methods of iFormat
+ * Describe the purpose of this class/interface/trait
  *
  * @category   Framework
  * @package    restler
@@ -12,16 +11,19 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-abstract class Format implements iFormat
+abstract class MultiFormat implements iFormat
 {
     /**
      * override in the extending class
      */
-    const MIME = 'text/plain';
+    const MIME = 'text/plain,text/html';
     /**
      * override in the extending class
      */
-    const EXTENSION = 'txt';
+    const EXTENSION = 'txt,html';
+
+    public static $mime;
+    public static $extension;
 
     /**
      * Injected at runtime
@@ -38,9 +40,12 @@ abstract class Format implements iFormat
      */
     public function getMIMEMap()
     {
-        return array(
-            static::MIME =>  static::EXTENSION
-        );
+        $extensions = explode(',',static::EXTENSION);
+        $mimes = explode(',',static::MIME);
+        $count = max(count($extensions), count($mimes));
+        $extensions += array_fill(0, $count, end($extensions));
+        $mimes += array_fill(0, $count, end($mimes));
+        return array_combine($mimes,$extensions);
     }
 
     /**
@@ -51,7 +56,7 @@ abstract class Format implements iFormat
      */
     public function setMIME($mime)
     {
-        //do nothing
+        static::$mime = $mime;
     }
 
     /**
@@ -86,7 +91,7 @@ abstract class Format implements iFormat
      */
     public function getMIME()
     {
-        return static::MIME;
+        return static::$mime;
     }
 
     /**
@@ -97,7 +102,7 @@ abstract class Format implements iFormat
      */
     public function setExtension($extension)
     {
-        //do nothing;
+        static::$extension = $extension;
     }
 
     /**
@@ -107,12 +112,11 @@ abstract class Format implements iFormat
      */
     public function getExtension()
     {
-        return static::EXTENSION;
+        return static::$extension;
     }
 
     public function __toString()
     {
         return $this->getExtension();
     }
-
 }

@@ -15,10 +15,10 @@ namespace Luracast\Restler\Format;
 interface iFormat
 {
     /**
-     * Get Extension => MIME type mappings as an associative array
+     * Get MIME type => Extension mappings as an associative array
      *
      * @return array list of mime strings for the format
-     * @example array('json'=>'application/json');
+     * @example array('application/json'=>'json');
      */
     public function getMIMEMap();
 

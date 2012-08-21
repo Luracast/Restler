@@ -3,45 +3,12 @@ namespace Luracast\Restler\Format;
 
 use Luracast\Restler\RestException;
 
-class WadlFormat implements iFormat
+class WadlFormat extends Format
 {
-    /**
-     * injected at runtime
-     *
-     * @var Restler
-     */
-    public $restler;
     const MIME = 'text/plain'; // 'application/vnd.sun.wadl+xml';
     const EXTENSION = 'wadl';
 
-    public function getMIMEMap()
-    {
-        return array (
-                self::EXTENSION => self::MIME
-        );
-    }
-
-    public function setMIME($mime)
-    {
-        // do nothing
-    }
-
-    public function getMIME()
-    {
-        return self::MIME;
-    }
-
-    public function setExtension($extension)
-    {
-        // do nothing
-    }
-
-    public function getExtension()
-    {
-        return self::EXTENSION;
-    }
-
-    public function encode($data, $humanReadable = false)
+     public function encode($data, $humanReadable = false)
     {
         /*
          * stdClass Object ( [className] => Rss [methodName] => get [arguments]
@@ -94,15 +61,5 @@ class WadlFormat implements iFormat
     public function decode($data)
     {
         throw new RestException ( 500, 'WSDL format is read only' );
-    }
-
-    public function setCharset($charset)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    public function getCharset()
-    {
-        // TODO Auto-generated method stub
     }
 }
