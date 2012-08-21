@@ -296,7 +296,7 @@ class CommentParser
                 $extension = $matches [1];
                 if (isset ($this->restler->formatMap [$extension])) {
                     /**
-                     * @var IFormat
+                     * @var \Luracast\Restler\Format\iFormat
                      */
                     $format = new $this->restler->formatMap[$extension];
                     $format = new $format();
