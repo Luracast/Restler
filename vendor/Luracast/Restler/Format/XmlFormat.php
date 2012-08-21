@@ -16,7 +16,7 @@ use Luracast\Restler\RestException;
 use \Exception;
 use \SimpleXMLElement;
 
-class XmlFormat implements iFormat
+class XmlFormat extends Format
 {
     public static $parseAttributes = true;
     public static $parseNamespaces = false;
@@ -34,34 +34,7 @@ class XmlFormat implements iFormat
     const MIME = 'application/xml';
     const EXTENSION = 'xml';
 
-    public function getMIMEMap()
-    {
-        return array (
-                self::EXTENSION => self::MIME
-        );
-    }
-
-    public function getMIME()
-    {
-        return self::MIME;
-    }
-
-    public function getExtension()
-    {
-        return self::EXTENSION;
-    }
-
-    public function setMIME($mime)
-    {
-        // do nothing
-    }
-
-    public function setExtension($extension)
-    {
-        // do nothing
-    }
-
-    public function encode($data, $humanReadable = false)
+      public function encode($data, $humanReadable = false)
     {
         return $this->toXML (
                 Util::objectToArray ($data, false ),
@@ -80,11 +53,6 @@ class XmlFormat implements iFormat
             throw new RestException ( 400,
                     "Error decoding request. " . $e->getMessage () );
         }
-    }
-
-    public function __toString()
-    {
-        return $this->getExtension ();
     }
 
     /**
@@ -348,13 +316,4 @@ class XmlFormat implements iFormat
         return $s;
     }
 
-    public function setCharset($charset)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    public function getCharset()
-    {
-        // TODO Auto-generated method stub
-    }
 }

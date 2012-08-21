@@ -5,34 +5,12 @@ use Luracast\Restler\Data\Util;
 use MustacheTemplate;
 use Luracast\Restler\RestException;
 
-class MustacheFormat implements iFormat
+class MustacheFormat extends Format
 {
     const MIME = 'text/html';
     const EXTENSION = 'mustache';
-    /**
-     * Injected at runtime
-     *
-     * @var Restler
-     */
-    public $restler;
+
     public static $template = 'default';
-
-    public function getMIMEMap()
-    {
-        return array (
-                self::EXTENSION => self::MIME
-        );
-    }
-
-    public function getMIME()
-    {
-        return self::MIME;
-    }
-
-    public function getExtension()
-    {
-        return self::EXTENSION;
-    }
 
     public function encode($data, $humanReadable = false)
     {
@@ -62,30 +40,5 @@ class MustacheFormat implements iFormat
     public function decode($data)
     {
         throw new RestException ( 405, 'MustacheFormat is write only' );
-    }
-
-    public function __toString()
-    {
-        return $this->getExtension ();
-    }
-
-    public function setMIME($mime)
-    {
-        // do nothing
-    }
-
-    public function setExtension($extension)
-    {
-        // do nothing
-    }
-
-    public function setCharset($charset)
-    {
-        // TODO Auto-generated method stub
-    }
-
-    public function getCharset()
-    {
-        // TODO Auto-generated method stub
     }
 }

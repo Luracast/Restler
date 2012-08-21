@@ -20,7 +20,7 @@ namespace Luracast\Restler\Format;
 use Luracast\Restler\Data\Util;
 use Luracast\Restler\RestException;
 
-class JsonFormat implements iFormat
+class JsonFormat extends Format
 {
     /**
      * options that you want to pass for json_encode (used internally)
@@ -33,32 +33,6 @@ class JsonFormat implements iFormat
     const MIME = 'application/json';
     const EXTENSION = 'json';
 
-    public function getMIMEMap()
-    {
-        return array (
-                self::EXTENSION => self::MIME
-        );
-    }
-
-    public function getMIME()
-    {
-        return self::MIME;
-    }
-
-    public function getExtension()
-    {
-        return self::EXTENSION;
-    }
-
-    public function setMIME($mime)
-    {
-        // do nothing
-    }
-
-    public function setExtension($extension)
-    {
-        // do nothing
-    }
 
     public function encode($data, $humanReadable = false)
     {
@@ -120,13 +94,6 @@ class JsonFormat implements iFormat
         return Util::objectToArray ( $decoded );
     }
 
-    public function setCharset($charset)
-    {
-    }
-
-    public function getCharset()
-    {
-    }
 
     /**
      * Pretty print JSON string
@@ -192,10 +159,5 @@ class JsonFormat implements iFormat
         }
 
         return $newJson;
-    }
-
-    public function __toString()
-    {
-        return $this->getExtension ();
     }
 }
