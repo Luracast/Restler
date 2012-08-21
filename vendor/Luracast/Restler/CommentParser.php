@@ -181,7 +181,8 @@ class CommentParser
             $this->_data[self::$embeddedDataName] = $d2;
         }
         foreach ($params as $key => $line) {
-            @list(, $param, $value) = preg_split('/\@|\s/', $line, 3);
+            list(, $param, $value) = preg_split('/\@|\s/', $line, 3)
+                + array('','','');
             list($value, $embedded) = $this->parseEmbeddedData($value);
             $value = preg_split('/\s+/ms', $value);
             $this->parseParam($param, $value, $embedded);
