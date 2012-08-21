@@ -40,7 +40,9 @@ class RestlerAutoLoader
             return false;
         }
 
-        static::$classMap[$key] = @static::$classMap[$key] ? : $value;
+        if (empty(static::$classMap[$key])) {
+            static::$classMap[$key] = $value;
+        }
 
         if (is_string($ret = static::$classMap[$key])) {
             if (false === strpos($ret, '.php')
@@ -61,7 +63,9 @@ class RestlerAutoLoader
      */
     public static function instance()
     {
-        static::$instance = static::$instance ? : new static();
+        if(!static::$instance){
+            static::$instance = new static();
+        }
         return static::$instance;
     }
 
@@ -105,13 +109,6 @@ class RestlerAutoLoader
             natsort($paths);
             $this->seen('__include_path',
                 implode(PATH_SEPARATOR, array_unique($paths)));
-
-            /** PHP >= 5.4 JsonSerializable interface */
-            $include = 'interface JsonSerializable { ' .
-                '    public function jsonSerialize();' .
-                '}';
-            $this->seen('JsonSerializable',
-                "data://text/plain;base64," . base64_encode($include));
         }
 
         set_include_path($this->seen('__include_path'));
@@ -171,7 +168,7 @@ class RestlerAutoLoader
         $file = false;
         if (preg_match('/(.+)(\\\\\w+$)/U', $className, $parts))
             for ($i = 0
-                , $aliases = @static::$aliases[$parts[1]] ? : array()
+                , $aliases = static::$aliases[$parts[1]] ? : array()
                 , $count = count($aliases)
                 ; $i < $count
                 && false === $file
