@@ -140,6 +140,13 @@ class ValidationInfo implements iValueObject {
     }
 
     /**
+     * keep the constructor private to avoid instantiation outside
+     */
+    private function __construct(){
+
+    }
+
+    /**
      * Magic Method used for creating instance at run time
      */
     public static function __set_state(array $info)
