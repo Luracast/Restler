@@ -203,8 +203,7 @@ class Restler
     {
 
         $this->_productionMode = $productionMode;
-        $this->cacheDir = dirname(__DIR__) . DIRECTORY_SEPARATOR .
-            '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'scratch';
+        $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
         $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
