@@ -22,7 +22,6 @@ use Luracast\Restler\Data\ValidationInfo;
  * @category   Framework
  * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
- * @author     Jac Wright <jacwright@gmail.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
@@ -403,6 +402,26 @@ class Restler
         ) {
             $this->requestData = $this->getRequestData();
         }
+        //parse defaults
+        $validator = null;
+        foreach($_GET as $key=>$value ){
+            if(isset(Defaults::$aliases)){
+                $_GET[Defaults::$aliases[$key]] = $value;
+                unset($_GET[$key]);
+                $key = Defaults::$aliases[$key];
+            }
+            if(in_array($key, Defaults::$overridables)){
+                if(@is_array(Defaults::$validation)){
+                    if(!$validator){
+                        $validator = new DefaultValidator();
+                    }
+                    $info = ValidationInfo::__set_state
+                        (Defaults::$validation[$key]);
+                    $value = $validator->validate($value, $info);
+                }
+                Defaults::$$key = $value;
+            }
+        }
     }
 
     /**
@@ -520,8 +539,12 @@ class Restler
     public function sendData($data, $statusCode = 0, $statusMessage = null)
     {
         //$this->_log = ob_get_clean ();
-        @header('Cache-Control: no-cache, must-revalidate');
-        @header('Expires: 0');
+        @header('Cache-Control: ' . Defaults::$headerCacheControl);
+        $expires = Defaults::$headerExpires;
+        if ($expires > 0) {
+            $expires = gmdate('D, d M Y H:i:s \G\M\T', time() + $expires);
+        }
+        @header('Expires: ' . $expires);
         @header('Content-Type: ' . $this->responseFormat->getMIME());
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
 
@@ -577,10 +600,9 @@ class Restler
      */
     public function setStatus($code)
     {
-        if (isset($_GET['suppress_response_codes'])
-            && $_GET['suppress_response_codes'] == 'true'
-        )
+        if(Defaults::$suppressResponseCode){
             $code = 200;
+        }
         @header("{$_SERVER['SERVER_PROTOCOL']} $code " .
             RestException::$codes[$code]);
     }
