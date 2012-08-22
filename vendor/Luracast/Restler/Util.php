@@ -107,7 +107,7 @@ class Util
                     /*
                     $instance->{$property} = $value;
                     or
-                    $instance::{$property} = $value;
+                    $instance::$$property = $value;
                     */
                     $reflectionProperty = new \ReflectionProperty (
                         $className, $property
