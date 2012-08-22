@@ -35,7 +35,7 @@ class Defaults
      * expire. This setting can be altered at api level using php doc comment
      * with @expires numOfSeconds
      */
-    public static $headerExpires = 30;
+    public static $headerExpires = 0;
     public static $throttle = 0;
 
     /**
@@ -51,7 +51,7 @@ class Defaults
         'suppress_response_codes' => 'suppressResponseCode',
     );
 
-    public static $fromComment = array(
+    public static $fromComments = array(
 
         /**
          * use PHPDoc comments such as the following

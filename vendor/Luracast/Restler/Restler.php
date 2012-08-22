@@ -409,7 +409,7 @@ class Restler
                 $key = Defaults::$aliases[$key];
             }
             if(in_array($key, Defaults::$overridables)){
-                if(@is_array(Defaults::$validation)){
+                if(@is_array(Defaults::$validation[$key])){
                     $info = new ValidationInfo(Defaults::$validation[$key]);
                     $value = DefaultValidator::validate($value, $info);
                 }
@@ -429,6 +429,20 @@ class Restler
     {
         $this->init();
         $this->_apiMethodInfo = $o = $this->mapUrlToMethod();
+        if(isset($o->metadata)){
+            foreach(Defaults::$fromComments as $key => $dkey)
+            {
+                if(array_key_exists($key, $o->metadata)){
+                    $value = $o->metadata[$key];
+                    if(@is_array(Defaults::$validation[$dkey])){
+                        $info = new ValidationInfo
+                            (Defaults::$validation[$dkey]);
+                        $value = DefaultValidator::validate($value, $info);
+                    }
+                    Defaults::$$dkey = $value;
+                }
+            }
+        }
         $result = null;
         if (!isset($o->className)) {
             $this->handleError(404);
