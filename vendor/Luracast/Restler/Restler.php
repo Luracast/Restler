@@ -553,7 +553,9 @@ class Restler
          */
         $responder = Util::setProperties(
             $this->responder,
-            $this->_apiMethodInfo->metadata
+            $this->_apiMethodInfo
+                ? $this->_apiMethodInfo->metadata
+                : null
         );
         if ($statusCode == 0) {
             if (isset($this->_apiMethodInfo->metadata['status'])) {
