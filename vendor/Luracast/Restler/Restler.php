@@ -13,7 +13,6 @@ use Luracast\Restler\Format\UrlEncodedFormat;
 use Luracast\Restler\Data\iValidate;
 use Luracast\Restler\Data\DefaultValidator;
 use Luracast\Restler\Data\ValidationInfo;
-use Luracast\Restler\Data\Util;
 
 /**
  * REST API Server. It is the server part of the Restler framework.
@@ -196,22 +195,23 @@ class Restler
      * Constructor
      *
      * @param boolean $productionMode
-     *            When set to false, it will run in
-     *            debug mode and parse the class files every time to map it to
-     *            the URL
+     *                              When set to false, it will run in
+     *                              debug mode and parse the class files every time to map it to
+     *                              the URL
      * @param bool    $refreshCache will update the cache when set to true
      */
     public function __construct($productionMode = false, $refreshCache = false)
     {
 
         $this->_productionMode = $productionMode;
-        $this->cacheDir = dirname(__DIR__).DIRECTORY_SEPARATOR.
-            '..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'scratch' ;
+        $this->cacheDir = dirname(__DIR__) . DIRECTORY_SEPARATOR .
+            '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'scratch';
         $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
             $this->_cached = false;
         }
+        Util::$restler = $this;
     }
 
     /**
@@ -220,15 +220,15 @@ class Restler
     public function __destruct()
     {
         if ($this->_productionMode && !$this->_cached) {
-            $this->saveCache ();
+            $this->saveCache();
         }
     }
 
     public function setApiClassPath($path)
     {
         $this->_apiClassPath = !empty($path) &&
-        $path {0} == '/' ? $path : $_SERVER['DOCUMENT_ROOT'] .
-        dirname($_SERVER['SCRIPT_NAME']) . '/' . $path;
+            $path{0} == '/' ? $path : $_SERVER['DOCUMENT_ROOT'] .
+            dirname($_SERVER['SCRIPT_NAME']) . '/' . $path;
         $this->_apiClassPath = rtrim($this->_apiClassPath, '/');
     }
 
@@ -236,7 +236,7 @@ class Restler
     {
         if (!is_int($version)) {
             throw new InvalidArgumentException
-               ('version should be an integer');
+            ('version should be an integer');
         }
         $this->_apiVersion = $version;
         if (is_int($minimum)) {
@@ -245,9 +245,9 @@ class Restler
         if (!empty($apiClassPath)) {
             $this->setAPIClassPath($apiClassPath);
         }
-        $path = $this->_apiClassPath.DIRECTORY_SEPARATOR.
-            "v$this->_apiVersion".DIRECTORY_SEPARATOR;
-        set_include_path($path.PATH_SEPARATOR.get_include_path());
+        $path = $this->_apiClassPath . DIRECTORY_SEPARATOR .
+            "v$this->_apiVersion" . DIRECTORY_SEPARATOR;
+        set_include_path($path . PATH_SEPARATOR . get_include_path());
     }
 
     /**
@@ -255,8 +255,9 @@ class Restler
      * supported by the API.
      * Accepts multiple parameters
      *
-     * @param string,... $formatName class name of the format class that
+     * @param string ,... $formatName class name of the format class that
      *               implements iFormat
+     *
      * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
      * @throws \Exception
      */
@@ -274,9 +275,9 @@ class Restler
 
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
-                        'iFormat interface');
+                    'iFormat interface');
 
-            foreach ($obj->getMIMEMap () as $mime => $extension) {
+            foreach ($obj->getMIMEMap() as $mime => $extension) {
                 if (!isset($this->_formatMap[$extension]))
                     $this->_formatMap[$extension] = $className;
                 if (!isset($this->_formatMap[$mime]))
@@ -302,6 +303,7 @@ class Restler
      * @param string $basePath
      *            optional url prefix for mapping, uses
      *            lowercase version of the class name when not specified
+     *
      * @throws \Exception when supplied with invalid class name
      */
     public function addAPIClass($className, $basePath = null)
@@ -313,7 +315,7 @@ class Restler
         if (!$this->_cached) {
             if (is_null($basePath)) {
                 $basePath = str_replace('__v', '/v',
-                        strtolower($className));
+                    strtolower($className));
                 $index = strrpos($className, '\\');
                 if ($index !== false)
                     $basePath = substr($basePath, $index + 1);
@@ -354,7 +356,7 @@ class Restler
     /**
      * Convenience method to respond with an error message.
      *
-     * @param int    $statusCode http error code
+     * @param int    $statusCode   http error code
      * @param string $errorMessage optional custom error message
      *
      * @return null
@@ -385,10 +387,10 @@ class Restler
         if (empty($this->_formatMap)) {
             $this->setSupportedFormats('JsonFormat');
         }
-        $this->url = $this->getPath ();
-        $this->requestMethod = $this->getRequestMethod ();
-        $this->responseFormat = $this->getResponseFormat ();
-        $this->requestFormat = $this->getRequestFormat ();
+        $this->url = $this->getPath();
+        $this->requestMethod = Util::getRequestMethod();
+        $this->responseFormat = $this->getResponseFormat();
+        $this->requestFormat = $this->getRequestFormat();
         $this->responseFormat->restler = $this;
         if (is_null($this->requestFormat)) {
             $this->requestFormat = $this->responseFormat;
@@ -397,8 +399,9 @@ class Restler
         }
         if ($this->requestMethod == 'PUT' ||
             $this->requestMethod == 'PATCH' ||
-            $this->requestMethod == 'POST') {
-            $this->requestData = $this->getRequestData ();
+            $this->requestMethod == 'POST'
+        ) {
+            $this->requestData = $this->getRequestData();
         }
     }
 
@@ -412,7 +415,7 @@ class Restler
     public function handle()
     {
         $this->init();
-        $this->_apiMethodInfo = $o = $this->mapUrlToMethod ();
+        $this->_apiMethodInfo = $o = $this->mapUrlToMethod();
         $result = null;
         if (!isset($o->className)) {
             $this->handleError(404);
@@ -424,22 +427,26 @@ class Restler
                         throw new RestException(401);
                     }
                     foreach ($this->_authClasses as $authClass) {
-                        $authObj = new $authClass ();
-                        $authObj->restler = $this;
-                        $this->applyClassMetadata($authClass, $authObj, $o);
+                        $authObj = Util::setProperties(
+                            $authClass,
+                            $o->metdadata
+                        );
                         if (!method_exists($authObj, $authMethod)) {
                             throw new RestException (
-                                    401, 'Authentication Class ' .
-                                    'should implement iAuthenticate');
+                                401, 'Authentication Class ' .
+                                'should implement iAuthenticate');
                         } elseif (!$authObj->$authMethod ()) {
                             throw new RestException(401);
                         }
                     }
                 }
-                $this->applyClassMetadata(get_class($this->requestFormat),
-                        $this->requestFormat, $o);
-                $preProcess = '_' . $this->requestFormat->getExtension () .
-                        '_' . $o->methodName;
+                Util::setProperties(
+                    get_class($this->requestFormat),
+                    $o->metadata, $this->requestFormat
+                );
+
+                $preProcess = '_' . $this->requestFormat->getExtension() .
+                    '_' . $o->methodName;
                 $this->_apiMethod = $o->methodName;
                 $object = $this->_apiClassInstance = null;
                 // TODO:check if the api version requested is allowed by class
@@ -448,7 +455,8 @@ class Restler
                 foreach ($o->metadata['param'] as $index => $param) {
                     $info = &$param [CommentParser::$embeddedDataName];
                     if (!isset ($info['validate'])
-                        || $info['validate'] != false) {
+                        || $info['validate'] != false
+                    ) {
                         if (isset($info['method'])) {
                             if (!isset($object)) {
                                 $object = $this->_apiClassInstance
@@ -466,13 +474,13 @@ class Restler
                 }
                 if (!isset($object)) {
                     $object = $this->_apiClassInstance
-                            = new $o->className ();
+                        = new $o->className ();
                     $object->restler = $this;
                 }
                 if (method_exists($o->className, $preProcess)) {
                     call_user_func_array(array(
-                            $object,
-                            $preProcess
+                        $object,
+                        $preProcess
                     ), $o->arguments);
                 }
                 switch ($o->methodFlag) {
@@ -483,9 +491,9 @@ class Restler
                             $o->methodName
                         );
                         $reflectionMethod->setAccessible(true);
-                        $result = $reflectionMethod->invokeArgs (
-                        $object,
-                        $o->arguments
+                        $result = $reflectionMethod->invokeArgs(
+                            $object,
+                            $o->arguments
                         );
                         break;
                     case 1 :
@@ -496,7 +504,7 @@ class Restler
                         ), $o->arguments);
                 }
             } catch (RestException $e) {
-                $this->handleError($e->getCode (), $e->getMessage ());
+                $this->handleError($e->getCode(), $e->getMessage());
             }
         }
         $this->sendData($result);
@@ -514,7 +522,7 @@ class Restler
         //$this->_log = ob_get_clean ();
         @header('Cache-Control: no-cache, must-revalidate');
         @header('Expires: 0');
-        @header('Content-Type: ' . $this->responseFormat->getMIME ());
+        @header('Content-Type: ' . $this->responseFormat->getMIME());
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
 
         if (isset($this->_apiMethodInfo->metadata['header'])) {
@@ -526,10 +534,10 @@ class Restler
          *
          * @var iRespond DefaultResponder
          */
-        $responder = new $this->responder ();
-        $responder->restler = $this;
-        $this->applyClassMetadata($this->responder, $responder,
-            $this->_apiMethodInfo);
+        $responder = Util::setProperties(
+            $this->responder,
+            $this->_apiMethodInfo->metadata
+        );
         if ($statusCode == 0) {
             if (isset($this->_apiMethodInfo->metadata['status'])) {
                 $this->setStatus($this->_apiMethodInfo->metadata['status']);
@@ -538,24 +546,25 @@ class Restler
             $data = $this->responseFormat->encode($data,
                 !$this->_productionMode);
             $postProcess = '_' . $this->_apiMethod . '_' .
-                $this->responseFormat->getExtension ();
+                $this->responseFormat->getExtension();
             if (isset($this->_apiClassInstance)
-                    && method_exists(
-                        $this->_apiClassInstance,
-                        $postProcess
-                )) {
-                    $data = call_user_func(array(
-                        $this->_apiClassInstance,
-                        $postProcess
-                    ), $data);
+                && method_exists(
+                    $this->_apiClassInstance,
+                    $postProcess
+                )
+            ) {
+                $data = call_user_func(array(
+                    $this->_apiClassInstance,
+                    $postProcess
+                ), $data);
             }
         } else {
             $message = RestException::$codes[$statusCode] .
-            (empty($statusMessage) ? '' : ': ' . $statusMessage);
+                (empty($statusMessage) ? '' : ': ' . $statusMessage);
             $this->setStatus($statusCode);
             $data = $this->responseFormat->encode(
                 $responder->formatError($statusCode, $message),
-                    !$this->_productionMode);
+                !$this->_productionMode);
         }
         die($data);
     }
@@ -569,36 +578,11 @@ class Restler
     public function setStatus($code)
     {
         if (isset($_GET['suppress_response_codes'])
-            && $_GET['suppress_response_codes'] == 'true')
+            && $_GET['suppress_response_codes'] == 'true'
+        )
             $code = 200;
         @header("{$_SERVER['SERVER_PROTOCOL']} $code " .
             RestException::$codes[$code]);
-    }
-
-    /**
-     * Compare two strings and remove the common
-     * sub string from the first string and return it
-     *
-     * @param string $first
-     * @param string $second
-     * @param string $char
-     *            optional, set it as
-     *            blank string for char by char comparison
-     * @return string
-     */
-    public function removeCommonPath($first, $second, $char = '/')
-    {
-        $first = explode($char, $first);
-        $second = explode($char, $second);
-        while (count($second)) {
-            if ($first[0] == $second[0]) {
-                array_shift($first);
-            } else {
-                break;
-            }
-            array_shift($second);
-        }
-        return implode($char, $first);
     }
 
     public function saveCache()
@@ -621,10 +605,10 @@ class Restler
         @chmod($file, 0777);
         if ($r === false) {
             throw new Exception(
-                "The cache directory located at ".
-                "'$this->cacheDir' needs to have the permissions " .
-                "set to read/write/execute for everyone " .
-                "in order to save cache and improve performance."
+                "The cache directory located at " .
+                    "'$this->cacheDir' needs to have the permissions " .
+                    "set to read/write/execute for everyone " .
+                    "in order to save cache and improve performance."
             );
         }
     }
@@ -659,19 +643,21 @@ class Restler
     protected function getPath()
     {
         $fullPath = $_SERVER['REQUEST_URI'];
-        $path = urldecode($this->removeCommonPath(
-            $fullPath,
-            $_SERVER['SCRIPT_NAME'])
+        $path = urldecode(
+            Util::removeCommonPath(
+                $fullPath,
+                $_SERVER['SCRIPT_NAME']
+            )
         );
         $baseUrl = isset($_SERVER['HTTPS']) &&
-        $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
+            $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
         if ($_SERVER['SERVER_PORT'] != '80') {
             $baseUrl .= $_SERVER['SERVER_NAME'] . ':'
-                    . $_SERVER['SERVER_PORT'];
+                . $_SERVER['SERVER_PORT'];
         } else {
             $baseUrl .= $_SERVER['SERVER_NAME'];
         }
-        $this->baseUrl = $baseUrl . rtrim(substr (
+        $this->baseUrl = $baseUrl . rtrim(substr(
             $fullPath,
             0,
             strlen($fullPath) - strlen($path)
@@ -679,7 +665,7 @@ class Restler
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace($this->_formatMap['extensions'], '', $path);
-        if ($this->_apiVersion && $path {0} == 'v') {
+        if ($this->_apiVersion && $path{0} == 'v') {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->_apiVersion) {
                 $this->_requestedApiVersion = $version;
@@ -692,32 +678,6 @@ class Restler
         return $path;
     }
 
-    /**
-     * Parses the request to figure out the http request type
-     *
-     * @return string which will be one of the following
-     *        [GET, POST, PUT, PATCH, DELETE]
-     * @example GET
-     */
-    protected function getRequestMethod()
-    {
-        $method = $_SERVER['REQUEST_METHOD'];
-        if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-            $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
-        } elseif (isset($_GET['method'])) {
-            // support for exceptional clients who can't set the header
-            $m = strtoupper($_GET['method']);
-            if ($m == 'PUT' || $m == 'DELETE' ||
-                    $m == 'POST' || $m == 'PATCH') {
-                $method = $m;
-            }
-        }
-        // support for HEAD request
-        if ($method == 'HEAD') {
-            $method = 'GET';
-        }
-        return $method;
-    }
 
     /**
      * Parses the request to figure out format of the request data
@@ -792,8 +752,8 @@ class Restler
                 $parts = explode(';q=', trim($accept));
                 $type = array_shift($parts);
                 $quality = count($parts) ?
-                floatval(array_shift($parts)) :
-                (1000 - $pos) / 1000;
+                    floatval(array_shift($parts)) :
+                    (1000 - $pos) / 1000;
                 $acceptList[$type] = $quality;
             }
             arsort($acceptList);
@@ -832,7 +792,7 @@ class Restler
             // a 406 (not acceptable) response.
             @header('HTTP/1.1 406 Not Acceptable');
             die('406 Not Acceptable: The server was unable to ' .
-                    'negotiate content for this request.');
+                'negotiate content for this request.');
         } else {
             // Tell cache content is based ot Accept header
             @header("Vary: Accept");
@@ -854,8 +814,8 @@ class Restler
             }
             $r = $this->requestFormat->decode($r);
             return is_null($r) ? array() : $r;
-        } catch(RestException $e) {
-            $this->handleError($e->getCode (), $e->getMessage ());
+        } catch (RestException $e) {
+            $this->handleError($e->getCode(), $e->getMessage());
         }
     }
 
@@ -882,16 +842,16 @@ class Restler
         $lc = strtolower($this->url);
         $call = new stdClass;
         foreach ($urls as $url => $call) {
-            Events::trigger('onRoute',array('url'=>$url, 'target'=>$call),
+            Events::trigger('onRoute', array('url' => $url, 'target' => $call),
                 __CLASS__);
-            $call = (object) $call;
+            $call = (object)$call;
             if (strstr($url, '{')) {
                 $regex = str_replace(array(
-                        '{',
-                        '}'
+                    '{',
+                    '}'
                 ), array(
-                        '(?P<',
-                        '>[^/]+)'
+                    '(?P<',
+                    '>[^/]+)'
                 ), $url);
                 if (preg_match(":^$regex$:i", $this->url, $matches)) {
                     foreach ($matches as $arg => $match) {
@@ -936,39 +896,6 @@ class Restler
     }
 
     /**
-     * Apply static and non-static properties defined in
-     * the method information annotation
-     *
-     * @param String $className
-     * @param Object $instance
-     *            instance of that class
-     * @param Object $methodInfo
-     *            method information and metadata
-     */
-    protected function applyClassMetadata($className, $instance, $methodInfo)
-    {
-
-        if (!isset($methodInfo->metadata['class'])) {
-            return;
-        }
-        $classes = $methodInfo->metadata['class'];
-        if (!isset($classes[$className])) return;
-        if (!isset($classes[$className]['properties'])) return;
-        foreach ($classes[$className]['properties']
-                 as $property => $value) {
-            if (property_exists($className, $property)) {
-                /*
-                $instance->{$property} = $value;
-                */
-                $reflectionProperty = new ReflectionProperty (
-                    $className, $property
-                );
-                $reflectionProperty->setValue($instance, $value);
-            }
-        }
-    }
-
-    /**
      * Load routes from cache
      *
      * @return null
@@ -1007,15 +934,15 @@ class Restler
          * type - Do not include it in URL
          */
         $reflection = new ReflectionClass($className);
-        $classMetadata = CommentParser::parse($reflection->getDocComment ());
+        $classMetadata = CommentParser::parse($reflection->getDocComment());
         $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC +
-                ReflectionMethod::IS_PROTECTED);
+            ReflectionMethod::IS_PROTECTED);
         foreach ($methods as $method) {
-            $doc = $method->getDocComment ();
+            $doc = $method->getDocComment();
             $arguments = array();
             $defaults = array();
             $metadata = CommentParser::parse($doc) + $classMetadata;
-            $params = $method->getParameters ();
+            $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = false;
             $allowAmbiguity = isset($metadata['allowAmbiguity']);
@@ -1035,9 +962,9 @@ class Restler
                 if ($type instanceof ReflectionClass) {
                     $type = $type->getName();
                 }
-                $arguments[$param->getName ()] = $position;
-                $defaults[$position] = $param->isDefaultValueAvailable () ?
-                $param->getDefaultValue () : null;
+                $arguments[$param->getName()] = $position;
+                $defaults[$position] = $param->isDefaultValueAvailable() ?
+                    $param->getDefaultValue() : null;
                 if (!isset($metadata['param'][$position])) {
                     $metadata['param'][$position] = array();
                 }
@@ -1061,25 +988,26 @@ class Restler
                 }
                 $position++;
             }
-            $methodFlag = $method->isProtected ()
+            $methodFlag = $method->isProtected()
                 ? 3 // TODO fix ambiguity
                 : (isset($metadata['protected']) ? 1 : 0);
             // take note of the order
             $call = array(
-                    'className' => $className,
-                    'path' => rtrim($basePath, '/'),
-                    'methodName' => $method->getName (),
-                    'arguments' => $arguments,
-                    'defaults' => $defaults,
-                    'metadata' => $metadata,
-                    'methodFlag' => $methodFlag,
+                'className' => $className,
+                'path' => rtrim($basePath, '/'),
+                'methodName' => $method->getName(),
+                'arguments' => $arguments,
+                'defaults' => $defaults,
+                'metadata' => $metadata,
+                'methodFlag' => $methodFlag,
             );
-            $methodUrl = strtolower($method->getName ());
-            if (preg_match_all (
+            $methodUrl = strtolower($method->getName());
+            if (preg_match_all(
                 '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)'
-                    .'[ \t]*\/?(\S*)/s',
-                    $doc, $matches, PREG_SET_ORDER
-                )) {
+                    . '[ \t]*\/?(\S*)/s',
+                $doc, $matches, PREG_SET_ORDER
+            )
+            ) {
                 foreach ($matches as $match) {
                     $httpMethod = $match[1];
                     $url = rtrim($basePath . $match[2], '/');
@@ -1088,9 +1016,10 @@ class Restler
             } elseif ($methodUrl[0] != '_' && !isset($metadata['url-'])) {
                 // not prefixed with underscore
                 // no configuration found so use convention
-                if (preg_match_all (
-                        '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i',
-                        $methodUrl, $matches)) {
+                if (preg_match_all(
+                    '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i',
+                    $methodUrl, $matches)
+                ) {
                     $httpMethod = strtoupper($matches[0][0]);
                     $methodUrl = substr($methodUrl, strlen($httpMethod));
                 } else {
@@ -1100,20 +1029,21 @@ class Restler
                     $methodUrl = '';
                 }
                 $url = empty($methodUrl) ? rtrim($basePath, '/')
-                    : $basePath.$methodUrl;
+                    : $basePath . $methodUrl;
                 if (!$ignorePathTill) {
                     $this->_routes[$httpMethod][$url] = $call;
                 }
                 $position = 1;
                 foreach ($params as $param) {
-                    if (($param->isOptional () && !$allowAmbiguity)
-                        || $param->getName () == 'request_data') {
+                    if (($param->isOptional() && !$allowAmbiguity)
+                        || $param->getName() == 'request_data'
+                    ) {
                         break;
                     }
                     if (!empty($url)) {
                         $url .= '/';
                     }
-                    $url .= '{' . $param->getName () . '}';
+                    $url .= '{' . $param->getName() . '}';
                     if ($allowAmbiguity || $position == $ignorePathTill) {
                         $this->_routes[$httpMethod][$url] = $call;
                     }
