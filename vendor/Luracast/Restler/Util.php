@@ -91,7 +91,7 @@ class Util
      *
      * @return object instance of the specified class with properties applied
      */
-    public static function setProperties($className, $metadata,
+    public static function setProperties($className, array $metadata = null,
                                          $instance = null)
     {
         if (!$instance) {
