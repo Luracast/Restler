@@ -21,5 +21,5 @@ interface iValidate {
      * failed
      * validation
      */
-    public function validate($input, ValidationInfo $info);
+    public static function validate($input, ValidationInfo $info);
 }

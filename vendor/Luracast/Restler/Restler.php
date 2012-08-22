@@ -403,7 +403,6 @@ class Restler
             $this->requestData = $this->getRequestData();
         }
         //parse defaults
-        $validator = null;
         foreach($_GET as $key=>$value ){
             if(isset(Defaults::$aliases)){
                 $_GET[Defaults::$aliases[$key]] = $value;
@@ -412,12 +411,8 @@ class Restler
             }
             if(in_array($key, Defaults::$overridables)){
                 if(@is_array(Defaults::$validation)){
-                    if(!$validator){
-                        $validator = new DefaultValidator();
-                    }
-                    $info = ValidationInfo::__set_state
-                        (Defaults::$validation[$key]);
-                    $value = $validator->validate($value, $info);
+                    $info = new ValidationInfo(Defaults::$validation[$key]);
+                    $value = DefaultValidator::validate($value, $info);
                 }
                 Defaults::$$key = $value;
             }
@@ -470,7 +465,6 @@ class Restler
                 $object = $this->_apiClassInstance = null;
                 // TODO:check if the api version requested is allowed by class
                 // TODO: validate params using iValidate
-                $validator = new DefaultValidator();
                 foreach ($o->metadata['param'] as $index => $param) {
                     $info = &$param [CommentParser::$embeddedDataName];
                     if (!isset ($info['validate'])
@@ -485,8 +479,8 @@ class Restler
                             $info ['apiClassInstance'] = $object;
                         }
                         //convert to instance of ValidationInfo
-                        $info = ValidationInfo::__set_state($param);
-                        $valid = $validator->validate(
+                        $info = new ValidationInfo($param);
+                        $valid = DefaultValidator::validate(
                             $o->arguments[$index], $info);
                         $o->arguments[$index] = $valid;
                     }

@@ -5,7 +5,7 @@ use Luracast\Restler\RestException;
 
 class DefaultValidator implements iValidate {
 
-    public function validate($input, ValidationInfo $info)
+    public static function validate($input, ValidationInfo $info)
     {
         /*
          header("Content-type: text/plain");
@@ -24,7 +24,7 @@ class DefaultValidator implements iValidate {
         if (!empty( $info->method )) {
             $method = $info->method;
             $info->method = '';
-            $r = $this->validate ( $input, $info );
+            $r =self::validate ( $input, $info );
             return $info->apiClassInstance->{$method} ( $r );
         }
 
@@ -35,7 +35,7 @@ class DefaultValidator implements iValidate {
             foreach ($types as $type) {
                 $info->type = $type;
                 try {
-                    $r = $this->validate ( $input, $info );
+                    $r =self::validate ( $input, $info );
                     if ($r !== false) {
                         return $r;
                     }
