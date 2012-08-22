@@ -2,11 +2,14 @@
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\CommentParser;
+
 /**
  * ValueObject for validation information
+ *
  * @author arulkumaran
  */
-class ValidationInfo implements iValueObject {
+class ValidationInfo implements iValueObject
+{
     /**
      * Name of the variable being validated
      *
@@ -110,40 +113,84 @@ class ValidationInfo implements iValueObject {
      * Instance of the API class currently being called. It will be null most of
      * the time. Only when method is defined it will contain an instance.
      * This behavior is for lazy loading of the API class
-     * @var unknown_type will be null or api class instance
+     *
+     * @var null|object will be null or api class instance
      */
     public $apiClassInstance = null;
 
     public static function numericValue($value)
     {
-        return ( int ) $value == $value
-            ? ( int ) $value
-            : floatval ( $value );
+        return ( int )$value == $value
+            ? ( int )$value
+            : floatval($value);
     }
 
     public static function arrayValue($value)
     {
-        return is_array ( $value ) ? $value : array (
-                $value
+        return is_array($value) ? $value : array(
+            $value
         );
     }
 
     public static function stringValue($value)
     {
-        return is_array ( $value )
-            ? implode ( ',', $value )
-            : ( string ) $value;
+        return is_array($value)
+            ? implode(',', $value)
+            : ( string )$value;
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         return ' new ValidationInfo() ';
     }
 
-    /**
-     * keep the constructor private to avoid instantiation outside
-     */
-    private function __construct(){
-
+    public function __construct(array $info)
+    {
+        $this->name = isset($info ['name']) ? isset($info ['name']) :
+            'Unknown';
+        $this->rules = $rules = isset($info [CommentParser::$embeddedDataName])
+            ? $info [CommentParser::$embeddedDataName] : $info;
+        $this->type = isset($info['type']) ? $info ['type'] : 'mixed';
+        $this->rules ['fix'] = $this->fix
+            = isset ($rules ['fix']) && $rules ['fix'] == 'true';
+        unset ($rules ['fix']);
+        if (isset ($rules ['min'])) {
+            $this->rules ['min'] = $this->min
+                = self::numericValue($rules ['min']);
+            unset ($rules ['min']);
+        }
+        if (isset ($rules ['max'])) {
+            $this->rules ['max'] = $this->max
+                = self::numericValue($rules ['max']);
+            unset ($rules ['max']);
+        }
+        if (isset ($rules ['pattern'])) {
+            $this->rules ['pattern'] = $this->pattern
+                = is_array($rules ['pattern'])
+                ? implode(',', $rules ['pattern'])
+                : ( string )$rules ['pattern'];
+            unset ($rules ['pattern']);
+        }
+        if (isset ($rules ['choice'])) {
+            $this->rules ['choice'] = $this->choice
+                = is_array($rules ['choice'])
+                ? $rules ['choice'] : array(
+                    $rules ['pattern']
+                );
+            unset ($rules ['pattern']);
+        }
+        foreach ($rules as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value;
+            }
+        }
+        $type = explode('|', $this->type);
+        if (count($type) > 1) {
+            $this->type = $type;
+        }
+        if ($this->type == 'integer') {
+            $this->type = 'int';
+        }
     }
 
     /**
@@ -151,49 +198,7 @@ class ValidationInfo implements iValueObject {
      */
     public static function __set_state(array $info)
     {
-        $o = new self ();
-        $o->name = $info ['name'];
-        $o->rules = $rules = isset($info [CommentParser::$embeddedDataName])
-            ? $info [CommentParser::$embeddedDataName] : array();
-        $o->type = isset($info['type']) ? $info ['type'] : 'mixed';
-        $o->rules ['fix'] = $o->fix
-            = isset ( $rules ['fix'] ) && $rules ['fix'] == 'true';
-        unset ( $rules ['fix'] );
-        if (isset ( $rules ['min'] )) {
-            $o->rules ['min'] = $o->min = self::numericValue ( $rules ['min'] );
-            unset ( $rules ['min'] );
-        }
-        if (isset ( $rules ['max'] )) {
-            $o->rules ['max'] = $o->max = self::numericValue ( $rules ['max'] );
-            unset ( $rules ['max'] );
-        }
-        if (isset ( $rules ['pattern'] )) {
-            $o->rules ['pattern'] = $o->pattern
-                = is_array ( $rules ['pattern'] )
-                ? implode ( ',', $rules ['pattern'] )
-                : ( string ) $rules ['pattern'];
-            unset ( $rules ['pattern'] );
-        }
-        if (isset ( $rules ['choice'] )) {
-            $o->rules ['choice'] = $o->choice
-                = is_array ( $rules ['choice'] )
-                ? $rules ['choice'] : array (
-                    $rules ['pattern']
-                );
-            unset ( $rules ['pattern'] );
-        }
-        foreach ($rules as $key => $value) {
-            if (property_exists ( $o, $key )) {
-                $o->{$key} = $value;
-            }
-        }
-        $type = explode ( '|', $o->type );
-        if (count ( $type ) > 1) {
-            $o->type = $type;
-        }
-        if ($o->type=='integer') {
-            $o->type = 'int';
-        }
+        $o = new self ($info);
         return $o;
     }
 }
