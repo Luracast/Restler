@@ -183,6 +183,7 @@ class Restler
     protected $_apiMinimumVersion = 0;
     protected $_apiClassPath = '';
     protected $_log = '';
+    protected $startTime;
 
     // ==================================================================
     //
@@ -201,7 +202,7 @@ class Restler
      */
     public function __construct($productionMode = false, $refreshCache = false)
     {
-
+        $this->startTime = time();
         $this->_productionMode = $productionMode;
         $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
         $this->baseDir = __DIR__;
@@ -426,11 +427,11 @@ class Restler
         $this->init();
         $this->_apiMethodInfo = $o = $this->mapUrlToMethod();
         if(isset($o->metadata)){
-            foreach(Defaults::$fromComments as $key => $dkey)
+            foreach(Defaults::$fromComments as $key => $defaultsKey)
             {
                 if(array_key_exists($key, $o->metadata)){
                     $value = $o->metadata[$key];
-                    Defaults::setProperty($$key, $value);
+                    Defaults::setProperty($defaultsKey, $value);
                 }
             }
         }
@@ -588,6 +589,13 @@ class Restler
             $data = $this->responseFormat->encode(
                 $responder->formatError($statusCode, $message),
                 !$this->_productionMode);
+        }
+        //handle throttling
+        if (Defaults::$throttle) {
+            $elapsed = time() - $this->startTime;
+            if (Defaults::$throttle / 1e3 > $elapsed) {
+                usleep(1e6 * (Defaults::$throttle / 1e3 - $elapsed));
+            }
         }
         die($data);
     }

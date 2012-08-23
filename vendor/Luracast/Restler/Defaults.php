@@ -1,6 +1,8 @@
 <?php
 namespace Luracast\Restler;
 
+use Luracast\Restler\Data\ValidationInfo;
+use Luracast\Restler\Data\DefaultValidator;
 /**
  * Static class to hold all restler defaults, change the values to suit your
  * needs in the gateway file (index.php), you may also allow the api users to
@@ -39,6 +41,13 @@ class Defaults
      * with @expires numOfSeconds
      */
     public static $headerExpires = 0;
+
+    /**
+     * @var int time in milliseconds for bandwidth throttling,
+     * which is the minimum response time for each api request. You can
+     * change it per api method by setting `@throttle 3000` in php doc
+     * comment either at the method level or class level
+     */
     public static $throttle = 0;
 
     /**
@@ -65,10 +74,18 @@ class Defaults
 
         /**
          * use PHPDoc comments such as the following
-         * `@expires ` to set the Expires header
+         * `@expires 50` to set the Expires header
          * for a specific api method
          */
         'expires' => 'headerExpires',
+
+        /**
+         * use PHPDoc comments such as the following
+         * `@throttle 300`
+         * to set the bandwidth throttling for 300 milliseconds
+         * for a specific api method
+         */
+        'throttle' => 'throttle',
     );
 
     /**
@@ -100,9 +117,10 @@ class Defaults
      *
      * @return bool
      */
-    public static function setProperty($name, $value){
-        if(!property_exists(self, $name))return false
-        if(@is_array(Defaults::$validation[$name])){
+    public static function setProperty($name, $value)
+    {
+        if (!property_exists(__CLASS__, $name)) return false;
+        if (@is_array(Defaults::$validation[$name])) {
             $info = new ValidationInfo(Defaults::$validation[$name]);
             $value = DefaultValidator::validate($value, $info);
         }
