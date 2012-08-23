@@ -409,11 +409,7 @@ class Restler
                 $key = Defaults::$aliases[$key];
             }
             if(in_array($key, Defaults::$overridables)){
-                if(@is_array(Defaults::$validation[$key])){
-                    $info = new ValidationInfo(Defaults::$validation[$key]);
-                    $value = DefaultValidator::validate($value, $info);
-                }
-                Defaults::$$key = $value;
+                Defaults::setProperty($$key, $value);
             }
         }
     }
@@ -434,12 +430,7 @@ class Restler
             {
                 if(array_key_exists($key, $o->metadata)){
                     $value = $o->metadata[$key];
-                    if(@is_array(Defaults::$validation[$dkey])){
-                        $info = new ValidationInfo
-                            (Defaults::$validation[$dkey]);
-                        $value = DefaultValidator::validate($value, $info);
-                    }
-                    Defaults::$$dkey = $value;
+                    Defaults::setProperty($$key, $value);
                 }
             }
         }

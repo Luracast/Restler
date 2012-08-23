@@ -27,6 +27,9 @@ class Defaults
      */
     public static $suppressResponseCode = false;
 
+    /**
+     * @var string default Cache-Control string that is set in the header
+     */
     public static $headerCacheControl = 'no-cache, must-revalidate';
 
     /**
@@ -84,5 +87,27 @@ class Defaults
         'suppressResponseCode' => array('type' => 'bool'),
         'headerExpires' => array('type' => 'int', 'min' => 0),
     );
+
+    /**
+     * Use this method to set value to a static properly of Defaults when
+     * you want to make sure only proper values are taken in with the help of
+     * validation
+     *
+     * @static
+     *
+     * @param $name name of the static property
+     * @param $value value to set the property to
+     *
+     * @return bool
+     */
+    public static function setProperty($name, $value){
+        if(!property_exists(self, $name))return false
+        if(@is_array(Defaults::$validation[$name])){
+            $info = new ValidationInfo(Defaults::$validation[$name]);
+            $value = DefaultValidator::validate($value, $info);
+        }
+        Defaults::$$name = $value;
+        return true;
+    }
 
 }
