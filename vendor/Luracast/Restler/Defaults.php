@@ -98,6 +98,7 @@ class Defaults
          * for a specific api method
          */
         'throttle' => 'throttle',
+
         /**
          * enable or disable smart auto routing
          */

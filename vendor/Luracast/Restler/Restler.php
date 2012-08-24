@@ -973,7 +973,7 @@ class Restler
             $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = false;
-            $allowAmbiguity = !Defaults::$smartRouting;
+            $allowAmbiguity = !Defaults::$smartAutoRouting;
             if (isset($classMetadata['description'])) {
                 $metadata['classDescription'] = $classMetadata['description'];
             }
