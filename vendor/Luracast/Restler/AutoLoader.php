@@ -13,7 +13,7 @@ namespace Luracast\Restler;
  * @author     Nick Lombar <github@jigsoft.co.za>
  * @copyright  2012 Luracast
  */
-class RestlerAutoLoader
+class AutoLoader
 {
     protected static $instance,
         $classMap = array(),
@@ -59,7 +59,7 @@ class RestlerAutoLoader
      * Singleton instance facility.
      *
      * @static
-     * @return RestlerAutoLoader the current instance or new instance if none exists.
+     * @return AutoLoader the current instance or new instance if none exists.
      */
     public static function instance()
     {
