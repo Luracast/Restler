@@ -101,18 +101,15 @@ class Util
         $properties = @$metadata['class'][$className]
         [CommentParser::$embeddedDataName];
 
+        $objectVars = get_object_vars($instance);
+
         if (is_array($properties)) {
             foreach ($properties as $property => $value) {
                 if (property_exists($className, $property)) {
-                    /*
-                    $instance->{$property} = $value;
-                    or
-                    $instance::$$property = $value;
-                    */
-                    $reflectionProperty = new \ReflectionProperty (
-                        $className, $property
-                    );
-                    $reflectionProperty->setValue($instance, $value);
+                    //if not a static property
+                    array_key_exists($property, $objectVars)
+                        ? $instance->{$property} = $value
+                        : $instance::$$property = $value;
                 }
             }
         }
