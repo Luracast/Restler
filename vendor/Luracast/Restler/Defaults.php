@@ -50,6 +50,18 @@ class Defaults
      */
     public static $throttle = 0;
 
+    public static $charset = 'utf-8';
+    public static $language = 'en';
+
+    /**
+     * @var boolean avoids creating multiple routes that can increase the
+     * ambiguity when set to true. when a method parameter is optional it is
+     * not mapped to the url and should only be used in request body or as
+     * query string `/resource?id=value. When a parameter is required and is
+     * scalar, it will be mapped as part of the url `/resource/{id}`
+     */
+    public static $smartAutoRouting = true;
+
     /**
      * @var array use 'alternativeName'=> 'actualName' to set alternative
      * names that can be used to represent the api method parameters and/or
@@ -86,6 +98,10 @@ class Defaults
          * for a specific api method
          */
         'throttle' => 'throttle',
+        /**
+         * enable or disable smart auto routing
+         */
+        'smart-auto-routing' => 'smartAutoRouting',
     );
 
     /**

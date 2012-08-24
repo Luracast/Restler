@@ -268,8 +268,6 @@ class Restler
             if (!is_string($className) || !class_exists($className))
                 throw new Exception("$className is not a valid Format Class.");
 
-            // $class = new ReflectionClass($className);
-            // $obj = $class->newInstance();
             $obj = new $className ();
 
             if (!$obj instanceof iFormat)
@@ -404,7 +402,7 @@ class Restler
         }
         //parse defaults
         foreach($_GET as $key=>$value ){
-            if(isset(Defaults::$aliases)){
+            if(isset(Defaults::$aliases[$key])){
                 $_GET[Defaults::$aliases[$key]] = $value;
                 unset($_GET[$key]);
                 $key = Defaults::$aliases[$key];
@@ -975,7 +973,7 @@ class Restler
             $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = false;
-            $allowAmbiguity = isset($metadata['allowAmbiguity']);
+            $allowAmbiguity = !Defaults::$smartRouting;
             if (isset($classMetadata['description'])) {
                 $metadata['classDescription'] = $classMetadata['description'];
             }
