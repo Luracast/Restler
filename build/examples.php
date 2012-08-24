@@ -1,16 +1,16 @@
 <?php
+include_once 'config.php';
+include_once 'markdown/markdown_extended.php';
+include_once 'templates/templateengine.php';
+include_once PROJECT_ROOT.'/vendor/restler.php';
+//include_once PROJECT_ROOT.'/vendor/Luracast/Restler/Restler.php';
 
 header('Content-Type: text/plain');
 error_reporting(E_ALL & ~E_NOTICE);
 echo 'building Examples...
 ';
-include_once 'config.php';
-include_once 'markdown/markdown_extended.php';
-include_once 'templates/templateengine.php';
-include_once PROJECT_ROOT.'/vendor/Luracast/Restler/Restler.php';
-include_once PROJECT_ROOT.'/public/restler/restler.php';
 
-use Luracast\Restler\Restler;
+use \Luracast\Restler\Restler;
 
 $styles = array(
 		'resources/bootstrap.min.css',
@@ -88,6 +88,7 @@ foreach($files as $filename){
 		$o->tags = $metadata['tags'];	
 		$o->usage = $metadata['usage'];
 		$o->content = $metadata['content'];
+		$o->requires = $metadata['requires'];
 		$helpers = $metadata['helpers'];
 		$helpers = empty($helpers) ? array() : explode(',', str_replace(' ', '', $helpers));
 		$o->routes=array();
@@ -149,7 +150,8 @@ foreach($files as $filename){
                     $api = $classes[$api][0];
                 }
 				$api.='.'.pathinfo($api_file, PATHINFO_EXTENSION);
-				$api_files[$api] = array('type'=>$type,'path'=>$r->removeCommonPath($api_file, EXAMPLES_PATH));
+				$api_files[$api] = array('type'=>$type,
+                    'path'=>\Luracast\Restler\Util::removeCommonPath($api_file, EXAMPLES_PATH));
 			}
 		}
 		foreach ($helpers as $helper){
@@ -291,6 +293,7 @@ function get_metadata($file){
 		'usage'=>'Usage',
 		'helpers'=>'Helpers',
 		'content'=>'Content',
+		'requires'=>'Requires',
 	);
 	$m = get_file_data($file, $default_headers);
     /*
