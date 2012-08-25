@@ -220,8 +220,11 @@ class AutoLoader
             DIRECTORY_SEPARATOR, $className);
         if (false === $file = stream_resolve_include_path("$file.php"))
             return false;
+        /*
+        // this path normalization is the culprit causing the issue!
         $file = strtr($file,
             array_fill_keys(explode(PATH_SEPARATOR, get_include_path()), ''));
+        */
 
         $counters = array(count(get_declared_interfaces()),
             count(get_declared_classes()));
