@@ -1,7 +1,8 @@
 Live $main->name
 -----------
-Luracast Restler is a single file framework that can expose any PHP class (with zero arguments constructor)
-and its public and protected methods (that manage their own dependencies) as RESTful API.
+Luracast Restler 3 is a micro-framework that can expose any PHP class
+(with zero arguments constructor) and its public and protected methods (that
+manage their own dependencies) as RESTful API.
 
 **Learn by the examples**
 
