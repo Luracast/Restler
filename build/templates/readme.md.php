@@ -1,6 +1,6 @@
 <?php
 return <<<TEMPLATE
-$title
+$title <requires>$requires</requires>
 {$_('dash',$title)}
 {$_('repeat_foreach', $tags, '
 <tag>$value</tag>')}
