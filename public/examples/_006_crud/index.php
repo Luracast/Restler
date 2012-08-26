@@ -3,6 +3,7 @@
  Title: CRUD
  Tagline: using POST, GET, PUT and DELETE
  Tags: create, retrieve, read, update, delete, post, get, put, routing
+ Requires: PHP >= 5.3
  Description: Create, Retrieve, Update and Delete using
  HTTP methods POST, GET, PUT and DELETE respectively.
 

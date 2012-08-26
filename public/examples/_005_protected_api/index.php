@@ -3,6 +3,7 @@
  Title: Protected API
  Tagline: Creating restricted zone
  Tags: authentication, authorization
+ Requires: PHP >= 5.3
  Description: Not all the API exposed needs to be public, we need to protect some of our API.
  Here are three ways to protect a method
 

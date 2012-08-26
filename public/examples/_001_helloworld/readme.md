@@ -1,4 +1,4 @@
-Hello World Example
+Hello World Example <requires>PHP >= 5.3</requires>
 -------------------
 
 <tag>basic</tag>

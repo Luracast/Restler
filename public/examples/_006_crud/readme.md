@@ -1,4 +1,4 @@
-CRUD
+CRUD <requires>PHP >= 5.3</requires>
 ----
 
 <tag>create</tag>
@@ -185,7 +185,7 @@ and the response could be
 *[Sqlite.php]: _006_crud/DB/PDO/Sqlite.php
 *[SerializedFile.php]: _006_crud/DB/SerializedFile.php
 *[index.php]: _006_crud/index.php
-*[Authors.php]: _006_crud/authors.php
+*[Authors.php]: _006_crud/Authors.php
 *[Session.php]: _006_crud/DB/Session.php
 *[restler.php]: ../restler/restler.php
 

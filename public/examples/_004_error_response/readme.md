@@ -1,4 +1,4 @@
-Error Response
+Error Response <requires>PHP >= 5.3</requires>
 --------------
 
 <tag>exception</tag>
@@ -60,6 +60,6 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 
 
 *[index.php]: _004_error_response/index.php
-*[Currency.php]: _004_error_response/currency.php
+*[Currency.php]: _004_error_response/Currency.php
 *[restler.php]: ../restler/restler.php
 

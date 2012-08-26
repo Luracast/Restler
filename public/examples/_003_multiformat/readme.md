@@ -1,4 +1,4 @@
-Multi-format
+Multi-format <requires>PHP >= 5.3</requires>
 ------------
 
 <tag>json</tag>
@@ -88,6 +88,6 @@ GET [bmi.json](index.php/bmi.json)
 
 
 *[index.php]: _003_multiformat/index.php
-*[BMI.php]: _003_multiformat/bmi.php
+*[BMI.php]: _003_multiformat/BMI.php
 *[restler.php]: ../restler/restler.php
 

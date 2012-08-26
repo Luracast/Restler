@@ -1,4 +1,4 @@
-Minimal Example
+Minimal Example <requires>PHP >= 5.3</requires>
 ---------------
 
 <tag>basic</tag>
@@ -44,6 +44,6 @@ GET [math/multiply/4/3](index.php/math/multiply/4/3)
 
 
 *[index.php]: _002_minimal/index.php
-*[Math.php]: _002_minimal/math.php
+*[Math.php]: _002_minimal/Math.php
 *[restler.php]: ../restler/restler.php
 

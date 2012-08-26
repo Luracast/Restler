@@ -1,4 +1,4 @@
-Protected API
+Protected API <requires>PHP >= 5.3</requires>
 -------------
 
 <tag>authentication</tag>
@@ -63,8 +63,8 @@ GET [secured?key=rEsTlEr2](index.php/secured?key=rEsTlEr2)
 
 
 *[index.php]: _005_protected_api/index.php
-*[Simple.php]: _005_protected_api/simple.php
-*[Secured.php]: _005_protected_api/secured.php
-*[SimpleAuth.php]: _005_protected_api/simpleauth.php
+*[Simple.php]: _005_protected_api/Simple.php
+*[Secured.php]: _005_protected_api/Secured.php
+*[SimpleAuth.php]: _005_protected_api/SimpleAuth.php
 *[restler.php]: ../restler/restler.php
 
