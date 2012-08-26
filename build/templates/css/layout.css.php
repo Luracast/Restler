@@ -97,6 +97,7 @@ abbr:HOVER {
 a abbr,a abbr:HOVER {
 	background: inherit;
 	color: inherit;
+	opacity: inherit;
 	border: inherit;
 	cursor: inherit;
 	padding: inherit;
