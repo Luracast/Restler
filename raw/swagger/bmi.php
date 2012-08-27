@@ -1,4 +1,5 @@
 <?php
+namespace My\Custom;
 class BMI
 {
     function get ()
@@ -22,7 +23,7 @@ class BMI
          * Enter description here ...
          * @var 
          */
-        $result = new stdClass();
+        $result = new \stdClass();
         #	1 pound = 0.45359237 kilograms
         #	1 meter = 3.2808399  feet
         #	1 meter = 39.3700787 inches

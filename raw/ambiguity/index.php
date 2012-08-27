@@ -1,5 +1,4 @@
 <?php
-
 /*
 $extensions = explode(',', 'php');
 $mimes = explode(',', 'PHP/Well,THP\\dull');
@@ -36,7 +35,6 @@ include_once $className;
 require_once '../../vendor/restler.php';
 //require_once 'say.php';
 use Luracast\Restler\Restler;
-use Luracast\Restler\Format\DebugFormat;
 use Luracast\Restler\Events;
 
 Events::listen('onRoute', function($url)
@@ -45,6 +43,6 @@ Events::listen('onRoute', function($url)
 });
 $r = new Restler(TRUE, TRUE);
 $r->addAPIClass('Say');
-$r->setSupportedFormats('Luracast\Restler\Format\DebugFormat');
+$r->setSupportedFormats('DebugFormat');
 $r->handle();
 

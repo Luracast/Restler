@@ -8,5 +8,5 @@ DirectoryIndex index.php
 	RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
 <IfModule mod_php5.c>
-	php_flag display_errors Off
+	php_flag display_errors On
 </IfModule>
