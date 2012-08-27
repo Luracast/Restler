@@ -168,7 +168,7 @@ class AutoLoader
         $file = false;
         if (preg_match('/(.+)(\\\\\w+$)/U', $className, $parts))
             for ($i = 0
-                , $aliases = static::$aliases[$parts[1]] ? : array()
+                , $aliases = empty(static::$aliases[$parts[1]]) ? : array()
                 , $count = count($aliases)
                 ; $i < $count
                 && false === $file
