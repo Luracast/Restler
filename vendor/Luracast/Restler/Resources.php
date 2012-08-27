@@ -97,7 +97,7 @@ class Resources
                     if (isset($m['param'])) {
                         foreach ($m['param'] as $param) {
                             $operation->parameters[]
-                                = $this->_parameters($param);
+                                = $this->_parameter($param);
                         }
                     }
                     $api->operations[] = $operation;
@@ -158,7 +158,7 @@ class Resources
         return $r;
     }
 
-    private function _parameters($param)
+    private function _parameter($param)
     {
         $r = new \stdClass();
         $r->name = $param['name'];
