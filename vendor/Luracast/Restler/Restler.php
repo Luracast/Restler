@@ -178,9 +178,9 @@ class Restler
      */
     protected $_cached;
 
-    protected $_apiVersion = 0;
-    protected $_requestedApiVersion = 0;
-    protected $_apiMinimumVersion = 0;
+    protected $_apiVersion = 1;
+    protected $_requestedApiVersion = 1;
+    protected $_apiMinimumVersion = 1;
     protected $_apiClassPath = '';
     protected $_log = '';
     protected $startTime;
@@ -297,30 +297,30 @@ class Restler
      *
      * @param string $className
      *            name of the service class
-     * @param string $basePath
+     * @param string $resourcePath
      *            optional url prefix for mapping, uses
      *            lowercase version of the class name when not specified
      *
      * @throws \Exception when supplied with invalid class name
      */
-    public function addAPIClass($className, $basePath = null)
+    public function addAPIClass($className, $resourcePath = null)
     {
         if (!class_exists($className, true)) {
             throw new Exception("API class $className is missing.");
         }
         $this->loadCache();
         if (!$this->_cached) {
-            if (is_null($basePath)) {
-                $basePath = str_replace('__v', '/v',
+            if (is_null($resourcePath)) {
+                $resourcePath = str_replace('__v', '/v',
                     strtolower($className));
                 $index = strrpos($className, '\\');
                 if ($index !== false)
-                    $basePath = substr($basePath, $index + 1);
+                    $resourcePath = substr($resourcePath, $index + 1);
             } else
-                $basePath = trim($basePath, '/');
-            if (strlen($basePath) > 0)
-                $basePath .= '/';
-            $this->generateMap($className, $basePath);
+                $resourcePath = trim($resourcePath, '/');
+            if (strlen($resourcePath) > 0)
+                $resourcePath .= '/';
+            $this->generateMap($className, $resourcePath);
         }
     }
 
@@ -330,13 +330,13 @@ class Restler
      *
      * @param string $className
      *            of the authentication class
-     * @param string $basePath
+     * @param string $resourcePath
      *            optional url prefix for mapping
      */
-    public function addAuthenticationClass($className, $basePath = null)
+    public function addAuthenticationClass($className, $resourcePath = null)
     {
         $this->_authClasses[] = $className;
-        $this->addAPIClass($className, $basePath);
+        $this->addAPIClass($className, $resourcePath);
     }
 
     /**
@@ -951,9 +951,9 @@ class Restler
      * Generates cacheable url to method mapping
      *
      * @param string $className
-     * @param string $basePath
+     * @param string $resourcePath
      */
-    protected function generateMap($className, $basePath = '')
+    protected function generateMap($className, $resourcePath = '')
     {
         /*
          * Mapping Rules - Optional parameters should not be mapped to URL - if
@@ -974,6 +974,7 @@ class Restler
             $position = 0;
             $ignorePathTill = false;
             $allowAmbiguity = !Defaults::$smartAutoRouting;
+            $metadata['resourcePath'] = $resourcePath;
             if (isset($classMetadata['description'])) {
                 $metadata['classDescription'] = $classMetadata['description'];
             }
@@ -1022,7 +1023,7 @@ class Restler
             // take note of the order
             $call = array(
                 'className' => $className,
-                'path' => rtrim($basePath, '/'),
+                'path' => rtrim($resourcePath, '/'),
                 'methodName' => $method->getName(),
                 'arguments' => $arguments,
                 'defaults' => $defaults,
@@ -1038,7 +1039,7 @@ class Restler
             ) {
                 foreach ($matches as $match) {
                     $httpMethod = $match[1];
-                    $url = rtrim($basePath . $match[2], '/');
+                    $url = rtrim($resourcePath . $match[2], '/');
                     $this->_routes[$httpMethod][$url] = $call;
                 }
             } elseif ($methodUrl[0] != '_' && !isset($metadata['url-'])) {
@@ -1056,8 +1057,8 @@ class Restler
                 if ($methodUrl == 'index') {
                     $methodUrl = '';
                 }
-                $url = empty($methodUrl) ? rtrim($basePath, '/')
-                    : $basePath . $methodUrl;
+                $url = empty($methodUrl) ? rtrim($resourcePath, '/')
+                    : $resourcePath . $methodUrl;
                 if (!$ignorePathTill) {
                     $this->_routes[$httpMethod][$url] = $call;
                 }
