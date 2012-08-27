@@ -21,6 +21,8 @@ class Resources
      */
     public $restler;
 
+    private $_models = array();
+
     public function index()
     {
         $r = $this->_resourceListing();
@@ -56,8 +58,7 @@ class Resources
         foreach ($this->restler->routes as $httpMethod => $value) {
             foreach ($value as $key => $route) {
                 if (0 == strcasecmp($name, $route['className'])) {
-                    $className = explode('\\', $route['className']);
-                    $className = end($className);
+                    $className = $this->_noNamespace($route['className']);
                     $m = $route['metadata'];
                     if (!$r) {
                         $resourcePath = '/'
@@ -100,12 +101,20 @@ class Resources
                                 = $this->_parameter($param);
                         }
                     }
+                    if (isset($m['return']['type'])) {
+                        $responseClass = $m['return']['type'];
+                        if (class_exists($responseClass)) {
+                            $this->_model($responseClass);
+                            $operation->responseClass
+                                = $this->_noNamespace($responseClass);
+                        }
+                    }
                     $api->operations[] = $operation;
                     $r->apis[] = $api;
-
                 }
             }
         }
+        $r->models = $this->_models;
         return $r;
     }
 
@@ -174,5 +183,45 @@ class Resources
         //TODO: use validation info to set allowable values below
         //$r->allowableValues;
         return $r;
+    }
+
+    private function _model($className, $instance = null)
+    {
+        $model = new \stdClass();
+        $model->properties = array();
+        if (!$instance) {
+            $instance = new $className();
+        }
+        $data = get_object_vars($instance);
+        //TODO: parse the comments of properties, use it for type, description
+        foreach ($data as $key => $value) {
+            $type = null;
+            if (is_object($value)) {
+                $oc = get_class($value);
+                $type = $this->_noNamespace($oc);
+                $this->_model($oc, $value);
+            } elseif (is_array($value)) {
+                $type = 'Array';
+            } elseif (is_bool($value)) {
+                $type = 'boolean';
+            } elseif (is_numeric($value)) {
+                $type = is_float($value) ? 'float' : 'int';
+            } else {
+                $type = 'string';
+            }
+            $model->properties[$key] = array(
+                'type' => $type,
+                'description' => ''
+            );
+        }
+        if (!empty($model)) {
+            $this->_models[] = $model;
+        }
+    }
+
+    private function _noNamespace($className)
+    {
+        $className = explode('\\', $className);
+        return end($className);
     }
 }
