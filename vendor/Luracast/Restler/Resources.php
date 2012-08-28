@@ -1,6 +1,8 @@
 <?php
 namespace Luracast\Restler;
 
+use stdClass;
+
 /**
  * Describe the purpose of this class/interface/trait
  *
@@ -21,7 +23,7 @@ class Resources
      */
     public $restler;
 
-    private $_models = array();
+    private $_models;
 
     public function index()
     {
@@ -53,11 +55,14 @@ class Resources
 
     public function get($name)
     {
+        $this->_models = new stdClass();
         $r = null;
         $name = strtolower(str_replace('-', '\\', $name));
+        $count = 0;
         foreach ($this->restler->routes as $httpMethod => $value) {
             foreach ($value as $key => $route) {
                 if (0 == strcasecmp($name, $route['className'])) {
+                    $count++;
                     $className = $this->_noNamespace($route['className']);
                     $m = $route['metadata'];
                     if (!$r) {
@@ -114,14 +119,17 @@ class Resources
                 }
             }
         }
-        $r->models = $this->_models;
+        if (!$count) {
+            throw new RestException(404);
+        }
+        $r->models = &$this->_models;
         return $r;
     }
 
     private function _resourceListing()
     {
-        $r = new \stdClass();
-        $r->apiVersion = $this->restler->apiVersion;
+        $r = new stdClass();
+        $r->apiVersion = (string)$this->restler->apiVersion;
         $r->swaggerVersion = "1.1";
         $r->basePath = $this->restler->baseUrl;
         $r->apis = array();
@@ -132,13 +140,13 @@ class Resources
     {
         $r = $this->_resourceListing();
         $r->resourcePath = $resourcePath;
-        $r->models = array();
+        $r->models = new stdClass();
         return $r;
     }
 
     private function _api($path, $description = '')
     {
-        $r = new \stdClass();
+        $r = new stdClass();
         $r->path = $path;
         $r->description = $description;
         $r->operations = array();
@@ -153,7 +161,7 @@ class Resources
         $responseClass = 'Array'
     )
     {
-        $r = new \stdClass();
+        $r = new stdClass();
         $r->httpMethod = $httpMethod;
         $r->nickname = $nickname;
         $r->responseClass = $responseClass;
@@ -169,7 +177,7 @@ class Resources
 
     private function _parameter($param)
     {
-        $r = new \stdClass();
+        $r = new stdClass();
         $r->name = $param['name'];
         $r->description = isset($param['description'])
             ? $param['description'] . '. '
@@ -187,8 +195,7 @@ class Resources
 
     private function _model($className, $instance = null)
     {
-        $model = new \stdClass();
-        $model->properties = array();
+        $properties = array();
         if (!$instance) {
             $instance = new $className();
         }
@@ -202,6 +209,14 @@ class Resources
                 $this->_model($oc, $value);
             } elseif (is_array($value)) {
                 $type = 'Array';
+                /*
+                foreach ($value as $v) {
+                    if (is_object($v)) {
+                        $oc = get_class($v);
+                        $this->_model($oc, $v);
+                    }
+                }
+                */
             } elseif (is_bool($value)) {
                 $type = 'boolean';
             } elseif (is_numeric($value)) {
@@ -209,13 +224,17 @@ class Resources
             } else {
                 $type = 'string';
             }
-            $model->properties[$key] = array(
+            $properties[$key] = array(
                 'type' => $type,
-                'description' => ''
+            /*    'description' => '' */ //TODO: add description
             );
         }
-        if (!empty($model)) {
-            $this->_models[] = $model;
+        if (!empty($properties)) {
+            $id = $this->_noNamespace($className);
+            $model = new stdClass();
+            $model->id = $id;
+            $model->properties = $properties;
+            $this->_models->{$id} = $model;
         }
     }
 
