@@ -89,11 +89,15 @@ class Util
      * @param array       $metadata  which contains the properties
      * @param null|object $instance  new instance is crated if set to null
      *
+     * @throws RestException
      * @return object instance of the specified class with properties applied
      */
     public static function setProperties($className, array $metadata = null,
                                          $instance = null)
     {
+        if (!class_exists($className)) {
+            throw new RestException(500, "Class '$className' not found");
+        }
         if (!$instance) {
             $instance = new $className();
             $instance->restler = self::$restler;
@@ -117,6 +121,10 @@ class Util
                     }
                 }
             }
+        }
+
+        if ($instance instanceof iUseAuthentication) {
+            $instance->__setAuthenticationStatus(self::$restler->authenticated);
         }
 
         return $instance;

@@ -473,7 +473,7 @@ class Restler
                             Defaults::$authenticationMethod)
                         ) {
                             throw new RestException (
-                                401, 'Authentication Class ' .
+                                500, 'Authentication Class ' .
                                 'should implement iAuthenticate');
                         } elseif (
                             !$authObj->{Defaults::$authenticationMethod}()
@@ -491,6 +491,22 @@ class Restler
                 }
             }
             try {
+                foreach ($this->_filterClasses as $filterClass) {
+                    /**
+                     * @var iFilter
+                     */
+                    $filterObj = Util::setProperties(
+                        $filterClass,
+                        $o->metadata
+                    );
+                    if (!$filterObj instanceof iFilter) {
+                        throw new RestException (
+                            500, 'Filter Class ' .
+                            'should implement iFilter');
+                    } elseif (!$filterObj->__isAllowed()) {
+                        throw new RestException(403); //Forbidden
+                    }
+                }
                 Util::setProperties(
                     get_class($this->requestFormat),
                     $o->metadata, $this->requestFormat
@@ -510,8 +526,7 @@ class Restler
                         if (isset($info['method'])) {
                             if (!isset($object)) {
                                 $object = $this->_apiClassInstance
-                                    = new $o->className ();
-                                $object->restler = $this;
+                                    = Util::setProperties($o->className);
                             }
                             $info ['apiClassInstance'] = $object;
                         }
@@ -524,8 +539,7 @@ class Restler
                 }
                 if (!isset($object)) {
                     $object = $this->_apiClassInstance
-                        = new $o->className ();
-                    $object->restler = $this;
+                        = Util::setProperties($o->className);
                 }
                 if (method_exists($o->className, $preProcess)) {
                     call_user_func_array(array(
