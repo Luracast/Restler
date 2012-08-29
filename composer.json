@@ -35,12 +35,12 @@
         },
         {
             "type": "vcs",
-            "url": "https:\/\/github.com\/nickl-\/ZendAmf.git"
+            "url": "https:\/\/github.com\/zendframework\/ZendAmf.git"
         }
     ],
     "autoload": {
         "psr-0": {
-            "Luracast\\Restler": "restler\/"
+            "Luracast\\Restler": "vendor\/"
         }
     }
 }
