@@ -19,6 +19,6 @@ class Author
 
     public function __construct()
     {
-        //$this->books[] = new Book();
+        $this->books[] = new Book();
     }
 }
