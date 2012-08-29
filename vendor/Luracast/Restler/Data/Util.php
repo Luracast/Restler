@@ -50,6 +50,7 @@ class Util
 
         }
         if (is_array($object) || is_object($object)) {
+            $count = 0;
             $array = array();
             foreach ($object as $key => $value) {
                 $value = self::objectToArray($value);
@@ -57,9 +58,9 @@ class Util
                     $value = self::$encoderFunctionName ($value);
                 }
                 $array [$key] = $value;
+                $count++;
             }
-
-            return $array;
+            return $count ? $array : $object;
         }
 
         return $object;

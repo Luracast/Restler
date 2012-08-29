@@ -1,6 +1,8 @@
 <?php
 namespace Luracast\Restler;
 
+use stdClass;
+
 /**
  * Describe the purpose of this class/interface/trait
  *
@@ -21,7 +23,7 @@ class Resources
      */
     public $restler;
 
-    private $_models = array();
+    private $_models;
 
     public function index()
     {
@@ -53,11 +55,14 @@ class Resources
 
     public function get($name)
     {
+        $this->_models = new stdClass();
         $r = null;
         $name = strtolower(str_replace('-', '\\', $name));
+        $count = 0;
         foreach ($this->restler->routes as $httpMethod => $value) {
             foreach ($value as $key => $route) {
                 if (0 == strcasecmp($name, $route['className'])) {
+                    $count++;
                     $className = $this->_noNamespace($route['className']);
                     $m = $route['metadata'];
                     if (!$r) {
@@ -114,14 +119,44 @@ class Resources
                 }
             }
         }
-        $r->models = $this->_models;
+        if (!$count) {
+            throw new RestException(404);
+        }
+        $r->models = &$this->_models;
         return $r;
+    }
+
+    /**
+     * Find the data type of the given value.
+     *
+     * @url-    do not map this function to url
+     *
+     * @param mixed $o              given value for finding type
+     *
+     * @param bool  $appendToModels if an object is found should we append to
+     *                              our models list?
+     *
+     * @return string
+     */
+    public function getType($o, $appendToModels = false)
+    {
+        if (is_object($o)) {
+            $oc = get_class($o);
+            if ($appendToModels) {
+                $this->_model($oc, $o);
+            }
+            return $this->_noNamespace($oc);
+        }
+        if (is_array($o)) return 'Array';
+        if (is_bool($o)) return 'boolean';
+        if (is_numeric($o)) return is_float($o) ? 'float' : 'int';
+        return 'string';
     }
 
     private function _resourceListing()
     {
-        $r = new \stdClass();
-        $r->apiVersion = $this->restler->apiVersion;
+        $r = new stdClass();
+        $r->apiVersion = (string)$this->restler->apiVersion;
         $r->swaggerVersion = "1.1";
         $r->basePath = $this->restler->baseUrl;
         $r->apis = array();
@@ -132,13 +167,13 @@ class Resources
     {
         $r = $this->_resourceListing();
         $r->resourcePath = $resourcePath;
-        $r->models = array();
+        $r->models = new stdClass();
         return $r;
     }
 
     private function _api($path, $description = '')
     {
-        $r = new \stdClass();
+        $r = new stdClass();
         $r->path = $path;
         $r->description = $description;
         $r->operations = array();
@@ -150,10 +185,10 @@ class Resources
         $httpMethod = 'GET',
         $summary = 'description',
         $notes = 'long description',
-        $responseClass = 'Array'
+        $responseClass = 'void'
     )
     {
-        $r = new \stdClass();
+        $r = new stdClass();
         $r->httpMethod = $httpMethod;
         $r->nickname = $nickname;
         $r->responseClass = $responseClass;
@@ -169,7 +204,7 @@ class Resources
 
     private function _parameter($param)
     {
-        $r = new \stdClass();
+        $r = new stdClass();
         $r->name = $param['name'];
         $r->description = isset($param['description'])
             ? $param['description'] . '. '
@@ -187,35 +222,35 @@ class Resources
 
     private function _model($className, $instance = null)
     {
-        $model = new \stdClass();
-        $model->properties = array();
+        $properties = array();
         if (!$instance) {
             $instance = new $className();
         }
         $data = get_object_vars($instance);
         //TODO: parse the comments of properties, use it for type, description
         foreach ($data as $key => $value) {
-            $type = null;
-            if (is_object($value)) {
-                $oc = get_class($value);
-                $type = $this->_noNamespace($oc);
-                $this->_model($oc, $value);
-            } elseif (is_array($value)) {
-                $type = 'Array';
-            } elseif (is_bool($value)) {
-                $type = 'boolean';
-            } elseif (is_numeric($value)) {
-                $type = is_float($value) ? 'float' : 'int';
-            } else {
-                $type = 'string';
-            }
-            $model->properties[$key] = array(
+
+            $type = $this->getType($value, true);
+            $properties[$key] = array(
                 'type' => $type,
-                'description' => ''
+                /*'description' => '' */ //TODO: add description
             );
+            if ($type == 'Array') {
+                $itemType = count($value)
+                    ? $this->getType($value[0], true)
+                    : 'string';
+                $properties[$key]['item'] = array(
+                    'type' => $itemType,
+                    /*'description' => '' */ //TODO: add description
+                );
+            }
         }
-        if (!empty($model)) {
-            $this->_models[] = $model;
+        if (!empty($properties)) {
+            $id = $this->_noNamespace($className);
+            $model = new stdClass();
+            $model->id = $id;
+            $model->properties = $properties;
+            $this->_models->{$id} = $model;
         }
     }
 

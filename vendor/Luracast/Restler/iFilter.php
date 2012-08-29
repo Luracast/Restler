@@ -2,7 +2,9 @@
 namespace Luracast\Restler;
 
 /**
- * Interface for creating authentication classes
+ * Interface for creating classes that perform authentication/access
+ * verification
+ *
  * @category   Framework
  * @package    restler
  * @subpackage auth
@@ -11,12 +13,16 @@ namespace Luracast\Restler;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-interface iAuthenticate extends iFilter
+interface iFilter
 {
     /**
-     * Auth function that is called when a protected method is requested
+     * Access verification method.
      *
-     * @return boolean true when authenticated, false otherwise
+     * API access will be denied when this method returns false
+     *
+     * @abstract
+     * @return boolean true when api access is allowed false otherwise
      */
     public function __isAllowed();
+
 }

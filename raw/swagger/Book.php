@@ -10,15 +10,9 @@
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-class Author
+class Book
 {
-    public $name = "Unknown";
-    public $email = 'user@example.com';
-    public $age = 28;
-    public $books = array();
 
-    public function __construct()
-    {
-        $this->books[] = new Book();
-    }
+    public $name = 'name of the book';
+    public $author = 'person who wrote the book';
 }
