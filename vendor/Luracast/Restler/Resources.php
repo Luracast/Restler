@@ -126,6 +126,33 @@ class Resources
         return $r;
     }
 
+    /**
+     * Find the data type of the given value.
+     *
+     * @url-    do not map this function to url
+     *
+     * @param mixed $o              given value for finding type
+     *
+     * @param bool  $appendToModels if an object is found should we append to
+     *                              our models list?
+     *
+     * @return string
+     */
+    public function getType($o, $appendToModels = false)
+    {
+        if (is_object($o)) {
+            $oc = get_class($o);
+            if ($appendToModels) {
+                $this->_model($oc, $o);
+            }
+            return $this->_noNamespace($oc);
+        }
+        if (is_array($o)) return 'Array';
+        if (is_bool($o)) return 'boolean';
+        if (is_numeric($o)) return is_float($o) ? 'float' : 'int';
+        return 'string';
+    }
+
     private function _resourceListing()
     {
         $r = new stdClass();
@@ -158,7 +185,7 @@ class Resources
         $httpMethod = 'GET',
         $summary = 'description',
         $notes = 'long description',
-        $responseClass = 'Array'
+        $responseClass = 'void'
     )
     {
         $r = new stdClass();
@@ -202,32 +229,21 @@ class Resources
         $data = get_object_vars($instance);
         //TODO: parse the comments of properties, use it for type, description
         foreach ($data as $key => $value) {
-            $type = null;
-            if (is_object($value)) {
-                $oc = get_class($value);
-                $type = $this->_noNamespace($oc);
-                $this->_model($oc, $value);
-            } elseif (is_array($value)) {
-                $type = 'Array';
-                /*
-                foreach ($value as $v) {
-                    if (is_object($v)) {
-                        $oc = get_class($v);
-                        $this->_model($oc, $v);
-                    }
-                }
-                */
-            } elseif (is_bool($value)) {
-                $type = 'boolean';
-            } elseif (is_numeric($value)) {
-                $type = is_float($value) ? 'float' : 'int';
-            } else {
-                $type = 'string';
-            }
+
+            $type = $this->getType($value, true);
             $properties[$key] = array(
                 'type' => $type,
-            /*    'description' => '' */ //TODO: add description
+                /*'description' => '' */ //TODO: add description
             );
+            if ($type == 'Array') {
+                $itemType = count($value)
+                    ? $this->getType($value[0], true)
+                    : 'string';
+                $properties[$key]['item'] = array(
+                    'type' => $itemType,
+                    /*'description' => '' */ //TODO: add description
+                );
+            }
         }
         if (!empty($properties)) {
             $id = $this->_noNamespace($className);
