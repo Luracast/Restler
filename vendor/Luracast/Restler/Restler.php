@@ -158,6 +158,13 @@ class Restler
     protected $_apiMethodInfo;
 
     /**
+     * list of filter classes
+     *
+     * @var array
+     */
+    protected $_filterClasses = array();
+
+    /**
      * list of authentication classes
      *
      * @var array
@@ -184,6 +191,7 @@ class Restler
     protected $_apiClassPath = '';
     protected $_log = '';
     protected $startTime;
+    protected $_authenticated;
 
     // ==================================================================
     //
@@ -325,6 +333,20 @@ class Restler
     }
 
     /**
+     * Classes implementing iFilter interface can be added for filtering out
+     * the api consumers.
+     *
+     * It can be used for rate limiting based on usage from a specific ip
+     * address or filter by country, device etc.
+     *
+     * @param $className
+     */
+    public function addFilterClass($className)
+    {
+        $this->_filterClasses[] = $className;
+    }
+
+    /**
      * protected methods will need at least one authentication class to be set
      * in order to allow that method to be executed
      *
@@ -401,13 +423,13 @@ class Restler
             $this->requestData = $this->getRequestData();
         }
         //parse defaults
-        foreach($_GET as $key=>$value ){
-            if(isset(Defaults::$aliases[$key])){
+        foreach ($_GET as $key => $value) {
+            if (isset(Defaults::$aliases[$key])) {
                 $_GET[Defaults::$aliases[$key]] = $value;
                 unset($_GET[$key]);
                 $key = Defaults::$aliases[$key];
             }
-            if(in_array($key, Defaults::$overridables)){
+            if (in_array($key, Defaults::$overridables)) {
                 Defaults::setProperty($$key, $value);
             }
         }
@@ -424,10 +446,9 @@ class Restler
     {
         $this->init();
         $this->_apiMethodInfo = $o = $this->mapUrlToMethod();
-        if(isset($o->metadata)){
-            foreach(Defaults::$fromComments as $key => $defaultsKey)
-            {
-                if(array_key_exists($key, $o->metadata)){
+        if (isset($o->metadata)) {
+            foreach (Defaults::$fromComments as $key => $defaultsKey) {
+                if (array_key_exists($key, $o->metadata)) {
                     $value = $o->metadata[$key];
                     Defaults::setProperty($defaultsKey, $value);
                 }
@@ -438,25 +459,38 @@ class Restler
             $this->handleError(404);
         } else {
             try {
-                if ($o->methodFlag) {
-                    $authMethod = 'isAuthenticated';
+                $accessLevel = max(Defaults::$apiAccessLevel, $o->accessLevel);
+                if ($accessLevel) {
                     if (!count($this->_authClasses)) {
                         throw new RestException(401);
                     }
                     foreach ($this->_authClasses as $authClass) {
                         $authObj = Util::setProperties(
                             $authClass,
-                            $o->metdadata
+                            $o->metadata
                         );
-                        if (!method_exists($authObj, $authMethod)) {
+                        if (!method_exists($authObj,
+                            Defaults::$authenticationMethod)
+                        ) {
                             throw new RestException (
                                 401, 'Authentication Class ' .
                                 'should implement iAuthenticate');
-                        } elseif (!$authObj->$authMethod ()) {
+                        } elseif (
+                            !$authObj->{Defaults::$authenticationMethod}()
+                        ) {
                             throw new RestException(401);
                         }
                     }
+                    $this->_authenticated = true;
                 }
+            } catch (RestException $e) {
+                if ($accessLevel > 1) { //when it is not a hybrid api
+                    $this->handleError($e->getCode(), $e->getMessage());
+                } else {
+                    $this->_authenticated = false;
+                }
+            }
+            try {
                 Util::setProperties(
                     get_class($this->requestFormat),
                     $o->metadata, $this->requestFormat
@@ -499,9 +533,8 @@ class Restler
                         $preProcess
                     ), $o->arguments);
                 }
-                switch ($o->methodFlag) {
-                    case 3 :
-                    case 2 :
+                switch ($accessLevel) {
+                    case 3 : //protected method
                         $reflectionMethod = new ReflectionMethod(
                             $object,
                             $o->methodName
@@ -512,7 +545,6 @@ class Restler
                             $o->arguments
                         );
                         break;
-                    case 1 :
                     default :
                         $result = call_user_func_array(array(
                             $object,
@@ -556,7 +588,7 @@ class Restler
          */
         $responder = Util::setProperties(
             $this->responder,
-            $this->_apiMethodInfo
+            isset($this->_apiMethodInfo->metadata)
                 ? $this->_apiMethodInfo->metadata
                 : null
         );
@@ -606,7 +638,7 @@ class Restler
      */
     public function setStatus($code)
     {
-        if(Defaults::$suppressResponseCode){
+        if (Defaults::$suppressResponseCode) {
             $code = 200;
         }
         @header("{$_SERVER['SERVER_PROTOCOL']} $code " .
@@ -693,7 +725,7 @@ class Restler
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace($this->_formatMap['extensions'], '', $path);
-        if ($this->_apiVersion && $path{0} == 'v') {
+        if ($this->_apiVersion && strlen($path) && $path{0} == 'v') {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->_apiVersion) {
                 $this->_requestedApiVersion = $version;
@@ -966,10 +998,17 @@ class Restler
         $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC +
             ReflectionMethod::IS_PROTECTED);
         foreach ($methods as $method) {
+            $methodUrl = strtolower($method->getName());
+            if ($methodUrl{0} == '_') {
+                continue;
+            }
             $doc = $method->getDocComment();
+            $metadata = CommentParser::parse($doc) + $classMetadata;
+            if (isset($metadata['url-'])) {
+                continue;
+            }
             $arguments = array();
             $defaults = array();
-            $metadata = CommentParser::parse($doc) + $classMetadata;
             $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = false;
@@ -1017,9 +1056,18 @@ class Restler
                 }
                 $position++;
             }
-            $methodFlag = $method->isProtected()
-                ? 3 // TODO fix ambiguity
-                : (isset($metadata['protected']) ? 1 : 0);
+            $accessLevel = ($method->isProtected()
+                ? 3 //protected api using protected method
+                : (isset($metadata['protected'])
+                    ? 2 //protected api using @protected comment
+                    : (isset($metadata['hybrid'])
+                        ? 1 //hybrid api using @hybrid comment
+                        : 0))); //public api
+            /*
+            echo " access level $accessLevel for $className::"
+            .$method->getName().$method->isProtected().PHP_EOL;
+            */
+
             // take note of the order
             $call = array(
                 'className' => $className,
@@ -1028,9 +1076,9 @@ class Restler
                 'arguments' => $arguments,
                 'defaults' => $defaults,
                 'metadata' => $metadata,
-                'methodFlag' => $methodFlag,
+                'accessLevel' => $accessLevel,
             );
-            $methodUrl = strtolower($method->getName());
+            // if manual route
             if (preg_match_all(
                 '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)'
                     . '[ \t]*\/?(\S*)/s',
@@ -1042,7 +1090,8 @@ class Restler
                     $url = rtrim($resourcePath . $match[2], '/');
                     $this->_routes[$httpMethod][$url] = $call;
                 }
-            } elseif ($methodUrl[0] != '_' && !isset($metadata['url-'])) {
+                //if auto route enabled, do so
+            } elseif (Defaults::$autoRoutingEnabled) {
                 // not prefixed with underscore
                 // no configuration found so use convention
                 if (preg_match_all(

@@ -19,6 +19,12 @@ use Luracast\Restler\Data\DefaultValidator;
 class Defaults
 {
     /**
+     * @var bool should auto routing for public and protected api methods
+     * should be enabled by default or not. Set this to false to get
+     * Restler 1.0 style behavior
+     */
+    public static $autoRoutingEnabled = true;
+    /**
      * @var bool HTTP status codes are set on all responses by default.
      * Some clients (like flash, mobile) have trouble dealing with non-200
      * status codes on error responses.
@@ -52,6 +58,21 @@ class Defaults
 
     public static $charset = 'utf-8';
     public static $language = 'en';
+
+    /**
+     * @var int set the default api access mode
+     *      value of 0 = public api
+     *      value of 1 = hybrid api using @hybrid comment
+     *      value of 2 = protected api using @protected comment
+     *      value of 3 = protected api using protected method
+     */
+    public static $apiAccessLevel = 0;
+
+    /**
+     * @var string authentication method to be called in iAuthenticate
+     * Interface
+     */
+    public static $authenticationMethod = '__isAllowed';
 
     /**
      * @var boolean avoids creating multiple routes that can increase the
