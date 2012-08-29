@@ -108,7 +108,11 @@ class Resources
                     }
                     if (isset($m['return']['type'])) {
                         $responseClass = $m['return']['type'];
-                        if (class_exists($responseClass)) {
+                        if (
+                            is_string($responseClass)
+                            && !strpos($responseClass, '|')
+                            && class_exists($responseClass)
+                        ) {
                             $this->_model($responseClass);
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
