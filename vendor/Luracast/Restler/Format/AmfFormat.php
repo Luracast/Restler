@@ -26,18 +26,18 @@ class AmfFormat extends Format
     public function encode($data, $humanReadable = false)
     {
 
-        $stream = new OutputStream ();
-        $serializer = new Serializer ( $stream );
-        $serializer->writeTypeMarker ( $data );
+        $stream = new OutputStream();
+        $serializer = new Serializer($stream);
+        $serializer->writeTypeMarker($data);
 
-        return $stream->getStream ();
+        return $stream->getStream();
     }
 
     public function decode($data)
     {
-        $stream = new InputStream ( substr ( $data, 1 ) );
-        $deserializer = new Deserializer ( $stream );
+        $stream = new InputStream(substr($data, 1));
+        $deserializer = new Deserializer($stream);
 
-        return $deserializer->readTypeMarker ();
+        return $deserializer->readTypeMarker();
     }
 }

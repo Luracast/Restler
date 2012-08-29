@@ -20,10 +20,8 @@ class XmlFormat extends Format
 {
     public static $parseAttributes = true;
     public static $parseNamespaces = false;
-    public static $attributeNames = array (
-            'xmlns'
-    );
-    public static $nameSpaces = array ();
+    public static $attributeNames = array('xmlns');
+    public static $nameSpaces = array();
     /**
      * Default name for the root node.
      *
@@ -36,8 +34,8 @@ class XmlFormat extends Format
 
       public function encode($data, $humanReadable = false)
     {
-        return $this->toXML (
-                Util::objectToArray ($data, false ),
+        return $this->toXML(
+                Util::objectToArray($data, false),
                 self::$rootName, $humanReadable
         );
     }
@@ -46,12 +44,12 @@ class XmlFormat extends Format
     {
         try {
             if ($data == '') {
-                return array ();
+                return array();
             }
-            return $this->toArray ( $data );
-        } catch ( Exception $e ) {
-            throw new RestException ( 400,
-                    "Error decoding request. " . $e->getMessage () );
+            return $this->toArray($data);
+        } catch (\RuntimeException $e) {
+            throw new RestException(400,
+                    "Error decoding request. " . $e->getMessage());
         }
     }
 
@@ -60,8 +58,8 @@ class XmlFormat extends Format
      */
     public function isAssoc($array)
     {
-        return (is_array ( $array ) && 0 !== count (
-            array_diff_key ( $array, array_keys ( array_keys ( $array ) ) ) )
+        return is_array($array) && 0 !== count(
+            array_diff_key($array, array_keys(array_keys($array)))
         );
     }
 
@@ -86,27 +84,27 @@ class XmlFormat extends Format
     {
         // turn off compatibility mode as simple xml
         // throws a wobbly if you don't.
-        if (ini_get ( 'zend.ze1_compatibility_mode' ) == 1) {
-            ini_set ( 'zend.ze1_compatibility_mode', 0 );
+        if (ini_get('zend.ze1_compatibility_mode') == 1) {
+            ini_set('zend.ze1_compatibility_mode', 0);
         }
-        if (is_null ( $xml )) {
-            if (empty ( self::$nameSpaces )) {
-                $xml = @simplexml_load_string ( "<$rootNodeName/>" );
+        if (is_null($xml)) {
+            if (empty(self::$nameSpaces)) {
+                $xml = @simplexml_load_string("<$rootNodeName/>");
             } else {
                 $str = "<$rootNodeName";
                 foreach (self::$nameSpaces as $kn => $vn) {
                     $str .= ' ' . $kn . '="' . $vn . '"';
                 }
                 $str .= '/>';
-                $xml = @simplexml_load_string ( $str );
+                $xml = @simplexml_load_string($str);
             }
         }
-        if (is_array ( $data )) {
+        if (is_array($data)) {
             $numeric = 0;
             // loop through the data passed in.
             foreach ($data as $key => $value) {
                 // no numeric keys in our xml please!
-                if (is_numeric ( $key )) {
+                if (is_numeric($key)) {
                     $numeric = 1;
                     if (self::$rootName == $rootNodeName) {
                         $key = self::$defaultTagName;
@@ -115,45 +113,47 @@ class XmlFormat extends Format
                     }
                 }
                 // delete any char not allowed in XML element names
-                $key = preg_replace ( '/[^a-z0-9\-\_\.\:]/i', '', $key );
+                $key = preg_replace('/[^a-z0-9\-\_\.\:]/i', '', $key);
                 // if there is another array found recrusively
                 // call this function
-                if (is_array ( $value )) {
-                    $node = $this->isAssoc ( $value ) || $numeric
-                            ? $xml->addChild ( $key )
+                if (is_array($value)) {
+                    $node = $this->isAssoc($value) || $numeric
+                            ? $xml->addChild($key)
                             : $xml;
                     // recrusive call.
                     if ($numeric) {
                         $key = 'anon';
                     }
-                    $this->toXML ( $value, $key, $humanReadable, $node );
+                    $this->toXML($value, $key, $humanReadable, $node);
                 } else {
                     // add single node or attribute
-                    $value = htmlspecialchars ( $value );
-                    if (in_array ( $key, self::$attributeNames )) {
-                        $xml->addAttribute ( $key, $value );
+                    $value = htmlspecialchars($value);
+                    if (in_array($key, self::$attributeNames)) {
+                        $xml->addAttribute($key, $value);
                     } else {
-                        $xml->addChild ( $key, $value );
+                        $xml->addChild($key, $value);
                     }
                 }
             }
         } else {
             // if given data is a string or number
             // simply wrap it as text node to root
-            if (is_bool ( $data )) {
+            if (is_bool($data)) {
                 $data = $data ? 'true' : 'false';
             }
-            $xml = @simplexml_load_string ( "<$rootNodeName>" .
-                        htmlspecialchars ( $data ) . "</$rootNodeName>" );
+            $xml = @simplexml_load_string("<$rootNodeName>" .
+                        htmlspecialchars($data) . "</$rootNodeName>");
             // $xml->{0} = $data;
         }
-        if (! $humanReadable) {
-            return $xml->asXML ();
+        if (!$humanReadable) {
+            if (is_object($xml))
+                return $xml->asXML();
+            return $xml;
         } else {
-            $dom = dom_import_simplexml ( $xml )->ownerDocument;
+            $dom = dom_import_simplexml($xml)->ownerDocument;
             $dom->formatOutput = true;
 
-            return $dom->saveXML ();
+            return $dom->saveXML();
         }
     }
 
@@ -170,21 +170,21 @@ class XmlFormat extends Format
      */
     public function toArray($xml, $ns = null, $firstCall = true)
     {
-        if (is_string ( $xml )) {
-            $xml = new SimpleXMLElement ( $xml );
+        if (is_string($xml)||!is_object($xml)) {
+            $xml = new SimpleXMLElement($xml);
         }
         $hasChildren = false;
-        if ($xml->children ()) {
+        if ($xml->children()) {
             $hasChildren = true;
-        } elseif (is_array ( $ns )) {
+        } elseif (is_array($ns)) {
             foreach ($ns as $namespace => $uri) {
-                if ($xml->children ( $uri )->count ()) {
+                if ($xml->children($uri)->count()) {
                     $hasChildren = true;
                     break;
                 }
             }
         }
-        if (! $hasChildren) {
+        if (!$hasChildren) {
             $r = (string) $xml;
             if ($r == 'true' || $r == 'false') {
                 $r = $r == 'true';
@@ -192,11 +192,11 @@ class XmlFormat extends Format
 
             return $r;
         }
-        $arr = array ();
+        $arr = array();
         if ($firstCall) {
             // reset the attribute names list
-            self::$attributeNames = array ();
-            self::$rootName = $xml->getName ();
+            self::$attributeNames = array();
+            self::$rootName = $xml->getName();
             if (self::$parseNamespaces) {
                 foreach ($xml->getDocNamespaces(true) as $namespace => $uri) {
                     if ($namespace == '') {
@@ -215,27 +215,27 @@ class XmlFormat extends Format
                 if ($namespace == '') {
                     continue;
                 }
-                foreach ($xml->attributes ( $uri ) as $attName => $attValue) {
+                foreach ($xml->attributes($uri) as $attName => $attValue) {
                     echo "ATTRIB " . $attName . " of NAME " .
-                        $xml->getName () . PHP_EOL;
+                        $xml->getName() . PHP_EOL;
                     $attName = "_{$namespace}_{$attName}";
                     $arr [$attName] = (string) $attValue;
                     // add to attribute list for round trip support
                     self::$attributeNames [] = $attName;
                 }
             }
-            foreach ($xml->attributes () as $attName => $attValue) {
+            foreach ($xml->attributes() as $attName => $attValue) {
                 echo "ATTRIB " . $attName . " of NAME " . $xml . PHP_EOL;
                 $arr [$attName] = (string) $attValue;
                 // add to attribute list for round trip support
                 self::$attributeNames [] = $attName;
             }
         }
-        $children = $xml->children ();
+        $children = $xml->children();
         foreach ($children as $key => $node) {
             echo "NAME " . $key . PHP_EOL;
-            $node = $this->toArray ( $node, $ns, false );
-            if (is_string ( $node )) {
+            $node = $this->toArray($node, $ns, false);
+            if (is_string($node)) {
                 // echo "NAME ".$key.PHP_EOL;
                 // echo $node;
                 // print_r($arr[$key]);
@@ -243,12 +243,12 @@ class XmlFormat extends Format
             }
             // support for 'anon' non-associative arrays
             if ($key == 'anon') {
-                $key = count ( $arr );
+                $key = count($arr);
             }
             // if the node is already set, put it into an array
-            if (isset ( $arr [$key] )) {
-                if (! is_array ( $arr [$key] ) || @$arr [$key] [0] == null) {
-                    $arr [$key] = array (
+            if (isset($arr [$key])) {
+                if (!is_array($arr [$key]) || @$arr [$key] [0] == null) {
+                    $arr [$key] = array(
                             $arr [$key]
                     );
                 }
@@ -257,25 +257,25 @@ class XmlFormat extends Format
                 $arr [$key] = $node;
             }
         }
-        if (is_array ( $ns )) {
+        if (is_array($ns)) {
             foreach ($ns as $namespace => $uri) {
                 if ($namespace == '') {
                     continue;
                 }
-                $children = $xml->children ( $uri );
+                $children = $xml->children($uri);
                 foreach ($children as $key => $node) {
                     echo "NAME " . $key . PHP_EOL;
-                    $node = $this->toArray ( $node, $ns, false );
+                    $node = $this->toArray($node, $ns, false);
                     // support for 'anon' non-associative arrays
                     if ($key == 'anon') {
-                        $key = count ( $arr );
+                        $key = count($arr);
                     }
                     $key = "_{$namespace}_{$key}";
                     // if the node is already set, put it into an array
-                    if (isset ( $arr [$key] )) {
-                        if (! is_array ( $arr [$key] )
+                    if (isset($arr [$key])) {
+                        if (!is_array($arr [$key])
                                 || @$arr [$key] [0] == null) {
-                            $arr [$key] = array (
+                            $arr [$key] = array(
                                     $arr [$key]
                             );
                         }
@@ -301,7 +301,7 @@ class XmlFormat extends Format
     {
         $s = 'XmlFormat::$rootName = "' . (self::$rootName) . "\";\n";
         $s .= 'XmlFormat::$attributeNames = ' .
-            (var_export ( self::$attributeNames, true )) . ";\n";
+            (var_export(self::$attributeNames, true)) . ";\n";
         $s .= 'XmlFormat::$defaultTagName = "' .
             self::$defaultTagName . "\";\n";
         $s .= 'XmlFormat::$parseAttributes = ' .
@@ -310,7 +310,7 @@ class XmlFormat extends Format
             (self::$parseNamespaces ? 'true' : 'false') . ";\n\n\n";
         if (self::$parseNamespaces) {
             $s .= 'XmlFormat::$nameSpaces = ' .
-            (var_export ( self::$nameSpaces, true )) . ";\n";
+            (var_export(self::$nameSpaces, true)) . ";\n";
         }
 
         return $s;

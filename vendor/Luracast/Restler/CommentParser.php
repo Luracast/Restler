@@ -144,11 +144,11 @@ class CommentParser
             }
             switch ($mode) {
                 case 0 :
-                    $description [] = $line;
+                    $description[] = $line;
                     if (count($description) > 3) {
                         // if more than 3 lines take only first line
                         $longDescription = $description;
-                        $description [] = array_shift($longDescription);
+                        $description[] = array_shift($longDescription);
                         $mode = 1;
                     } elseif (substr($line, -1) == '.') {
                         $mode = 1;
@@ -158,12 +158,12 @@ class CommentParser
                     if ($addNewline) {
                         $line = ' ' . $line;
                     }
-                    $longDescription [] = $line;
+                    $longDescription[] = $line;
                     break;
                 case 2 :
                     $newParam
-                        ? $params [] = $line
-                        : $params [count($params) - 1] .= ' ' . $line;
+                        ? $params[] = $line
+                        : $params[count($params) - 1] .= ' ' . $line;
             }
             $addNewline = false;
         }
@@ -214,7 +214,7 @@ class CommentParser
                 break;
             case 'status' :
                 $value = explode(' ', $value, 2);
-                $value [0] = intval($value [0]);
+                $value[0] = intval($value[0]);
                 break;
             case 'throws' :
                 $value = $this->formatThrows($value);
@@ -241,30 +241,30 @@ class CommentParser
             }
             $value[self::$embeddedDataName] = $embedded;
         }
-        if (empty ($data [$param])) {
+        if (empty ($data[$param])) {
             if ($allowMultiple) {
-                $data [$param] = array(
+                $data[$param] = array(
                     $value
                 );
             } else {
-                $data [$param] = $value;
+                $data[$param] = $value;
             }
         } elseif ($allowMultiple) {
-            $data [$param] [] = $value;
+            $data[$param][] = $value;
         } elseif ($param == 'param') {
             $arr = array(
-                $data [$param],
+                $data[$param],
                 $value
             );
-            $data [$param] = $arr;
+            $data[$param] = $arr;
         } else {
             if (!is_string($value) && isset($value[self::$embeddedDataName])
-                && isset($data [$param][self::$embeddedDataName])
+                && isset($data[$param][self::$embeddedDataName])
             ) {
                 $value[self::$embeddedDataName]
-                    += $data [$param][self::$embeddedDataName];
+                    += $data[$param][self::$embeddedDataName];
             }
-            $data [$param] = $value + $data [$param];
+            $data[$param] = $value + $data[$param];
         }
     }
 
@@ -288,13 +288,13 @@ class CommentParser
 
         while (preg_match(self::$embeddedDataPattern, $subject, $matches)) {
             $subject = str_replace($matches[0], '', $subject);
-            $str = $matches [self::$embeddedDataIndex];
+            $str = $matches[self::$embeddedDataIndex];
             if (isset ($this->restler)
                 && self::$embeddedDataIndex > 1
-                && !empty ($matches [1])
+                && !empty ($matches[1])
             ) {
-                $extension = $matches [1];
-                if (isset ($this->restler->formatMap [$extension])) {
+                $extension = $matches[1];
+                if (isset ($this->restler->formatMap[$extension])) {
                     /**
                      * @var \Luracast\Restler\Format\iFormat
                      */
@@ -323,15 +323,15 @@ class CommentParser
                         }
                         if (is_string($val)) {
                             if ($val == 'true' || $val == 'false') {
-                                $d [$key] = $val == 'true' ? true : false;
+                                $d[$key] = $val == 'true' ? true : false;
                             } else {
                                 $val = explode(self::$arrayDelimiter, $val);
                                 if (count($val) > 1) {
-                                    $d [$key] = $val;
+                                    $d[$key] = $val;
                                 } else {
-                                    $d [$key] =
+                                    $d[$key] =
                                         preg_replace('/\s+/ms', ' ',
-                                            $d [$key]);
+                                            $d[$key]);
                                 }
                             }
                         }
@@ -348,10 +348,10 @@ class CommentParser
         $r = array(
             'exception' => array_shift($value)
         );
-        $r ['code'] = @is_numeric($value [0])
+        $r['code'] = @is_numeric($value[0])
             ? intval(array_shift($value)) : 500;
         $reason = implode(' ', $value);
-        $r ['reason'] = empty($reason) ? '' : $reason;
+        $r['reason'] = empty($reason) ? '' : $reason;
         return $r;
     }
 
