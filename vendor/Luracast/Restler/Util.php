@@ -98,18 +98,23 @@ class Util
             $instance = new $className();
             $instance->restler = self::$restler;
         }
-        $properties = @$metadata['class'][$className]
-        [CommentParser::$embeddedDataName];
+        if (
+            isset($metadata['class'][$className]
+            [CommentParser::$embeddedDataName])
+        ) {
+            $properties = $metadata['class'][$className]
+            [CommentParser::$embeddedDataName];
 
-        $objectVars = get_object_vars($instance);
+            $objectVars = get_object_vars($instance);
 
-        if (is_array($properties)) {
-            foreach ($properties as $property => $value) {
-                if (property_exists($className, $property)) {
-                    //if not a static property
-                    array_key_exists($property, $objectVars)
-                        ? $instance->{$property} = $value
-                        : $instance::$$property = $value;
+            if (is_array($properties)) {
+                foreach ($properties as $property => $value) {
+                    if (property_exists($className, $property)) {
+                        //if not a static property
+                        array_key_exists($property, $objectVars)
+                            ? $instance->{$property} = $value
+                            : $instance::$$property = $value;
+                    }
                 }
             }
         }
