@@ -3,7 +3,7 @@ namespace Luracast\Restler\Data;
 
 use Luracast\Restler\RestException;
 
-class DefaultValidator implements iValidate {
+class Validator implements iValidate {
 
     public static function validate($input, ValidationInfo $info)
     {
