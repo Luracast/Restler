@@ -15,6 +15,7 @@ class CommentParser
 {
     /**
      * name for the embedded data
+     *
      * @var string
      */
     public static $embeddedDataName = 'properties';
@@ -40,6 +41,7 @@ class CommentParser
      * will be used and if URLEncodedFormat is detected as the data format
      * the character specified will be used as the delimiter to find split
      * array data.
+     *
      * @var string
      */
     public static $arrayDelimiter = ',';
@@ -71,8 +73,10 @@ class CommentParser
      * Parse the comment and extract the data.
      *
      * @static
-     * @param $comment
+     *
+     * @param      $comment
      * @param bool $isPhpDoc
+     *
      * @return array associative array with the extracted values
      */
     public static function parse($comment, $isPhpDoc = true)
@@ -95,7 +99,9 @@ class CommentParser
      * Removes the comment tags from each line of the comment.
      *
      * @static
+     *
      * @param $comment PhpDoc style comment
+     *
      * @return string comments with out the tags
      */
     public static function removeCommentTags($comment)
@@ -109,6 +115,7 @@ class CommentParser
      * parameters.
      *
      * @param $comment
+     *
      * @return array
      */
     private function extractData($comment)
@@ -182,7 +189,7 @@ class CommentParser
         }
         foreach ($params as $key => $line) {
             list(, $param, $value) = preg_split('/\@|\s/', $line, 3)
-                + array('','','');
+                + array('', '', '');
             list($value, $embedded) = $this->parseEmbeddedData($value);
             $value = preg_split('/\s+/ms', $value);
             $this->parseParam($param, $value, $embedded);
@@ -192,7 +199,8 @@ class CommentParser
 
     /**
      * Parse parameters that begin with (at)
-     * @param $param
+     *
+     * @param       $param
      * @param array $value
      * @param array $embedded
      */
@@ -212,8 +220,11 @@ class CommentParser
                 $data = &$data[$param];
                 list ($param, $value) = $this->formatClass($value);
                 break;
+            case 'access' :
+                $value = $value [0];
+                break;
+            case 'expires' :
             case 'status' :
-                $value = explode(' ', $value, 2);
                 $value [0] = intval($value [0]);
                 break;
             case 'throws' :
@@ -270,7 +281,9 @@ class CommentParser
 
     /**
      * Parses the inline php doc comments and embedded data.
+     *
      * @param $subject
+     *
      * @return array
      * @throws \Exception
      */
