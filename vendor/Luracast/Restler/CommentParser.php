@@ -272,7 +272,7 @@ class CommentParser
      * Parses the inline php doc comments and embedded data.
      * @param $subject
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     private function parseEmbeddedData($subject)
     {
@@ -306,7 +306,7 @@ class CommentParser
                 if ($str{0} == '{') {
                     $d = json_decode($str, true);
                     if (json_last_error() != JSON_ERROR_NONE) {
-                        throw new \Exception('Error parsing embedded JSON data'
+                        throw new Exception('Error parsing embedded JSON data'
                             . " $str");
                     }
                     $data = $d + $data;

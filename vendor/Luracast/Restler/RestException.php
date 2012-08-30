@@ -12,7 +12,6 @@ namespace Luracast\Restler;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-use Exception;
 
 class RestException extends Exception
 {

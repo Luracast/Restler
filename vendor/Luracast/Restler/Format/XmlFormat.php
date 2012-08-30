@@ -12,9 +12,9 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  */
 use Luracast\Restler\Data\Util;
+use Luracast\Restler\Exception;
 use Luracast\Restler\RestException;
-use \Exception;
-use \SimpleXMLElement;
+use SimpleXMLElement;
 
 class XmlFormat extends Format
 {
@@ -170,8 +170,10 @@ class XmlFormat extends Format
      */
     public function toArray($xml, $ns = null, $firstCall = true)
     {
-        if (is_string($xml)||!is_object($xml)) {
+        try {
             $xml = new SimpleXMLElement($xml);
+        } catch (\Exception $e) {
+            throw new Exception($e->getMessage());
         }
         $hasChildren = false;
         if ($xml->children()) {

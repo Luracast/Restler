@@ -2,7 +2,6 @@
 namespace Luracast\Restler;
 
 use stdClass;
-use Exception;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
@@ -266,7 +265,7 @@ class Restler
      *               implements iFormat
      *
      * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
-     * @throws \Exception
+     * @throws Exception
      */
     public function setSupportedFormats()
     {
@@ -309,7 +308,7 @@ class Restler
      *            optional url prefix for mapping, uses
      *            lowercase version of the class name when not specified
      *
-     * @throws \Exception when supplied with invalid class name
+     * @throws Exception when supplied with invalid class name
      */
     public function addAPIClass($className, $resourcePath = null)
     {
@@ -439,7 +438,7 @@ class Restler
      * Main function for processing the api request
      * and return the response
      *
-     * @throws \Exception     when the api service class is missing
+     * @throws Exception     when the api service class is missing
      * @throws RestException to send error response
      */
     public function handle()

@@ -39,6 +39,6 @@ class MustacheFormat extends Format
 
     public function decode($data)
     {
-        throw new RestException ( 405, 'MustacheFormat is write only' );
+        throw new RestException(405, 'MustacheFormat is write only');
     }
 }
