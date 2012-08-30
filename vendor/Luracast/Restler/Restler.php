@@ -1056,20 +1056,24 @@ class Restler
                 if (isset($type)) {
                     $m['type'] = $type;
                 }
-                $m ['name'] =
-                    trim($param->getName(), '$ ');
-                $m ['default'] =
-                    $defaults [$position];
-                if ($param->isOptional()) {
-                    $m ['required'] = false;
+                $m ['name'] = trim($param->getName(), '$ ');
+                $m ['default'] = $defaults [$position];
+                $m ['required'] = !$param->isOptional();
+                if (isset($type) && Util::isObjectOrArray($type)
+                    || $param->getName() == Defaults::$fullRequestDataName
+                ) {
+                    $from = 'body';
+                } elseif ($m['name']{0} == '_') {
+                    $from = 'header';
+                } elseif ($m['required']) {
+                    $from = 'path';
                 } else {
-                    $m ['required'] = true;
-                    if (!$allowAmbiguity &&
-                        $param->getName() != 'request_data'
-                    ) {
-                        $ignorePathTill = $position + 1;
-                    }
+                    $from = 'query';
                 }
+                if (!$allowAmbiguity && $from == 'path') {
+                    $ignorePathTill = $position + 1;
+                }
+                $m['from'] = $from;
                 $position++;
             }
             $accessLevel = 0;

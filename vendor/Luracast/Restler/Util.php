@@ -19,6 +19,20 @@ class Util
     public static $restler;
 
     /**
+     * verify if the given data type string is scalar or not
+     *
+     * @static
+     *
+     * @param string $type data type as string
+     *
+     * @return bool true or false
+     */
+    public static function isObjectOrArray($type)
+    {
+        return (boolean)strpos('|bool|boolean|int|float|string|', $type);
+    }
+
+    /**
      * Compare two strings and remove the common
      * sub string from the first string and return it
      *
