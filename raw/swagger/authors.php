@@ -65,11 +65,13 @@ class Authors
     }
 
     /**
+     * @protected
      * Update Author information
      *
      * @param int   $id Author ID
      *          ``` min=1&max=2&error=AuthorID+is+out+of+range```
      * @param array $request_data
+     * @return array
      */
     function put($id, $request_data)
     {
@@ -81,6 +83,7 @@ class Authors
      *
      * @param int $id Author ID
      *          ``` min=1&max=2&error=AuthorID+is+out+of+range```
+     * @return array|bool|mixed
      */
     function deleteSomething($id)
     {

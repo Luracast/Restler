@@ -11,7 +11,7 @@ namespace Luracast\Restler;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-class DefaultResponder implements iRespond
+class Responder implements iRespond
 {
     /**
      * Current Restler instance

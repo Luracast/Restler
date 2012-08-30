@@ -14,8 +14,12 @@ use stdClass;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-class Resources
+class Resources implements iUseAuthentication
 {
+    /**
+     * @var bool should protected resources be shown to unauthenticated users?
+     */
+    public static $hideProtected = true;
     /**
      * Injected at runtime
      *
@@ -25,12 +29,41 @@ class Resources
 
     private $_models;
 
+    private $_authenticated = false;
+
+    /**
+     * This method will be called first for filter classes and api classes so
+     * that they can respond accordingly for filer method call and api method
+     * calls
+     *
+     *
+     * @param bool $isAuthenticated passes true when the authentication is
+     *                              done false otherwise
+     *
+     * @return mixed
+     */
+    public function __setAuthenticationStatus($isAuthenticated = false)
+    {
+        $this->_authenticated = $isAuthenticated;
+    }
+
+    /**
+     * @access hybrid
+     * @return \stdClass
+     */
     public function index()
     {
         $r = $this->_resourceListing();
         $mappedResource = array();
         foreach ($this->restler->routes as $verb => $routes) {
             foreach ($routes as $route) {
+                if (
+                    self::$hideProtected
+                    && !$this->_authenticated
+                    && $route['accessLevel'] > 1
+                ) {
+                    continue;
+                }
                 $path = $route['path'];
                 $name = strtolower(str_replace('\\', '-', $route['className']));
                 $classDescription = isset(
@@ -53,6 +86,13 @@ class Resources
         return $r;
     }
 
+    /**
+     * @access hybrid
+     * @param $name
+     *
+     * @return null|stdClass
+     * @throws RestException
+     */
     public function get($name)
     {
         $this->_models = new stdClass();
@@ -62,6 +102,13 @@ class Resources
         foreach ($this->restler->routes as $httpMethod => $value) {
             foreach ($value as $key => $route) {
                 if (0 == strcasecmp($name, $route['className'])) {
+                    if (
+                        self::$hideProtected
+                        && !$this->_authenticated
+                        && $route['accessLevel'] > 1
+                    ) {
+                        continue;
+                    }
                     $count++;
                     $className = $this->_noNamespace($route['className']);
                     $m = $route['metadata'];
@@ -108,7 +155,11 @@ class Resources
                     }
                     if (isset($m['return']['type'])) {
                         $responseClass = $m['return']['type'];
-                        if (class_exists($responseClass)) {
+                        if (
+                            is_string($responseClass)
+                            && !strpos($responseClass, '|')
+                            && class_exists($responseClass)
+                        ) {
                             $this->_model($responseClass);
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
@@ -208,11 +259,10 @@ class Resources
         $r = new stdClass();
         $r->name = $param['name'];
         $r->description = isset($param['description'])
-            ? $param['description'] . '. '
+            ? $param['description'] . '.'
             : '';
-        //TODO: verify for header params and body params
         //paramType can be path or query or body or header
-        $r->paramType = $param['required'] ? 'path' : 'query';
+        $r->paramType = $param['from'];
         $r->required = $param['required'];
         $r->allowMultiple = false;
         $r->dataType = 'string';

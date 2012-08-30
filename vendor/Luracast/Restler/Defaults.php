@@ -2,7 +2,8 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ValidationInfo;
-use Luracast\Restler\Data\DefaultValidator;
+use Luracast\Restler\Data\Validator;
+
 /**
  * Static class to hold all restler defaults, change the values to suit your
  * needs in the gateway file (index.php), you may also allow the api users to
@@ -18,6 +19,23 @@ use Luracast\Restler\Data\DefaultValidator;
  */
 class Defaults
 {
+    /**
+     * @var string of name of the class that implements
+     * \Luracast\Restler\Data\iValidate the validator class to be used
+     */
+    public static $validatorClass = 'Luracast\\Restler\\Data\\Validator';
+
+    /**
+     * @var string name of the class that implements \Luracast\Restler\iRespond
+     * the responder class to be used
+     */
+    public static $responderClass = 'Luracast\\Restler\\Responder';
+
+    /**
+     * @var string name to be used for the method parameter to capture the
+     * entire request data
+     */
+    public static $fullRequestDataName = 'request_data';
     /**
      * @var bool should auto routing for public and protected api methods
      * should be enabled by default or not. Set this to false to get
@@ -62,9 +80,9 @@ class Defaults
     /**
      * @var int set the default api access mode
      *      value of 0 = public api
-     *      value of 1 = hybrid api using @hybrid comment
-     *      value of 2 = protected api using @protected comment
-     *      value of 3 = protected api using protected method
+     *      value of 1 = hybrid api using `@access hybrid` comment
+     *      value of 2 = protected api using `@access protected` comment
+     *      value of 3 = protected api using `protected function` method
      */
     public static $apiAccessLevel = 0;
 
@@ -100,23 +118,29 @@ class Defaults
 
         /**
          * use PHPDoc comments such as the following
-         * `@cache no-cache, must-revalidate` to set the Cache-Control header
-         * for a specific api method
+         * `
+         *
+         * @cache no-cache, must-revalidate` to set the Cache-Control header
+         *        for a specific api method
          */
         'cache' => 'headerCacheControl',
 
         /**
          * use PHPDoc comments such as the following
-         * `@expires 50` to set the Expires header
-         * for a specific api method
+         * `
+         *
+         * @expires 50` to set the Expires header
+         *          for a specific api method
          */
         'expires' => 'headerExpires',
 
         /**
          * use PHPDoc comments such as the following
-         * `@throttle 300`
-         * to set the bandwidth throttling for 300 milliseconds
-         * for a specific api method
+         * `
+         *
+         * @throttle 300`
+         *           to set the bandwidth throttling for 300 milliseconds
+         *           for a specific api method
          */
         'throttle' => 'throttle',
 
@@ -150,7 +174,7 @@ class Defaults
      *
      * @static
      *
-     * @param $name name of the static property
+     * @param $name  name of the static property
      * @param $value value to set the property to
      *
      * @return bool
@@ -160,7 +184,7 @@ class Defaults
         if (!property_exists(__CLASS__, $name)) return false;
         if (@is_array(Defaults::$validation[$name])) {
             $info = new ValidationInfo(Defaults::$validation[$name]);
-            $value = DefaultValidator::validate($value, $info);
+            $value = Validator::validate($value, $info);
         }
         Defaults::$$name = $value;
         return true;

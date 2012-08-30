@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>jQuery Mobile Web App</title>
+<link
+	href="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.css"
+	rel="stylesheet" type="text/css" />
+<script src="http://code.jquery.com/jquery-1.5.min.js"
+	type="text/javascript"></script>
+<script
+	src="http://code.jquery.com/mobile/1.0a3/jquery.mobile-1.0a3.min.js"
+	type="text/javascript"></script>
+</head>
+<body>
+<div data-role="page" id="form">
+<div data-role="header">
+<h1>Body Mass Index is {{bmi}}</h1>
+</div>
+<div data-role="content">
+<form method="get" action="">
+{{#param}}
+<div data-role="fieldcontain"><label for="{{name}}">{{name}}: </label>
+<input type="number" name="{{name}}" id="{{name}}" value="{{value}}" {{#required}}required="required"{{/required}}/>({{default}})</div>
+{{/param}}
+<div data-role="fieldcontain"><input type="submit" value="Submit" /></div>
+</form>
+
+{{#param}}
+<p>var {{name}} : {{type}} = {{value}} [{{default}}] {{required}}</p>
+{{/param}}
+<div data-role="collapsible-set" data-theme="c" data-content-theme="d">
+<div data-role="collapsible" data-collapsed="false">
+   <h3>In imperial Units</h3>
+   <p>Height of {{imperial.height}} and Weight of {{imperial.weight}}
+is considered as {{message}}</p>
+</div>
+<div data-role="collapsible" data-collapsed="true">
+   <h3>In metric Units</h3>
+   <p>Height of {{metric.height}} and Weight of
+{{metric.weight}} is considered as {{message}}</p>
+</div>
+</div>
+</div>
+<div data-role="footer" data-position="fixed">
+<h4>Copyright 2012 Luracast</h4>
+</div>
+</div>
+</body>
+</html>

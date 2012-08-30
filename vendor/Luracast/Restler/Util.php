@@ -19,6 +19,20 @@ class Util
     public static $restler;
 
     /**
+     * verify if the given data type string is scalar or not
+     *
+     * @static
+     *
+     * @param string $type data type as string
+     *
+     * @return bool true or false
+     */
+    public static function isObjectOrArray($type)
+    {
+        return (boolean)strpos('|bool|boolean|int|float|string|', $type);
+    }
+
+    /**
      * Compare two strings and remove the common
      * sub string from the first string and return it
      *
@@ -91,13 +105,15 @@ class Util
      * @param array       $metadata  which contains the properties
      * @param null|object $instance  new instance is crated if set to null
      *
+     * @throws RestException
      * @return object instance of the specified class with properties applied
      */
     public static function setProperties($className, array $metadata = null,
                                          $instance = null)
     {
-        if (!isset($className))
-            $className = 'stdClass';
+        if (!class_exists($className)) {
+            throw new RestException(500, "Class '$className' not found");
+        }
         if (!$instance) {
             $instance = new $className();
             $instance->restler = self::$restler;
@@ -121,6 +137,10 @@ class Util
                     }
                 }
             }
+        }
+
+        if ($instance instanceof iUseAuthentication) {
+            $instance->__setAuthenticationStatus(self::$restler->authenticated);
         }
 
         return $instance;
