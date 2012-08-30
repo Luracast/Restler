@@ -348,7 +348,7 @@ class CommentParser
         $r = array(
             'exception' => array_shift($value)
         );
-        $r ['code'] = @is_numeric($value [0])
+        $r ['code'] = count($value) && is_numeric($value [0])
             ? intval(array_shift($value)) : 500;
         $reason = implode(' ', $value);
         $r ['reason'] = empty($reason) ? '' : $reason;
