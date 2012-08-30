@@ -96,7 +96,7 @@ class Restler extends EventEmitter
      *
      * @var string
      */
-    public $responder = 'Luracast\\Restler\\DefaultResponder';
+    public $responder = 'Luracast\\Restler\\Responder';
 
     /**
      * method information including metadata
