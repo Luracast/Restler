@@ -99,6 +99,20 @@ class Restler
     public $responder = 'Luracast\\Restler\\DefaultResponder';
 
     /**
+     * method information including metadata
+     *
+     * @var stdClass
+     */
+    public $apiMethodInfo;
+
+    /**
+     * Associated array that maps urls to their respective class and method
+     *
+     * @var array
+     */
+    public $routes = array();
+
+    /**
      * Response data format.
      * Instance of the current format class
      * which implements the iFormat interface
@@ -123,13 +137,6 @@ class Restler
     protected $productionMode;
 
     /**
-     * Associated array that maps urls to their respective class and method
-     *
-     * @var array
-     */
-    protected $routes = array();
-
-    /**
      * Associated array that maps formats to their respective format class name
      *
      * @var array
@@ -149,13 +156,6 @@ class Restler
      * @var string
      */
     protected $apiMethod;
-
-    /**
-     * method information including metadata
-     *
-     * @var stdClass
-     */
-    protected $_apiMethodInfo;
 
     /**
      * list of filter classes
@@ -886,7 +886,7 @@ class Restler
      *
      * @return \stdClass
      */
-    protected function mapUrlToMethod()
+    public function mapUrlToMethod()
     {
         if (!isset($this->routes[$this->requestMethod])) {
             return new stdClass ();

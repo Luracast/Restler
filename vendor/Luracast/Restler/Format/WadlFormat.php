@@ -23,7 +23,7 @@ class WadlFormat extends Format
          * <response> <representation mediaType="text/plain"/> </response>
          * </method> </resource> </resources> </application>
          */
-        $info = $this->restler->serviceMethodInfo;
+        $info = $this->restler->apiMethodInfo;
         XmlFormat::$nameSpaces = array (
                 'xmlns' => 'http://wadl.dev.java.net/2009/02',
                 'xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema'
