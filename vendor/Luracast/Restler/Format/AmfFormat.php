@@ -19,7 +19,6 @@ use ZendAmf\Parser\Amf3\Deserializer;
 
 class AmfFormat extends Format
 {
-    const PATH = '/Zend/Amf/Parse/';
     const MIME = 'application/x-amf';
     const EXTENSION = 'amf';
 

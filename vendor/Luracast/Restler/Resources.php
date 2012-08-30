@@ -122,7 +122,8 @@ class Resources
         if (!$count) {
             throw new RestException(404, 'Not Found');
         }
-        $r->models = &$this->_models;
+        if (!is_null($r))
+            $r->models = $this->_models;
         return $r;
     }
 

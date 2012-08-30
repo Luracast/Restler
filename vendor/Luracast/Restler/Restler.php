@@ -8,6 +8,7 @@ use ReflectionMethod;
 use ReflectionProperty;
 use InvalidArgumentException;
 use Luracast\Restler\Format\iFormat;
+use Luracast\Restler\Format\JsonFormat;
 use Luracast\Restler\Format\UrlEncodedFormat;
 use Luracast\Restler\Data\iValidate;
 use Luracast\Restler\Data\DefaultValidator;
@@ -267,7 +268,7 @@ class Restler
      * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
      * @throws Exception
      */
-    public function setSupportedFormats()
+    public function setSupportedFormats($format = null/*[, $format2...$farmatN]*/)
     {
         $args = func_get_args();
         $extensions = array();
@@ -393,6 +394,8 @@ class Restler
         }
         if ($handled)
             return null;
+        if (!isset($this->responseFormat))
+            $this->responseFormat = new JsonFormat();
         $this->sendData(null, $statusCode, $errorMessage);
     }
 

@@ -34,6 +34,8 @@ class Util
      */
     public static function removeCommonPath($fromPath, $usingPath, $char = '/')
     {
+        if (empty($fromPath))
+            return '';
         $fromPath = explode($char, $fromPath);
         $usingPath = explode($char, $usingPath);
         while (count($usingPath)) {
@@ -94,6 +96,8 @@ class Util
     public static function setProperties($className, array $metadata = null,
                                          $instance = null)
     {
+        if (!isset($className))
+            $className = 'stdClass';
         if (!$instance) {
             $instance = new $className();
             $instance->restler = self::$restler;
