@@ -21,6 +21,12 @@ class Defaults
 {
     /**
      * @var string of name of the class that implements
+     * \Luracast\Restler\iCache the cache class to be used
+     */
+    public static $cacheClass = 'Luracast\\Restler\\HumanReadableCache';
+
+    /**
+     * @var string of name of the class that implements
      * \Luracast\Restler\Data\iValidate the validator class to be used
      */
     public static $validatorClass = 'Luracast\\Restler\\Data\\Validator';

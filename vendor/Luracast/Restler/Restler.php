@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use Luracast\Restler\Format\iFormat;
 use Luracast\Restler\Format\UrlEncodedFormat;
 use Luracast\Restler\Data\iValidate;
-use Luracast\Restler\Data\DefaultValidator;
+use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Data\ValidationInfo;
 
 /**
@@ -78,11 +78,11 @@ class Restler
     public $requestData = array();
 
     /**
-     * Used in production mode to store the URL Map to disk
+     * Used in production mode to store the routes and more
      *
-     * @var string
+     * @var iCache
      */
-    public $cacheDir;
+    public $cache;
 
     /**
      * base directory to locate format and auth files
@@ -90,13 +90,6 @@ class Restler
      * @var string
      */
     public $baseDir;
-
-    /**
-     * Name of an iRespond implementation class
-     *
-     * @var string
-     */
-    public $responder = 'Luracast\\Restler\\DefaultResponder';
 
     /**
      * Response data format.
@@ -213,7 +206,7 @@ class Restler
     {
         $this->startTime = time();
         $this->_productionMode = $productionMode;
-        $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
+        $this->cache = new Defaults::$cacheClass();
         $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
@@ -228,7 +221,7 @@ class Restler
     public function __destruct()
     {
         if ($this->_productionMode && !$this->_cached) {
-            $this->saveCache();
+            $this->cache->set('routes', $this->_routes);
         }
     }
 
@@ -533,7 +526,7 @@ class Restler
                         }
                         //convert to instance of ValidationInfo
                         $info = new ValidationInfo($param);
-                        $valid = DefaultValidator::validate(
+                        $valid = Validator::validate(
                             $o->arguments[$index], $info);
                         $o->arguments[$index] = $valid;
                     }
@@ -602,7 +595,7 @@ class Restler
          * @var iRespond DefaultResponder
          */
         $responder = Util::setProperties(
-            $this->responder,
+            Defaults::$responderClass,
             isset($this->_apiMethodInfo->metadata)
                 ? $this->_apiMethodInfo->metadata
                 : null
@@ -658,33 +651,6 @@ class Restler
         }
         @header("{$_SERVER['SERVER_PROTOCOL']} $code " .
             RestException::$codes[$code]);
-    }
-
-    public function saveCache()
-    {
-        $file = $this->cacheDir . '/routes.php';
-        $s = '$o = array();' . PHP_EOL;
-        foreach ($this->_routes as $key => $value) {
-            $s .= PHP_EOL . PHP_EOL . PHP_EOL .
-                "//############### $key ###############" . PHP_EOL . PHP_EOL;
-            $s .= '$o[\'' . $key . '\'] = array();';
-            foreach ($value as $ke => $va) {
-                $s .= PHP_EOL . PHP_EOL . "//==== $key $ke" . PHP_EOL . PHP_EOL;
-                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'] = ' .
-                    str_replace('  ', '    ', var_export($va, true)) . ';';
-            }
-        }
-        $s .= PHP_EOL . 'return $o;';
-        $r = @file_put_contents($file, "<?php $s");
-        @chmod($file, 0777);
-        if ($r === false) {
-            throw new Exception(
-                "The cache directory located at " .
-                    "'$this->cacheDir' needs to have the permissions " .
-                    "set to read/write/execute for everyone " .
-                    "in order to save cache and improve performance."
-            );
-        }
     }
 
     /**
@@ -978,18 +944,13 @@ class Restler
     {
         if ($this->_cached !== null)
             return null;
-        $file = $this->cacheDir . '/routes.php';
         $this->_cached = false;
         if ($this->_productionMode) {
-            if (file_exists($file)) {
-                $routes = include ($file);
-            }
+            $routes = $this->cache->get('routes');
             if (isset($routes) && is_array($routes)) {
                 $this->_routes = $routes;
                 $this->_cached = true;
             }
-        } else {
-            // @unlink($this->cacheDir . "/$name.php");
         }
     }
 
