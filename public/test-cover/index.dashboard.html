@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="highcharts.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+          var classCoverageDistribution = new Highcharts.Chart({
+             chart: {
+                renderTo: 'classCoverageDistribution',
+                type: 'column'
+             },
+             title: {text: ''},
+             legend: {enabled: false},
+             credits: {enabled: false},
+             tooltip: {enabled: false},
+             xAxis: {
+                 labels: {style: {fontSize: '8px'}},
+                 categories: [
+                 '0%','0-10%','10-20%','20-30%','30-40%','40-50%','50-60%','60-70%','70-80%','80-90%','90-100%','100%'
+                 ]
+            },
+            yAxis: {
+                title: '',
+                labels: {style: {fontSize: '8px'}},
+            },
+            series: [{
+                data: [2,1,4,3,3,0,4,0,1,1,0,6]
+            }],
+          });
+
+        var classComplexity = new Highcharts.Chart({
+            chart: {
+              renderTo: 'classComplexity',
+              type: 'scatter'
+            },
+            title: {text: ''},
+            legend: {enabled: false},
+            credits: {enabled: false},
+            xAxis: {
+               labels: {enabled: false},
+            },
+            yAxis: {
+              title: '',
+              labels: {enabled: false},
+            },
+            tooltip: {
+                formatter: function() {
+                    return this.point.config[2];
+                }
+            },
+            series: [{
+              data: [[39.230769230769,61,"<a href=\"AutoLoader.php.html#16\">AutoLoader<\/a>"],[2.1008403361345,71,"<a href=\"CommentParser.php.html#14\">CommentParser<\/a>"],[16.666666666667,22,"<a href=\"Util.php.html#14\">Util<\/a>"],[50.877192982456,23,"<a href=\"Data_ValidationInfo.php.html#11\">ValidationInfo<\/a>"],[23.913043478261,47,"<a href=\"Data_Validator.php.html#6\">Validator<\/a>"],[50,9,"<a href=\"Data_ValueObject.php.html#4\">ValueObject<\/a>"],[14.285714285714,3,"<a href=\"Defaults.php.html#20\">Defaults<\/a>"],[100,10,"<a href=\"EventEmitter.php.html#16\">EventEmitter<\/a>"],[0,0,"<a href=\"Exception.php.html#13\">Exception<\/a>"],[71.428571428571,2,"<a href=\"Format_AmfFormat.php.html#20\">AmfFormat<\/a>"],[57.142857142857,21,"<a href=\"Format_DebugFormat.php.html#8\">DebugFormat<\/a>"],[100,8,"<a href=\"Format_Format.php.html#15\">Format<\/a>"],[13.186813186813,32,"<a href=\"Format_JsonFormat.php.html#23\">JsonFormat<\/a>"],[100,8,"<a href=\"Format_MultiFormat.php.html#14\">MultiFormat<\/a>"],[55,7,"<a href=\"Format_MustacheFormat.php.html#8\">MustacheFormat<\/a>"],[82.352941176471,5,"<a href=\"Format_PlistFormat.php.html#22\">PlistFormat<\/a>"],[28.571428571429,11,"<a href=\"Format_UploadFormat.php.html#6\">UploadFormat<\/a>"],[100,2,"<a href=\"Format_UrlEncodedFormat.php.html#15\">UrlEncodedFormat<\/a>"],[100,2,"<a href=\"Format_WadlFormat.php.html#6\">WadlFormat<\/a>"],[21.052631578947,60,"<a href=\"Format_XmlFormat.php.html#19\">XmlFormat<\/a>"],[100,2,"<a href=\"Format_YamlFormat.php.html#18\">YamlFormat<\/a>"],[11.111111111111,53,"<a href=\"Resources.php.html#17\">Resources<\/a>"],[33.333333333333,8,"<a href=\"Responder.php.html#14\">Responder<\/a>"],[0,1,"<a href=\"RestException.php.html#16\">RestException<\/a>"],[31.460674157303,188,"<a href=\"Restler.php.html#30\">Restler<\/a>"]],
+              marker: {
+                  symbol: 'diamond'
+              }
+            }],
+        });
+    });
+    </script>
+  </head>
+
+  <body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr><td class="title"></td></tr>
+      <tr><td><div align="center"><p><a href="index.html">Back to Code Coverage report</a></p></div></td></tr>
+      <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
+    </table>
+
+    <br />
+
+    <center>
+      <table width="90%" cellpadding="2" cellspacing="1" border="0">
+        <tr>
+          <td valign="top">
+            <h2>Class Coverage Distribution</h2>
+            <div id="classCoverageDistribution"></div>
+          </td>
+
+          <td valign="top">
+            <h2>Class Complexity</h2>
+            <div id="classComplexity"></div>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <h2>Top Project Risks</h2>
+            <ul>
+              <li><a href="Restler.php.html#30">Restler</a> (11567)</li>
+              <li><a href="CommentParser.php.html#14">CommentParser</a> (4800)</li>
+              <li><a href="Resources.php.html#17">Resources</a> (2025)</li>
+              <li><a href="Format_XmlFormat.php.html#19">XmlFormat</a> (1831)</li>
+              <li><a href="Data_Validator.php.html#6">Validator</a> (1020)</li>
+              <li><a href="AutoLoader.php.html#16">AutoLoader</a> (896)</li>
+              <li><a href="Format_JsonFormat.php.html#23">JsonFormat</a> (701)</li>
+              <li><a href="Util.php.html#14">Util</a> (302)</li>
+              <li><a href="Data_ValidationInfo.php.html#11">ValidationInfo</a> (85)</li>
+              <li><a href="Format_DebugFormat.php.html#8">DebugFormat</a> (55)</li>
+
+            </ul>
+          </td>
+
+          <td valign="top">
+            <h2>Least Tested Methods</h2>
+            <ul>
+              <li><a href="Restler.php.html#345">Restler::addFilterClass</a> (0%)</li>
+              <li><a href="RestException.php.html#68">RestException::__construct</a> (0%)</li>
+              <li><a href="Resources.php.html#45">Resources::__setAuthenticationStatus</a> (0%)</li>
+              <li><a href="Resources.php.html#218">Resources::_operationListing</a> (0%)</li>
+              <li><a href="CommentParser.php.html#399">CommentParser::formatReturn</a> (0%)</li>
+              <li><a href="CommentParser.php.html#408">CommentParser::formatParam</a> (0%)</li>
+              <li><a href="Resources.php.html#308">Resources::_noNamespace</a> (0%)</li>
+              <li><a href="Resources.php.html#274">Resources::_model</a> (0%)</li>
+              <li><a href="Resources.php.html#235">Resources::_operation</a> (0%)</li>
+              <li><a href="Resources.php.html#226">Resources::_api</a> (0%)</li>
+
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </center>
+
+    <br />
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
+      <tr><td class="versionInfo">Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 1.1.3</a> using <a href="http://www.php.net/" target="_top">PHP 5.3.14</a> and PHPUnit 3.6.12 at Thu Aug 30 17:05:03 SAST 2012.</td></tr>
+    </table>
+
+    <br/>
+  </body>
+</html>

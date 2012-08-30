@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Format</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="jquery.min.js" type="text/javascript"></script>
+    <script src="highcharts.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(document).ready(function() {
+          var classCoverageDistribution = new Highcharts.Chart({
+             chart: {
+                renderTo: 'classCoverageDistribution',
+                type: 'column'
+             },
+             title: {text: ''},
+             legend: {enabled: false},
+             credits: {enabled: false},
+             tooltip: {enabled: false},
+             xAxis: {
+                 labels: {style: {fontSize: '8px'}},
+                 categories: [
+                 '0%','0-10%','10-20%','20-30%','30-40%','40-50%','50-60%','60-70%','70-80%','80-90%','90-100%','100%'
+                 ]
+            },
+            yAxis: {
+                title: '',
+                labels: {style: {fontSize: '8px'}},
+            },
+            series: [{
+                data: [0,0,1,2,0,0,2,0,1,1,0,5]
+            }],
+          });
+
+        var classComplexity = new Highcharts.Chart({
+            chart: {
+              renderTo: 'classComplexity',
+              type: 'scatter'
+            },
+            title: {text: ''},
+            legend: {enabled: false},
+            credits: {enabled: false},
+            xAxis: {
+               labels: {enabled: false},
+            },
+            yAxis: {
+              title: '',
+              labels: {enabled: false},
+            },
+            tooltip: {
+                formatter: function() {
+                    return this.point.config[2];
+                }
+            },
+            series: [{
+              data: [[71.428571428571,2,"<a href=\"Format_AmfFormat.php.html#20\">AmfFormat<\/a>"],[57.142857142857,21,"<a href=\"Format_DebugFormat.php.html#8\">DebugFormat<\/a>"],[100,8,"<a href=\"Format_Format.php.html#15\">Format<\/a>"],[13.186813186813,32,"<a href=\"Format_JsonFormat.php.html#23\">JsonFormat<\/a>"],[100,8,"<a href=\"Format_MultiFormat.php.html#14\">MultiFormat<\/a>"],[55,7,"<a href=\"Format_MustacheFormat.php.html#8\">MustacheFormat<\/a>"],[82.352941176471,5,"<a href=\"Format_PlistFormat.php.html#22\">PlistFormat<\/a>"],[28.571428571429,11,"<a href=\"Format_UploadFormat.php.html#6\">UploadFormat<\/a>"],[100,2,"<a href=\"Format_UrlEncodedFormat.php.html#15\">UrlEncodedFormat<\/a>"],[100,2,"<a href=\"Format_WadlFormat.php.html#6\">WadlFormat<\/a>"],[21.052631578947,60,"<a href=\"Format_XmlFormat.php.html#19\">XmlFormat<\/a>"],[100,2,"<a href=\"Format_YamlFormat.php.html#18\">YamlFormat<\/a>"]],
+              marker: {
+                  symbol: 'diamond'
+              }
+            }],
+        });
+    });
+    </script>
+  </head>
+
+  <body>
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr><td class="title">Format</td></tr>
+      <tr><td><div align="center"><p><a href="Format.html">Back to Code Coverage report</a></p></div></td></tr>
+      <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
+    </table>
+
+    <br />
+
+    <center>
+      <table width="90%" cellpadding="2" cellspacing="1" border="0">
+        <tr>
+          <td valign="top">
+            <h2>Class Coverage Distribution</h2>
+            <div id="classCoverageDistribution"></div>
+          </td>
+
+          <td valign="top">
+            <h2>Class Complexity</h2>
+            <div id="classComplexity"></div>
+          </td>
+        </tr>
+        <tr>
+          <td valign="top">
+            <h2>Top Project Risks</h2>
+            <ul>
+              <li><a href="Format_XmlFormat.php.html#19">XmlFormat</a> (1831)</li>
+              <li><a href="Format_JsonFormat.php.html#23">JsonFormat</a> (701)</li>
+              <li><a href="Format_DebugFormat.php.html#8">DebugFormat</a> (55)</li>
+              <li><a href="Format_UploadFormat.php.html#6">UploadFormat</a> (55)</li>
+              <li><a href="Format_MustacheFormat.php.html#8">MustacheFormat</a> (11)</li>
+              <li><a href="Format_PlistFormat.php.html#22">PlistFormat</a> (5)</li>
+
+            </ul>
+          </td>
+
+          <td valign="top">
+            <h2>Least Tested Methods</h2>
+            <ul>
+              <li><a href="Format_JsonFormat.php.html#104">JsonFormat::formatJson</a> (0%)</li>
+              <li><a href="Format_XmlFormat.php.html#171">XmlFormat::toArray</a> (3%)</li>
+              <li><a href="Format_JsonFormat.php.html#61">JsonFormat::decode</a> (17%)</li>
+              <li><a href="Format_UploadFormat.php.html#47">UploadFormat::decode</a> (25%)</li>
+              <li><a href="Format_DebugFormat.php.html#17">DebugFormat::encode</a> (27%)</li>
+              <li><a href="Format_XmlFormat.php.html#43">XmlFormat::decode</a> (33%)</li>
+              <li><a href="Format_AmfFormat.php.html#35">AmfFormat::decode</a> (33%)</li>
+              <li><a href="Format_XmlFormat.php.html#80">XmlFormat::toXML</a> (33%)</li>
+              <li><a href="Format_JsonFormat.php.html#37">JsonFormat::encode</a> (46%)</li>
+              <li><a href="Format_MustacheFormat.php.html#15">MustacheFormat::encode</a> (50%)</li>
+
+            </ul>
+          </td>
+        </tr>
+      </table>
+    </center>
+
+    <br />
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+      <tr><td class="ruler"><img src="glass.png" width="3" height="3" alt=""></td></tr>
+      <tr><td class="versionInfo">Generated by <a href="http://github.com/sebastianbergmann/php-code-coverage" target="_top">PHP_CodeCoverage 1.1.3</a> using <a href="http://www.php.net/" target="_top">PHP 5.3.14</a> and PHPUnit 3.6.12 at Thu Aug 30 17:05:03 SAST 2012.</td></tr>
+    </table>
+
+    <br/>
+  </body>
+</html>
