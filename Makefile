@@ -140,6 +140,7 @@ project-menu: .title
 	@echo "             travis-lint: Validate your .travis.yml comfiguration"
 	@echo "               gitignore: (Re)create .gitignore file"
 	@echo "            test-skelgen: Generate boilerplate PHPUnit skeleton tests per class see help-skelgen"
+	@echo "        test-skelgen-all: Generate tests for all classes and it's overwrite safe of course"
 	@echo "                    test: Run project tests"
 	@echo "                coverage: Run project tests and report coverage status"
 	@echo "                   clean: Removes code coverage reports"
@@ -215,6 +216,8 @@ dev-menu: .title
 	@echo "          install-phploc: Install PHPloc"
 	@echo "            info-skelgen: Show information about your installed PHPUnit Skeleton Generator"
 	@echo "         install-skelgen: Install PHPUnit Skeleton Generator"
+	@echo "       info-test-helpers: Show information about your installed PHPUnit Test Helpers extension"
+	@echo "    install-test-helpers: Install PHPUnit Test Helpers extension"
 	@echo "             info-phpdoc: Show information about your installed PhpDocumentor2"
 	@echo "          install-phpdoc: Install PhpDocumentor2"
 	@echo "              info-phpsh: Show information about your installed PHP Shell (phpsh)"
@@ -259,9 +262,11 @@ foundation: .title
 	@echo "Done."
 
 # Target for Respect/Foundation development and internal use only. This target will not appear on the menus.
-foundation-develop: .title
-	@echo "Updating Makefile"
-	curl -LO https://raw.github.com/Respect/Foundation/develop/Makefile
+foundation-develop:
+	@if make .prompt-yesno message="Do you want to update your Makefile?" 2> /dev/null; then \
+	  echo "Updating Makefile"; \
+	  curl -LO https://raw.github.com/Respect/Foundation/develop/Makefile; \
+	fi
 	@echo "Creating .foundation folder"
 	-rm -Rf .foundation
 	-mkdir .foundation
@@ -326,18 +331,48 @@ project-info: .check-foundation
 
 
 test-skelgen:	.check-foundation
+	@test -f $(shell $(CONFIG_TOOL) test-folder)/bootstrap.php || make bootstrap-php > /dev/null
+	@$(eval source-folder=$(shell $(CONFIG_TOOL) library-folder))
 	-@if test "$(class)"; then \
-		cd `$(CONFIG_TOOL) test-folder ` && ../.foundation/repo/bin/phpunit-skelgen-classname "${class}" `../$(CONFIG_TOOL) library-folder`; \
+		cd $(shell $(CONFIG_TOOL) test-folder) && ../.foundation/repo/bin/phpunit-skelgen-classname "${class}" $(source-folder); \
 	else \
 		echo "Usage:"; \
 		echo "     make test-skelgen class=\"My\\Awesome\\Class\""; \
 		echo; \
 	fi; \
 
-project-init: .check-foundation git-init project-folders phpunit-xml bootstrap-php package git-add-all
-	@sleep 1
-	@git add -A
-	@git commit -a -m"Project initialized."
+test-skelgen-all:
+	@$(eval source-folder=$(shell $(CONFIG_TOOL) library-folder))
+	@find $(source-folder) -type f -name "*.php" \
+	  | sed -E 's%$(source-folder)/(.*).php%class=\\"\1\\"%' \
+	  | sed 's%/%\\\\\\\\%g' \
+	  | xargs -L 1 make test-skelgen;
+
+# Re-usable target for yes no prompt. Usage: make .prompt-yesno message="Is it yes or no?"
+# Will exit with error if not yes
+.prompt-yesno:
+	@printf "$(message) (Y/N) :"
+	@read yn; \
+	if ! echo $$yn | grep -qi y; then \
+	  exit 1; \
+	fi;
+
+project-init: .check-foundation
+	@if test -d .git; then \
+	  echo; \
+	  echo "It appears you already have a git repository configured."; \
+	  echo "This target, will run git init and auto add + commit."; \
+	  if ! make .prompt-yesno message="Do you want to continue?" 2> /dev/null; then \
+	    echo "Aborting on request."; \
+	    exit; \
+	  fi; \
+	fi; \
+	make -f Makefile .project-init
+
+.project-init: git-init project-folders phpunit-xml bootstrap-php package git-add-all
+	sleep 1
+	git add -A
+	git commit -a -m"Project initialized."
 
 project-folders: .check-foundation
 	@$(GENERATE_TOOL) project-folders createFolders
@@ -679,13 +714,24 @@ install-phpcov: .check-foundation
 	@pear install --alldeps pear.phpunit.de/phpcov
 
 info-skelgen:
-	@echo "This is what I know about your PHPUnit_SkelGen.\n"
+	@echo "This is what I know about your PHPUnit_SkeletonGenerator.\n"
 	@phpunit-skelgen --version
 
 install-skelgen: .check-foundation
-	@echo "Attempting to download and install PHPUnit. This will likely require sudo."
+	@echo "Attempting to download and install PHPUnit Skeleton Generator. This will likely require sudo."
 	@pear channel-info pear.phpunit.de > /dev/null || pear channel-discover pear.phpunit.de
 	@pear install --alldeps pear.phpunit.de/PHPUnit_SkeletonGenerator
+
+info-test-helpers: .check-foundation
+	@pecl info phpunit/test_helpers|egrep 'Version|Name|Summary|Description|-'
+
+install-test-helpers:
+	@if make info-test-helpers 2> /dev/null; then \
+	  exit; \
+	fi; \
+	echo "Attempting to download and install PHPUnit Test Helpers. This will likely require sudo." \
+	pear channel-info pear.phpunit.de > /dev/null || pear channel-discover pear.phpunit.de; \
+	pecl install  --alldeps phpunit/test_helpers
 
 info-phpdoc: .check-foundation
 	@echo "This is what I know about your PhpDocumentor."
