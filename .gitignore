@@ -1,0 +1,17 @@
+#<? a Courtesy of Respect/Foundation
+.foundation
+*.tgz
+*.phar
+*.lock
+*tmp
+scratch/*
+test/reports
+library
+vendor/ChiperSoft
+vendor/README.md
+vendor/autoload.php
+vendor/composer
+vendor/mustache
+vendor/restler.php
+vendor/symfony
+vendor/zendframework
