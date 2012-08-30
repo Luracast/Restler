@@ -258,11 +258,10 @@ class Resources implements iUseAuthentication
         $r = new stdClass();
         $r->name = $param['name'];
         $r->description = isset($param['description'])
-            ? $param['description'] . '. '
+            ? $param['description'] . '.'
             : '';
-        //TODO: verify for header params and body params
         //paramType can be path or query or body or header
-        $r->paramType = $param['required'] ? 'path' : 'query';
+        $r->paramType = $param['from'];
         $r->required = $param['required'];
         $r->allowMultiple = false;
         $r->dataType = 'string';
