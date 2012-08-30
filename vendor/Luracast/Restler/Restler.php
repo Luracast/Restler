@@ -191,7 +191,7 @@ class Restler
     protected $_apiClassPath = '';
     protected $_log = '';
     protected $startTime;
-    protected $_authenticated;
+    protected $_authenticated = false;
 
     // ==================================================================
     //
@@ -204,8 +204,9 @@ class Restler
      *
      * @param boolean $productionMode
      *                              When set to false, it will run in
-     *                              debug mode and parse the class files every time to map it to
-     *                              the URL
+     *                              debug mode and parse the class files
+     *                              every time to map it to the URL
+     *
      * @param bool    $refreshCache will update the cache when set to true
      */
     public function __construct($productionMode = false, $refreshCache = false)
@@ -662,16 +663,15 @@ class Restler
     public function saveCache()
     {
         $file = $this->cacheDir . '/routes.php';
-        $s = '$o=array();' . PHP_EOL;
+        $s = '$o = array();' . PHP_EOL;
         foreach ($this->_routes as $key => $value) {
             $s .= PHP_EOL . PHP_EOL . PHP_EOL .
                 "//############### $key ###############" . PHP_EOL . PHP_EOL;
-            $s .= '$o[\'' . $key . '\']=array();';
+            $s .= '$o[\'' . $key . '\'] = array();';
             foreach ($value as $ke => $va) {
                 $s .= PHP_EOL . PHP_EOL . "//==== $key $ke" . PHP_EOL . PHP_EOL;
-                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\']=' .
-                    str_replace(PHP_EOL, PHP_EOL . "\t",
-                        var_export($va, true)) . ';';
+                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'] = ' .
+                    str_replace('  ', '    ', var_export($va, true)) . ';';
             }
         }
         $s .= PHP_EOL . 'return $o;';
@@ -1018,7 +1018,9 @@ class Restler
             }
             $doc = $method->getDocComment();
             $metadata = CommentParser::parse($doc) + $classMetadata;
-            if (isset($metadata['url-'])) {
+            if (isset($metadata['access'])
+                && $metadata['access'] == 'private'
+            ) {
                 continue;
             }
             $arguments = array();
@@ -1070,13 +1072,18 @@ class Restler
                 }
                 $position++;
             }
-            $accessLevel = ($method->isProtected()
-                ? 3 //protected api using protected method
-                : (isset($metadata['protected'])
-                    ? 2 //protected api using @protected comment
-                    : (isset($metadata['hybrid'])
-                        ? 1 //hybrid api using @hybrid comment
-                        : 0))); //public api
+            $accessLevel = 0;
+            if ($method->isProtected()) {
+                $accessLevel = 3;
+            } elseif (isset($metadata['access'])) {
+                if ($metadata['access'] == 'protected') {
+                    $accessLevel = 2;
+                } elseif ($metadata['access'] == 'hybrid') {
+                    $accessLevel = 1;
+                }
+            } elseif (isset($metadata['protected'])) {
+                $accessLevel = 2;
+            }
             /*
             echo " access level $accessLevel for $className::"
             .$method->getName().$method->isProtected().PHP_EOL;
