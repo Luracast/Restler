@@ -27,7 +27,7 @@ use Luracast\Restler\Data\ValidationInfo;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-class Restler
+class Restler extends EventEmitter
 {
 
     // ==================================================================
@@ -918,8 +918,7 @@ class Restler
         $lc = strtolower($this->url);
         $call = new stdClass;
         foreach ($urls as $url => $call) {
-            Events::trigger('onRoute', array('url' => $url, 'target' => $call),
-                __CLASS__);
+            $this->trigger('onRoute', array('url' => $url, 'target' => $call));
             $call = (object)$call;
             if (strstr($url, '{')) {
                 $regex = str_replace(array(
