@@ -62,9 +62,9 @@ class Defaults
     /**
      * @var int set the default api access mode
      *      value of 0 = public api
-     *      value of 1 = hybrid api using @hybrid comment
-     *      value of 2 = protected api using @protected comment
-     *      value of 3 = protected api using protected method
+     *      value of 1 = hybrid api using `@access hybrid` comment
+     *      value of 2 = protected api using `@access protected` comment
+     *      value of 3 = protected api using `protected function` method
      */
     public static $apiAccessLevel = 0;
 

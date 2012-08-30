@@ -311,7 +311,7 @@ class CommentParser
                     /**
                      * @var \Luracast\Restler\Format\iFormat
                      */
-                    $format = new $this->restler->formatMap[$extension];
+                    $format = new $this->restler->formatMap [$extension];
                     $format = new $format();
                     $data = $format->decode($str);
                 }
