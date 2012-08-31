@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 2.0 Example:- Error Response</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../resources/style.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/facebox.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/hacks.css"/>
+
+<script type="text/javascript" src="../resources/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
+<script type="text/javascript" src="../resources/facebox.js"></script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+    //$('a[target*=_blank]').facebox();
+    $("abbr").click(function(){
+        $('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+        	$("pre#php").snippet("php",{style:"acid",showNum:false});
+        	jQuery.facebox({ div: '#codeviewer' });
+        });
+    });
+    var curURL = window.location.pathname.split('/examples/')[1];
+    if(curURL=='')curURL='index.html';
+    $("a").each(function(){
+        if ($(this).attr("href").indexOf(curURL)>-1){
+            $(this).addClass("active");
+        }  
+    });
+ })
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+(function(){if(!/*@cc_on!@*/0)return;var e = "abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');for(var i=0;i<e.length;i++){document.createElement(e[i])}})()
+</script>
+<![endif]-->
+</head>
+<body>
+<nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" href="http://luracast.com/products/restler/">Home</a></li>
+<!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
+<li><a class="active" href="../index.html">Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." href="http://bit.ly/Restler-QA">Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" href="http://bit.ly/LuracastRestler">GitHub</a></li>
+<li><a title="Get updated on Twitter" href="http://twitter.com/Luracast">Twitter</a></li>
+</ul>
+</nav>
+<div id="codeviewer" style="display:none;"></div>
+<nav id="left">
+<img src="../resources/Restler2.gif" width="126" height="126" title="Luracast Restler 2.0"/>
+<h3><a href="../index.html">Examples</a></h3>
+<ul><li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li><li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li><li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li><li><a href="../_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li><li><a href="../_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li><li><a href="../_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li></ul>
+</nav>
+<article id="right">
+<div class="right"><small>4</small></div>
+<h2>Error Response</h2>
+
+<p>API methods can make use of RestException class to provide 
+error information to the user.</p>
+
+<p>use <code>throw new RestException($httpStatusCode)</code> to send the error response 
+to the client.</p>
+
+<p>For the list of HTTP Status codes and their meaning take a look at 
+<a href="http://en.wikipedia.org/wiki/Http_status_codes" target="_blank">Wikipedia</a></p>
+
+<blockquote>
+  <p>This API Server is made using the following php files/folders</p>
+  
+  <ul>
+  <li><abbr title="_004_error_response/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_004_error_response/currency.php">currency.php</abbr>      (api)</li>
+  <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
+  </ul>
+</blockquote>
+
+<p>This API Server exposes the following URIs</p>
+
+<pre><code>GET currency/format         ⇠ Currency::format()
+GET currency/format/:number ⇠ Currency::format()
+</code></pre>
+
+<p>Try the following links in your browser</p>
+
+<dl>
+<dt>GET <a href="index.php/currency/format" target="_blank">currency/format</a></dt>
+<dd>
+<pre><code>{
+ "error": {
+   "code": 400,
+   "message": "Bad Request"
+ }
+}
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/currency/format/not_a_number" target="_blank">currency/format/not_a_number</a></dt>
+<dd><pre><code>{
+ "error": {
+   "code": 412,
+   "message": "Precondition Failed: not a valid number"
+ }
+}
+</code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/currency/format?number=55" target="_blank">currency/format?number=55</a></dt>
+<dd>
+<pre><code>"USD55.00"
+</code></pre>
+</dd>
+</dl>
+
+</article>
+<footer>
+&#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
+</footer>
+</body>
+</html>
