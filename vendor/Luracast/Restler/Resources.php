@@ -4,7 +4,8 @@ namespace Luracast\Restler;
 use stdClass;
 
 /**
- * Describe the purpose of this class/interface/trait
+ * API Class to create Swagger Spec 1.1 compatible resource and operation
+ * listing
  *
  * @category   Framework
  * @package    restler
