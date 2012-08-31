@@ -3,9 +3,11 @@ require_once '../../../vendor/restler.php';
 
 $r = new Restler(TRUE, TRUE);
 $r->setCompatibilityMode(2);
+$r->addAPIClass('Resources');
 
 $r->addAPIClass('Simple','');
 $r->addAuthenticationClass('AccessControl');
+//$r->setSupportedFormats('DebugFormat');
 $r->handle();
 
 class UserDetails{

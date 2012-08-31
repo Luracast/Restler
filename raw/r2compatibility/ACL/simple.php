@@ -1,5 +1,9 @@
 <?php
 class Simple {
+
+    function all(){
+
+    }
     /**
 	 * @class AccessControl(requiredRole=user)
 	 */
