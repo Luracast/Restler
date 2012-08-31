@@ -255,7 +255,7 @@ class Restler
                 Defaults::$smartAutoRouting = false;
 
                 //changes in parsing embedded data in comments
-                CommentParser::$embeddedDataPattern = '[\(|\)]';
+                CommentParser::$embeddedDataPattern = '/\((\S+)\)/ms';
                 CommentParser::$embeddedDataIndex = 1;
 
                 break;
