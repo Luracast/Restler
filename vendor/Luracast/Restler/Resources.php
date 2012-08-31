@@ -49,45 +49,7 @@ class Resources implements iUseAuthentication
 
     /**
      * @access hybrid
-     * @return \stdClass
-     */
-    public function index()
-    {
-        $r = $this->_resourceListing();
-        $mappedResource = array();
-        foreach ($this->restler->routes as $verb => $routes) {
-            foreach ($routes as $route) {
-                if (
-                    self::$hideProtected
-                    && !$this->_authenticated
-                    && $route['accessLevel'] > 1
-                ) {
-                    continue;
-                }
-                $path = $route['path'];
-                $name = strtolower(str_replace('\\', '-', $route['className']));
-                $classDescription = isset(
-                $route['metadata']['classDescription'])
-                    ? $route['metadata']['classDescription']
-                    : $route['className'] . ' API';
-                if (
-                    !isset($mappedResource[$path])
-                    && FALSE === strpos($path, 'resources')
-                ) {
-                    //add resource
-                    $r->apis[] = array(
-                        'path' => "/resources/$name.{format}",
-                        'description' => $classDescription
-                    );
-                }
-                $mappedResource[$path] = TRUE;
-            }
-        }
-        return $r;
-    }
-
-    /**
-     * @access hybrid
+     *
      * @param $name
      *
      * @return null|stdClass
@@ -118,11 +80,13 @@ class Resources implements iUseAuthentication
                         $r = $this->_operationListing($resourcePath);
                     }
                     $parts = explode('/', $key);
-                    if (count($parts) == 1 && $httpMethod == 'GET')
-                        continue;
-                    for ($i = 0; $i < count($parts); $i++) {
-                        if ($parts[$i][0] == ':') {
-                            $parts[$i] = '{' . substr($parts[$i], 1) . '}';
+                    if (count($parts) == 1 && $httpMethod == 'GET') {
+
+                    } else {
+                        for ($i = 0; $i < count($parts); $i++) {
+                            if ($parts[$i][0] == ':') {
+                                $parts[$i] = '{' . substr($parts[$i], 1) . '}';
+                            }
                         }
                     }
                     $nickname = implode('_', $parts);
@@ -134,6 +98,14 @@ class Resources implements iUseAuthentication
                         ? $m['classDescription']
                         : $className . ' API';
                     $api = $this->_api("/$key", $description);
+                    if (!isset($m['description'])) {
+                        $m['description'] = strtolower($httpMethod) . ' '
+                            . $route['methodName'];
+                    }
+                    if (!isset($m['longDescription'])) {
+                        $m['longDescription'] = 'add php doc comment to '
+                        .' the api method to describe your api';
+                    }
                     $operation = $this->_operation(
                         $nickname,
                         $httpMethod,
@@ -178,9 +150,47 @@ class Resources implements iUseAuthentication
     }
 
     /**
+     * @access hybrid
+     * @return \stdClass
+     */
+    public function index()
+    {
+        $r = $this->_resourceListing();
+        $mappedResource = array();
+        foreach ($this->restler->routes as $verb => $routes) {
+            foreach ($routes as $route) {
+                if (
+                    self::$hideProtected
+                    && !$this->_authenticated
+                    && $route['accessLevel'] > 1
+                ) {
+                    continue;
+                }
+                $path = $route['path'];
+                $name = strtolower(str_replace('\\', '-', $route['className']));
+                $classDescription = isset(
+                $route['metadata']['classDescription'])
+                    ? $route['metadata']['classDescription']
+                    : $route['className'] . ' API';
+                if (
+                    !isset($mappedResource[$path])
+                    && FALSE === strpos($path, 'resources')
+                ) {
+                    //add resource
+                    $r->apis[] = array(
+                        'path' => "/resources/$name.{format}",
+                        'description' => $classDescription
+                    );
+                }
+                $mappedResource[$path] = TRUE;
+            }
+        }
+        return $r;
+    }
+
+    /**
      * Find the data type of the given value.
      *
-     * @url-    do not map this function to url
      *
      * @param mixed $o              given value for finding type
      *
@@ -188,6 +198,8 @@ class Resources implements iUseAuthentication
      *                              our models list?
      *
      * @return string
+     *
+     * @access private
      */
     public function getType($o, $appendToModels = false)
     {
