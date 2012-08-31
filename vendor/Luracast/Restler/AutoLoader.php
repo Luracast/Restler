@@ -126,7 +126,7 @@ class AutoLoader
         return call_user_func(function () use ($path)
         {
             //ob_start();
-            $return = include($path);
+            $return = include_once($path);
             //ob_end_clean();
             return $return;
         });

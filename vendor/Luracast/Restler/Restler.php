@@ -225,6 +225,60 @@ class Restler
         }
     }
 
+    /**
+     * Provides backward compatibility with older versions of Restler
+     *
+     * @param int $version restler version
+     *
+     * @throws \OutOfRangeException
+     */
+    public function setCompatibilityMode($version = 2)
+    {
+        switch ($version) {
+
+            case 2:
+
+                //changes in auto loading
+                spl_autoload_register(function ($class) {
+                    include strtolower($class).'.php';
+                });
+
+                //changes in iAuthenticate
+                Defaults::$authenticationMethod = '__isAuthenticated';
+                eval('
+                interface iAuthenticate{
+                    public function __isAuthenticated();
+                }
+                ');
+
+                //changes in auto routing
+                Defaults::$smartAutoRouting = false;
+
+                //changes in parsing embedded data in comments
+                CommentParser::$embeddedDataPattern = '[\(|\)]';
+                CommentParser::$embeddedDataIndex = 1;
+
+                break;
+
+            case 1:
+
+                //changes in iAuthenticate
+                Defaults::$authenticationMethod = 'isAuthenticated';
+                eval('
+                interface iAuthenticate{
+                    public function isAuthenticated();
+                }
+                ');
+
+                //changes in routing
+                Defaults::$autoRoutingEnabled = false;
+                break;
+
+            default:
+                throw new \OutOfRangeException();
+        }
+    }
+
     public function setApiClassPath($path)
     {
         $this->_apiClassPath = !empty($path) &&
