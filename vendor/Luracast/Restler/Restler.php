@@ -937,8 +937,10 @@ class Restler
         $lc = strtolower($this->url);
         $call = new stdClass;
         foreach ($urls as $url => $call) {
+            /*
             Events::trigger('onRoute', array('url' => $url, 'target' => $call),
                 __CLASS__);
+            */
             $call = (object)$call;
             if (strstr($url, '{')) {
                 $regex = str_replace(array(
