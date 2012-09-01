@@ -274,12 +274,11 @@ class AutoLoader
      */
     private function alias($className, $currentClass)
     {
-        if ($className !=
-            $currentClass && false !== strpos($className, $currentClass))
-            if (!class_exists($currentClass, false)) {
-                class_alias($className, $currentClass);
-                $this->seen($currentClass, $className);
-            }
+        if ($className != $currentClass
+            && false !== strpos($className, $currentClass))
+                if (!class_exists($currentClass, false)
+                    && class_alias($className, $currentClass))
+                        $this->seen($currentClass, $className);
     }
 
     /**
