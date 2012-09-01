@@ -360,13 +360,12 @@ class AutoLoader
     /**
      * Auto loader callback through __invoke object as function.
      *
-     * @param $className string class name to auto load
+     * @param $className string class/interface name to auto load
      *
      * @return mixed|null the reference from the include or null
      */
     public function __invoke($className)
     {
-
         if (false !== $includeReference = $this->discover($className))
             return $includeReference;
 
@@ -382,6 +381,7 @@ class AutoLoader
             return $includeReference;
 
         $this->seen($className, true);
+        return null;
     }
 }
 }
