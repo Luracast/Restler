@@ -60,13 +60,20 @@ class AutoLoader
 
     /**
      * Seen this before cache handler.
-     * Facilitates both lookup and persist operations.
+     * Facilitates both lookup and persist operations as well as convenience,
+     * load complete map functionality. The key can only be given a non falsy
+     * value once, this will be truthy for life.
      *
-     * @param string $key   class name considered or a collection or classMap
-     *                      entries
-     * @param bool   $value - optional value to set for the supplied key
+     * @param $key   mixed class name considered or a collection of
+     *                     classMap entries
+     * @param $value mixed optional not required when doing a query on
+     *                     key. Default is false we haven't seen this
+     *                     class. Most of the time it will be the filename
+     *                     for include and is set to true if we are unable
+     *                     to load this class iow true == it does not exist.
+     *                     value may also be a callable auto loader function.
      *
-     * @return bool The known value for the key or false
+     * @return mixed The known value for the key or false if key has no value
      */
     protected function seen($key, $value = false)
     {
@@ -75,17 +82,12 @@ class AutoLoader
             return false;
         }
 
-        if (empty(static::$classMap[$key])) {
+        if (empty(static::$classMap[$key]))
             static::$classMap[$key] = $value;
-        }
 
-        if (is_string($ret = static::$classMap[$key])) {
-            if (false === strpos($ret, '.php')
-                && isset(static::$classMap[$ret])
-            ) {
-                return static::$classMap[$ret];
-            }
-        }
+        if (is_string($alias = static::$classMap[$key]))
+            if (isset(static::$classMap[$alias]))
+                return static::$classMap[$alias];
 
         return static::$classMap[$key];
     }
