@@ -15,13 +15,48 @@ namespace Luracast\Restler {
  */
 class AutoLoader
 {
-    protected static $instance,
-        $classMap = array(),
-        $aliases = array(
-        'Luracast\\Restler' => null,
-        'Luracast\\Restler\\Format' => null,
-        'Luracast\\Restler\\Data' => null,
-    );
+    protected static $instance, // the singleton instance reference
+                     $perfectLoaders, // used to keep the ideal list of loaders
+                     $rogueLoaders = array(), // other auto loaders now unregistered
+                     $classMap = array(), // the class to include file mayying
+                     $aliases = array( // aliases and prefixes instead of null list aliases
+                         'Luracast\\Restler' => null,
+                         'Luracast\\Restler\\Format' => null,
+                         'Luracast\\Restler\\Data' => null,
+                     );
+
+    /**
+     * Singleton instance facility.
+     *
+     * @static
+     * @return AutoLoader the current instance or new instance if none exists.
+     */
+    public static function instance()
+    {
+        static::$instance = static::$instance ?: new static();
+        return static::thereCanBeOnlyOne();
+    }
+
+    /**
+     * Other autoLoaders interfere and cause duplicate class loading.
+     * AutoLoader is capable enough to handle all standards so no need
+     * for others stumbling about.
+     *
+     * @return callable the one true auto loader.
+     */
+    public static function thereCanBeOnlyOne() {
+        if (static::$perfectLoaders === spl_autoload_functions())
+            return static::$instance;
+
+        if (0 < $count = count($loaders = spl_autoload_functions()))
+            for ($i = 0, static::$rogueLoaders += $loaders;
+                 $i < $count && false != ($loader = $loaders[$i]);
+                 $i++)
+                if ($loader !== static::$perfectLoaders[0])
+                    spl_autoload_unregister($loader);
+
+        return static::$instance;
+    }
 
     /**
      * Seen this before cache handler.
@@ -74,6 +109,8 @@ class AutoLoader
      */
     protected function __construct()
     {
+        static::$perfectLoaders = array($this);
+
         if (false === $this->seen('__include_path')) {
 
             $paths = explode(PATH_SEPARATOR, get_include_path());
@@ -176,6 +213,49 @@ class AutoLoader
     }
 
     /**
+     * Load from rogueLoaders as last resort.
+     * It may happen that a custom auto loader may load classes in a unique way,
+     * these classes cannot be seen otherwise nor should we attempt to cover every
+     * possible deviation. If we still can't find a class, as a last resort, we will
+     * run through the list of rogue loaders and verify if we succeeded.
+     *
+     * @param      $className string className that can't be found
+     * @param null $loader callable loader optional when the loader is known
+     *
+     * @return bool false unless className now exists
+     */
+    private function loadLastResort($className, $loader = null) {
+        $loaders = array_unique(static::$rogueLoaders);
+        if (isset($loader)) {
+            if (false === array_search($loader, $loaders))
+                static::$rogueLoaders[] = $loader;
+            return $this->loadThisLoader($className, $loader);
+        }
+        foreach ($loaders as $loader)
+            if (false !== $file = $this->loadThisLoader($className, $loader))
+                return $file;
+
+        return false;
+    }
+
+    /**
+     * Helper for loadLastResort.
+     * Use loader with $className and see if className exists.
+     *
+     * @param $className string   name of a class to load
+     * @param $loader    callable autoLoader method
+     *
+     * @return bool false unless className exists
+     */
+    private function loadThisLoader($className, $loader) {
+        if (is_callable($loader)
+            && false !== $file = $loader($className)
+            && $this->exists($className, $loader))
+                return $file;
+        return false;
+    }
+
+    /**
      * Create an alias for class.
      *
      * @param $className    string the name of the alias class
@@ -205,7 +285,10 @@ class AutoLoader
         $currentClass = $currentClass ? : $className;
         if (false !== $file = $this->seen($className)) {
             if (!$this->exists($className))
-                $file = $this->loadFile($file);
+                if (is_callable($file))
+                    $file = $this->loadLastResort($className, $file);
+                elseif($file = stream_resolve_include_path($file))
+                    $file = static::loadFile($file);
 
             $this->alias($className, $currentClass);
             return $file;
@@ -277,10 +360,15 @@ class AutoLoader
         if (false !== $includeReference = $this->discover($className))
             return $includeReference;
 
+        static::thereCanBeOnlyOne();
+
         if (false !== $includeReference = $this->loadAliases($className))
             return $includeReference;
 
         if (false !== $includeReference = $this->loadPrefixes($className))
+            return $includeReference;
+
+        if (false !== $includeReference = $this->loadLastResort($className))
             return $includeReference;
 
         $this->seen($className, true);
