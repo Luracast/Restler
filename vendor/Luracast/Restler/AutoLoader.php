@@ -175,17 +175,25 @@ class AutoLoader
      */
     private function loadPrefixes($className)
     {
-        for ($i = 0
-            , $file = false
-            , $count = count(static::$aliases)
-            , $prefixes = array_keys(static::$aliases)
-            ; $i < $count
-            && false === $file
-            && false === $file = $this->discover(
-                $variant = "{$prefixes[$i++]}\\$className",
-                $className)
-            ; $file = $this->loadAliases($variant)
-        ) ;
+        $currentClass = $className;
+        if (false !== $pos = strrpos($className, '\\'))
+            $className = substr($className, $pos);
+        else
+            $className = "\\$className";
+
+        for (
+            $i = 0,
+                $file = false,
+                $count = count(static::$aliases),
+                $prefixes = array_keys(static::$aliases);
+            $i < $count
+                && false === $file
+                && false === $file = $this->discover(
+                    $variant = $prefixes[$i++].$className,
+                    $currentClass
+                );
+            $file = $this->loadAliases($variant)
+        );
 
         return $file;
     }
