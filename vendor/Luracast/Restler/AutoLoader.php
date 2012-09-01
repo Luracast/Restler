@@ -1,5 +1,5 @@
 <?php
-namespace Luracast\Restler;
+namespace Luracast\Restler {
 
 /**
  * Class that implements spl_autoload facilities and multiple
@@ -10,7 +10,7 @@ namespace Luracast\Restler;
  * @category   Framework
  * @package    restler
  * @subpackage helper
- * @author     Nick Lombar <github@jigsoft.co.za>
+ * @author     Nick Lombard <github@jigsoft.co.za>
  * @copyright  2012 Luracast
  */
 class AutoLoader
@@ -116,20 +116,16 @@ class AutoLoader
 
     /**
      * Attempt to include the path location.
+     * Called from a static context which will not expose the AutoLoader
+     * instance itself.
      *
      * @param $path string location of php file on the include path
      *
      * @return bool|mixed returns reference obtained from the include or false
      */
-    private function loadFile($path)
+    private static function loadFile($path)
     {
-        return call_user_func(function () use ($path)
-        {
-            //ob_start();
-            $return = include($path);
-            //ob_end_clean();
-            return $return;
-        });
+        return \Luracast_Restler_autoloaderInclude($path);
     }
 
     /**
@@ -290,4 +286,18 @@ class AutoLoader
         $this->seen($className, true);
     }
 }
+}
 
+namespace {
+    /**
+     * Include function in the root namespace to include files optimized
+     * for the global context.
+     *
+     * @param $path string path of php file to include into the global context.
+     *
+     * @return mixed|bool false if the file could not be included.
+     */
+    function Luracast_Restler_autoloaderInclude($path) {
+        return include $path;
+    }
+}
