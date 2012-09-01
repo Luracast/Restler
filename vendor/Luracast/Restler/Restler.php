@@ -239,8 +239,9 @@ class Restler
             case 2:
 
                 //changes in auto loading
-                spl_autoload_register(function ($class) {
-                    include strtolower($class).'.php';
+                spl_autoload_register(function ($class)
+                {
+                    include strtolower($class) . '.php';
                 });
 
                 //changes in iAuthenticate
@@ -1074,21 +1075,25 @@ class Restler
                 $m ['name'] = trim($param->getName(), '$ ');
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
-                if (isset($type) && Util::isObjectOrArray($type)
-                    || $param->getName() == Defaults::$fullRequestDataName
-                ) {
-                    $from = 'body';
-                } elseif ($m['name']{0} == '_') {
-                    $from = 'header';
-                } elseif ($m['required']) {
-                    $from = 'path';
+
+                if (isset($m[CommentParser::$embeddedDataName]['from'])) {
+                    $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
-                    $from = 'query';
+                    if (isset($type) && Util::isObjectOrArray($type)
+                        || $param->getName() == Defaults::$fullRequestDataName
+                    ) {
+                        $from = 'body';
+                    } elseif ($m['required']) {
+                        $from = 'path';
+                    } else {
+                        $from = 'query';
+                    }
                 }
+                $m['from'] = $from;
+
                 if (!$allowAmbiguity && $from == 'path') {
                     $ignorePathTill = $position + 1;
                 }
-                $m['from'] = $from;
                 $position++;
             }
             $accessLevel = 0;
