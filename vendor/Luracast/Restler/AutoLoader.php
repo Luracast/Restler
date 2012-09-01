@@ -286,13 +286,15 @@ class AutoLoader
      *
      * @param $className    string class name to discover
      * @param $currentClass string optional name of current class when
-     * looking up an alias
+     *                      looking up an alias
      *
      * @return bool|mixed resolved include reference or false
      */
     private function discover($className, $currentClass = null)
     {
-        $currentClass = $currentClass ? : $className;
+        $currentClass = $currentClass ?: $className;
+
+        /** The short version we've done this before and found it in cache */
         if (false !== $file = $this->seen($className)) {
             if (!$this->exists($className))
                 if (is_callable($file))
@@ -304,31 +306,17 @@ class AutoLoader
             return $file;
         }
 
-        /** replace \ with / and _ in CLASS NAME with / = PSR-0 */
-        $file = preg_replace("/\\\|_(?=\w+$)/",
-            DIRECTORY_SEPARATOR, $className);
+        /** We did not find it in cache, lets look for it shall we */
+
+        /** replace \ with / and _ in CLASS NAME with / = PSR-0 in 3 lines */
+        $file = preg_replace("/\\\|_(?=\w+$)/", DIRECTORY_SEPARATOR, $className);
         if (false === $file = stream_resolve_include_path("$file.php"))
             return false;
-        /*
-        // this path normalization is the culprit causing the issue!
-        $file = strtr($file,
-            array_fill_keys(explode(PATH_SEPARATOR, get_include_path()), ''));
-        */
 
-        $counters = array(count(get_declared_interfaces()),
-            count(get_declared_classes()));
+        if (false !== $result = static::loadFile($file)) {
 
-        if (false !== $result = $this->loadFile($file)) {
             if ($this->exists($className, $file))
                 $this->alias($className, $currentClass);
-            elseif ($counters[0] < count($autoClass = get_declared_interfaces())
-                || $counters[1] < count($autoClass = get_declared_classes())
-            ) {
-                $file = preg_replace("/\\\|_(?=\w+$)/",
-                    DIRECTORY_SEPARATOR, $autoClass = end($autoClass));
-                if ($this->exists($autoClass, "$file.php"))
-                    $this->alias($autoClass, $currentClass);
-            }
 
             if (!$this->exists($currentClass))
                 $result = false;
