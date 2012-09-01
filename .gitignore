@@ -15,3 +15,7 @@ vendor/mustache
 vendor/restler.php
 vendor/symfony
 vendor/zendframework
+.buildpath
+.idea/*
+.project
+.settings/*
