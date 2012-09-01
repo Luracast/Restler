@@ -341,10 +341,10 @@ class AutoLoader
      * Checks whether supplied string exists in a loaded class or interface.
      * As a convenience the supplied $mapping can be the value for seen.
      *
-     * @param string $className The class or interface to verify
-     * @param null   $mapping   optional value for seen
+     * @param $className string The class or interface to verify
+     * @param $mapping   string (optional) value for map/seen if found to exist
      *
-     * @return bool
+     * @return bool whether the class/interface exists without calling auto loader
      */
     private function exists($className, $mapping = null)
     {
