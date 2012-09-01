@@ -93,21 +93,10 @@ class AutoLoader
     }
 
     /**
-     * Singleton instance facility.
-     *
-     * @static
-     * @return AutoLoader the current instance or new instance if none exists.
-     */
-    public static function instance()
-    {
-        if(!static::$instance){
-            static::$instance = new static();
-        }
-        return static::$instance;
-    }
-
-    /**
      * Protected constructor to enforce singleton pattern.
+     * Populate a default include path.
+     * All possible includes cant possibly be catered for and if you
+     * require another path then simply add it calling set_include_path.
      */
     protected function __construct()
     {
@@ -121,33 +110,43 @@ class AutoLoader
             $source_dir = dirname($dir);
             $dir = dirname($source_dir);
 
-            foreach (array(
-                         array($source_dir),
-                         array($dir, '..', '..', 'composer'),
-                         array($dir, 'vendor', 'composer'),
-                         array($dir, '..', '..', '..', 'php'),
-                         array($dir, 'vendor', 'php'),
-                     ) as $includePath)
-                if (file_exists($path = implode($slash, $includePath))) {
+            foreach (
+                array(
+                    array($source_dir),
+                    array($dir, '..', '..', 'composer'),
+                    array($dir, 'vendor', 'composer'),
+                    array($dir, '..', '..', '..', 'php'),
+                    array($dir, 'vendor', 'php'))
+                as $includePath)
+                if (false !== $path = stream_resolve_include_path(
+                        implode($slash, $includePath)
+                    ))
                     if ('composer' == end($includePath)) {
-                        $this->seen(
-                            require "$path{$slash}autoload_classmap.php");
+                        $this->seen(static::loadFile(
+                            "$path{$slash}autoload_classmap.php"
+                        ));
                         $paths = array_merge(
                             $paths,
-                            array_values(
-                                require "$path{$slash}autoload_namespaces.php")
+                            array_values(static::loadFile(
+                                "$path{$slash}autoload_namespaces.php"
+                            ))
                         );
                     } else
                         $paths[] = $path;
-                }
-            $paths = array_map(function ($path)
-            {
-                return realpath($path) . DIRECTORY_SEPARATOR;
-            }, $paths);
 
+            $paths = array_filter(array_map(
+                function ($path) {
+                    if (false == $realPath = realpath($path))
+                        return null;
+                    return $realPath . DIRECTORY_SEPARATOR;
+                },
+                $paths
+            ));
             natsort($paths);
-            $this->seen('__include_path',
-                implode(PATH_SEPARATOR, array_unique($paths)));
+            $this->seen(
+                '__include_path',
+                implode(PATH_SEPARATOR, array_unique($paths))
+            );
         }
 
         set_include_path($this->seen('__include_path'));
