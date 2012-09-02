@@ -192,6 +192,23 @@ DOC;
     }
 
     /**
+     * @covers Luracast\Restler\Restler::setCompatibilityMode
+     */
+    public function test_class_Restler_method_setCompatibilityMode()
+    {
+        set_include_path(
+            realpath(__DIR__.'/../../../../public/examples/_005_protected_api/')
+                . PATH_SEPARATOR
+                . get_include_path()
+        );
+        $this->object->setCompatibilityMode(2);
+
+        $this->assertNotEmpty(AutoLoader::seen('Secured'));
+        $this->assertNotEmpty(AutoLoader::seen('Simple'));
+        $this->assertNotEmpty(AutoLoader::seen('SimpleAuth'));
+    }
+
+    /**
      * @covers Luracast\Restler\Restler::__get
      */
     public function test_class_Restler_method___get()
