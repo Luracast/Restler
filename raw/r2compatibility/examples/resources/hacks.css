@@ -1,0 +1,13 @@
+.snippet-wrap pre.sh_sourceCode {
+	padding: inherit;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+}
+
+.snippet-wrap .snippet-menu,.snippet-wrap .snippet-hide {
+	font-size: .5em;
+}
