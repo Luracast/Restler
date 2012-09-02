@@ -105,10 +105,11 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $eventName = 'onTest';
         $self = $this;
-        $callback = function () use ($self) {
-            $self->assertTrue(true);
+        $callback = function ($arg) use ($self) {
+            $self->assertEquals('triggered', $arg);
         };
         $this->object->listen($eventName, $callback);
+        $this->object->go(array('onTest' => 'triggered'));
     }
 
     /**
@@ -118,9 +119,10 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $self = $this;
         $this->object->on(array(
-            'Test' => function () use ($self) {
-                $self->assertTrue(true);
+            'Test' => function ($arg) use ($self) {
+                $self->assertEquals('triggered', $arg);
             }
         ));
+        $this->object->go(array('onTest' => 'triggered'));
     }
 }
