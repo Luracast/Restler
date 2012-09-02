@@ -2,6 +2,7 @@
 namespace Luracast\Restler;
 
 use stdClass;
+use DirectoryIterator;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
@@ -249,10 +250,22 @@ class Restler extends EventEmitter
 
             case 2:
                 //changes in auto loading
-                spl_autoload_register(function ($class)
-                {
-                    include strtolower($class) . '.php';
-                });
+                $classMap = array();
+                //find lowercase php files representing a class/interface
+                foreach (explode(PATH_SEPARATOR, get_include_path()) as $path)
+                    foreach(new DirectoryIterator($path) as $fileInfo)
+                        if ($fileInfo->isFile()
+                            && 'php' === $fileInfo->getExtension()
+                            && ctype_lower($fileInfo->getBasename('.php'))
+                            && preg_match(
+                                '/^ *(class|interface|abstract +class)'
+                                    . ' +([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/m',
+                                file_get_contents($fileInfo->getPathname()),
+                                $matches
+                            ))
+                            $classMap[$matches[2]] = $fileInfo->getPathname();
+
+                AutoLoader::seen($classMap);
 
                 //changes in iAuthenticate
                 Defaults::$authenticationMethod = '__isAuthenticated';
