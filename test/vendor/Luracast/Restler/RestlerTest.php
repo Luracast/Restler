@@ -192,13 +192,20 @@ DOC;
     }
 
     /**
-     * @covers Luracast\Restler\Restler::saveCache
-     * @expectedException Luracast\Restler\Exception
-     * @expectedExceptionMessage The cache directory located at '/usr/bin' needs to have the permissions set to read/write/execute for everyone in order to save cache and improve performance.
+     * @covers Luracast\Restler\Restler::setCompatibilityMode
      */
-    public function test_class_Restler_method_saveCache()
+    public function test_class_Restler_method_setCompatibilityMode()
     {
-        $this->object->saveCache();
+        set_include_path(
+            realpath(__DIR__.'/../../../../public/examples/_005_protected_api/')
+                . PATH_SEPARATOR
+                . get_include_path()
+        );
+        $this->object->setCompatibilityMode(2);
+
+        $this->assertNotEmpty(AutoLoader::seen('Secured'));
+        $this->assertNotEmpty(AutoLoader::seen('Simple'));
+        $this->assertNotEmpty(AutoLoader::seen('SimpleAuth'));
     }
 
     /**

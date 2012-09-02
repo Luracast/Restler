@@ -2,6 +2,7 @@
 namespace Luracast\Restler;
 
 use stdClass;
+use DirectoryIterator;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
@@ -11,7 +12,7 @@ use Luracast\Restler\Format\iFormat;
 use Luracast\Restler\Format\JsonFormat;
 use Luracast\Restler\Format\UrlEncodedFormat;
 use Luracast\Restler\Data\iValidate;
-use Luracast\Restler\Data\DefaultValidator;
+use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Data\ValidationInfo;
 
 /**
@@ -78,11 +79,11 @@ class Restler extends EventEmitter
     public $requestData = array();
 
     /**
-     * Used in production mode to store the URL Map to disk
+     * Used in production mode to store the routes and more
      *
-     * @var string
+     * @var iCache
      */
-    public $cacheDir;
+    public $cache;
 
     /**
      * base directory to locate format and auth files
@@ -92,6 +93,7 @@ class Restler extends EventEmitter
     public $baseDir;
 
     /**
+<<<<<<< HEAD
      * Name of an iRespond implementation class
      *
      * @var string
@@ -113,6 +115,8 @@ class Restler extends EventEmitter
     public $routes = array();
 
     /**
+=======
+>>>>>>> de4c4b070ab62ff2b776b9f25d44c437e290f825
      * Response data format.
      * Instance of the current format class
      * which implements the iFormat interface
@@ -214,6 +218,7 @@ class Restler extends EventEmitter
         $this->startTime = time();
         $this->productionMode = $productionMode;
         $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
+        $this->cache = new Defaults::$cacheClass();
         $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
@@ -228,7 +233,73 @@ class Restler extends EventEmitter
     public function __destruct()
     {
         if ($this->productionMode && !$this->cached) {
-            $this->saveCache();
+            $this->cache->set('routes', $this->routes);
+        }
+    }
+
+    /**
+     * Provides backward compatibility with older versions of Restler
+     *
+     * @param int $version restler version
+     *
+     * @throws \OutOfRangeException
+     */
+    public function setCompatibilityMode($version = 2)
+    {
+        switch ($version) {
+
+            case 2:
+                //changes in auto loading
+                $classMap = array();
+                //find lowercase php files representing a class/interface
+                foreach (explode(PATH_SEPARATOR, get_include_path()) as $path)
+                    foreach(new DirectoryIterator($path) as $fileInfo)
+                        if ($fileInfo->isFile()
+                            && 'php' === $fileInfo->getExtension()
+                            && ctype_lower($fileInfo->getBasename('.php'))
+                            && preg_match(
+                                '/^ *(class|interface|abstract +class)'
+                                    . ' +([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/m',
+                                file_get_contents($fileInfo->getPathname()),
+                                $matches
+                            ))
+                            $classMap[$matches[2]] = $fileInfo->getPathname();
+
+                AutoLoader::seen($classMap);
+
+                //changes in iAuthenticate
+                Defaults::$authenticationMethod = '__isAuthenticated';
+                eval('
+                interface iAuthenticate{
+                    public function __isAuthenticated();
+                }
+                ');
+
+                //changes in auto routing
+                Defaults::$smartAutoRouting = false;
+
+                //changes in parsing embedded data in comments
+                CommentParser::$embeddedDataPattern = '/\((\S+)\)/ms';
+                CommentParser::$embeddedDataIndex = 1;
+
+                break;
+
+            case 1:
+
+                //changes in iAuthenticate
+                Defaults::$authenticationMethod = 'isAuthenticated';
+                eval('
+                interface iAuthenticate{
+                    public function isAuthenticated();
+                }
+                ');
+
+                //changes in routing
+                Defaults::$autoRoutingEnabled = false;
+                break;
+
+            default:
+                throw new \OutOfRangeException();
         }
     }
 
@@ -535,7 +606,7 @@ class Restler extends EventEmitter
                         }
                         //convert to instance of ValidationInfo
                         $info = new ValidationInfo($param);
-                        $valid = DefaultValidator::validate(
+                        $valid = Validator::validate(
                             $o->arguments[$index], $info);
                         $o->arguments[$index] = $valid;
                     }
@@ -604,7 +675,7 @@ class Restler extends EventEmitter
          * @var iRespond DefaultResponder
          */
         $responder = Util::setProperties(
-            $this->responder,
+            Defaults::$responderClass,
             isset($this->apiMethodInfo->metadata)
                 ? $this->apiMethodInfo->metadata
                 : null
@@ -660,33 +731,6 @@ class Restler extends EventEmitter
         }
         @header("{$_SERVER['SERVER_PROTOCOL']} $code " .
             RestException::$codes[$code]);
-    }
-
-    public function saveCache()
-    {
-        $file = $this->cacheDir . '/routes.php';
-        $s = '$o = array();' . PHP_EOL;
-        foreach ($this->routes as $key => $value) {
-            $s .= PHP_EOL . PHP_EOL . PHP_EOL .
-                "//############### $key ###############" . PHP_EOL . PHP_EOL;
-            $s .= '$o[\'' . $key . '\'] = array();';
-            foreach ($value as $ke => $va) {
-                $s .= PHP_EOL . PHP_EOL . "//==== $key $ke" . PHP_EOL . PHP_EOL;
-                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'] = ' .
-                    str_replace('  ', '    ', var_export($va, true)) . ';';
-            }
-        }
-        $s .= PHP_EOL . 'return $o;';
-        $r = @file_put_contents($file, "<?php $s");
-        @chmod($file, 0777);
-        if ($r === false) {
-            throw new Exception(
-                "The cache directory located at " .
-                    "'$this->cacheDir' needs to have the permissions " .
-                    "set to read/write/execute for everyone " .
-                    "in order to save cache and improve performance."
-            );
-        }
     }
 
     /**
@@ -979,18 +1023,13 @@ class Restler extends EventEmitter
     {
         if ($this->cached !== null)
             return null;
-        $file = $this->cacheDir . '/routes.php';
         $this->cached = false;
         if ($this->productionMode) {
-            if (file_exists($file)) {
-                $routes = include ($file);
-            }
+            $routes = $this->cache->get('routes');
             if (isset($routes) && is_array($routes)) {
                 $this->routes = $routes;
                 $this->cached = true;
             }
-        } else {
-            // @unlink($this->cacheDir . "/$name.php");
         }
     }
 
@@ -1060,21 +1099,25 @@ class Restler extends EventEmitter
                 $m ['name'] = trim($param->getName(), '$ ');
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
-                if (isset($type) && Util::isObjectOrArray($type)
-                    || $param->getName() == Defaults::$fullRequestDataName
-                ) {
-                    $from = 'body';
-                } elseif ($m['name']{0} == '_') {
-                    $from = 'header';
-                } elseif ($m['required']) {
-                    $from = 'path';
+
+                if (isset($m[CommentParser::$embeddedDataName]['from'])) {
+                    $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
-                    $from = 'query';
+                    if (isset($type) && Util::isObjectOrArray($type)
+                        || $param->getName() == Defaults::$fullRequestDataName
+                    ) {
+                        $from = 'body';
+                    } elseif ($m['required']) {
+                        $from = 'path';
+                    } else {
+                        $from = 'query';
+                    }
                 }
+                $m['from'] = $from;
+
                 if (!$allowAmbiguity && $from == 'path') {
                     $ignorePathTill = $position + 1;
                 }
-                $m['from'] = $from;
                 $position++;
             }
             $accessLevel = 0;

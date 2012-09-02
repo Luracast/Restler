@@ -33,6 +33,70 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
     }
 
+    /**
+     * Example implementation.
+     */
+    public function test_example_subscribe_to_multiple_events()
+    {
+        $self = $this;
+
+
+        $this->object->on(array(
+            'This' => function ($arg) use ($self) {
+                $self->assertEquals('triggered-this', $arg);
+            },
+            'That' => function ($arg) use ($self) {
+                $self->assertEquals('triggered-that', $arg);
+            },
+            'These' => function ($arg) use ($self) {
+                $self->assertEquals('triggered-these', $arg);
+            },
+            'Those' => function ($arg) use ($self) {
+                $self->assertEquals('triggered-those', $arg);
+            },
+        ));
+
+
+        // Mocking the event triggers
+        $this->object->go(array('onThis'  => 'triggered-this'));
+        $this->object->go(array('onThat'  => 'triggered-that'));
+        $this->object->go(array('onThese' => 'triggered-these'));
+        $this->object->go(array('onThose' => 'triggered-those'));
+    }
+
+    /**
+     * Example implementation.
+     */
+    public function test_example_subscribe_to_events_with_method_chaining()
+    {
+        $self = $this;
+
+        MockEventEmitter::onThis(
+            function ($arg) use ($self) {
+                $self->assertEquals('triggered-this', $arg);
+            }
+        )->onThat(
+            function ($arg) use ($self) {
+                $self->assertEquals('triggered-that', $arg);
+            }
+        )->onThese(
+            function ($arg) use ($self) {
+                $self->assertEquals('triggered-these', $arg);
+            }
+        )->onThose(
+            function ($arg) use ($self) {
+                $self->assertEquals('triggered-those', $arg);
+            }
+        );
+
+
+        // Mocking the event triggers
+        $this->object->go(array('onThis'  => 'triggered-this'));
+        $this->object->go(array('onThat'  => 'triggered-that'));
+        $this->object->go(array('onThese' => 'triggered-these'));
+        $this->object->go(array('onThose' => 'triggered-those'));
+    }
+
     public function provideEventParameters()
     {
         return array(
@@ -105,10 +169,11 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $eventName = 'onTest';
         $self = $this;
-        $callback = function () use ($self) {
-            $self->assertTrue(true);
+        $callback = function ($arg) use ($self) {
+            $self->assertEquals('triggered', $arg);
         };
         $this->object->listen($eventName, $callback);
+        $this->object->go(array('onTest' => 'triggered'));
     }
 
     /**
@@ -118,9 +183,10 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $self = $this;
         $this->object->on(array(
-            'Test' => function () use ($self) {
-                $self->assertTrue(true);
+            'Test' => function ($arg) use ($self) {
+                $self->assertEquals('triggered', $arg);
             }
         ));
+        $this->object->go(array('onTest' => 'triggered'));
     }
 }
