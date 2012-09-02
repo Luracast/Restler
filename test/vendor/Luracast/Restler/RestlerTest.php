@@ -192,16 +192,6 @@ DOC;
     }
 
     /**
-     * @covers Luracast\Restler\Restler::saveCache
-     * @expectedException Luracast\Restler\Exception
-     * @expectedExceptionMessage The cache directory located at '/usr/bin' needs to have the permissions set to read/write/execute for everyone in order to save cache and improve performance.
-     */
-    public function test_class_Restler_method_saveCache()
-    {
-        $this->object->saveCache();
-    }
-
-    /**
      * @covers Luracast\Restler\Restler::__get
      */
     public function test_class_Restler_method___get()
