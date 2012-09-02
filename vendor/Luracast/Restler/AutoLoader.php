@@ -75,7 +75,7 @@ class AutoLoader
      *
      * @return mixed The known value for the key or false if key has no value
      */
-    protected function seen($key, $value = false)
+    public static function seen($key, $value = false)
     {
         if (is_array($key)) {
             static::$classMap = $key + static::$classMap;
@@ -102,7 +102,7 @@ class AutoLoader
     {
         static::$perfectLoaders = array($this);
 
-        if (false === $this->seen('__include_path')) {
+        if (false === static::seen('__include_path')) {
 
             $paths = explode(PATH_SEPARATOR, get_include_path());
             $slash = DIRECTORY_SEPARATOR;
@@ -122,7 +122,7 @@ class AutoLoader
                         implode($slash, $includePath)
                     ))
                     if ('composer' == end($includePath)) {
-                        $this->seen(static::loadFile(
+                        static::seen(static::loadFile(
                             "$path{$slash}autoload_classmap.php"
                         ));
                         $paths = array_merge(
@@ -143,13 +143,13 @@ class AutoLoader
                 $paths
             ));
             natsort($paths);
-            $this->seen(
+            static::seen(
                 '__include_path',
                 implode(PATH_SEPARATOR, array_unique($paths))
             );
         }
 
-        set_include_path($this->seen('__include_path'));
+        set_include_path(static::seen('__include_path'));
     }
 
     /**
@@ -278,7 +278,7 @@ class AutoLoader
             && false !== strpos($className, $currentClass))
                 if (!class_exists($currentClass, false)
                     && class_alias($className, $currentClass))
-                        $this->seen($currentClass, $className);
+                        static::seen($currentClass, $className);
     }
 
     /**
@@ -295,7 +295,7 @@ class AutoLoader
         $currentClass = $currentClass ?: $className;
 
         /** The short version we've done this before and found it in cache */
-        if (false !== $file = $this->seen($className)) {
+        if (false !== $file = static::seen($className)) {
             if (!$this->exists($className))
                 if (is_callable($file))
                     $file = $this->loadLastResort($className, $file);
@@ -339,7 +339,7 @@ class AutoLoader
         if (class_exists($className, false)
             || interface_exists($className, false))
             if (isset($mapping))
-                return $this->seen($className, $mapping);
+                return static::seen($className, $mapping);
             else
                 return true;
         return false;
@@ -368,7 +368,7 @@ class AutoLoader
         if (false !== $includeReference = $this->loadLastResort($className))
             return $includeReference;
 
-        $this->seen($className, true);
+        static::seen($className, true);
         return null;
     }
 }
