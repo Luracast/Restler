@@ -93,7 +93,6 @@ class Restler extends EventEmitter
     public $baseDir;
 
     /**
-<<<<<<< HEAD
      * Name of an iRespond implementation class
      *
      * @var string
@@ -115,9 +114,8 @@ class Restler extends EventEmitter
     public $routes = array();
 
     /**
-=======
->>>>>>> de4c4b070ab62ff2b776b9f25d44c437e290f825
      * Response data format.
+     *
      * Instance of the current format class
      * which implements the iFormat interface
      *
@@ -253,7 +251,7 @@ class Restler extends EventEmitter
                 $classMap = array();
                 //find lowercase php files representing a class/interface
                 foreach (explode(PATH_SEPARATOR, get_include_path()) as $path)
-                    foreach(new DirectoryIterator($path) as $fileInfo)
+                    foreach (new DirectoryIterator($path) as $fileInfo)
                         if ($fileInfo->isFile()
                             && 'php' === $fileInfo->getExtension()
                             && ctype_lower($fileInfo->getBasename('.php'))
@@ -262,7 +260,8 @@ class Restler extends EventEmitter
                                     . ' +([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/m',
                                 file_get_contents($fileInfo->getPathname()),
                                 $matches
-                            ))
+                            )
+                        )
                             $classMap[$matches[2]] = $fileInfo->getPathname();
 
                 AutoLoader::seen($classMap);
@@ -340,7 +339,7 @@ class Restler extends EventEmitter
      * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
      * @throws Exception
      */
-    public function setSupportedFormats($format = null/*[, $format2...$farmatN]*/)
+    public function setSupportedFormats($format = null /*[, $format2...$farmatN]*/)
     {
         $args = func_get_args();
         $extensions = array();
