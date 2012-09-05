@@ -29,7 +29,7 @@ class Util
      */
     public static function isObjectOrArray($type)
     {
-        return (boolean)strpos('|bool|boolean|int|float|string|', $type);
+        return !(boolean)strpos('|bool|boolean|int|float|string|', $type);
     }
 
     /**

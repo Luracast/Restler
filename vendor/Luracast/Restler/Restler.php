@@ -93,13 +93,6 @@ class Restler extends EventEmitter
     public $baseDir;
 
     /**
-     * Name of an iRespond implementation class
-     *
-     * @var string
-     */
-    public $responder = 'Luracast\\Restler\\Responder';
-
-    /**
      * method information including metadata
      *
      * @var stdClass
@@ -1052,11 +1045,13 @@ class Restler extends EventEmitter
             ReflectionMethod::IS_PROTECTED);
         foreach ($methods as $method) {
             $methodUrl = strtolower($method->getName());
+            //method name should not begin with _
             if ($methodUrl{0} == '_') {
                 continue;
             }
             $doc = $method->getDocComment();
             $metadata = CommentParser::parse($doc) + $classMetadata;
+            //@access should not be private
             if (isset($metadata['access'])
                 && $metadata['access'] == 'private'
             ) {
@@ -1102,7 +1097,7 @@ class Restler extends EventEmitter
                 if (isset($m[CommentParser::$embeddedDataName]['from'])) {
                     $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
-                    if (isset($type) && Util::isObjectOrArray($type)
+                    if ((isset($type) && Util::isObjectOrArray($type))
                         || $param->getName() == Defaults::$fullRequestDataName
                     ) {
                         $from = 'body';
@@ -1160,7 +1155,6 @@ class Restler extends EventEmitter
                 }
                 //if auto route enabled, do so
             } elseif (Defaults::$autoRoutingEnabled) {
-                // not prefixed with underscore
                 // no configuration found so use convention
                 if (preg_match_all(
                     '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i',
@@ -1181,9 +1175,8 @@ class Restler extends EventEmitter
                 }
                 $position = 1;
                 foreach ($params as $param) {
-                    if (($param->isOptional() && !$allowAmbiguity)
-                        || $param->getName() == 'request_data'
-                    ) {
+                    $from = $metadata ['param'] [$position - 1] ['from'];
+                    if (!$allowAmbiguity && $from != 'path') {
                         break;
                     }
                     if (!empty($url)) {
