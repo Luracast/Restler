@@ -398,8 +398,9 @@ class CommentParser
 
     private function formatReturn(array $value)
     {
+        $data = explode('|', array_shift($value));
         $r = array(
-            'type' => array_shift($value)
+            'type' => count($data) == 1 ? $data[0] : $data
         );
         $r['description'] = implode(' ', $value);
         return $r;
@@ -415,7 +416,9 @@ class CommentParser
             $r['name'] = substr($data, 1);
             $r['type'] = 'mixed';
         } else {
-            $r['type'] = $data;
+            $data = explode('|', $data);
+            $r['type'] = count($data) == 1 ? $data[0] : $data;
+
             $data = array_shift($value);
             if (!empty($data) && $data{0} == '$') {
                 $r['name'] = substr($data, 1);
@@ -426,5 +429,4 @@ class CommentParser
         }
         return $r;
     }
-
 }
