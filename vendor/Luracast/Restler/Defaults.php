@@ -42,12 +42,20 @@ class Defaults
      * entire request data
      */
     public static $fullRequestDataName = 'request_data';
+
     /**
      * @var bool should auto routing for public and protected api methods
      * should be enabled by default or not. Set this to false to get
      * Restler 1.0 style behavior
      */
     public static $autoRoutingEnabled = true;
+
+    /**
+     * @var bool should auto validating api parameters should be enabled by
+     * default or not. Set this to false to avoid validation.
+     */
+    public static $autoValidationEnabled = true;
+
     /**
      * @var bool HTTP status codes are set on all responses by default.
      * Some clients (like flash, mobile) have trouble dealing with non-200
@@ -151,7 +159,9 @@ class Defaults
         'throttle' => 'throttle',
 
         /**
-         * enable or disable smart auto routing
+         * enable or disable smart auto routing from method comments
+         * this one is hardwired so cant be turned off
+         * it is placed here just for documentation purpose
          */
         'smart-auto-routing' => 'smartAutoRouting',
     );

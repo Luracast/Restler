@@ -557,7 +557,7 @@ class Restler extends EventEmitter
                 }
             }
             try {
-                foreach ($this->_filterClasses as $filterClass) {
+                foreach ($this->filterClasses as $filterClass) {
                     /**
                      * @var iFilter
                      */
@@ -584,23 +584,25 @@ class Restler extends EventEmitter
                 $object = $this->apiClassInstance = null;
                 // TODO:check if the api version requested is allowed by class
                 // TODO: validate params using iValidate
-                foreach ($o->metadata['param'] as $index => $param) {
-                    $info = &$param [CommentParser::$embeddedDataName];
-                    if (!isset ($info['validate'])
-                        || $info['validate'] != false
-                    ) {
-                        if (isset($info['method'])) {
-                            if (!isset($object)) {
-                                $object = $this->apiClassInstance
-                                    = Util::setProperties($o->className);
+                if (Defaults::$autoValidationEnabled) {
+                    foreach ($o->metadata['param'] as $index => $param) {
+                        $info = &$param [CommentParser::$embeddedDataName];
+                        if (!isset ($info['validate'])
+                            || $info['validate'] != false
+                        ) {
+                            if (isset($info['method'])) {
+                                if (!isset($object)) {
+                                    $object = $this->apiClassInstance
+                                        = Util::setProperties($o->className);
+                                }
+                                $info ['apiClassInstance'] = $object;
                             }
-                            $info ['apiClassInstance'] = $object;
+                            //convert to instance of ValidationInfo
+                            $info = new ValidationInfo($param);
+                            $valid = Validator::validate(
+                                $o->arguments[$index], $info);
+                            $o->arguments[$index] = $valid;
                         }
-                        //convert to instance of ValidationInfo
-                        $info = new ValidationInfo($param);
-                        $valid = Validator::validate(
-                            $o->arguments[$index], $info);
-                        $o->arguments[$index] = $valid;
                     }
                 }
                 if (!isset($object)) {
@@ -1064,8 +1066,8 @@ class Restler extends EventEmitter
             $ignorePathTill = false;
             $allowAmbiguity
                 = (isset($metadata['smart-auto-routing'])
-                && $metadata['smart-auto-routing']!='true')
-            || !Defaults::$smartAutoRouting;
+                && $metadata['smart-auto-routing'] != 'true')
+                || !Defaults::$smartAutoRouting;
             $metadata['resourcePath'] = $resourcePath;
             if (isset($classMetadata['description'])) {
                 $metadata['classDescription'] = $classMetadata['description'];
