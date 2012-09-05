@@ -269,6 +269,7 @@ class Restler extends EventEmitter
 
                 //changes in auto routing
                 Defaults::$smartAutoRouting = false;
+                Defaults::$autoValidationEnabled = false;
 
                 //changes in parsing embedded data in comments
                 CommentParser::$embeddedDataPattern = '/\((\S+)\)/ms';
@@ -288,6 +289,7 @@ class Restler extends EventEmitter
 
                 //changes in routing
                 Defaults::$autoRoutingEnabled = false;
+                Defaults::$autoValidationEnabled = false;
                 break;
 
             default:
