@@ -1062,7 +1062,10 @@ class Restler extends EventEmitter
             $params = $method->getParameters();
             $position = 0;
             $ignorePathTill = false;
-            $allowAmbiguity = !Defaults::$smartAutoRouting;
+            $allowAmbiguity
+                = (isset($metadata['smart-auto-routing'])
+                && $metadata['smart-auto-routing']!='true')
+            || !Defaults::$smartAutoRouting;
             $metadata['resourcePath'] = $resourcePath;
             if (isset($classMetadata['description'])) {
                 $metadata['classDescription'] = $classMetadata['description'];
