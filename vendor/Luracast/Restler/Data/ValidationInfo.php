@@ -146,7 +146,7 @@ class ValidationInfo implements iValueObject
 
     public function __construct(array $info)
     {
-        $this->name = isset($info ['name']) ? isset($info ['name']) :
+        $this->name = isset($info ['name']) ? $info ['name'] :
             'Unknown';
         $this->rules = $rules = isset($info [CommentParser::$embeddedDataName])
             ? $info [CommentParser::$embeddedDataName] : $info;
