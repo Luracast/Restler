@@ -409,13 +409,15 @@ class CommentParser
     {
         $r = array();
         $data = array_shift($value);
-        if ($data{0} == '$') {
+        if (empty($data)) {
+            $r['type'] = 'mixed';
+        } elseif ($data{0} == '$') {
             $r['name'] = substr($data, 1);
             $r['type'] = 'mixed';
         } else {
             $r['type'] = $data;
             $data = array_shift($value);
-            if ($data{0} == '$') {
+            if (!empty($data) && $data{0} == '$') {
                 $r['name'] = substr($data, 1);
             }
         }
