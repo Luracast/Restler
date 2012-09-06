@@ -6,7 +6,7 @@ Just deal with your business logic in php, restler will take care of the REST!
 
 * [Developer Home](http://luracast.com/products/restler/)
 * [Live Examples](http://bit.ly/RestlerLiveExamples)
-* [Taking Care of the REST - Presentation](http://bit.ly/TakingCareOfTheREST)
+* [Taking Care of the REST - Presentation](http://bit.ly/TakeCareOfREST)
 * [Open Sourced Real World Example - SingMood](http://bit.ly/SingMood)
 * [Updates on Twitter](http://twitter.com/Luracast)
 
