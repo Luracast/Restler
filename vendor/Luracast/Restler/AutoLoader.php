@@ -380,7 +380,7 @@ class AutoLoader
                 return static::seen($className, $mapping);
             else
                 return true;
-        return static::seen($className);
+        return false;
     }
 
     /**
