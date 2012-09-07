@@ -67,14 +67,12 @@ class AutoLoader
         if (static::$perfectLoaders === spl_autoload_functions())
             return static::$instance;
 
-        if (0 < $count = count($loaders = spl_autoload_functions())){
-            //static::$rogueLoaders += $loaders;
-            for ($i = 0;
+        if (0 < $count = count($loaders = spl_autoload_functions()))
+            for ($i = 0, static::$rogueLoaders += $loaders;
                  $i < $count && false != ($loader = $loaders[$i]);
                  $i++)
                 if ($loader !== static::$perfectLoaders[0])
                     spl_autoload_unregister($loader);
-        }
 
         return static::$instance;
     }
@@ -334,10 +332,18 @@ class AutoLoader
         if (false === $file = stream_resolve_include_path("$file.php"))
             return false;
 
+        $state = array_merge(get_declared_classes(), get_declared_interfaces());
+
         if (false !== $result = static::loadFile($file)) {
 
             if ($this->exists($className, $file))
                 $this->alias($className, $currentClass);
+            elseif (false != $diff = array_diff(
+                array_merge(get_declared_classes(), get_declared_interfaces()), $state))
+                foreach ($diff as $autoLoaded)
+                    if ($this->exists($autoLoaded, $file))
+                        if (false !== strpos($autoLoaded, $className))
+                            $this->alias($autoLoaded, $className);
 
             if (!$this->exists($currentClass))
                 $result = false;
@@ -363,7 +369,7 @@ class AutoLoader
                 return static::seen($className, $mapping);
             else
                 return true;
-        return false;
+        return static::seen($className);
     }
 
     /**
@@ -375,6 +381,9 @@ class AutoLoader
      */
     public function __invoke($className)
     {
+        if (empty($className))
+            return false;
+
         if (false !== $includeReference = $this->discover($className))
             return $includeReference;
 

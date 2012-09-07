@@ -16,6 +16,12 @@ class AutoLoaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        if (!in_array(
+                $bootstrap = stream_resolve_include_path('bootstrap.php'),
+                get_included_files()
+            ))
+            include $bootstrap;
+
         $this->object = AutoLoader::instance();
     }
 
@@ -42,4 +48,24 @@ class AutoLoaderTest extends \PHPUnit_Framework_TestCase
         $className = null;
         $this->object->__invoke($className);
     }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function test_class_exists_autoloading()
+    {
+        $this->assertTrue(class_exists("CommentParser"));
+        $this->assertTrue(class_exists("Defaults"));
+        $this->assertTrue(class_exists("EventEmitter"));
+        $this->assertTrue(class_exists("HumanReadableCache"));
+        $this->assertTrue(class_exists("JsonFormat"));
+        $this->assertTrue(class_exists("YamlFormat"));
+        $this->assertTrue(class_exists("Responder"));
+        $this->assertTrue(class_exists("Resources"));
+        $this->assertTrue(class_exists("RestException"));
+        $this->assertTrue(class_exists("Restler"));
+        $this->assertTrue(class_exists("Util"));
+    }
+
 }

@@ -35,6 +35,12 @@ DOC;
      */
     protected function setUp()
     {
+        if (!in_array(
+            $bootstrap = stream_resolve_include_path('bootstrap.php'),
+            get_included_files()
+        ))
+            include $bootstrap;
+
         $this->object = new Restler();
     }
 
@@ -93,6 +99,17 @@ DOC;
     {
         $className = $resourcePath = null;
         $this->object->addAPIClass($className, $resourcePath);
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function test_class_Restler_addAPIClass_Resources()
+    {
+        $className = "Resources";
+        $this->object->addAPIClass($className);
+        $this->assertTrue(class_exists($className, false));
     }
 
     /**
