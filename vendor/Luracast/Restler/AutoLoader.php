@@ -333,6 +333,16 @@ class AutoLoader
         if (false === $file = stream_resolve_include_path("$file.php"))
             return false;
 
+        /** have we loaded this file before could this be an alias */
+        if (in_array($file, get_included_files())) {
+            if (false !== $sameFile = array_search($file, static::$classMap))
+                if (!$this->exists($className, $file))
+                    if (false !== strpos($sameFile, $className))
+                        $this->alias($sameFile, $className);
+
+            return $file;
+        }
+
         $state = array_merge(get_declared_classes(), get_declared_interfaces());
 
         if (false !== $result = static::loadFile($file)) {
