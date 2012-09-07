@@ -18,7 +18,12 @@ class Util
     /**
      * @var bool|string|callable
      */
-    public static $encoderFunctionName = false;
+    public static $stringEncoderFunction = false;
+
+    /**
+     * @var bool|string|callable
+     */
+    public static $numberEncoderFunction = false;
 
     /**
      * Convenience function that converts the given object
@@ -40,8 +45,10 @@ class Util
             $array = array();
             foreach ($properties as $key) {
                 $value = self::objectToArray($object->{$key});
-                if (self::$encoderFunctionName && is_string($value)) {
-                    $value = self::$encoderFunctionName ($value);
+                if (self::$stringEncoderFunction && is_string($value)) {
+                    $value = self::$stringEncoderFunction ($value);
+                } elseif (self::$numberEncoderFunction && is_numeric($value)) {
+                    $value = self::$numberEncoderFunction ($value);
                 }
                 $array [$key] = $value;
             }
@@ -54,7 +61,7 @@ class Util
             $array = array();
             foreach ($object as $key => $value) {
                 $value = self::objectToArray($value);
-                if (self::$encoderFunctionName && is_string($value)) {
+                if (self::$stringEncoderFunction && is_string($value)) {
                     $value = self::$encoderFunctionName ($value);
                 }
                 $array [$key] = $value;
