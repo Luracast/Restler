@@ -1,7 +1,7 @@
 <?php
 require_once '../../../vendor/restler.php';
 
-$r = new Restler(TRUE, TRUE);
+$r = new Restler();
 $r->setCompatibilityMode(2);
 $r->addAPIClass('Resources');
 
