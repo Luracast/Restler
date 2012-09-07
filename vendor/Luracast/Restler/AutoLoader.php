@@ -38,6 +38,25 @@ class AutoLoader
     }
 
     /**
+     * Helper function to add a path to the include path.
+     * AutoLoader uses the include path to discover classes.
+     *
+     * @static
+     *
+     * @param $path string absolute or relative path.
+     *
+     * @return bool false if the path cannot be resolved
+     *              or the resolved absolute path.
+     */
+    public static function addPath($path) {
+        if (false === $path = stream_resolve_include_path($path))
+            return false;
+        else
+            set_include_path($path.PATH_SEPARATOR.get_include_path());
+        return $path;
+    }
+
+    /**
      * Other autoLoaders interfere and cause duplicate class loading.
      * AutoLoader is capable enough to handle all standards so no need
      * for others stumbling about.
@@ -386,6 +405,6 @@ namespace {
      * @return mixed|bool false if the file could not be included.
      */
     function Luracast_Restler_autoloaderInclude($path) {
-        return include_once $path;
+        return include $path;
     }
 }
