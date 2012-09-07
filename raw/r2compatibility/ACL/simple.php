@@ -8,7 +8,7 @@ class Simple {
 	 * @class AccessControl(requiredRole=user)
 	 */
 	protected function user() {
-		return 'allow both user & admin';
+		return array('result'=>'allow both `user` & `admin` åbcdéfg');
 	}
 	/**
      * @class AccessControl(requiredRole=admin)

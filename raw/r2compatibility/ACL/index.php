@@ -1,7 +1,7 @@
 <?php
 require_once '../../../vendor/restler.php';
 
-$r = new Restler(TRUE, TRUE);
+$r = new Restler();
 $r->cacheDir = dirname($_SERVER['SCRIPT_FILENAME'].DIRECTORY_SEPARATOR.'cache');
 HumanReadableCache::$cacheDir = dirname($_SERVER['SCRIPT_FILENAME']).DIRECTORY_SEPARATOR.'cache';
 $r->setCompatibilityMode(2);
