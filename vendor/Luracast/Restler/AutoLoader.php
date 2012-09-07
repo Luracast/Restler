@@ -67,12 +67,13 @@ class AutoLoader
         if (static::$perfectLoaders === spl_autoload_functions())
             return static::$instance;
 
-        if (0 < $count = count($loaders = spl_autoload_functions()))
-            for ($i = 0, static::$rogueLoaders += $loaders;
-                 $i < $count && false != ($loader = $loaders[$i]);
-                 $i++)
-                if ($loader !== static::$perfectLoaders[0])
-                    spl_autoload_unregister($loader);
+        if (false !== $loaders = spl_autoload_functions())
+            if (0 < $count = count($loaders))
+                for ($i = 0, static::$rogueLoaders += $loaders;
+                     $i < $count && false != ($loader = $loaders[$i]);
+                     $i++)
+                    if ($loader !== static::$perfectLoaders[0])
+                        spl_autoload_unregister($loader);
 
         return static::$instance;
     }
