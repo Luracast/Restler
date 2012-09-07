@@ -63,6 +63,8 @@ class Util
                 $value = self::objectToArray($value);
                 if (self::$stringEncoderFunction && is_string($value)) {
                     $value = self::$encoderFunctionName ($value);
+                } elseif (self::$numberEncoderFunction && is_numeric($value)) {
+                    $value = self::$numberEncoderFunction ($value);
                 }
                 $array [$key] = $value;
                 $count++;
