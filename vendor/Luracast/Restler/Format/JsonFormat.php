@@ -1,21 +1,16 @@
 <?php
 namespace Luracast\Restler\Format;
 
-// TODO: define JSON_BIGINT_AS_STRING, JSON_PRETTY_PRINT,
-// JSON_UNESCAPED_SLASHES,
-// and JSON_UNESCAPED_UNICODE if not defined (PHP version <5.4) and handle the
-// options manually to get the same result
-
 /**
  * Javascript Object Notation Format
  *
- * @category Framework
- * @package restler
+ * @category   Framework
+ * @package    restler
  * @subpackage format
- * @author R.Arul Kumaran <arul@luracast.com>
- * @copyright 2010 Luracast
- * @license http://www.opensource.org/licenses/lgpl-license.php LGPL
- * @link http://luracast.com/products/restler/
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
  */
 use Luracast\Restler\Data\Util;
 use Luracast\Restler\RestException;
@@ -23,48 +18,92 @@ use Luracast\Restler\RestException;
 class JsonFormat extends Format
 {
     /**
-     * options that you want to pass for json_encode (used internally)
-     * just make sure those options are supported by your PHP version
-     *
-     * @example JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
-     * @var int
+     * @var boolean|null  shim for json_encode option JSON_PRETTY_PRINT set
+     * it to null to use smart defaults
      */
-    public static $encodeOptions = 0;
+    public static $prettyPrint = null;
+
+    /**
+     * @var boolean|null  shim for json_encode option JSON_UNESCAPED_SLASHES
+     * set it to null to use smart defaults
+     */
+    public static $unEscapedSlashes = null;
+
+    /**
+     * @var boolean|null  shim for json_encode JSON_UNESCAPED_UNICODE set it
+     * to null to use smart defaults
+     */
+    public static $unEscapedUnicode = null;
+
+    /**
+     * @var boolean|null  shim for json_decode JSON_BIGINT_AS_STRING set it to
+     * null to
+     * use smart defaults
+     */
+    public static $bigIntAsString = null;
+
     const MIME = 'application/json';
     const EXTENSION = 'json';
 
 
     public function encode($data, $humanReadable = false)
     {
-        $customHumanReadable = true;
-        if ($humanReadable && defined ( 'JSON_PRETTY_PRINT' )) {
-            // PHP >= 5.4
-            self::$encodeOptions = self::$encodeOptions
-                                        | JSON_PRETTY_PRINT
-                                        | JSON_UNESCAPED_SLASHES;
-            $customHumanReadable = false;
+        if (!is_null(self::$prettyPrint)) {
+            $humanReadable = self::$prettyPrint;
         }
-        $result = json_encode (
-                Util::objectToArray ( $data ),
-                self::$encodeOptions
-        );
-        if ($humanReadable && $customHumanReadable) {
-            // custom JSON_PRETTY_PRINT
-            $result = $this->formatJson ( $result );
-            // custom JSON_UNESCAPED_SLASHES
-            $result = str_replace ( '\/', '/', $result );
+        if (is_null(self::$unEscapedSlashes)) {
+            self::$unEscapedSlashes = $humanReadable;
+        }
+        if (is_null(self::$unEscapedUnicode)) {
+            self::$unEscapedUnicode = $this->charset == 'utf-8';
+        }
+        $options = 0;
+        if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
+            || PHP_MAJOR_VERSION > 5 // PHP >= 6.0
+        ) {
+            if ($humanReadable) $options |= JSON_PRETTY_PRINT;
+            if (self::$unEscapedSlashes) $options |= JSON_UNESCAPED_SLASHES;
+            if (self::$bigIntAsString) $options |= JSON_BIGINT_AS_STRING;
+            if (self::$unEscapedUnicode) $options |= JSON_UNESCAPED_UNICODE;
+            return json_encode(
+                Util::objectToArray($data), $options
+            );
         }
 
+        $result = json_encode(Util::objectToArray($data));
+        if ($humanReadable) $result = $this->formatJson($result);
+        if (self::$unEscapedUnicode) {
+            $result = preg_replace_callback('/\\\u(\w\w\w\w)/',
+                function($matches)
+                {
+                    return chr(hexdec($matches[1]));
+                }
+                , $result);
+        }
+        if (self::$unEscapedSlashes) $result = str_replace('\/', '/', $result);
         return $result;
     }
 
     public function decode($data)
     {
-        $decoded = json_decode ( $data );
-        if (function_exists ( 'json_last_error' )) {
-            switch (json_last_error ()) {
+        $options = 0;
+        if (self::$bigIntAsString) {
+            if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
+                || PHP_MAJOR_VERSION > 5 // PHP >= 6.0
+            ) {
+                $options |= JSON_BIGINT_AS_STRING;
+            } else {
+                $data = preg_replace(
+                    '/:\s*(\-?\d+(\.\d+)?([e|E][\-|\+]\d+)?)/',
+                    ': "$1"', $data
+                );
+            }
+        }
+        $decoded = json_decode($data, $options);
+        if (function_exists('json_last_error')) {
+            switch (json_last_error()) {
                 case JSON_ERROR_NONE :
-                    return Util::objectToArray ( $decoded );
+                    return Util::objectToArray($decoded);
                     break;
                 case JSON_ERROR_DEPTH :
                     $message = 'maximum stack depth exceeded';
@@ -79,19 +118,19 @@ class JsonFormat extends Format
                     $message = 'malformed JSON';
                     break;
                 case JSON_ERROR_UTF8 :
-                    $message = 'malformed UTF-8 characters, possibly '.
-                            'incorrectly encoded';
+                    $message = 'malformed UTF-8 characters, possibly ' .
+                        'incorrectly encoded';
                     break;
                 default :
                     $message = 'unknown error';
                     break;
             }
-            throw new RestException ( 400, 'Error parsing JSON, ' . $message );
-        } elseif (strlen ( $data ) && $decoded === null || $decoded === $data) {
-            throw new RestException ( 400, 'Error parsing JSON' );
+            throw new RestException (400, 'Error parsing JSON, ' . $message);
+        } elseif (strlen($data) && $decoded === null || $decoded === $data) {
+            throw new RestException (400, 'Error parsing JSON');
         }
 
-        return Util::objectToArray ( $decoded );
+        return Util::objectToArray($decoded);
     }
 
 
@@ -99,6 +138,7 @@ class JsonFormat extends Format
      * Pretty print JSON string
      *
      * @param  string $json
+     *
      * @return string formatted json
      */
     private function formatJson($json)
@@ -107,40 +147,40 @@ class JsonFormat extends Format
         $newJson = '';
         $indentLevel = 0;
         $inString = false;
-        $len = strlen ( $json );
-        for ($c = 0; $c < $len; $c ++) {
+        $len = strlen($json);
+        for ($c = 0; $c < $len; $c++) {
             $char = $json [$c];
             switch ($char) {
                 case '{' :
                 case '[' :
-                    if (! $inString) {
+                    if (!$inString) {
                         $newJson .= $char . "\n" .
-                            str_repeat ( $tab, $indentLevel + 1 );
-                        $indentLevel ++;
+                            str_repeat($tab, $indentLevel + 1);
+                        $indentLevel++;
                     } else {
                         $newJson .= $char;
                     }
                     break;
                 case '}' :
                 case ']' :
-                    if (! $inString) {
-                        $indentLevel --;
+                    if (!$inString) {
+                        $indentLevel--;
                         $newJson .= "\n" .
-                            str_repeat ( $tab, $indentLevel ) . $char;
+                            str_repeat($tab, $indentLevel) . $char;
                     } else {
                         $newJson .= $char;
                     }
                     break;
                 case ',' :
-                    if (! $inString) {
+                    if (!$inString) {
                         $newJson .= ",\n" .
-                            str_repeat ( $tab, $indentLevel );
+                            str_repeat($tab, $indentLevel);
                     } else {
                         $newJson .= $char;
                     }
                     break;
                 case ':' :
-                    if (! $inString) {
+                    if (!$inString) {
                         $newJson .= ': ';
                     } else {
                         $newJson .= $char;
@@ -150,7 +190,7 @@ class JsonFormat extends Format
                     if ($c == 0) {
                         $inString = true;
                     } elseif ($c > 0 && $json [$c - 1] != '\\') {
-                        $inString = ! $inString;
+                        $inString = !$inString;
                     }
                 default :
                     $newJson .= $char;
