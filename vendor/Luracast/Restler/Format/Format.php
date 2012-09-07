@@ -24,6 +24,11 @@ abstract class Format implements iFormat
     const EXTENSION = 'txt';
 
     /**
+     * @var string charset encoding defaults to UTF8
+     */
+    protected $charset='utf-8';
+
+    /**
      * Injected at runtime
      *
      * @var \Luracast\Restler\Restler
@@ -68,7 +73,7 @@ abstract class Format implements iFormat
      */
     public function setCharset($charset)
     {
-        // TODO: Implement setCharset() method.
+        $this->charset = $charset;
     }
 
     /**
@@ -78,7 +83,7 @@ abstract class Format implements iFormat
      */
     public function getCharset()
     {
-        // TODO: Implement getCharset() method.
+        return $this->charset;
     }
 
     /**

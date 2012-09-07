@@ -22,6 +22,11 @@ abstract class MultiFormat implements iFormat
      */
     const EXTENSION = 'txt,html';
 
+    /**
+     * @var string charset encoding defaults to UTF8
+     */
+    protected $charset='utf-8';
+
     public static $mime;
     public static $extension;
 
@@ -73,7 +78,7 @@ abstract class MultiFormat implements iFormat
      */
     public function setCharset($charset)
     {
-        // TODO: Implement setCharset() method.
+        $this->charset = $charset;
     }
 
     /**
@@ -83,7 +88,7 @@ abstract class MultiFormat implements iFormat
      */
     public function getCharset()
     {
-        // TODO: Implement getCharset() method.
+        return $this->charset;
     }
 
     /**
