@@ -131,8 +131,13 @@ project-menu: .title
 	@echo "                          ====================================================================="
 	@echo "                          Project Scripts"
 	@echo "                          ====================================================================="
+	@echo "                        :   INFO & SCAFFOLDING"
 	@echo "            project-info: Shows project configuration"
 	@echo "            project-init: Initilize current folder and create boilerplate project structure"
+	@echo "                        :   TESTING"
+	@echo "                    test: Run project tests"
+	@echo "                coverage: Run project tests and report coverage status"
+	@echo "                   clean: Removes code coverage reports"
 	@echo "           bootstrap-php: (Re)create all purpose bootstrap.php for phpunit in test folder"
 	@echo "       bootstrap-php-opt: Optimized all purpose bootstrap.php with static pear path in test folder"
 	@echo "             phpunit-xml: (Re)create phpunit.xml in test folder"
@@ -141,24 +146,24 @@ project-menu: .title
 	@echo "               gitignore: (Re)create .gitignore file"
 	@echo "            test-skelgen: Generate boilerplate PHPUnit skeleton tests per class see help-skelgen"
 	@echo "        test-skelgen-all: Generate tests for all classes and it's overwrite safe of course"
-	@echo "                    test: Run project tests"
-	@echo "                coverage: Run project tests and report coverage status"
-	@echo "                   clean: Removes code coverage reports"
+	@echo "                        :   CLEANUP UTILITIES"
+	@echo "        clean-whitespace: All in one does tabs2spaces, unix-line-ends and trailing_spaces"
+	@echo "             tabs2spaces: Turns tabs into 4 spaces properly handling mixed tab/spaces"
+	@echo "          unix-line-ends: Fixes unix line endings"
+	@echo "         trailing_spaces: Removes trailing whitespace"
+	@echo "                        :   CODE CONTENT UTILITIES"
 	@echo "                cs-fixer: Run PHP Coding Standards Fixer to ensure your cs-style is correct"
 	@echo "               codesniff: Run PHP Code Sniffer to generate a report of code analysis"
 	@echo "                  phpcpd: Run PHP Copy Paste detector"
 	@echo "                  phpdcd: Run PHP Dead Code detector"
 	@echo "                  phploc: Run PHP Lines Of Code analyzer for project code statistics"
 	@echo "                  phpdoc: Run PhpDocumentor2 to generate the project API documentation"
+	@echo "                        :   CONFIGURATION"
 	@echo "             package-ini: Creates the basic package.ini file"
 	@echo "             package-xml: Propagates changes from package.ini to package.xml"
 	@echo "           composer-json: Propagates changes from package.ini to composer.json"
-	@echo "       composer-validate: Validate composer.json for syntax and other problems"
-	@echo "        composer-install: Install this project with composer which will create vendor folder"
-	@echo "         composer-update: Update an exiting composer instalation and refresh repositories"
 	@echo "                 package: Generates package.ini, package.xml and composer.json files"
 	@echo "                    pear: Generates a PEAR package"
-	@echo "                 install: Install this project and its dependencies in the local PEAR"
 	@echo ""
 
 
@@ -169,6 +174,10 @@ package-menu: .title
 	@echo "                          ====================================================================="
 	@echo "                          Toolbox - Packaging"
 	@echo "                          ====================================================================="
+	@echo "       composer-validate: Validate composer.json for syntax and other problems"
+	@echo "        composer-install: Install this project with composer which will create vendor folder"
+	@echo "         composer-update: Update an exiting composer instalation and refresh repositories"
+	@echo "                 install: Install this project and its dependencies in the local PEAR"
 	@echo "                info-php: Show information about your PHP"
 	@echo "              config-php: Locate your PHP configuration file aka. php.ini"
 	@echo "             include-php: Show the PHP configured (php.ini) include path"
@@ -418,13 +427,13 @@ phpdoc: .check-foundation
 	phpdoc -d `$(CONFIG_TOOL) library-folder ` -t `$(CONFIG_TOOL) documentation-folder ` -p
 
 phpunit-xml: .check-foundation
-	@$(GENERATE_TOOL) config-template phpunit.xml > phpunit.xml.tmp && mv -f phpunit.xml.tmp `$(CONFIG_TOOL) test-folder `/phpunit.xml
+	@$(GENERATE_TOOL) config-template phpunit.xml > phpunit.xml.tmp && mkdir -p $(shell $(CONFIG_TOOL) test-folder) && mv -f phpunit.xml.tmp $(shell $(CONFIG_TOOL) test-folder)/phpunit.xml
 
 bootstrap-php: .check-foundation
-	@$(GENERATE_TOOL) config-template bootstrap.php > bootstrap.php.tmp && mv -f bootstrap.php.tmp `$(CONFIG_TOOL) test-folder `/bootstrap.php
+	@$(GENERATE_TOOL) config-template bootstrap.php > bootstrap.php.tmp && mkdir -p $(shell $(CONFIG_TOOL) test-folder) && mv -f bootstrap.php.tmp $(shell $(CONFIG_TOOL) test-folder)/bootstrap.php
 
 bootstrap-php-opt: .check-foundation
-	@$(GENERATE_TOOL) config-template bootstrap.php.opt > bootstrap.php.tmp && mv -f bootstrap.php.tmp `$(CONFIG_TOOL) test-folder `/bootstrap.php
+	@$(GENERATE_TOOL) config-template bootstrap.php.opt > bootstrap.php.tmp && mkdir -p $(shell $(CONFIG_TOOL) test-folder) && mv -f bootstrap.php.tmp $(shell $(CONFIG_TOOL) test-folder)/bootstrap.php
 
 package-ini: .check-foundation
 	@$(GENERATE_TOOL) package-ini > package.ini.tmp && mv -f package.ini.tmp package.ini
@@ -434,7 +443,12 @@ travis-yml: .check-foundation
 
 # Generates a package.xml from the package.ini
 package-xml: .check-foundation
-	@.foundation/onion build
+	@.foundation/onion build; echo
+	@if test -f package.xml; then \
+	  echo Respect/Foundation:; \
+	  echo; echo "    $$ make pear"; echo; \
+	fi;
+
 
 composer-json: .check-foundation
 	@$(GENERATE_TOOL) composer-json > composer.json.tmp && mv -f composer.json.tmp composer.json
@@ -486,15 +500,29 @@ tag: .check-foundation
 	-git tag `$(CONFIG_TOOL) package-version ` -m 'Tagging.'
 
 # Runs on the current package.xml file
-pear:
-	@pear package
+pear: .check-foundation
+	@$(eval count=$(shell grep -c dir package.xml)) \
+	if test $(count) -gt 1; then \
+	  pear package; \
+	else \
+	  echo "There are no <contents> defined in package.xml"; \
+	  echo "Nothing to build"; \
+	fi;
+
+info:
+	@pear info $(shell $(CONFIG_TOOL) package-name)|egrep 'Version|Name|Summary|Description|-'
 
 # On root PEAR installarions, this need to run as sudo
 install: .check-foundation
-	@echo "You may need to run this as sudo."
-	@echo "Discovering channel"
-	-@pear channel-discover `$(CONFIG_TOOL) pear-channel`
-	@pear install package.xml
+	@if ! test -f package.xml; then \
+	  echo "No package.xml found."; \
+	  echo "Nothing to install"; \
+	elif ! make info 2> /dev/null; then \
+	  echo "You may need to run this as sudo."; \
+	  echo "Discovering channel"; \
+	  pear channel-info $(shell $(CONFIG_TOOL) pear-channel) || pear channel-discover $(shell $(CONFIG_TOOL) pear-channel); \
+	  pear install package.xml; \
+	fi;
 
 info-php: .check-foundation
 	@echo "This is what I know about your PHP."
@@ -760,6 +788,40 @@ install-uri-template: .check-foundation
 	@echo If all went well and you saw no errors or FAILs then congratulations!
 	@echo all that is left is to ensure that extension=uri_template.so is in your php.ini
 	@echo
+
+# Clean up utils
+
+tabs2spaces: .check-foundation
+	@if test "$(file)"; then \
+	  expand -t 4 "$(file)" > "$(file).tmp" && mv -f "$(file).tmp" "$(file)"; \
+	else \
+		find . -type f -name "*.php" -exec make tabs2spaces file="{}" \;; \
+	fi;
+
+trailing-spaces: .check-foundation
+	@if test "$(file)"; then \
+	  awk '{sub(/[ \t]+$$/, "")};1' "$(file)" > "$(file).tmp" && mv -f "$(file).tmp" "$(file)"; \
+	else \
+		find . -type f -name "*.php" -exec make trailing-spaces file="{}" \;; \
+	fi;
+
+unix-line-ends: .check-foundation
+	@if test "$(file)"; then \
+	  awk '{sub(/\r$$/,"")};1' "$(file)" > "$(file).tmp" && mv -f "$(file).tmp" "$(file)"; \
+	else \
+		find . -type f -name "*.php" -exec make unix-line-ends file="{}" \;; \
+	fi;
+
+clean-whitespace: .check-foundation
+	@if test "$(file)"; then \
+		make tabs2spaces file="$(file)" > /dev/null; \
+		make unix-line-ends file="$(file)" > /dev/null; \
+		make trailing-spaces file="$(file)" > /dev/null; \
+	else \
+		make tabs2spaces > /dev/null; \
+		make unix-line-ends > /dev/null; \
+		make trailing-spaces > /dev/null; \
+	fi;
 
 
 # Install pirum, clones the PEAR Repository, make changes there and push them.
