@@ -18,7 +18,7 @@ class AutoLoader
     protected static $instance, // the singleton instance reference
                      $perfectLoaders, // used to keep the ideal list of loaders
                      $rogueLoaders = array(), // other auto loaders now unregistered
-                     $classMap = array(), // the class to include file mayying
+                     $classMap = array(), // the class to include file mapping
                      $aliases = array( // aliases and prefixes instead of null list aliases
                          'Luracast\\Restler' => null,
                          'Luracast\\Restler\\Format' => null,
@@ -48,12 +48,14 @@ class AutoLoader
         if (static::$perfectLoaders === spl_autoload_functions())
             return static::$instance;
 
-        if (0 < $count = count($loaders = spl_autoload_functions()))
-            for ($i = 0, static::$rogueLoaders += $loaders;
+        if (0 < $count = count($loaders = spl_autoload_functions())){
+            //static::$rogueLoaders += $loaders;
+            for ($i = 0;
                  $i < $count && false != ($loader = $loaders[$i]);
                  $i++)
                 if ($loader !== static::$perfectLoaders[0])
                     spl_autoload_unregister($loader);
+        }
 
         return static::$instance;
     }
@@ -384,6 +386,6 @@ namespace {
      * @return mixed|bool false if the file could not be included.
      */
     function Luracast_Restler_autoloaderInclude($path) {
-        return include $path;
+        return include_once $path;
     }
 }
