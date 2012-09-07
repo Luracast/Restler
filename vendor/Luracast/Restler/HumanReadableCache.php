@@ -68,8 +68,8 @@ class HumanReadableCache implements iCache
         @chmod($file, 0777);
         if ($r === false) {
             throw new \Exception(
-                "The cache directory located at " .
-                    "'$this->cacheDir' needs to have the permissions " .
+                "The cache directory located at '" . self::$cacheDir .
+                    "' needs to have the permissions " .
                     "set to read/write/execute for everyone " .
                     "in order to save cache and improve performance."
             );
