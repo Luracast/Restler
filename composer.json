@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "ChiperSoft/CFPropertyList": "dev-master",
+        "ChiperSoft/CFPropertyList": ">=0.1.0",
         "mustache\/mustache": "dev-master",
         "zendframework\/zendamf": "dev-master",
         "symfony\/yaml": "*"
