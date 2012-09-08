@@ -21,3 +21,4 @@ vendor/zendframework
 .settings/*
 public/docs/*
 logs/*
+vendor/Luracast/explorer

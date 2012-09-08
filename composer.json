@@ -22,7 +22,8 @@
         "ChiperSoft/CFPropertyList": ">=0.1.0",
         "mustache\/mustache": "dev-master",
         "zendframework\/zendamf": "dev-master",
-        "symfony\/yaml": "*"
+        "symfony\/yaml": "*",
+        "luracast/explorer": "*"
     },
     "repositories": [
         {
@@ -36,6 +37,17 @@
         {
             "type": "vcs",
             "url": "https:\/\/github.com\/zendframework\/ZendAmf.git"
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "luracast/explorer",
+                "version": "v3.0.0",
+                "dist": {
+                  "type": "zip",
+                  "url": "https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
+                }
+            }
         }
     ],
     "bin": ["vendor/restler.php"],
