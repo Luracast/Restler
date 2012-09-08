@@ -52,7 +52,6 @@ class Squiz_Sniffs_WhiteSpace_SemicolonSpacingSniff implements PHP_CodeSniffer_S
 
     }//end register()
 
-
     /**
      * Processes this test, when one of its tokens is encountered.
      *
@@ -81,7 +80,7 @@ class Squiz_Sniffs_WhiteSpace_SemicolonSpacingSniff implements PHP_CodeSniffer_S
 
     }//end process()
 
-
 }//end class
 
 ?>
+

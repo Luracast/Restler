@@ -33,15 +33,14 @@
 class PHP_CodeSniffer_Reports_Emacs implements PHP_CodeSniffer_Report
 {
 
-
     /**
      * Generates an emacs report.
-     * 
+     *
      * @param array   $report      Prepared report.
      * @param boolean $showSources Show sources?
      * @param int     $width       Maximum allowed lne width.
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function generate(
         $report,
@@ -67,7 +66,7 @@ class PHP_CodeSniffer_Reports_Emacs implements PHP_CodeSniffer_Report
 
     }//end generate()
 
-
 }//end class
 
 ?>
+

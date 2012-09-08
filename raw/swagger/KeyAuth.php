@@ -25,3 +25,4 @@ class KeyAuth implements iAuthenticate
         return isset($_GET['api_key']) && $_GET['api_key']=='r3rocks';
     }
 }
+

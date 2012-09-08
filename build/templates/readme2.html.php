@@ -6,3 +6,4 @@ return <<<TEMPLATE
 {$_(Markdown,$_('require','readme2.md.php'))}
 {$_('require','footer.html.php')}
 TEMPLATE;
+

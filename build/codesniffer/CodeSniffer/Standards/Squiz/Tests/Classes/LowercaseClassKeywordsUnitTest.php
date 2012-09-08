@@ -32,7 +32,6 @@
 class Squiz_Tests_Classes_LowercaseClassKeywordsUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -53,7 +52,6 @@ class Squiz_Tests_Classes_LowercaseClassKeywordsUnitTest extends AbstractSniffUn
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -68,7 +66,7 @@ class Squiz_Tests_Classes_LowercaseClassKeywordsUnitTest extends AbstractSniffUn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

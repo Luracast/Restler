@@ -6,3 +6,4 @@ $r = new Restler(true, true);
 $r->setSupportedFormats('XmlFormat');
 $r->addAPIClass('BMI');
 $r->handle();
+

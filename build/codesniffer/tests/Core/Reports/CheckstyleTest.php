@@ -34,7 +34,6 @@ require_once dirname(__FILE__).'/AbstractTestCase.php';
 class Core_Reports_CheckstyleTest extends Core_Reports_AbstractTestCase
 {
 
-
     /**
      * Tests standard report.
      *
@@ -55,7 +54,7 @@ class Core_Reports_CheckstyleTest extends Core_Reports_AbstractTestCase
 
     }//end testGenerate()
 
-
 }//end class
 
 ?>
+

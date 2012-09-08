@@ -32,7 +32,6 @@
 class Squiz_Tests_WhiteSpace_SuperfluousWhitespaceUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -87,7 +86,6 @@ class Squiz_Tests_WhiteSpace_SuperfluousWhitespaceUnitTest extends AbstractSniff
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -102,7 +100,7 @@ class Squiz_Tests_WhiteSpace_SuperfluousWhitespaceUnitTest extends AbstractSniff
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

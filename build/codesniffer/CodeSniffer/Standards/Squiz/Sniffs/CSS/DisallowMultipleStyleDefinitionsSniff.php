@@ -36,7 +36,6 @@ class Squiz_Sniffs_CSS_DisallowMultipleStyleDefinitionsSniff implements PHP_Code
      */
     public $supportedTokenizers = array('CSS');
 
-
     /**
      * Returns the token types that this sniff is interested in.
      *
@@ -47,7 +46,6 @@ class Squiz_Sniffs_CSS_DisallowMultipleStyleDefinitionsSniff implements PHP_Code
         return array(T_STYLE);
 
     }//end register()
-
 
     /**
      * Processes the tokens that this sniff is interested in.
@@ -75,3 +73,4 @@ class Squiz_Sniffs_CSS_DisallowMultipleStyleDefinitionsSniff implements PHP_Code
 
 }//end class
 ?>
+

@@ -41,7 +41,6 @@ class Squiz_Sniffs_ControlStructures_ForLoopDeclarationSniff implements PHP_Code
                                    'JS',
                                   );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -52,7 +51,6 @@ class Squiz_Sniffs_ControlStructures_ForLoopDeclarationSniff implements PHP_Code
         return array(T_FOR);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -131,7 +129,7 @@ class Squiz_Sniffs_ControlStructures_ForLoopDeclarationSniff implements PHP_Code
 
     }//end process()
 
-
 }//end class
 
 ?>
+

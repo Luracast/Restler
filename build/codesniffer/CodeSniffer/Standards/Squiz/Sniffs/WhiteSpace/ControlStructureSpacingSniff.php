@@ -41,7 +41,6 @@ class Squiz_Sniffs_WhiteSpace_ControlStructureSpacingSniff implements PHP_CodeSn
                                    'JS',
                                   );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -61,7 +60,6 @@ class Squiz_Sniffs_WhiteSpace_ControlStructureSpacingSniff implements PHP_CodeSn
                );
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -206,7 +204,7 @@ class Squiz_Sniffs_WhiteSpace_ControlStructureSpacingSniff implements PHP_CodeSn
 
     }//end process()
 
-
 }//end class
 
 ?>
+

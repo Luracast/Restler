@@ -32,7 +32,6 @@
 class PEAR_Tests_Functions_FunctionCallSignatureUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -64,7 +63,6 @@ class PEAR_Tests_Functions_FunctionCallSignatureUnitTest extends AbstractSniffUn
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -79,7 +77,7 @@ class PEAR_Tests_Functions_FunctionCallSignatureUnitTest extends AbstractSniffUn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

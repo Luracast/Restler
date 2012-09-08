@@ -107,7 +107,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
      */
     protected $tag = '';
 
-
     /**
      * Constructs a Doc Element.
      *
@@ -196,7 +195,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
 
     }//end __construct()
 
-
     /**
      * Returns the element that exists before this.
      *
@@ -208,7 +206,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
 
     }//end getPreviousElement()
 
-
     /**
      * Returns the element that exists after this.
      *
@@ -219,7 +216,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
         return $this->nextElement;
 
     }//end getNextElement()
-
 
     /**
      * Returns the whitespace that exists before this element.
@@ -236,7 +232,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
 
     }//end getWhitespaceBefore()
 
-
     /**
      * Returns the whitespace that exists after this element.
      *
@@ -247,7 +242,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
         return $this->afterWhitespace;
 
     }//end getWhitespaceAfter()
-
 
     /**
      * Returns the order that this element appears in the comment.
@@ -264,7 +258,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
 
     }//end getOrder()
 
-
     /**
      * Returns the tag that this element represents, ommiting the @ symbol.
      *
@@ -275,7 +268,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
         return $this->tag;
 
     }//end getTag()
-
 
     /**
      * Returns the raw content of this element, ommiting the tag.
@@ -288,7 +280,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
 
     }//end getRawContent()
 
-
     /**
      * Returns the comment tokens.
      *
@@ -299,7 +290,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
         return $this->tokens;
 
     }//end getTokens()
-
 
     /**
      * Returns the line in which this element first occured.
@@ -320,7 +310,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
 
     }//end getLine()
 
-
     /**
      * Returns the sub element names that make up this element in the order they
      * appear in the element.
@@ -329,7 +318,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
      * @see processSubElement()
      */
     abstract protected function getSubElements();
-
 
     /**
      * Called to process each sub element as sepcified in the return value
@@ -348,7 +336,7 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractDocElement implements PHP_C
         $whitespaceBefore
     );
 
-
 }//end class
 
 ?>
+

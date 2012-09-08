@@ -36,7 +36,6 @@ if (class_exists('PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff', true) =
 class Squiz_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff
 {
 
-
     /**
      * Processes the tokens outside the scope.
      *
@@ -69,7 +68,7 @@ class Squiz_Sniffs_NamingConventions_ValidFunctionNameSniff extends PEAR_Sniffs_
 
     }//end processTokenOutsideScope()
 
-
 }//end class
 
 ?>
+

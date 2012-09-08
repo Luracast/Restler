@@ -93,7 +93,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
      */
     protected $currentFile = null;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -104,7 +103,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         return array(T_FUNCTION);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -294,7 +292,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
 
     }//end process()
 
-
     /**
      * Process the see tags.
      *
@@ -336,7 +333,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         }//end if
 
     }//end processSees()
-
 
     /**
      * Process the return comment of this function comment.
@@ -463,7 +459,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
 
     }//end processReturn()
 
-
     /**
      * Process any throw tags that this function comment has.
      *
@@ -516,7 +511,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
         }//end foreach
 
     }//end processThrows()
-
 
     /**
      * Process the function parameter comments.
@@ -772,7 +766,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
 
     }//end processParams()
 
-
     /**
      * Process a list of unknown tags.
      *
@@ -792,7 +785,7 @@ class Squiz_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sn
 
     }//end processUnknownTags
 
-
 }//end class
 
 ?>
+

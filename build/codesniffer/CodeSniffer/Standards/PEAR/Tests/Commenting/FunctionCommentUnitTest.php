@@ -29,7 +29,6 @@
 class PEAR_Tests_Commenting_FunctionCommentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -71,7 +70,6 @@ class PEAR_Tests_Commenting_FunctionCommentUnitTest extends AbstractSniffUnitTes
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -86,7 +84,7 @@ class PEAR_Tests_Commenting_FunctionCommentUnitTest extends AbstractSniffUnitTes
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

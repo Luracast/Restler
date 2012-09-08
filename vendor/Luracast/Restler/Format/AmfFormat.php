@@ -40,3 +40,4 @@ class AmfFormat extends Format
         return $deserializer->readTypeMarker();
     }
 }
+

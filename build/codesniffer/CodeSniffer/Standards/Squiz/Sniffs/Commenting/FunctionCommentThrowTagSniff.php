@@ -38,7 +38,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
 class Squiz_Sniffs_Commenting_FunctionCommentThrowTagSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
 {
 
-
     /**
      * Constructs a Squiz_Sniffs_Commenting_FunctionCommentThrowTagSniff.
      */
@@ -47,7 +46,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentThrowTagSniff extends PHP_CodeSniff
         parent::__construct(array(T_FUNCTION), array(T_THROW));
 
     }//end __construct()
-
 
     /**
      * Processes the function tokens within the class.
@@ -166,6 +164,6 @@ class Squiz_Sniffs_Commenting_FunctionCommentThrowTagSniff extends PHP_CodeSniff
 
     }//end processTokenWithinScope()
 
-
 }//end class
 ?>
+

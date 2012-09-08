@@ -70,3 +70,4 @@ class RestException extends Exception
         parent::__construct ( $errorMessage, $httpStatusCode );
     }
 }
+

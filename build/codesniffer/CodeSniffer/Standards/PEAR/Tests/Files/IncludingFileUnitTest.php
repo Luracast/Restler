@@ -32,7 +32,6 @@
 class PEAR_Tests_Files_IncludingFileUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -64,7 +63,6 @@ class PEAR_Tests_Files_IncludingFileUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -79,7 +77,7 @@ class PEAR_Tests_Files_IncludingFileUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

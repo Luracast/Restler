@@ -70,7 +70,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
      */
     protected $currentFile = null;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -81,7 +80,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         return array(T_OPEN_TAG);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -289,7 +287,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end process()
 
-
     /**
      * Processes each required or optional tag.
      *
@@ -405,7 +402,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processTags()
 
-
     /**
      * Get the indentation information of each tag.
      *
@@ -429,7 +425,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         return 0;
 
     }//end getIndentation()
-
 
     /**
      * The package name must be camel-cased.
@@ -466,7 +461,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processPackage()
 
-
     /**
      * The subpackage name must be camel-cased.
      *
@@ -502,7 +496,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processSubpackage()
 
-
     /**
      * Author tag must be 'Squiz Pty Ltd <mysource4@squiz.net>'.
      *
@@ -526,7 +519,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         }
 
     }//end processAuthors()
-
 
     /**
      * Copyright tag must be in the form '2006-YYYY Squiz Pty Ltd (ABN 77 084 670 600)'.
@@ -553,7 +545,6 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         }
 
     }//end processCopyrights()
-
 
     /**
      * License tag must be 'http://matrix.squiz.net/licence Squiz.Net Open Source Licence'.
@@ -594,8 +585,7 @@ class Squiz_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processLicense()
 
-
 }//end class
 
-
 ?>
+

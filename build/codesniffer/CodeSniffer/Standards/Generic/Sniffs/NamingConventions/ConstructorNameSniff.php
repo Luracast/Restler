@@ -35,7 +35,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
 class Generic_Sniffs_NamingConventions_ConstructorNameSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
 {
 
-
     /**
      * Constructs the test with the tokens it wishes to listen for.
      *
@@ -46,7 +45,6 @@ class Generic_Sniffs_NamingConventions_ConstructorNameSniff extends PHP_CodeSnif
         parent::__construct(array(T_CLASS, T_INTERFACE), array(T_FUNCTION), true);
 
     }//end __construct()
-
 
     /**
      * Processes this test when one of its tokens is encountered.
@@ -96,7 +94,7 @@ class Generic_Sniffs_NamingConventions_ConstructorNameSniff extends PHP_CodeSnif
 
     }//end processTokenWithinScope()
 
-
 }//end class
 
 ?>
+

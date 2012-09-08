@@ -2,8 +2,8 @@
 return <<<TEMPLATE
 {$_('require','header.html.php')}
 {$_('Markdown',$_('require','index.md'))}<ol class="toc">
-{$_('repeat_foreach', $links, '	<li><a href="$link_prefix$value->href" title="$value->description">
-<span>$value->name 
+{$_('repeat_foreach', $links, ' <li><a href="$link_prefix$value->href" title="$value->description">
+<span>$value->name
 <small><i>$value->tagline</i></small>
 </span> <span class="right">&nbsp;$count</span></a></li>
 ')}
@@ -17,3 +17,4 @@ return <<<TEMPLATE
 <p> </p>
 {$_('require','footer.html.php')}
 TEMPLATE;
+

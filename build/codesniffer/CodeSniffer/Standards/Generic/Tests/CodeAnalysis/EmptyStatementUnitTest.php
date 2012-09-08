@@ -31,7 +31,6 @@
 class Generic_Tests_CodeAnalysis_EmptyStatementUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -48,7 +47,6 @@ class Generic_Tests_CodeAnalysis_EmptyStatementUnitTest extends AbstractSniffUni
                );
 
     }//end getErrorList()
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -75,7 +73,7 @@ class Generic_Tests_CodeAnalysis_EmptyStatementUnitTest extends AbstractSniffUni
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

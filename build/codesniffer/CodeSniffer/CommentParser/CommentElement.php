@@ -48,7 +48,6 @@ if (class_exists('PHP_CodeSniffer_CommentParser_SingleElement', true) === false)
 class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_CommentParser_SingleElement
 {
 
-
     /**
      * Constructs a PHP_CodeSniffer_CommentParser_CommentElement.
      *
@@ -75,7 +74,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
 
     }//end __construct()
 
-
     /**
      * Returns the short comment description.
      *
@@ -92,7 +90,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
         return implode('', array_slice($this->tokens, 0, ($pos + 1)));
 
     }//end getShortComment()
-
 
     /**
      * Returns the last token position of the short comment description.
@@ -132,7 +129,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
 
     }//end _getShortCommentEndPos()
 
-
     /**
      * Returns the long comment description.
      *
@@ -149,7 +145,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
         return implode('', array_slice($this->tokens, $start));
 
     }//end getLongComment()
-
 
     /**
      * Returns the start position of the long comment description.
@@ -182,7 +177,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
 
     }//end _getLongCommentStartPos()
 
-
     /**
      * Returns the whitespace that exists between
      * the short and the long comment description.
@@ -203,7 +197,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
         );
 
     }//end getWhiteSpaceBetween()
-
 
     /**
      * Returns the number of newlines that exist before the tags.
@@ -228,7 +221,6 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
 
     }//end getNewlineAfter()
 
-
     /**
      * Returns true if there is no comment.
      *
@@ -240,7 +232,7 @@ class PHP_CodeSniffer_CommentParser_CommentElement extends PHP_CodeSniffer_Comme
 
     }//end isEmpty()
 
-
 }//end class
 
 ?>
+

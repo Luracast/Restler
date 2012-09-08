@@ -2,7 +2,7 @@
 /**
  * Flat File DB. All data is serialized and stored in data_serialized.php
  * This file will be automatically created when missing
- * Make sure this folder has sufficient write permission 
+ * Make sure this folder has sufficient write permission
  * for this script to create the file.
  */
 class DB_Serialized_File
@@ -84,13 +84,14 @@ class DB_Serialized_File
         /** install initial data **/
         $this->arr = array();
         $this->arr['rs'] = array(
-        array('id' => 1, 
-        'name' => 'Jac Wright', 
-        'email' => 'jacwright@gmail.com'), 
-        array('id' => 2, 
-        'name' => 'Arul Kumaran', 
+        array('id' => 1,
+        'name' => 'Jac Wright',
+        'email' => 'jacwright@gmail.com'),
+        array('id' => 2,
+        'name' => 'Arul Kumaran',
         'email' => 'arul@luracast.com'));
         $this->arr['pk'] = 5;
         $this->modifed = TRUE;
     }
 }
+

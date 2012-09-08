@@ -34,10 +34,9 @@ require_once dirname(__FILE__).'/AbstractTestCase.php';
 class Core_Reports_EmacsTest extends Core_Reports_AbstractTestCase
 {
 
-
     /**
      * Tests standard generation.
-     * 
+     *
      * @return void
      */
     public function testGenerate()
@@ -49,7 +48,7 @@ class Core_Reports_EmacsTest extends Core_Reports_AbstractTestCase
 
     }//end testGenerate()
 
-
 }//end class
 
 ?>
+

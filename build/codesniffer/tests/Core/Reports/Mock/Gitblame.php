@@ -112,7 +112,6 @@ class PHP_CodeSniffer_Reports_Mock_Gitblame extends PHP_CodeSniffer_Reports_Gitb
         '1ee0f41e (Ben Selby 10 2009-08-25  45)      * @return',
     );
 
-
     /**
      * Mocks the gitblame command.
      *
@@ -144,7 +143,6 @@ class PHP_CodeSniffer_Reports_Mock_Gitblame extends PHP_CodeSniffer_Reports_Gitb
 
     }//end getGitblameContent()
 
-
     /**
      * Needed to test protected method.
      *
@@ -158,7 +156,7 @@ class PHP_CodeSniffer_Reports_Mock_Gitblame extends PHP_CodeSniffer_Reports_Gitb
 
     }//end testGetGitAuthor()
 
-
 }//end class
 
 ?>
+

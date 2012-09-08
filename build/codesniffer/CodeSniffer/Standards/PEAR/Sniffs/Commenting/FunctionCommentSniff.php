@@ -83,7 +83,6 @@ class PEAR_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sni
      */
     protected $currentFile = null;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -94,7 +93,6 @@ class PEAR_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sni
         return array(T_FUNCTION);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -236,7 +234,6 @@ class PEAR_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sni
 
     }//end process()
 
-
     /**
      * Process any throw tags that this function comment has.
      *
@@ -263,7 +260,6 @@ class PEAR_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sni
         }
 
     }//end processThrows()
-
 
     /**
      * Process the return comment of this function comment.
@@ -298,7 +294,6 @@ class PEAR_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sni
         }
 
     }//end processReturn()
-
 
     /**
      * Process the function parameter comments.
@@ -485,7 +480,7 @@ class PEAR_Sniffs_Commenting_FunctionCommentSniff implements PHP_CodeSniffer_Sni
 
     }//end processParams()
 
-
 }//end class
 
 ?>
+

@@ -70,7 +70,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
      */
     private $_throws = array();
 
-
     /**
      * Constructs a PHP_CodeSniffer_CommentParser_FunctionCommentParser.
      *
@@ -82,7 +81,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
         parent::__construct($comment, $phpcsFile);
 
     }//end __construct()
-
 
     /**
      * Parses parameter elements.
@@ -103,7 +101,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
         return $param;
 
     }//end parseParam()
-
 
     /**
      * Parses return elements.
@@ -126,7 +123,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
 
     }//end parseReturn()
 
-
     /**
      * Parses throws elements.
      *
@@ -148,7 +144,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
 
     }//end parseThrows()
 
-
     /**
      * Returns the parameter elements that this function comment contains.
      *
@@ -163,7 +158,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
 
     }//end getParams()
 
-
     /**
      * Returns the return element in this fucntion comment.
      *
@@ -177,7 +171,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
 
     }//end getReturn()
 
-
     /**
      * Returns the throws elements in this fucntion comment.
      *
@@ -190,7 +183,6 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
         return $this->_throws;
 
     }//end getThrows()
-
 
     /**
      * Returns the allowed tags that can exist in a function comment.
@@ -207,7 +199,7 @@ class PHP_CodeSniffer_CommentParser_FunctionCommentParser extends PHP_CodeSniffe
 
     }//end getAllowedTags()
 
-
 }//end class
 
 ?>
+

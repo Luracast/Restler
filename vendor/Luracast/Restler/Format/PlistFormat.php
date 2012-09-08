@@ -87,3 +87,4 @@ class PlistFormat extends MultiFormat
         return $plist->toArray();
     }
 }
+

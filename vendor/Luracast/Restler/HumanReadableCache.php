@@ -126,3 +126,4 @@ class HumanReadableCache implements iCache
         return self::$cacheDir . '/' . $name . '.php';
     }
 }
+

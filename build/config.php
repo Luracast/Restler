@@ -23,3 +23,4 @@ define('PHPDOC_PATH', BUILD_PATH.DIRECTORY_SEPARATOR.PHPDOC_DIR);
 define('API_DOC_TITLE', 'Luracast Restler v3.0 API Documentation');
 
 set_include_path(get_include_path() . PATH_SEPARATOR . RESTLER_PATH);
+

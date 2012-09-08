@@ -16,3 +16,4 @@ class Book
     public $name = 'name of the book';
     public $author = 'person who wrote the book';
 }
+

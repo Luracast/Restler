@@ -32,7 +32,6 @@
 class Generic_Tests_ControlStructures_InlineControlStructureUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -73,7 +72,6 @@ class Generic_Tests_ControlStructures_InlineControlStructureUnitTest extends Abs
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -88,7 +86,7 @@ class Generic_Tests_ControlStructures_InlineControlStructureUnitTest extends Abs
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

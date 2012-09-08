@@ -33,7 +33,6 @@ require_once 'PHP/CodeSniffer/DocGenerators/Generator.php';
 class PHP_CodeSniffer_DocGenerators_Text extends PHP_CodeSniffer_DocGenerators_Generator
 {
 
-
     /**
      * Process the documentation for a single sniff.
      *
@@ -57,7 +56,6 @@ class PHP_CodeSniffer_DocGenerators_Text extends PHP_CodeSniffer_DocGenerators_G
 
     }//end processSniff()
 
-
     /**
      * Prints the title area for a single sniff.
      *
@@ -79,7 +77,6 @@ class PHP_CodeSniffer_DocGenerators_Text extends PHP_CodeSniffer_DocGenerators_G
         echo PHP_EOL.PHP_EOL;
 
     }//end printTitle()
-
 
     /**
      * Print a text block found in a standard.
@@ -125,7 +122,6 @@ class PHP_CodeSniffer_DocGenerators_Text extends PHP_CodeSniffer_DocGenerators_G
         echo implode(PHP_EOL, $lines).PHP_EOL.PHP_EOL;
 
     }//end printTextBlock()
-
 
     /**
      * Print a code comparison block found in a standard.
@@ -260,7 +256,7 @@ class PHP_CodeSniffer_DocGenerators_Text extends PHP_CodeSniffer_DocGenerators_G
 
     }//end printCodeComparisonBlock()
 
-
 }//end class
 
 ?>
+

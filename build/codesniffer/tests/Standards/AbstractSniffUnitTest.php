@@ -42,7 +42,6 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
      */
     protected static $phpcs = null;
 
-
     /**
      * Sets up this unit test.
      *
@@ -56,7 +55,6 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
 
     }//end setUp()
 
-
     /**
      * Should this test be skipped for some reason.
      *
@@ -67,7 +65,6 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
         return false;
 
     }//end shouldSkipTest()
-
 
     /**
      * Tests the extending classes Sniff class.
@@ -185,7 +182,6 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
         }
 
     }//end testSniff()
-
 
     /**
      * Generate a list of test failures for a given sniffed file.
@@ -371,7 +367,6 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
 
     }//end generateFailureMessages()
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -381,7 +376,6 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
      * @return array(int => int)
      */
     protected abstract function getErrorList();
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -393,7 +387,7 @@ abstract class AbstractSniffUnitTest extends PHPUnit_Framework_TestCase
      */
     protected abstract function getWarningList();
 
-
 }//end class
 
 ?>
+

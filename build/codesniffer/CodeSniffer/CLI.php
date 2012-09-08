@@ -54,7 +54,6 @@ class PHP_CodeSniffer_CLI
      */
     public $warningSeverity = 0;
 
-
     /**
      * Exits if the minimum requirements of PHP_CodSniffer are not met.
      *
@@ -74,7 +73,6 @@ class PHP_CodeSniffer_CLI
         }
 
     }//end checkRequirements()
-
 
     /**
      * Get a list of default values for all possible command line arguments.
@@ -166,7 +164,6 @@ class PHP_CodeSniffer_CLI
 
     }//end getDefaults()
 
-
     /**
      * Process the command line arguments and returns the values.
      *
@@ -214,7 +211,6 @@ class PHP_CodeSniffer_CLI
         return $values;
 
     }//end getCommandLineValues()
-
 
     /**
      * Processes a short (-e) command line argument.
@@ -276,7 +272,6 @@ class PHP_CodeSniffer_CLI
         return $values;
 
     }//end processShortArgument()
-
 
     /**
      * Processes a long (--example) command line argument.
@@ -360,7 +355,7 @@ class PHP_CodeSniffer_CLI
                         $report = substr($arg, 7);
                         $output = null;
                     } else {
-                        
+
                         $report = substr($arg, 7, ($split - 7));
                         $output = substr($arg, ($split + 1));
                         if ($output === false) {
@@ -426,7 +421,6 @@ class PHP_CodeSniffer_CLI
 
     }//end processLongArgument()
 
-
     /**
      * Processes an unknown command line argument.
      *
@@ -460,7 +454,6 @@ class PHP_CodeSniffer_CLI
         return $values;
 
     }//end processUnknownArgument()
-
 
     /**
      * Runs PHP_CodeSniffer over files and directories.
@@ -551,7 +544,6 @@ class PHP_CodeSniffer_CLI
 
     }//end process()
 
-
     /**
      * Prints the error report for the run.
      *
@@ -604,7 +596,6 @@ class PHP_CodeSniffer_CLI
 
     }//end printErrorReport()
 
-
     /**
      * Convert the passed standard into a valid standard.
      *
@@ -640,7 +631,6 @@ class PHP_CodeSniffer_CLI
         return $standard;
 
     }//end validateStandard()
-
 
     /**
      * Prints out the usage information for this script.
@@ -687,7 +677,6 @@ class PHP_CodeSniffer_CLI
 
     }//end printUsage()
 
-
     /**
      * Prints out a list of installed coding standards.
      *
@@ -713,7 +702,7 @@ class PHP_CodeSniffer_CLI
 
     }//end printInstalledStandards()
 
-
 }//end class
 
 ?>
+

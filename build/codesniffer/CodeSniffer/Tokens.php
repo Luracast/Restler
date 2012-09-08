@@ -384,7 +384,6 @@ final class PHP_CodeSniffer_Tokens
                                     T_HEREDOC,
                                    );
 
-
     /**
      * A PHP_CodeSniffer_Tokens class cannot be constructed.
      *
@@ -394,7 +393,6 @@ final class PHP_CodeSniffer_Tokens
     {
 
     }//end __construct()
-
 
     /**
      * Returns the highest weighted token type.
@@ -435,7 +433,7 @@ final class PHP_CodeSniffer_Tokens
 
     }//end getHighestWeightedToken()
 
-
 }//end class
 
 ?>
+

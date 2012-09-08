@@ -36,7 +36,6 @@ class Squiz_Sniffs_CSS_EmptyStyleDefinitionSniff implements PHP_CodeSniffer_Snif
      */
     public $supportedTokenizers = array('CSS');
 
-
     /**
      * Returns the token types that this sniff is interested in.
      *
@@ -47,7 +46,6 @@ class Squiz_Sniffs_CSS_EmptyStyleDefinitionSniff implements PHP_CodeSniffer_Snif
         return array(T_STYLE);
 
     }//end register()
-
 
     /**
      * Processes the tokens that this sniff is interested in.
@@ -72,3 +70,4 @@ class Squiz_Sniffs_CSS_EmptyStyleDefinitionSniff implements PHP_CodeSniffer_Snif
 
 }//end class
 ?>
+

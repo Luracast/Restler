@@ -324,3 +324,4 @@ class Resources implements iUseAuthentication
         return end($className);
     }
 }
+

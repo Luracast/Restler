@@ -32,7 +32,6 @@
 class PEAR_Tests_Functions_FunctionDeclarationUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -59,7 +58,6 @@ class PEAR_Tests_Functions_FunctionDeclarationUnitTest extends AbstractSniffUnit
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -74,7 +72,7 @@ class PEAR_Tests_Functions_FunctionDeclarationUnitTest extends AbstractSniffUnit
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

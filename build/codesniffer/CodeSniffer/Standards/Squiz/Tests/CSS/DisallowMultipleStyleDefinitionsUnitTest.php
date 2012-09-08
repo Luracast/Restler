@@ -47,7 +47,6 @@ class Squiz_Tests_CSS_DisallowMultipleStyleDefinitionsUnitTest extends AbstractS
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -62,7 +61,7 @@ class Squiz_Tests_CSS_DisallowMultipleStyleDefinitionsUnitTest extends AbstractS
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

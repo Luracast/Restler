@@ -28,3 +28,4 @@ interface iUseAuthentication
      */
     public function __setAuthenticationStatus($isAuthenticated=false);
 }
+

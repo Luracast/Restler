@@ -32,7 +32,6 @@
 class Squiz_Tests_ControlStructures_ForLoopDeclarationUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -71,7 +70,6 @@ class Squiz_Tests_ControlStructures_ForLoopDeclarationUnitTest extends AbstractS
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -86,7 +84,7 @@ class Squiz_Tests_ControlStructures_ForLoopDeclarationUnitTest extends AbstractS
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

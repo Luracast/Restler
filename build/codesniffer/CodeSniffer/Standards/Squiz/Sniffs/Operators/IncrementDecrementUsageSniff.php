@@ -32,7 +32,6 @@
 class Squiz_Sniffs_Operators_IncrementDecrementUsageSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -49,7 +48,6 @@ class Squiz_Sniffs_Operators_IncrementDecrementUsageSniff implements PHP_CodeSni
                );
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -71,7 +69,6 @@ class Squiz_Sniffs_Operators_IncrementDecrementUsageSniff implements PHP_CodeSni
         }
 
     }//end process()
-
 
     /**
      * Checks to ensure increment and decrement operators are not confusing.
@@ -117,7 +114,6 @@ class Squiz_Sniffs_Operators_IncrementDecrementUsageSniff implements PHP_CodeSni
         }
 
     }//end processIncDec()
-
 
     /**
      * Checks to ensure increment and decrement operators are used.
@@ -229,7 +225,7 @@ class Squiz_Sniffs_Operators_IncrementDecrementUsageSniff implements PHP_CodeSni
 
     }//end processAssignment()
 
-
 }//end class
 
 ?>
+

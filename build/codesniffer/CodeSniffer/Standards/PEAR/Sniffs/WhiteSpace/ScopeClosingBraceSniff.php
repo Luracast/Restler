@@ -31,7 +31,6 @@
 class PEAR_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -42,7 +41,6 @@ class PEAR_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer_S
         return PHP_CodeSniffer_Tokens::$scopeOpeners;
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -138,7 +136,7 @@ class PEAR_Sniffs_WhiteSpace_ScopeClosingBraceSniff implements PHP_CodeSniffer_S
 
     }//end process()
 
-
 }//end class
 
 ?>
+

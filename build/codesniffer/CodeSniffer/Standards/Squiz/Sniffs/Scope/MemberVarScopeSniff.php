@@ -33,7 +33,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff', true) === fa
 class Squiz_Sniffs_Scope_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
 {
 
-
     /**
      * Processes the function tokens within the class.
      *
@@ -56,7 +55,6 @@ class Squiz_Sniffs_Scope_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_A
 
     }//end processMemberVar()
 
-
     /**
      * Processes normal variables.
      *
@@ -71,7 +69,6 @@ class Squiz_Sniffs_Scope_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_A
         return;
 
     }//end processVariable()
-
 
     /**
      * Processes variables in double quoted strings.
@@ -88,7 +85,7 @@ class Squiz_Sniffs_Scope_MemberVarScopeSniff extends PHP_CodeSniffer_Standards_A
 
     }//end processVariableInString()
 
-
 }//end class
 
 ?>
+

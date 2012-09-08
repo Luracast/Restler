@@ -18,3 +18,4 @@ require_once __DIR__.'/../../vendor/restler.php';
  * without use statements */
 if (!class_exists('Restler'))
     class_alias('Luracast\Restler\Restler', 'Restler');
+

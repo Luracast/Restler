@@ -31,3 +31,4 @@ interface iRespond
      */
     public function formatError($statusCode, $message);
 }
+

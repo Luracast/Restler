@@ -35,7 +35,6 @@ require_once 'PHP/CodeSniffer/DocGenerators/Generator.php';
 class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_Generator
 {
 
-
     /**
      * Generates the documentation for a standard.
      *
@@ -65,7 +64,6 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
         echo $content;
 
     }//end generate()
-
 
     /**
      * Print the header of the HTML page.
@@ -150,7 +148,6 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
 
     }//end printHeader()
 
-
     /**
      * Print the table of contents for the standard.
      *
@@ -177,7 +174,6 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
 
     }//end printToc()
 
-
     /**
      * Print the footer of the HTML page.
      *
@@ -198,7 +194,6 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
         echo '</html>'.PHP_EOL;
 
     }//end printFooter()
-
 
     /**
      * Process the documentation for a single sniff.
@@ -225,7 +220,6 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
 
     }//end processSniff()
 
-
     /**
      * Print a text block found in a standard.
      *
@@ -245,7 +239,6 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
         echo "  <p class=\"text\">$content</p>".PHP_EOL;
 
     }//end printTextBlock()
-
 
     /**
      * Print a code comparison block found in a standard.
@@ -285,7 +278,7 @@ class PHP_CodeSniffer_DocGenerators_HTML extends PHP_CodeSniffer_DocGenerators_G
 
     }//end printCodeComparisonBlock()
 
-
 }//end class
 
 ?>
+

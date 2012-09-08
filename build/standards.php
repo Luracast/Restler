@@ -14,3 +14,4 @@ echo PHP_EOL;
 echo $command;
 echo exec($command, $output, $return_var);
 echo implode(PHP_EOL, $output);
+

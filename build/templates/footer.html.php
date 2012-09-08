@@ -7,3 +7,4 @@ return <<<TEMPLATE
 </body>
 </html>
 TEMPLATE;
+

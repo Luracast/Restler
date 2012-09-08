@@ -30,7 +30,6 @@
 class Squiz_Tests_Debug_JavaScriptLintUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Should this test be skipped for some reason.
      *
@@ -42,7 +41,6 @@ class Squiz_Tests_Debug_JavaScriptLintUnitTest extends AbstractSniffUnitTest
         return (is_null($jslPath));
 
     }//end shouldSkipTest()
-
 
     /**
      * Returns the lines where errors should occur.
@@ -57,7 +55,6 @@ class Squiz_Tests_Debug_JavaScriptLintUnitTest extends AbstractSniffUnitTest
         return array();
 
     }//end getErrorList()
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -75,7 +72,7 @@ class Squiz_Tests_Debug_JavaScriptLintUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

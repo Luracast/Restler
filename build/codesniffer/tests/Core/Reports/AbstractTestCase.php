@@ -35,7 +35,7 @@ class Core_Reports_AbstractTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * Fixtures of report data.
-     * 
+     *
      * @var array
      */
     protected $fixtureReportData
@@ -149,12 +149,11 @@ class Core_Reports_AbstractTestCase extends PHPUnit_Framework_TestCase
                        )
           );
 
-
     /**
      * Returns report standard generation.
-     * 
+     *
      * @param PHP_CodeSniffer_Report $report The report under test.
-     * 
+     *
      * @return string
      */
     protected function getFixtureReport(PHP_CodeSniffer_Report $report)
@@ -167,7 +166,7 @@ class Core_Reports_AbstractTestCase extends PHPUnit_Framework_TestCase
 
     }//end getFixtureReport()
 
-
 }//end class
 
 ?>
+

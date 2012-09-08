@@ -8,7 +8,7 @@ class BMI
     }
     /**
      * Calculate Body Mass Index
-     * 
+     *
      * Calculate the BMI from given height in centimeter
      * and weight in kilograms
      * @param float $height height in centimeters
@@ -19,15 +19,15 @@ class BMI
     function calculate ($height = 162.6, $weight = 84)
     {
         /**
-         * 
+         *
          * Enter description here ...
-         * @var 
+         * @var
          */
         $result = new \stdClass();
-        #	1 pound = 0.45359237 kilograms
-        #	1 meter = 3.2808399  feet
-        #	1 meter = 39.3700787 inches
-        #	1 meter = 100		 cms
+        #   1 pound = 0.45359237 kilograms
+        #   1 meter = 3.2808399  feet
+        #   1 meter = 39.3700787 inches
+        #   1 meter = 100        cms
         #assume height is given in centimeters
         $cm = $height;
         #assume weight is given in kilograms
@@ -47,10 +47,11 @@ class BMI
         } else {
             $result->message = 'Obesity';
         }
-        $result->metric = array('height' => "$cm centimeter", 
+        $result->metric = array('height' => "$cm centimeter",
         'weight' => "$weight kilograms");
-        $result->imperial = array('height' => "$feet feet $inches inches", 
+        $result->imperial = array('height' => "$feet feet $inches inches",
         'weight' => "$lb pounds");
         return $result;
     }
 }
+

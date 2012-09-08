@@ -76,3 +76,4 @@ class UploadFormat extends Format
         return $_FILES + $_POST;
     }
 }
+

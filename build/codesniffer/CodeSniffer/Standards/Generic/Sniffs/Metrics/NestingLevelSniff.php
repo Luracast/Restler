@@ -43,7 +43,6 @@ class Generic_Sniffs_Metrics_NestingLevelSniff implements PHP_CodeSniffer_Sniff
      */
     public $absoluteNestingLevel = 10;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -54,7 +53,6 @@ class Generic_Sniffs_Metrics_NestingLevelSniff implements PHP_CodeSniffer_Sniff
         return array(T_FUNCTION);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -109,7 +107,7 @@ class Generic_Sniffs_Metrics_NestingLevelSniff implements PHP_CodeSniffer_Sniff
 
     }//end process()
 
-
 }//end class
 
 ?>
+

@@ -47,7 +47,6 @@ class Generic_Sniffs_Strings_UnnecessaryStringConcatSniff implements PHP_CodeSni
      */
     public $error = true;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -61,7 +60,6 @@ class Generic_Sniffs_Strings_UnnecessaryStringConcatSniff implements PHP_CodeSni
                );
 
     }//end register()
-
 
     /**
      * Processes this sniff, when one of its tokens is encountered.
@@ -120,7 +118,7 @@ class Generic_Sniffs_Strings_UnnecessaryStringConcatSniff implements PHP_CodeSni
 
     }//end process()
 
-
 }//end class
 
 ?>
+

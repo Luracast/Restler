@@ -3,7 +3,7 @@
  * MySQL DB. All data is stored in data_pdo_mysql database
  * Create an empty MySQL database and set the dbname, username
  * and password below
- * 
+ *
  * This class will create the table with sample data
  * automatically on first `get` or `get($id)` request
  */
@@ -16,7 +16,7 @@ class DB_PDO_MySQL
 //update the dbname username and password to suit your server
             $this->db = new PDO(
             'mysql:host=localhost;dbname=data_pdo_mysql', 'username', 'password');
-            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, 
+            $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,
             PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
@@ -108,3 +108,4 @@ class DB_PDO_MySQL
         ");
     }
 }
+

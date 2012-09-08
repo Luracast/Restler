@@ -63,3 +63,4 @@ class WadlFormat extends Format
         throw new RestException ( 500, 'WSDL format is read only' );
     }
 }
+

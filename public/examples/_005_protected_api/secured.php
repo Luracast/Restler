@@ -4,7 +4,8 @@
  * @protected
  */
 class Secured {
-	function index() {
-		return 'protected class';
-	}
+    function index() {
+        return 'protected class';
+    }
 }
+

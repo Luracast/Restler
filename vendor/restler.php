@@ -8,3 +8,4 @@ return call_user_func(function ()
     spl_autoload_register($loader);
     return $loader;
 });
+

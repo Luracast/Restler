@@ -179,7 +179,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
      */
     public $orders = array();
 
-
     /**
      * Constructs a Doc Comment Parser.
      *
@@ -192,7 +191,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         $this->phpcsFile     = $phpcsFile;
 
     }//end __construct()
-
 
     /**
      * Initiates the parsing of the doc comment.
@@ -209,7 +207,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         }
 
     }//end parse()
-
 
     /**
      * Parse the comment.
@@ -253,7 +250,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         $this->_parseWords();
 
     }//end _parse()
-
 
     /**
      * Parses each word within the doc comment.
@@ -379,7 +375,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end _parseWords()
 
-
     /**
      * Returns the line that the token exists on in the doc comment.
      *
@@ -398,7 +393,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $newlines;
 
     }//end getLine()
-
 
     /**
      * Parses see tag element within the doc comment.
@@ -421,7 +415,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end parseSee()
 
-
     /**
      * Parses the comment element that appears at the top of the doc comment.
      *
@@ -440,7 +433,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $this->comment;
 
     }//end parseComment()
-
 
     /**
      * Parses \@deprecated tags.
@@ -462,7 +454,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end parseDeprecated()
 
-
     /**
      * Parses \@since tags.
      *
@@ -482,7 +473,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $this->since;
 
     }//end parseSince()
-
 
     /**
      * Parses \@link tags.
@@ -505,7 +495,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end parseLink()
 
-
     /**
      * Returns the see elements that appear in this doc comment.
      *
@@ -516,7 +505,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $this->sees;
 
     }//end getSees()
-
 
     /**
      * Returns the comment element that appears at the top of this doc comment.
@@ -529,7 +517,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end getComment()
 
-
     /**
      * Returns the word list.
      *
@@ -541,7 +528,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end getWords()
 
-
     /**
      * Returns the list of found tags.
      *
@@ -552,7 +538,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $this->foundTags;
 
     }//end getTags()
-
 
     /**
      * Returns the link elements found in this comment.
@@ -567,7 +552,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end getLinks()
 
-
     /**
      * Returns the deprecated element found in this comment.
      *
@@ -581,7 +565,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end getDeprecated()
 
-
     /**
      * Returns the since element found in this comment.
      *
@@ -594,7 +577,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $this->since;
 
     }//end getSince()
-
 
     /**
      * Parses the specified tag.
@@ -642,7 +624,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end parseTag()
 
-
     /**
      * Returns a list of tags that this comment parser allows for it's comment.
      *
@@ -655,7 +636,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
      */
     protected abstract function getAllowedTags();
 
-
     /**
      * Returns the tag orders (index => tagName).
      *
@@ -666,7 +646,6 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
         return $this->orders;
 
     }//end getTagOrders()
-
 
     /**
      * Returns the unknown tags.
@@ -679,7 +658,7 @@ abstract class PHP_CodeSniffer_CommentParser_AbstractParser
 
     }//end getUnknown()
 
-
 }//end class
 
 ?>
+

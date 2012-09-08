@@ -33,7 +33,6 @@
   </imperial>
 </response>
 
-
  Example 2: GET bmi.xml returns
 
 <?xml version="1.0"?>
@@ -49,7 +48,6 @@
     <weight>185.19 pounds</weight>
   </imperial>
 </response>
-
 
  Example 3: GET bmi.json returns
 
@@ -73,3 +71,4 @@ $r = new Restler();
 $r->setSupportedFormats('JsonFormat', 'XmlFormat');
 $r->addAPIClass('BMI');
 $r->handle();
+

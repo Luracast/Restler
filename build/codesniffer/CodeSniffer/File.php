@@ -252,7 +252,6 @@ class PHP_CodeSniffer_File
      */
     protected $ruleset = array();
 
-
     /**
      * Constructs a PHP_CodeSniffer_File.
      *
@@ -284,7 +283,6 @@ class PHP_CodeSniffer_File
 
     }//end __construct()
 
-
     /**
      * Sets the name of the currently active sniff.
      *
@@ -297,7 +295,6 @@ class PHP_CodeSniffer_File
         $this->_activeListener = $activeListener;
 
     }//end setActiveListener()
-
 
     /**
      * Adds a listener to the token stack that listens to the specific tokens.
@@ -325,7 +322,6 @@ class PHP_CodeSniffer_File
         }
 
     }//end addTokenListener()
-
 
     /**
      * Removes a listener from listening from the specified tokens.
@@ -357,7 +353,6 @@ class PHP_CodeSniffer_File
 
     }//end removeTokenListener()
 
-
     /**
      * Returns the token stack for this file.
      *
@@ -368,7 +363,6 @@ class PHP_CodeSniffer_File
         return $this->_tokens;
 
     }//end getTokens()
-
 
     /**
      * Starts the stack traversal and tells listeners when tokens are found.
@@ -535,7 +529,6 @@ class PHP_CodeSniffer_File
 
     }//end start()
 
-
     /**
      * Remove vars stored in this sniff that are no longer required.
      *
@@ -547,7 +540,6 @@ class PHP_CodeSniffer_File
         $this->_listeners = null;
 
     }//end cleanUp()
-
 
     /**
      * Tokenizes the file and preapres it for the test run.
@@ -602,7 +594,6 @@ class PHP_CodeSniffer_File
 
     }//end _parse()
 
-
     /**
      * Opens a file and detects the EOL character being used.
      *
@@ -656,7 +647,6 @@ class PHP_CodeSniffer_File
         return $eolChar;
 
     }//end detectLineEndings()
-
 
     /**
      * Adds an error to the error stack.
@@ -759,7 +749,6 @@ class PHP_CodeSniffer_File
 
     }//end addError()
 
-
     /**
      * Adds an warning to the warning stack.
      *
@@ -861,7 +850,6 @@ class PHP_CodeSniffer_File
 
     }//end addWarning()
 
-
     /**
      * Returns the number of errors raised.
      *
@@ -872,7 +860,6 @@ class PHP_CodeSniffer_File
         return $this->_errorCount;
 
     }//end getErrorCount()
-
 
     /**
      * Returns the number of warnings raised.
@@ -885,7 +872,6 @@ class PHP_CodeSniffer_File
 
     }//end getWarningCount()
 
-
     /**
      * Returns the list of ignored lines.
      *
@@ -896,7 +882,6 @@ class PHP_CodeSniffer_File
         return $this->_ignoredLines;
 
     }//end getIgnoredLines()
-
 
     /**
      * Returns the errors raised from processing this file.
@@ -909,7 +894,6 @@ class PHP_CodeSniffer_File
 
     }//end getErrors()
 
-
     /**
      * Returns the warnings raised from processing this file.
      *
@@ -921,7 +905,6 @@ class PHP_CodeSniffer_File
 
     }//end getWarnings()
 
-
     /**
      * Returns the absolute filename of this file.
      *
@@ -932,7 +915,6 @@ class PHP_CodeSniffer_File
         return $this->_file;
 
     }//end getFilename()
-
 
     /**
      * Creates an array of tokens when given some PHP code.
@@ -973,7 +955,6 @@ class PHP_CodeSniffer_File
 
     }//end tokenizeString()
 
-
     /**
      * Creates a map of tokens => line numbers for each token.
      *
@@ -998,7 +979,6 @@ class PHP_CodeSniffer_File
         }
 
     }//end _createLineMap()
-
 
     /**
      * Converts tabs into spaces.
@@ -1088,7 +1068,6 @@ class PHP_CodeSniffer_File
 
     }//end _convertTabs()
 
-
     /**
      * Creates a column map.
      *
@@ -1118,7 +1097,6 @@ class PHP_CodeSniffer_File
         }
 
     }//end _createColumnMap()
-
 
     /**
      * Creates a map for opening and closing of square brackets.
@@ -1209,7 +1187,6 @@ class PHP_CodeSniffer_File
 
     }//end _createBracketMap()
 
-
     /**
      * Creates a map for opening and closing of parenthesis.
      *
@@ -1264,7 +1241,6 @@ class PHP_CodeSniffer_File
 
     }//end _createParenthesisMap()
 
-
     /**
      * Creates a map for the parenthesis tokens that surround other tokens.
      *
@@ -1309,7 +1285,6 @@ class PHP_CodeSniffer_File
 
     }//end _createParenthesisNestingMap()
 
-
     /**
      * Creates a scope map of tokens that open scopes.
      *
@@ -1351,7 +1326,6 @@ class PHP_CodeSniffer_File
         }
 
     }//end _createScopeMap()
-
 
     /**
      * Recurses though the scope openers to build a scope map.
@@ -1661,7 +1635,6 @@ class PHP_CodeSniffer_File
 
     }//end _recurseScopeMap()
 
-
     /**
      * Constructs the level map.
      *
@@ -1906,7 +1879,6 @@ class PHP_CodeSniffer_File
 
     }//end _createLevelMap()
 
-
     /**
      * Returns the declaration names for T_CLASS, T_INTERFACE and T_FUNCTION tokens.
      *
@@ -1938,7 +1910,6 @@ class PHP_CodeSniffer_File
         return $this->_tokens[$token]['content'];
 
     }//end getDeclarationName()
-
 
     /**
      * Check if the token at the specified position is a anonymus function.
@@ -1976,7 +1947,6 @@ class PHP_CodeSniffer_File
         return false;
 
     }//end isAnonymousFunction()
-
 
     /**
      * Returns the method parameters for the specified T_FUNCTION token.
@@ -2101,7 +2071,6 @@ class PHP_CodeSniffer_File
 
     }//end getMethodParameters()
 
-
     /**
      * Returns the visibility and implementation properies of a method.
      *
@@ -2189,7 +2158,6 @@ class PHP_CodeSniffer_File
                );
 
     }//end getMethodProperties()
-
 
     /**
      * Returns the visibility and implementation properies of the class member
@@ -2288,7 +2256,6 @@ class PHP_CodeSniffer_File
 
     }//end getMemberProperties()
 
-
     /**
      * Returns the visibility and implementation properies of a class.
      *
@@ -2346,7 +2313,6 @@ class PHP_CodeSniffer_File
                );
 
     }//end getClassProperties()
-
 
     /**
      * Determine if the passed token is a reference operator.
@@ -2408,7 +2374,6 @@ class PHP_CodeSniffer_File
 
     }//end isReference()
 
-
     /**
      * Returns the content of the tokens from the specified start position in
      * the token stack for the specified legnth.
@@ -2429,7 +2394,6 @@ class PHP_CodeSniffer_File
         return $str;
 
     }//end getTokensAsString()
-
 
     /**
      * Returns the position of the next specified token(s).
@@ -2497,7 +2461,6 @@ class PHP_CodeSniffer_File
 
     }//end findPrevious()
 
-
     /**
      * Returns the position of the next specified token(s).
      *
@@ -2564,7 +2527,6 @@ class PHP_CodeSniffer_File
 
     }//end findNext()
 
-
     /**
      * Returns the position of the first token on a line, matching given type.
      *
@@ -2623,7 +2585,6 @@ class PHP_CodeSniffer_File
 
     }//end findFirstOnLine()
 
-
     /**
      * Determine if the passed token has a condition of one of the passed types.
      *
@@ -2658,7 +2619,6 @@ class PHP_CodeSniffer_File
 
     }//end hasCondition()
 
-
     /**
      * Return the position of the condition for the passed token.
      *
@@ -2691,7 +2651,6 @@ class PHP_CodeSniffer_File
         return false;
 
     }//end getCondition()
-
 
     /**
      * Returns the name of the class that the specified class extends.
@@ -2732,7 +2691,7 @@ class PHP_CodeSniffer_File
 
     }//end findExtendedClassName()
 
-
 }//end class
 
 ?>
+

@@ -31,7 +31,6 @@
 class Generic_Sniffs_Formatting_NoSpaceAfterCastSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -42,7 +41,6 @@ class Generic_Sniffs_Formatting_NoSpaceAfterCastSniff implements PHP_CodeSniffer
         return PHP_CodeSniffer_Tokens::$castTokens;
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -64,7 +62,7 @@ class Generic_Sniffs_Formatting_NoSpaceAfterCastSniff implements PHP_CodeSniffer
 
     }//end process()
 
-
 }//end class
 
 ?>
+

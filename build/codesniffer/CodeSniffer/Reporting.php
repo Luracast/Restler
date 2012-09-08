@@ -37,7 +37,6 @@ if (is_file(dirname(__FILE__).'/../CodeSniffer.php') === true) {
 class PHP_CodeSniffer_Reporting
 {
 
-
     /**
      * Produce the appropriate report object based on $type parameter.
      *
@@ -64,16 +63,15 @@ class PHP_CodeSniffer_Reporting
 
     }//end factory()
 
-
     /**
      * Actually generates the report.
-     * 
+     *
      * @param string  $report          Report type.
      * @param array   $filesViolations Collected violations.
      * @param boolean $showSources     Show sources?
      * @param string  $reportFile      Report file to generate.
      * @param integer $reportWidth     Report max width.
-     * 
+     *
      * @return integer
      */
     public function printReport(
@@ -107,7 +105,6 @@ class PHP_CodeSniffer_Reporting
         return $numErrors;
 
     }//end printReport()
-
 
     /**
      * Pre-process and package violations for all files.
@@ -210,7 +207,7 @@ class PHP_CodeSniffer_Reporting
 
     }//end prepare()
 
-
 }//end class
 
 ?>
+

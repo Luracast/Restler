@@ -40,7 +40,6 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
     {
         $self = $this;
 
-
         $this->object->on(array(
             'This' => function ($arg) use ($self) {
                 $self->assertEquals('triggered-this', $arg);
@@ -55,7 +54,6 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
                 $self->assertEquals('triggered-those', $arg);
             },
         ));
-
 
         // Mocking the event triggers
         $this->object->go(array('onThis'  => 'triggered-this'));
@@ -88,7 +86,6 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
                 $self->assertEquals('triggered-those', $arg);
             }
         );
-
 
         // Mocking the event triggers
         $this->object->go(array('onThis'  => 'triggered-this'));
@@ -147,7 +144,6 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->object->go(array('onTest' => 'triggered'));
     }
 
-
     /**
      * @covers Luracast\Restler\EventEmitter::__call
      */
@@ -190,3 +186,4 @@ class EventEmitterTest extends \PHPUnit_Framework_TestCase
         $this->object->go(array('onTest' => 'triggered'));
     }
 }
+

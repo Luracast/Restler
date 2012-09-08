@@ -33,19 +33,18 @@
 class PHP_CodeSniffer_Reports_Summary implements PHP_CodeSniffer_Report
 {
 
-
     /**
      * Generates a summary of errors and warnings for each file processed.
-     * 
+     *
      * If verbose output is enabled, results are shown for all files, even if
      * they have no errors or warnings. If verbose output is disabled, we only
      * show files that have at least one warning or error.
-     * 
+     *
      * @param array   $report      Prepared report.
      * @param boolean $showSources Show sources?
      * @param int     $width       Maximum allowed lne width.
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function generate(
         $report,
@@ -124,7 +123,7 @@ class PHP_CodeSniffer_Reports_Summary implements PHP_CodeSniffer_Report
 
     }//end generate()
 
-
 }//end class
 
 ?>
+

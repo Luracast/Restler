@@ -30,7 +30,6 @@
 class Squiz_Tests_CSS_ClassDefinitionNameSpacingUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -48,7 +47,6 @@ class Squiz_Tests_CSS_ClassDefinitionNameSpacingUnitTest extends AbstractSniffUn
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -63,7 +61,7 @@ class Squiz_Tests_CSS_ClassDefinitionNameSpacingUnitTest extends AbstractSniffUn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

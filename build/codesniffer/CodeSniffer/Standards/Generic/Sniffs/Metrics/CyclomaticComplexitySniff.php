@@ -47,7 +47,6 @@ class Generic_Sniffs_Metrics_CyclomaticComplexitySniff implements PHP_CodeSniffe
      */
     public $absoluteComplexity = 20;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -58,7 +57,6 @@ class Generic_Sniffs_Metrics_CyclomaticComplexitySniff implements PHP_CodeSniffe
         return array(T_FUNCTION);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -126,7 +124,7 @@ class Generic_Sniffs_Metrics_CyclomaticComplexitySniff implements PHP_CodeSniffe
 
     }//end process()
 
-
 }//end class
 
 ?>
+

@@ -93,7 +93,6 @@ class Util
         return $method;
     }
 
-
     /**
      * Apply static and non-static properties for the instance of the given
      * class name using the method information metadata annotation provided,
@@ -146,3 +145,4 @@ class Util
         return $instance;
     }
 }
+

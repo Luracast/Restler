@@ -65,7 +65,6 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
      */
     private $_commentWhitespace = '';
 
-
     /**
      * Constructs a PHP_CodeSniffer_CommentParser_PairElement doc tag.
      *
@@ -92,7 +91,6 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
 
     }//end __construct()
 
-
     /**
      * Returns the element names that this tag is comprised of, in the order
      * that they appear in the tag.
@@ -108,7 +106,6 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
                );
 
     }//end getSubElements()
-
 
     /**
      * Processes the sub element with the specified name.
@@ -130,7 +127,6 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
 
     }//end processSubElement()
 
-
     /**
      * Returns the value of the tag.
      *
@@ -141,7 +137,6 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
         return $this->_value;
 
     }//end getValue()
-
 
     /**
      * Returns the comment associated with the value of this tag.
@@ -154,7 +149,6 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
 
     }//end getComment()
 
-
     /**
      * Returns the witespace before the content of this tag.
      *
@@ -166,7 +160,7 @@ class PHP_CodeSniffer_CommentParser_PairElement extends PHP_CodeSniffer_CommentP
 
     }//end getWhitespaceBeforeValue()
 
-
 }//end class
 
 ?>
+

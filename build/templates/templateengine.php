@@ -3,9 +3,9 @@ class TemplateEngine
 {
     public static $scope;
     public static function render (
-    $template_name, 
-    $scope = array(), 
-    $path = NULL, 
+    $template_name,
+    $scope = array(),
+    $path = NULL,
     $file_name = NULL)
     {
         $scope['_'] = 'forward_to_method';
@@ -82,7 +82,7 @@ class TemplateEngine
             case 2:
                 //eval with wrapper
                 $template_text = file_get_contents(
-                $template_name, 
+                $template_name,
                 TRUE);
                 $template_text = eval(
                 "return <<<TEMPLATE\n$template_text\n\nTEMPLATE;\n");
@@ -101,7 +101,7 @@ class TemplateEngine
         } else {
             if (is_null($file_name)) {
                 $file_name = pathinfo(
-                $template_name, 
+                $template_name,
                 PATHINFO_FILENAME) . '.' .
                  pathinfo($template_name, PATHINFO_EXTENSION);
             }
@@ -109,7 +109,7 @@ class TemplateEngine
             #echo $path . PHP_EOL;
             mkdir_recursive($path, 0777);
             file_put_contents(
-            $path . DIRECTORY_SEPARATOR . $file_name, 
+            $path . DIRECTORY_SEPARATOR . $file_name,
             $template_text);
         }
     }
@@ -170,3 +170,4 @@ function mkdir_recursive ($pathname, $mode)
  #TemplateEngine::render('readme.htm.php', (array)$o, '.');
  TemplateEngine::render('readme.htm.php', (array)$o);
  */
+

@@ -70,3 +70,4 @@ class ValidationInfoTest extends \PHPUnit_Framework_TestCase
         $this->object->__set_state($info);
     }
 }
+

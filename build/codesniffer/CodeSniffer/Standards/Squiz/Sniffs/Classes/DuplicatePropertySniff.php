@@ -36,7 +36,6 @@ class Squiz_Sniffs_Classes_DuplicatePropertySniff implements PHP_CodeSniffer_Sni
      */
     public $supportedTokenizers = array('JS');
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -47,7 +46,6 @@ class Squiz_Sniffs_Classes_DuplicatePropertySniff implements PHP_CodeSniffer_Sni
         return array(T_OBJECT);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -94,8 +92,7 @@ class Squiz_Sniffs_Classes_DuplicatePropertySniff implements PHP_CodeSniffer_Sni
 
     }//end process()
 
-
 }//end class
 
-
 ?>
+

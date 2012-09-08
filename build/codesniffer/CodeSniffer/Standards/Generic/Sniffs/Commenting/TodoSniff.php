@@ -39,7 +39,6 @@ class Generic_Sniffs_Commenting_TodoSniff implements PHP_CodeSniffer_Sniff
                                    'JS',
                                   );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -50,7 +49,6 @@ class Generic_Sniffs_Commenting_TodoSniff implements PHP_CodeSniffer_Sniff
         return PHP_CodeSniffer_Tokens::$commentTokens;
 
     }//end register()
-
 
     /**
      * Processes this sniff, when one of its tokens is encountered.
@@ -85,7 +83,7 @@ class Generic_Sniffs_Commenting_TodoSniff implements PHP_CodeSniffer_Sniff
 
     }//end process()
 
-
 }//end class
 
 ?>
+

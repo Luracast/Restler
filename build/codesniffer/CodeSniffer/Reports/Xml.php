@@ -33,7 +33,6 @@
 class PHP_CodeSniffer_Reports_Xml implements PHP_CodeSniffer_Report
 {
 
-
     /**
      * Prints all violations for processed files, in a proprietary XML format.
      *
@@ -42,8 +41,8 @@ class PHP_CodeSniffer_Reports_Xml implements PHP_CodeSniffer_Report
      * @param array   $report      Prepared report.
      * @param boolean $showSources Show sources?
      * @param int     $width       Maximum allowed lne width.
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function generate(
         $report,
@@ -87,7 +86,7 @@ class PHP_CodeSniffer_Reports_Xml implements PHP_CodeSniffer_Report
 
     }//end generate()
 
-
 }//end class
 
 ?>
+

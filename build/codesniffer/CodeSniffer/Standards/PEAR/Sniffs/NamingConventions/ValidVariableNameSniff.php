@@ -34,7 +34,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractVariableSniff', true) === fa
 class PEAR_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniffer_Standards_AbstractVariableSniff
 {
 
-
     /**
      * Processes class member variables.
      *
@@ -79,7 +78,6 @@ class PEAR_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 
     }//end processMemberVar()
 
-
     /**
      * Processes normal variables.
      *
@@ -94,7 +92,6 @@ class PEAR_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
         return;
 
     }//end processVariable()
-
 
     /**
      * Processes variables in double quoted strings.
@@ -111,7 +108,7 @@ class PEAR_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 
     }//end processVariableInString()
 
-
 }//end class
 
 ?>
+

@@ -42,7 +42,6 @@ if (is_file(dirname(__FILE__).'/../../../CodeSniffer.php') === true) {
 class Core_Reports_SvnblameTest extends Core_Reports_AbstractTestCase
 {
 
-
     /**
      * Test standard generation
      *
@@ -56,7 +55,6 @@ class Core_Reports_SvnblameTest extends Core_Reports_AbstractTestCase
         $this->assertGreaterThan(10, count($generatedLines));
 
     }//end testGenerate()
-
 
     /**
      * Test author recovering from an svn blame line
@@ -77,7 +75,7 @@ class Core_Reports_SvnblameTest extends Core_Reports_AbstractTestCase
 
     }//end testGetSvnAuthor()
 
-
 }//end class
 
 ?>
+

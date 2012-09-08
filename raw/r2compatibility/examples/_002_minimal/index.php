@@ -22,3 +22,4 @@ $r = new Restler();
 $r->setCompatibilityMode(2);
 $r->addAPIClass('Math');
 $r->handle();
+

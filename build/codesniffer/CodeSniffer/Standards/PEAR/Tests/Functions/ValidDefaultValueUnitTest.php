@@ -32,7 +32,6 @@
 class PEAR_Tests_Functions_ValidDefaultValueUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -54,7 +53,6 @@ class PEAR_Tests_Functions_ValidDefaultValueUnitTest extends AbstractSniffUnitTe
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -69,7 +67,7 @@ class PEAR_Tests_Functions_ValidDefaultValueUnitTest extends AbstractSniffUnitTe
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

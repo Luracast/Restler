@@ -30,7 +30,6 @@
 class PEAR_Tests_Formatting_MultiLineAssignmentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -49,7 +48,6 @@ class PEAR_Tests_Formatting_MultiLineAssignmentUnitTest extends AbstractSniffUni
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -64,7 +62,7 @@ class PEAR_Tests_Formatting_MultiLineAssignmentUnitTest extends AbstractSniffUni
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

@@ -31,7 +31,6 @@ if (class_exists('PHP_CodeSniffer_Tokenizers_PHP', true) === false) {
 class PHP_CodeSniffer_Tokenizers_CSS extends PHP_CodeSniffer_Tokenizers_PHP
 {
 
-
     /**
      * Creates an array of tokens when given some CSS code.
      *
@@ -141,7 +140,7 @@ class PHP_CodeSniffer_Tokenizers_CSS extends PHP_CodeSniffer_Tokenizers_PHP
                 continue;
             }//end if
 
-            if ($token['code'] === T_COMMENT 
+            if ($token['code'] === T_COMMENT
                 && substr($token['content'], -2) === '*/'
             ) {
                 // Multi-line comment is done.
@@ -277,7 +276,6 @@ class PHP_CodeSniffer_Tokenizers_CSS extends PHP_CodeSniffer_Tokenizers_PHP
 
     }//end tokenizeString()
 
-
     /**
      * Performs additional processing after main tokenizing.
      *
@@ -294,7 +292,7 @@ class PHP_CodeSniffer_Tokenizers_CSS extends PHP_CodeSniffer_Tokenizers_PHP
 
     }//end processAdditional()
 
-
 }//end class
 
 ?>
+

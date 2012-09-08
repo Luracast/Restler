@@ -14,3 +14,4 @@ table { border-collapse: collapse; }
 th { background: #000; color: #fff; }
 td { padding: 1em; border: 1px solid black; }
 TEMPLATE;
+

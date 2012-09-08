@@ -32,7 +32,6 @@
 class Squiz_Tests_Files_FileExtensionUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -49,7 +48,6 @@ class Squiz_Tests_Files_FileExtensionUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -64,7 +62,7 @@ class Squiz_Tests_Files_FileExtensionUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

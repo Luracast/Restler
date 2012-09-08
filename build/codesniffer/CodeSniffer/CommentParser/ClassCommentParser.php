@@ -83,7 +83,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
      */
     private $_authors = array();
 
-
     /**
      * Returns the allowed tags withing a class comment.
      *
@@ -102,7 +101,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
                );
 
     }//end getAllowedTags()
-
 
     /**
      * Parses the license tag of this class comment.
@@ -123,7 +121,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
         return $this->_license;
 
     }//end parseLicense()
-
 
     /**
      * Parses the copyright tags of this class comment.
@@ -146,7 +143,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end parseCopyright()
 
-
     /**
      * Parses the category tag of this class comment.
      *
@@ -166,7 +162,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
         return $this->_category;
 
     }//end parseCategory()
-
 
     /**
      * Parses the author tag of this class comment.
@@ -189,7 +184,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end parseAuthor()
 
-
     /**
      * Parses the version tag of this class comment.
      *
@@ -209,7 +203,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
         return $this->_version;
 
     }//end parseVersion()
-
 
     /**
      * Parses the package tag found in this test.
@@ -231,7 +224,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end parsePackage()
 
-
     /**
      * Parses the package tag found in this test.
      *
@@ -252,7 +244,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end parseSubpackage()
 
-
     /**
      * Returns the authors of this class comment.
      *
@@ -263,7 +254,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
         return $this->_authors;
 
     }//end getAuthors()
-
 
     /**
      * Returns the version of this class comment.
@@ -276,7 +266,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end getVersion()
 
-
     /**
      * Returns the license of this class comment.
      *
@@ -287,7 +276,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
         return $this->_license;
 
     }//end getLicense()
-
 
     /**
      * Returns the copyrights of this class comment.
@@ -300,7 +288,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end getCopyrights()
 
-
     /**
      * Returns the category of this class comment.
      *
@@ -311,7 +298,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
         return $this->_category;
 
     }//end getCategory()
-
 
     /**
      * Returns the package that this class belongs to.
@@ -324,7 +310,6 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end getPackage()
 
-
     /**
      * Returns the subpackage that this class belongs to.
      *
@@ -336,7 +321,7 @@ class PHP_CodeSniffer_CommentParser_ClassCommentParser extends PHP_CodeSniffer_C
 
     }//end getSubpackage()
 
-
 }//end class
 
 ?>
+

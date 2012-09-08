@@ -40,7 +40,6 @@ if (is_file(dirname(__FILE__).'/../../../CodeSniffer.php') === true) {
 class Core_Reports_GitblameTest extends Core_Reports_AbstractTestCase
 {
 
-
     /**
      * Test standard generation
      *
@@ -54,7 +53,6 @@ class Core_Reports_GitblameTest extends Core_Reports_AbstractTestCase
         $this->assertGreaterThan(10, count($generatedLines));
 
     }//end testGenerate()
-
 
     /**
      * Test author recovering from a git blame line
@@ -73,7 +71,6 @@ class Core_Reports_GitblameTest extends Core_Reports_AbstractTestCase
         $this->assertEquals($expected, $author);
 
     }//end testGetGitAuthor()
-
 
     /**
      * Data provider for testGetGitAuthor
@@ -96,7 +93,7 @@ class Core_Reports_GitblameTest extends Core_Reports_AbstractTestCase
 
     }//end provideDataForGetGitAuthor()
 
-
 }//end class
 
 ?>
+

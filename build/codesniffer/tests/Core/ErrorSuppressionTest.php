@@ -29,7 +29,6 @@ require_once 'PHPUnit/Framework/TestCase.php';
 class Core_ErrorSuppressionTest extends PHPUnit_Framework_TestCase
 {
 
-
     /**
      * Test suppressing a single error.
      *
@@ -66,7 +65,6 @@ class Core_ErrorSuppressionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($errors));
 
     }//end testSuppressError()
-
 
     /**
      * Test suppressing 1 out of 2 errors.
@@ -105,7 +103,6 @@ class Core_ErrorSuppressionTest extends PHPUnit_Framework_TestCase
 
     }//end testSuppressSomeErrors()
 
-
     /**
      * Test suppressing a single warning.
      *
@@ -143,7 +140,6 @@ class Core_ErrorSuppressionTest extends PHPUnit_Framework_TestCase
 
     }//end testSuppressWarning()
 
-
     /**
      * Test suppressing a whole file.
      *
@@ -178,7 +174,7 @@ class Core_ErrorSuppressionTest extends PHPUnit_Framework_TestCase
 
     }//end testSupressError()
 
-
 }//end class
 
 ?>
+

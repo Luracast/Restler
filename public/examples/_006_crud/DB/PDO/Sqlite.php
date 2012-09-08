@@ -79,3 +79,4 @@ class DB_PDO_Sqlite
         ");
     }
 }
+

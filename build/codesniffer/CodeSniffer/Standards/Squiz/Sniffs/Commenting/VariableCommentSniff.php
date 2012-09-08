@@ -54,7 +54,6 @@ class Squiz_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Stand
      */
     protected $commentParser = null;
 
-
     /**
      * Called to process class member vars.
      *
@@ -217,7 +216,6 @@ class Squiz_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Stand
 
     }//end processMemberVar()
 
-
     /**
      * Process the var tag.
      *
@@ -275,7 +273,6 @@ class Squiz_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Stand
 
     }//end processVar()
 
-
     /**
      * Process the see tags.
      *
@@ -307,7 +304,6 @@ class Squiz_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Stand
 
     }//end processSees()
 
-
     /**
      * Called to process a normal variable.
      *
@@ -324,7 +320,6 @@ class Squiz_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Stand
         return;
 
     }//end processVariable()
-
 
     /**
      * Called to process variables found in duoble quoted strings.
@@ -343,6 +338,6 @@ class Squiz_Sniffs_Commenting_VariableCommentSniff extends PHP_CodeSniffer_Stand
 
     }//end processVariableInString()
 
-
 }//end class
 ?>
+

@@ -41,7 +41,6 @@ class Generic_Sniffs_PHP_NoSilencedErrorsSniff implements PHP_CodeSniffer_Sniff
      */
     public $error = false;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -52,7 +51,6 @@ class Generic_Sniffs_PHP_NoSilencedErrorsSniff implements PHP_CodeSniffer_Sniff
         return array(T_ASPERAND);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -76,7 +74,7 @@ class Generic_Sniffs_PHP_NoSilencedErrorsSniff implements PHP_CodeSniffer_Sniff
 
     }//end process()
 
-
 }//end class
 
 ?>
+

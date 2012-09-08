@@ -32,7 +32,6 @@
 class Generic_Tests_PHP_LowerCaseConstantUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -81,7 +80,6 @@ class Generic_Tests_PHP_LowerCaseConstantUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -96,7 +94,7 @@ class Generic_Tests_PHP_LowerCaseConstantUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

@@ -73,7 +73,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
      */
     private $_errorPos = array();
 
-
     /**
      * Constructs a PHP_CodeSniffer_Standards_AbstractPatternSniff.
      *
@@ -85,7 +84,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
         $this->_supplementaryTokens = $this->registerSupplementary();
 
     }//end __construct()
-
 
     /**
      * Registers the tokens to listen to.
@@ -128,7 +126,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end register()
 
-
     /**
      * Returns the token types that the specified pattern is checking for.
      *
@@ -160,7 +157,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end _getPatternTokenTypes()
 
-
     /**
      * Returns the position in the pattern that this test should register as
      * a listener for the pattern.
@@ -187,7 +183,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
         return $tokenTypes[$token];
 
     }//end _getListenerTokenPos()
-
 
     /**
      * Processes the test.
@@ -253,7 +248,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
         }
 
     }//end process()
-
 
     /**
      * Processes the pattern and verifies the code at $stackPtr.
@@ -655,7 +649,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end processPattern()
 
-
     /**
      * Prepares an error for the specified patternCode.
      *
@@ -678,14 +671,12 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end prepareError()
 
-
     /**
      * Returns the patterns that should be checked.
      *
      * @return array(string)
      */
     protected abstract function getPatterns();
-
 
     /**
      * Registers any supplementary tokens that this test might wish to process.
@@ -702,7 +693,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
         return array();
 
     }//end registerSupplementary()
-
 
      /**
       * Processes any tokens registered with registerSupplementary().
@@ -722,7 +712,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
          return;
 
     }//end processSupplementary()
-
 
     /**
      * Parses a pattern string into an array of pattern steps.
@@ -814,7 +803,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end _parse()
 
-
     /**
      * Creates a skip pattern.
      *
@@ -868,7 +856,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end _createSkipPattern()
 
-
     /**
      * Creates a token pattern.
      *
@@ -904,7 +891,7 @@ abstract class PHP_CodeSniffer_Standards_AbstractPatternSniff implements PHP_Cod
 
     }//end _createTokenPattern()
 
-
 }//end class
 
 ?>
+

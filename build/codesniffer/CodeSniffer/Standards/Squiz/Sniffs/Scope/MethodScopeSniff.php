@@ -33,7 +33,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
 class Squiz_Sniffs_Scope_MethodScopeSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
 {
 
-
     /**
      * Constructs a Squiz_Sniffs_Scope_MethodScopeSniff.
      */
@@ -42,7 +41,6 @@ class Squiz_Sniffs_Scope_MethodScopeSniff extends PHP_CodeSniffer_Standards_Abst
         parent::__construct(array(T_CLASS, T_INTERFACE), array(T_FUNCTION));
 
     }//end __construct()
-
 
     /**
      * Processes the function tokens within the class.
@@ -72,7 +70,7 @@ class Squiz_Sniffs_Scope_MethodScopeSniff extends PHP_CodeSniffer_Standards_Abst
 
     }//end processTokenWithinScope()
 
-
 }//end class
 
 ?>
+

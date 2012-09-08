@@ -29,7 +29,6 @@
 class PEAR_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -40,7 +39,6 @@ class PEAR_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffer_
         return array(T_FUNCTION);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -66,7 +64,6 @@ class PEAR_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffer_
 
     }//end process()
 
-
     /**
      * Processes single-line declarations.
      *
@@ -90,7 +87,6 @@ class PEAR_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffer_
         $sniff->process($phpcsFile, $stackPtr);
 
     }//end processSingleLineDeclaration()
-
 
     /**
      * Processes mutli-line declarations.
@@ -219,7 +215,7 @@ class PEAR_Sniffs_Functions_FunctionDeclarationSniff implements PHP_CodeSniffer_
 
     }//end processMultiLineDeclaration()
 
-
 }//end class
 
 ?>
+

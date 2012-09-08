@@ -22,7 +22,7 @@ function minify_all_php($from_path, $to_path, $recurse_depth = 0)
             'irespond.php',
             'urlencodedformat.php',
             'jsonformat.php',
-            'defaultresponder.php' 
+            'defaultresponder.php'
     );
     $pack = array_fill ( 0, count ( $together ), '' );
     foreach ( glob ( $from_path . DIRECTORY_SEPARATOR . '*.php' ) as $filepath ) {
@@ -49,3 +49,4 @@ function minify_all_php($from_path, $to_path, $recurse_depth = 0)
         }
     }
 }
+

@@ -32,7 +32,6 @@
 class PEAR_Tests_WhiteSpace_ScopeIndentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -63,7 +62,6 @@ class PEAR_Tests_WhiteSpace_ScopeIndentUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -78,7 +76,7 @@ class PEAR_Tests_WhiteSpace_ScopeIndentUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

@@ -34,7 +34,6 @@ require_once dirname(__FILE__).'/AbstractTestCase.php';
 class Core_Reports_XmlTest extends Core_Reports_AbstractTestCase
 {
 
-
     /**
      * Test standard generation against XML schema.
      *
@@ -55,7 +54,7 @@ class Core_Reports_XmlTest extends Core_Reports_AbstractTestCase
 
     }//end testGenerate()
 
-
 }//end class
 
 ?>
+

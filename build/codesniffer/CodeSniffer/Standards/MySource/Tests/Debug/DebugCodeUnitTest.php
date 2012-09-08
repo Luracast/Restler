@@ -30,7 +30,6 @@
 class MySource_Tests_Debug_DebugCodeUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -48,7 +47,6 @@ class MySource_Tests_Debug_DebugCodeUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -63,7 +61,7 @@ class MySource_Tests_Debug_DebugCodeUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

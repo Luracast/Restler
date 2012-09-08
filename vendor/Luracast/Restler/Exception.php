@@ -13,3 +13,4 @@ namespace Luracast\Restler;
 class Exception extends \Exception
 {
 }
+

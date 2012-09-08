@@ -26,3 +26,4 @@ interface iFilter
     public function __isAllowed();
 
 }
+

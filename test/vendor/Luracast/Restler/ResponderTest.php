@@ -44,3 +44,4 @@ class ResponderTest extends \PHPUnit_Framework_TestCase
         $this->object->formatError($statusCode, $message);
     }
 }
+

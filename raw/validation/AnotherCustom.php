@@ -14,3 +14,4 @@ class AnotherCustom extends Luracast\Restler\Data\ValueObject
 {
 
 }
+

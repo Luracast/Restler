@@ -95,3 +95,4 @@ interface iFormat
      */
     public function decode($data);
 }
+

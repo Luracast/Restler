@@ -65,7 +65,6 @@ class PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff extends PHP_CodeSniff
      */
     protected $magicFunctions = array('autoload');
 
-
     /**
      * Constructs a PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff.
      */
@@ -74,7 +73,6 @@ class PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff extends PHP_CodeSniff
         parent::__construct(array(T_CLASS, T_INTERFACE), array(T_FUNCTION), true);
 
     }//end __construct()
-
 
     /**
      * Processes the tokens within the scope.
@@ -102,7 +100,7 @@ class PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff extends PHP_CodeSniff
             $magicPart = substr($methodName, 2);
             if (in_array($magicPart, $this->magicMethods) === false) {
                  $error = 'Method name "%s" is invalid; only PHP magic methods should be prefixed with a double underscore';
-                 
+
                  $phpcsFile->addError($error, $stackPtr, 'MethodDoubleUnderscore', $errorData);
             }
 
@@ -169,7 +167,6 @@ class PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff extends PHP_CodeSniff
         }
 
     }//end processTokenWithinScope()
-
 
     /**
      * Processes the tokens outside the scope.
@@ -280,7 +277,7 @@ class PEAR_Sniffs_NamingConventions_ValidFunctionNameSniff extends PHP_CodeSniff
 
     }//end processTokenOutsideScope()
 
-
 }//end class
 
 ?>
+

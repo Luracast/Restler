@@ -81,3 +81,4 @@ class XmlFormatTest extends \PHPUnit_Framework_TestCase
         $this->object->exportCurrentSettings();
     }
 }
+

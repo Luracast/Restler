@@ -27,3 +27,4 @@ setObjectProperty($d, 'headerExpires', 500);
 echo getObjectProperty($d,'headerExpires').PHP_EOL;
 echo $d::$$headerExpires.PHP_EOL;
 print_r(get_class_vars('Defaults'));
+

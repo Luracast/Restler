@@ -46,7 +46,6 @@ class MySource_Tests_CSS_BrowserSpecificStylesUnitTest extends AbstractSniffUnit
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -61,7 +60,7 @@ class MySource_Tests_CSS_BrowserSpecificStylesUnitTest extends AbstractSniffUnit
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

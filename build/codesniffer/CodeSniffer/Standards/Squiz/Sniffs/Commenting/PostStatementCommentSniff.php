@@ -41,7 +41,6 @@ class Squiz_Sniffs_Commenting_PostStatementCommentSniff implements PHP_CodeSniff
                                    'JS',
                                   );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -52,7 +51,6 @@ class Squiz_Sniffs_Commenting_PostStatementCommentSniff implements PHP_CodeSniff
         return array(T_COMMENT);
 
     }//end register()
-
 
     /**
      * Processes this sniff, when one of its tokens is encountered.
@@ -97,8 +95,7 @@ class Squiz_Sniffs_Commenting_PostStatementCommentSniff implements PHP_CodeSniff
 
     }//end process()
 
-
 }//end class
 
-
 ?>
+

@@ -32,7 +32,6 @@
 class Generic_Tests_NamingConventions_UpperCaseConstantNameUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -58,7 +57,6 @@ class Generic_Tests_NamingConventions_UpperCaseConstantNameUnitTest extends Abst
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -73,7 +71,7 @@ class Generic_Tests_NamingConventions_UpperCaseConstantNameUnitTest extends Abst
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

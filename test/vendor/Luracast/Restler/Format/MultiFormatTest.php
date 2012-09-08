@@ -99,3 +99,4 @@ class MultiFormatTest extends \PHPUnit_Framework_TestCase
         $this->object->__toString();
     }
 }
+

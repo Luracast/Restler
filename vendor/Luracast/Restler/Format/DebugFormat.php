@@ -13,7 +13,6 @@ namespace Luracast\Restler\Format {
         const EXTENSION = 'html';
         public $restler;
 
-
         public function encode($data, $humanReadable = FALSE, $wrapHtml = TRUE)
         {
             if ($wrapHtml) {
@@ -62,7 +61,6 @@ namespace Luracast\Restler\Format {
         {
             throw new RestException(405, 'DebugFormat is write only');
         }
-
 
         public function header()
         {
@@ -150,7 +148,6 @@ EOT;
         }
     }
 }
-
 
 namespace {
 
@@ -250,3 +247,4 @@ namespace {
     }
 
 }
+

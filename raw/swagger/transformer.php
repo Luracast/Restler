@@ -7,7 +7,8 @@ class Transformer
     }
 }
 $definition = array(
-	'httpMethod' => '/$HTTP_VERB', 
-	'notes' => '/$HTTP_VERB/$URI/metadata/description',
-	'nickName' => array('/$HTTP_VERB/$URI/metadata/className',':','/$HTTP_VERB/$URI/metadata/methodName'),
+    'httpMethod' => '/$HTTP_VERB',
+    'notes' => '/$HTTP_VERB/$URI/metadata/description',
+    'nickName' => array('/$HTTP_VERB/$URI/metadata/className',':','/$HTTP_VERB/$URI/metadata/methodName'),
 );
+

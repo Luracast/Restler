@@ -35,3 +35,4 @@ class DefaultsTest extends \PHPUnit_Framework_TestCase
         $this->object->setProperty($name, $value);
     }
 }
+

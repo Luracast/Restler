@@ -32,7 +32,6 @@
 class Generic_Tests_Functions_FunctionCallArgumentSpacingUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -59,7 +58,6 @@ class Generic_Tests_Functions_FunctionCallArgumentSpacingUnitTest extends Abstra
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -74,7 +72,7 @@ class Generic_Tests_Functions_FunctionCallArgumentSpacingUnitTest extends Abstra
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

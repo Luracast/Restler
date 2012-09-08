@@ -27,7 +27,6 @@
 class MySource_Tests_Commenting_FunctionCommentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -51,7 +50,6 @@ class MySource_Tests_Commenting_FunctionCommentUnitTest extends AbstractSniffUni
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -69,7 +67,7 @@ class MySource_Tests_Commenting_FunctionCommentUnitTest extends AbstractSniffUni
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

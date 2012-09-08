@@ -29,7 +29,6 @@
 class PEAR_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -40,7 +39,6 @@ class PEAR_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniffer
         return array(T_EQUAL);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -112,3 +110,4 @@ class PEAR_Sniffs_Formatting_MultiLineAssignmentSniff implements PHP_CodeSniffer
 }//end class
 
 ?>
+

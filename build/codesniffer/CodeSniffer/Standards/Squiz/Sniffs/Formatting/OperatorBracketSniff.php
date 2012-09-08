@@ -41,7 +41,6 @@ class Squiz_Sniffs_Formatting_OperatorBracketSniff implements PHP_CodeSniffer_Sn
                                    'JS',
                                   );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -52,7 +51,6 @@ class Squiz_Sniffs_Formatting_OperatorBracketSniff implements PHP_CodeSniffer_Sn
         return PHP_CodeSniffer_Tokens::$operators;
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -248,7 +246,7 @@ class Squiz_Sniffs_Formatting_OperatorBracketSniff implements PHP_CodeSniffer_Sn
 
     }//end process()
 
-
 }//end class
 
 ?>
+

@@ -23,3 +23,4 @@ $r->addAPIClass('Luracast\Restler\Resources');
 $r->addAPIClass('Authors');
 $r->addAPIClass('Simple');
 $r->handle();
+

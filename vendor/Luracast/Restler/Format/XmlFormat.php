@@ -319,3 +319,4 @@ class XmlFormat extends Format
     }
 
 }
+

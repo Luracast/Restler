@@ -49,7 +49,6 @@ if (is_file(dirname(__FILE__).'/../CodeSniffer.php') === true) {
 class PHP_CodeSniffer_AllTests
 {
 
-
     /**
      * Prepare the test runner.
      *
@@ -60,7 +59,6 @@ class PHP_CodeSniffer_AllTests
         PHPUnit_TextUI_TestRunner::run(self::suite());
 
     }//end main()
-
 
     /**
      * Add all PHP_CodeSniffer test suites into a single test suite.
@@ -85,10 +83,10 @@ class PHP_CodeSniffer_AllTests
 
     }//end suite()
 
-
 }//end class
 
 if (PHPUnit_MAIN_METHOD == 'PHP_CodeSniffer_AllTests::main') {
     PHP_CodeSniffer_AllTests::main();
 }
 ?>
+

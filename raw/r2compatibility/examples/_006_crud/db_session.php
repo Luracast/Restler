@@ -62,9 +62,10 @@ class DB_Session
         /** install initial data **/
         $_SESSION['pk'] = 5;
         $_SESSION['rs'] = array(
-        array('id' => 1, 'name' => 'Jac Wright', 
-        'email' => 'jacwright@gmail.com'), 
-        array('id' => 2, 'name' => 'Arul Kumaran', 
+        array('id' => 1, 'name' => 'Jac Wright',
+        'email' => 'jacwright@gmail.com'),
+        array('id' => 2, 'name' => 'Arul Kumaran',
         'email' => 'arul@luracast.com'));
     }
 }
+

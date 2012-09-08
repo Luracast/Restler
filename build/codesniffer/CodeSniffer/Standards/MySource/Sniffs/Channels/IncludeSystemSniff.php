@@ -55,7 +55,6 @@ class MySource_Sniffs_Channels_IncludeSystemSniff extends PHP_CodeSniffer_Standa
                         'domdocument',
                        );
 
-
     /**
      * Constructs a Squiz_Sniffs_Scope_MethodScopeSniff.
      */
@@ -64,7 +63,6 @@ class MySource_Sniffs_Channels_IncludeSystemSniff extends PHP_CodeSniffer_Standa
         parent::__construct(array(T_FUNCTION), array(T_DOUBLE_COLON, T_EXTENDS), true);
 
     }//end __construct()
-
 
     /**
      * Processes the function tokens within the class.
@@ -203,7 +201,6 @@ class MySource_Sniffs_Channels_IncludeSystemSniff extends PHP_CodeSniffer_Standa
 
     }//end processTokenWithinScope()
 
-
     /**
      * Processes a token within the scope that this test is listening to.
      *
@@ -288,7 +285,6 @@ class MySource_Sniffs_Channels_IncludeSystemSniff extends PHP_CodeSniffer_Standa
 
     }//end processTokenOutsideScope()
 
-
     /**
      * Determines the included class name from given token.
      *
@@ -324,7 +320,7 @@ class MySource_Sniffs_Channels_IncludeSystemSniff extends PHP_CodeSniffer_Standa
 
     }//end getIncludedClassFromToken()
 
-
 }//end class
 
 ?>
+

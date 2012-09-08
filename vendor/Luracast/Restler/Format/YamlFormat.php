@@ -20,16 +20,16 @@ class YamlFormat extends Format
     const MIME = 'text/plain';
     const EXTENSION = 'yaml';
 
-
     public function encode($data, $humanReadable = false)
     {
-//		require_once 'sfyaml.php';
+//      require_once 'sfyaml.php';
         return @Yaml::dump(Util::objectToArray($data));
     }
 
     public function decode($data)
     {
-//		require_once 'sfyaml.php';
+//      require_once 'sfyaml.php';
         return Yaml::parse($data);
     }
 }
+

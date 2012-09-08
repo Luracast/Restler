@@ -47,7 +47,6 @@ class Squiz_Tests_CSS_SemicolonSpacingUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -62,7 +61,7 @@ class Squiz_Tests_CSS_SemicolonSpacingUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

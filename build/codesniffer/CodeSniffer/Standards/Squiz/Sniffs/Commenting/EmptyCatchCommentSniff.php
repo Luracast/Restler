@@ -31,7 +31,6 @@
 class Squiz_Sniffs_Commenting_EmptyCatchCommentSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -42,7 +41,6 @@ class Squiz_Sniffs_Commenting_EmptyCatchCommentSniff implements PHP_CodeSniffer_
         return array(T_CATCH);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -67,8 +65,7 @@ class Squiz_Sniffs_Commenting_EmptyCatchCommentSniff implements PHP_CodeSniffer_
 
     }//end process()
 
-
 }//end class
 
-
 ?>
+

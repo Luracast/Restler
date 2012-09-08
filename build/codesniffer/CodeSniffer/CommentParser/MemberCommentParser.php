@@ -41,7 +41,6 @@ class PHP_CodeSniffer_CommentParser_MemberCommentParser extends PHP_CodeSniffer_
      */
     private $_var = null;
 
-
     /**
      * Parses Var tags.
      *
@@ -62,7 +61,6 @@ class PHP_CodeSniffer_CommentParser_MemberCommentParser extends PHP_CodeSniffer_
 
     }//end parseVar()
 
-
     /**
      * Returns the var tag found in the member comment.
      *
@@ -73,7 +71,6 @@ class PHP_CodeSniffer_CommentParser_MemberCommentParser extends PHP_CodeSniffer_
         return $this->_var;
 
     }//end getVar()
-
 
     /**
      * Returns the allowed tags for this parser.
@@ -86,7 +83,7 @@ class PHP_CodeSniffer_CommentParser_MemberCommentParser extends PHP_CodeSniffer_
 
     }//end getAllowedTags()
 
-
 }//end class
 
 ?>
+

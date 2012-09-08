@@ -31,7 +31,6 @@
 class Generic_Tests_CodeAnalysis_JumbledIncrementerUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -45,7 +44,6 @@ class Generic_Tests_CodeAnalysis_JumbledIncrementerUnitTest extends AbstractSnif
         return array();
 
     }//end getErrorList()
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -65,7 +63,7 @@ class Generic_Tests_CodeAnalysis_JumbledIncrementerUnitTest extends AbstractSnif
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

@@ -30,7 +30,6 @@
 class Squiz_Tests_CodeAnalysis_EmptyStatementUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -56,7 +55,6 @@ class Squiz_Tests_CodeAnalysis_EmptyStatementUnitTest extends AbstractSniffUnitT
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -71,7 +69,7 @@ class Squiz_Tests_CodeAnalysis_EmptyStatementUnitTest extends AbstractSniffUnitT
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

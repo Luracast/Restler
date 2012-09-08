@@ -31,7 +31,6 @@
 class Generic_Tests_CodeAnalysis_UnconditionalIfStatementUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -45,7 +44,6 @@ class Generic_Tests_CodeAnalysis_UnconditionalIfStatementUnitTest extends Abstra
         return array();
 
     }//end getErrorList()
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -65,7 +63,7 @@ class Generic_Tests_CodeAnalysis_UnconditionalIfStatementUnitTest extends Abstra
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

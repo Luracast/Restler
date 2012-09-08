@@ -43,7 +43,6 @@ class Generic_Sniffs_VersionControl_SubversionPropertiesSniff implements PHP_Cod
                              'svn:eol-style' => 'native',
                             );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -54,7 +53,6 @@ class Generic_Sniffs_VersionControl_SubversionPropertiesSniff implements PHP_Cod
         return array(T_OPEN_TAG);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -123,7 +121,6 @@ class Generic_Sniffs_VersionControl_SubversionPropertiesSniff implements PHP_Cod
         }//end foreach
 
     }//end process()
-
 
     /**
      * Returns the Subversion properties which are actually set on a path.
@@ -201,7 +198,7 @@ class Generic_Sniffs_VersionControl_SubversionPropertiesSniff implements PHP_Cod
 
     }//end getProperties()
 
-
 }//end class
 
 ?>
+

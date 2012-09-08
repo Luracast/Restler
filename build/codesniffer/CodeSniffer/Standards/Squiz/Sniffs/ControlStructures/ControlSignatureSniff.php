@@ -43,7 +43,6 @@ class Squiz_Sniffs_ControlStructures_ControlSignatureSniff extends PHP_CodeSniff
                                    'JS',
                                   );
 
-
     /**
      * Returns the patterns that this test wishes to verify.
      *
@@ -64,7 +63,7 @@ class Squiz_Sniffs_ControlStructures_ControlSignatureSniff extends PHP_CodeSniff
 
     }//end getPatterns()
 
-
 }//end class
 
 ?>
+

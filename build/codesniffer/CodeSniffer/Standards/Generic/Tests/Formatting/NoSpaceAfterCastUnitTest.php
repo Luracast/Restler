@@ -32,7 +32,6 @@
 class Generic_Tests_Formatting_NoSpaceAfterCastUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -70,7 +69,6 @@ class Generic_Tests_Formatting_NoSpaceAfterCastUnitTest extends AbstractSniffUni
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -85,7 +83,7 @@ class Generic_Tests_Formatting_NoSpaceAfterCastUnitTest extends AbstractSniffUni
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

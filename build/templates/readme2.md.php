@@ -14,13 +14,13 @@ $title <requires>$requires</requires>
 {$_('if',$routes,'
 This API Server exposes the following URIs
 
-')}{$_('repeat_foreach', $routes, '	{$value->spaced_httpMethod}{$value->spaced_url}⇠ $value->className::$value->methodName()
+')}{$_('repeat_foreach', $routes, ' {$value->spaced_httpMethod}{$value->spaced_url}⇠ $value->className::$value->methodName()
 ')}{$_('if',$examples,'
 
 Try the following links in your browser
 
 ')}{$_('repeat_foreach', $examples, '$value->httpMethod [$key](index.php/$key)
-:	
+:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 $value->result
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -28,10 +28,10 @@ $value->result
 ')}
 $usage
 
-
 $content
 {$_('repeat_foreach', $local_files, '*[$key]: $value->path
 ')}{$_('repeat_foreach', $restler_files, '*[$key]: $value->path
 ')}
 
 TEMPLATE;
+

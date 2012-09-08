@@ -36,7 +36,6 @@ class Squiz_Sniffs_Debug_JavaScriptLintSniff implements PHP_CodeSniffer_Sniff
      */
     public $supportedTokenizers = array('JS');
 
-
     /**
      * Returns the token types that this sniff is interested in.
      *
@@ -47,7 +46,6 @@ class Squiz_Sniffs_Debug_JavaScriptLintSniff implements PHP_CodeSniffer_Sniff
         return array(T_OPEN_TAG);
 
     }//end register()
-
 
     /**
      * Processes the tokens that this sniff is interested in.
@@ -81,7 +79,6 @@ class Squiz_Sniffs_Debug_JavaScriptLintSniff implements PHP_CodeSniffer_Sniff
             throw new PHP_CodeSniffer_Exception("Failed invoking JavaScript Lint, retval was [$retval], output was [$msg]");
         }
 
-
         if (is_array($output) === true) {
             $tokens = $phpcsFile->getTokens();
 
@@ -109,3 +106,4 @@ class Squiz_Sniffs_Debug_JavaScriptLintSniff implements PHP_CodeSniffer_Sniff
 
 }//end class
 ?>
+

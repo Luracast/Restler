@@ -34,7 +34,6 @@ class Squiz_Sniffs_Objects_DisallowObjectStringIndexSniff implements PHP_CodeSni
      */
     public $supportedTokenizers = array('JS');
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -45,7 +44,6 @@ class Squiz_Sniffs_Objects_DisallowObjectStringIndexSniff implements PHP_CodeSni
         return array(T_OPEN_SQUARE_BRACKET);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -93,7 +91,7 @@ class Squiz_Sniffs_Objects_DisallowObjectStringIndexSniff implements PHP_CodeSni
 
     }//end process()
 
-
 }//end class
 
 ?>
+

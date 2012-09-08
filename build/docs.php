@@ -7,10 +7,10 @@ include_once 'config.php';
 putenv ( "PATH=" . getenv('PATH'). ":/opt/local/bin/" );
 
 $command = 'cd '.PROJECT_ROOT.PHP_EOL;
-$command .= 'php ' .BUILD_DIR.DIRECTORY_SEPARATOR. PHPDOC_DIR 
+$command .= 'php ' .BUILD_DIR.DIRECTORY_SEPARATOR. PHPDOC_DIR
             . '/bin/phpdoc.php -d ' . RESTLER_DIR;
 $command .= ' -t ' . DOCS_DIR ;
-$command .= ' --ignore amfformat/,wadlformat/,chartformat/,debugformat/,' 
+$command .= ' --ignore amfformat/,wadlformat/,chartformat/,debugformat/,'
             . 'mustacheformat/,plistformat/,yamlformat/';
 $command .= ' --title="' . API_DOC_TITLE . '"';
 
@@ -26,3 +26,4 @@ echo exec ( $command, $output, $return_var );
 //echo exec ( 'bash ./docs.sh', $output, $return_var );
 echo implode ( PHP_EOL, $output );
 echo $return_var;
+

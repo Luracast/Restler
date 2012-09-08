@@ -32,7 +32,6 @@
 class PEAR_Tests_ControlStructures_MultiLineConditionUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -65,7 +64,6 @@ class PEAR_Tests_ControlStructures_MultiLineConditionUnitTest extends AbstractSn
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -80,7 +78,7 @@ class PEAR_Tests_ControlStructures_MultiLineConditionUnitTest extends AbstractSn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

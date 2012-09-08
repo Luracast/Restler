@@ -231,7 +231,6 @@ class PHP_CodeSniffer_Tokenizers_JS
                                 '/**' => '*/',
                                );
 
-
     /**
      * Creates an array of tokens when given some PHP code.
      *
@@ -809,7 +808,6 @@ class PHP_CodeSniffer_Tokenizers_JS
 
     }//end tokenizeString()
 
-
     /**
      * Tokenizes a regular expression if one is found.
      *
@@ -943,7 +941,6 @@ class PHP_CodeSniffer_Tokenizers_JS
         return $token;
 
     }//end getRegexToken()
-
 
     /**
      * Performs additional processing after main tokenizing.
@@ -1119,7 +1116,7 @@ class PHP_CodeSniffer_Tokenizers_JS
 
     }//end processAdditional()
 
-
 }//end class
 
 ?>
+

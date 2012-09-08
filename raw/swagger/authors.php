@@ -102,3 +102,4 @@ class Authors
         return $author;
     }
 }
+

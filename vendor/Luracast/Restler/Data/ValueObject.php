@@ -46,3 +46,4 @@ class ValueObject implements iValueObject
     }
 
 }
+

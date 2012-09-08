@@ -30,7 +30,6 @@
 class MySource_Tests_Channels_DisallowSelfActionsUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -49,7 +48,6 @@ class MySource_Tests_Channels_DisallowSelfActionsUnitTest extends AbstractSniffU
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -64,7 +62,7 @@ class MySource_Tests_Channels_DisallowSelfActionsUnitTest extends AbstractSniffU
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

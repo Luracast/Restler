@@ -32,7 +32,6 @@
 class Squiz_Tests_Commenting_PostStatementCommentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -67,7 +66,6 @@ class Squiz_Tests_Commenting_PostStatementCommentUnitTest extends AbstractSniffU
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -82,7 +80,7 @@ class Squiz_Tests_Commenting_PostStatementCommentUnitTest extends AbstractSniffU
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

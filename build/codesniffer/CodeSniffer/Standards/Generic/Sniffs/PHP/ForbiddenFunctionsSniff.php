@@ -52,7 +52,6 @@ class Generic_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Snif
      */
     public $error = true;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -63,7 +62,6 @@ class Generic_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Snif
         return array(T_STRING);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -121,7 +119,7 @@ class Generic_Sniffs_PHP_ForbiddenFunctionsSniff implements PHP_CodeSniffer_Snif
 
     }//end process()
 
-
 }//end class
 
 ?>
+

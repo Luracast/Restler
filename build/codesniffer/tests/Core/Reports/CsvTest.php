@@ -41,10 +41,9 @@ class Core_Reports_CsvTest extends Core_Reports_AbstractTestCase
      */
     protected $genFilesFolder;
 
-
     /**
      * Store path to generated files.
-     * 
+     *
      * @return void
      */
     public function setUp()
@@ -54,10 +53,9 @@ class Core_Reports_CsvTest extends Core_Reports_AbstractTestCase
 
     }//end setUp()
 
-
     /**
      * Tests standard report.
-     * 
+     *
      * @return void
      */
     public function testGenerate()
@@ -74,7 +72,7 @@ class Core_Reports_CsvTest extends Core_Reports_AbstractTestCase
 
     }//end testGenerate()
 
-
 }//end class
 
 ?>
+

@@ -49,7 +49,6 @@ class Generic_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
      */
     public $absoluteLineLimit = 100;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -60,7 +59,6 @@ class Generic_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
         return array(T_OPEN_TAG);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -99,7 +97,6 @@ class Generic_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
         $this->checkLineLength($phpcsFile, ($tokenCount - 1), $currentLineContent);
 
     }//end process()
-
 
     /**
      * Checks if a line is too long.
@@ -152,7 +149,7 @@ class Generic_Sniffs_Files_LineLengthSniff implements PHP_CodeSniffer_Sniff
 
     }//end checkLineLength()
 
-
 }//end class
 
 ?>
+

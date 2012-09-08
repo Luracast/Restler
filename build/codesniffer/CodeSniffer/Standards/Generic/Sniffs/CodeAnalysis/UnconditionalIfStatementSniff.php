@@ -16,7 +16,7 @@
 
 /**
  * Detects unconditional if- and elseif-statements.
- * 
+ *
  * This rule is based on the PMD rule catalog. The Unconditional If Statment
  * sniff detects statement conditions that are only set to one of the constant
  * values <b>true</b> or <b>false</b>
@@ -45,7 +45,6 @@
 class Generic_Sniffs_CodeAnalysis_UnconditionalIfStatementSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Registers the tokens that this sniff wants to listen for.
      *
@@ -59,7 +58,6 @@ class Generic_Sniffs_CodeAnalysis_UnconditionalIfStatementSniff implements PHP_C
                );
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -101,7 +99,7 @@ class Generic_Sniffs_CodeAnalysis_UnconditionalIfStatementSniff implements PHP_C
 
     }//end process()
 
-
 }//end class
 
 ?>
+

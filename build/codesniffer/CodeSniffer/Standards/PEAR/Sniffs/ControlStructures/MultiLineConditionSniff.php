@@ -29,7 +29,6 @@
 class PEAR_Sniffs_ControlStructures_MultiLineConditionSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -40,7 +39,6 @@ class PEAR_Sniffs_ControlStructures_MultiLineConditionSniff implements PHP_CodeS
         return array(T_IF);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -171,7 +169,7 @@ class PEAR_Sniffs_ControlStructures_MultiLineConditionSniff implements PHP_CodeS
 
     }//end process()
 
-
 }//end class
 
 ?>
+

@@ -16,7 +16,7 @@
 
 /**
  * Detects incrementer jumbling in for loops.
- * 
+ *
  * This rule is based on the PMD rule catalog. The jumbling incrementer sniff
  * detects the usage of one and the same incrementer into an outer and an inner
  * loop. Even it is intended this is confusing code.
@@ -48,7 +48,6 @@
 class Generic_Sniffs_CodeAnalysis_JumbledIncrementerSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Registers the tokens that this sniff wants to listen for.
      *
@@ -59,7 +58,6 @@ class Generic_Sniffs_CodeAnalysis_JumbledIncrementerSniff implements PHP_CodeSni
         return array(T_FOR);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -109,13 +107,12 @@ class Generic_Sniffs_CodeAnalysis_JumbledIncrementerSniff implements PHP_CodeSni
 
     }//end process()
 
-
     /**
      * Get all used variables in the incrementer part of a for statement.
      *
      * @param array(integer=>array) $tokens Array with all code sniffer tokens.
      * @param array(string=>mixed)  $token  Current for loop token
-     * 
+     *
      * @return array(string) List of all found incrementer variables.
      */
     protected function findIncrementers(array $tokens, array $token)
@@ -143,7 +140,7 @@ class Generic_Sniffs_CodeAnalysis_JumbledIncrementerSniff implements PHP_CodeSni
 
     }//end findIncrementers()
 
-
 }//end class
 
 ?>
+

@@ -51,7 +51,6 @@ class Squiz_Tests_CSS_IndentationUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -66,7 +65,7 @@ class Squiz_Tests_CSS_IndentationUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

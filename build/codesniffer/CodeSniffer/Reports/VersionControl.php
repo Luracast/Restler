@@ -38,7 +38,6 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
      */
     protected $reportName = 'VERSION CONTROL';
 
-
     /**
      * Prints the author of all errors and warnings, as given by "version control blame".
      *
@@ -190,7 +189,6 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
 
     }//end generate()
 
-
     /**
      * Extract the author from a blame line.
      *
@@ -199,7 +197,6 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
      * @return mixed string or false if impossible to recover.
      */
     abstract protected function getAuthor($line);
-
 
     /**
      * Gets the blame output.
@@ -210,7 +207,7 @@ abstract class PHP_CodeSniffer_Reports_VersionControl implements PHP_CodeSniffer
      */
     abstract protected function getBlameContent($filename);
 
-
 }//end class
 
 ?>
+

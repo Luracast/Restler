@@ -32,7 +32,6 @@
 class PEAR_Tests_NamingConventions_ValidClassNameUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -60,7 +59,6 @@ class PEAR_Tests_NamingConventions_ValidClassNameUnitTest extends AbstractSniffU
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -75,7 +73,7 @@ class PEAR_Tests_NamingConventions_ValidClassNameUnitTest extends AbstractSniffU
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

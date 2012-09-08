@@ -5,17 +5,17 @@ class Simple {
 
     }
     /**
-	 * @class AccessControl(requiredRole=user)
-	 */
-	protected function user() {
-		return array('result'=>'allow both `user` & `admin` åbcdéfg');
-	}
-	/**
+     * @class AccessControl(requiredRole=user)
+     */
+    protected function user() {
+        return array('result'=>'allow both `user` & `admin` åbcdéfg');
+    }
+    /**
      * @class AccessControl(requiredRole=admin)
-	 */
-	protected function admin(){
-		return 'allow only admin';
-	}
+     */
+    protected function admin(){
+        return 'allow only admin';
+    }
 }
 
 /**
@@ -29,3 +29,4 @@ class Test{
         return 'allow both user & admin';
     }
 }
+

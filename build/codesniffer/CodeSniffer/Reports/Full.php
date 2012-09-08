@@ -33,7 +33,6 @@
 class PHP_CodeSniffer_Reports_Full implements PHP_CodeSniffer_Report
 {
 
-
     /**
      * Prints all errors and warnings for each file processed.
      *
@@ -42,8 +41,8 @@ class PHP_CodeSniffer_Reports_Full implements PHP_CodeSniffer_Report
      * @param array   $report      Prepared report.
      * @param boolean $showSources Show sources?
      * @param int     $width       Maximum allowed lne width.
-     * 
-     * @return string 
+     *
+     * @return string
      */
     public function generate(
         $report,
@@ -145,7 +144,7 @@ class PHP_CodeSniffer_Reports_Full implements PHP_CodeSniffer_Report
 
     }//end generate()
 
-
 }//end class
 
 ?>
+

@@ -50,7 +50,6 @@ if (class_exists('PEAR_Sniffs_Commenting_FileCommentSniff', true) === false) {
 class PEAR_Sniffs_Commenting_ClassCommentSniff extends PEAR_Sniffs_Commenting_FileCommentSniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -64,7 +63,6 @@ class PEAR_Sniffs_Commenting_ClassCommentSniff extends PEAR_Sniffs_Commenting_Fi
                );
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -202,7 +200,6 @@ class PEAR_Sniffs_Commenting_ClassCommentSniff extends PEAR_Sniffs_Commenting_Fi
 
     }//end process()
 
-
     /**
      * Process the version tag.
      *
@@ -228,7 +225,7 @@ class PEAR_Sniffs_Commenting_ClassCommentSniff extends PEAR_Sniffs_Commenting_Fi
 
     }//end processVersion()
 
-
 }//end class
 
 ?>
+

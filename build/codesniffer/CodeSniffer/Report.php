@@ -3,7 +3,7 @@
  * Represents a PHP_CodeSniffer report.
  *
  * PHP version 5.
- * 
+ *
  * @category  PHP
  * @package   PHP_CodeSniffer
  * @author    Gabriele Santini <gsantini@sqli.com>
@@ -31,15 +31,14 @@
 interface PHP_CodeSniffer_Report
 {
 
-
     /**
      * Generate the actual report.
-     * 
+     *
      * @param array   $report      Prepared report.
      * @param boolean $showSources Show sources?
-     * @param int     $width       Maximum allowed lne width.  
-     * 
-     * @return string 
+     * @param int     $width       Maximum allowed lne width.
+     *
+     * @return string
      */
     public function generate(
         $report,
@@ -47,7 +46,7 @@ interface PHP_CodeSniffer_Report
         $width=80
     );
 
-
 }//end interface
 
 ?>
+

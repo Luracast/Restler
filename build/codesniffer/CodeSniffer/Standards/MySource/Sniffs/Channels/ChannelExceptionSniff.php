@@ -27,7 +27,6 @@
 class MySource_Sniffs_Channels_ChannelExceptionSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -38,7 +37,6 @@ class MySource_Sniffs_Channels_ChannelExceptionSniff implements PHP_CodeSniffer_
         return array(T_THROW);
 
     }//end register()
-
 
     /**
      * Processes this sniff, when one of its tokens is encountered.
@@ -71,7 +69,7 @@ class MySource_Sniffs_Channels_ChannelExceptionSniff implements PHP_CodeSniffer_
 
     }//end process()
 
-
 }//end class
 
 ?>
+

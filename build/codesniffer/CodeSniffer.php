@@ -168,7 +168,6 @@ class PHP_CodeSniffer
                                    'string',
                                   );
 
-
     /**
      * Constructs a PHP_CodeSniffer object.
      *
@@ -231,7 +230,6 @@ class PHP_CodeSniffer
 
     }//end __construct()
 
-
     /**
      * Destructs a PHP_CodeSniffer object.
      *
@@ -245,7 +243,6 @@ class PHP_CodeSniffer
         chdir($this->_cwd);
 
     }//end __destruct()
-
 
     /**
      * Autoload static method for loading classes and interfaces.
@@ -277,7 +274,6 @@ class PHP_CodeSniffer
 
     }//end autoload()
 
-
     /**
      * Sets an array of file extensions that we will allow checking of.
      *
@@ -304,7 +300,6 @@ class PHP_CodeSniffer
 
     }//end setAllowedFileExtensions()
 
-
     /**
      * Sets an array of ignore patterns that we use to skip files and folders.
      *
@@ -319,7 +314,6 @@ class PHP_CodeSniffer
         $this->ignorePatterns = $patterns;
 
     }//end setIgnorePatterns()
-
 
     /**
      * Gets the array of ignore patterns.
@@ -346,7 +340,6 @@ class PHP_CodeSniffer
 
     }//end getIgnorePatterns()
 
-
     /**
      * Sets the internal CLI object.
      *
@@ -359,7 +352,6 @@ class PHP_CodeSniffer
         $this->cli = $cli;
 
     }//end setCli()
-
 
     /**
      * Adds a file to the list of checked files.
@@ -375,7 +367,6 @@ class PHP_CodeSniffer
         $this->files[] = $phpcsFile;
 
     }//end addFile()
-
 
     /**
      * Processes the files/directories that PHP_CodeSniffer was constructed with.
@@ -530,7 +521,6 @@ class PHP_CodeSniffer
 
     }//end process()
 
-
     /**
      * Processes multi-file sniffs.
      *
@@ -549,7 +539,6 @@ class PHP_CodeSniffer
         }
 
     }//end processMulti()
-
 
     /**
      * Sets installed sniffs in the coding standard being used.
@@ -677,7 +666,6 @@ class PHP_CodeSniffer
 
     }//end setTokenListeners()
 
-
     /**
      * Return a list of sniffs that a coding standard has defined.
      *
@@ -763,7 +751,6 @@ class PHP_CodeSniffer
 
     }//end getSniffFiles()
 
-
     /**
      * Expand a ruleset sniff reference into a list of sniff files.
      *
@@ -834,7 +821,6 @@ class PHP_CodeSniffer
         return $referencedSniffs;
 
     }//end _expandRulesetReference()
-
 
     /**
      * Sets installed sniffs in the coding standard being used.
@@ -923,7 +909,6 @@ class PHP_CodeSniffer
 
     }//end populateCustomRules()
 
-
     /**
      * Populates the array of PHP_CodeSniffer_Sniff's for this file.
      *
@@ -983,7 +968,6 @@ class PHP_CodeSniffer
 
     }//end populateTokenListeners()
 
-
     /**
      * Get a list of files that will be processed.
      *
@@ -1035,7 +1019,6 @@ class PHP_CodeSniffer
 
     }//end getFilesToProcess()
 
-
     /**
      * Checks filtering rules to see if a file should be checked.
      *
@@ -1081,7 +1064,6 @@ class PHP_CodeSniffer
         return true;
 
     }//end shouldProcessFile()
-
 
     /**
      * Run the code sniffs over a single given file.
@@ -1218,7 +1200,6 @@ class PHP_CodeSniffer
 
     }//end processFile()
 
-
     /**
      * Process the sniffs for a single file.
      *
@@ -1278,7 +1259,6 @@ class PHP_CodeSniffer
 
     }//end _processFile()
 
-
     /**
      * Gives collected violations for reports.
      *
@@ -1301,7 +1281,6 @@ class PHP_CodeSniffer
 
     }//end getFilesErrors()
 
-
     /**
      * Generates documentation for a coding standard.
      *
@@ -1322,7 +1301,6 @@ class PHP_CodeSniffer
 
     }//end generateDocs()
 
-
     /**
      * Returns the PHP_CodeSniffer file objects.
      *
@@ -1333,7 +1311,6 @@ class PHP_CodeSniffer
         return $this->files;
 
     }//end getFiles()
-
 
     /**
      * Gets the array of PHP_CodeSniffer_Sniff's.
@@ -1346,7 +1323,6 @@ class PHP_CodeSniffer
 
     }//end getSniffs()
 
-
     /**
      * Gets the array of PHP_CodeSniffer_Sniff's indexed by token type.
      *
@@ -1357,7 +1333,6 @@ class PHP_CodeSniffer
         return $this->_tokenListeners;
 
     }//end getTokenSniffs()
-
 
     /**
      * Takes a token produced from <code>token_get_all()</code> and produces a
@@ -1401,7 +1376,6 @@ class PHP_CodeSniffer
 
     }//end standardiseToken()
 
-
     /**
      * Converts T_STRING tokens into more usable token names.
      *
@@ -1443,7 +1417,6 @@ class PHP_CodeSniffer
         return $newToken;
 
     }//end resolveTstringToken()
-
 
     /**
      * Converts simple tokens into a format that conforms to complex tokens
@@ -1548,7 +1521,6 @@ class PHP_CodeSniffer
 
     }//end resolveSimpleToken()
 
-
     /**
      * Returns true if the specified string is in the camel caps format.
      *
@@ -1626,7 +1598,6 @@ class PHP_CodeSniffer
 
     }//end isCamelCaps()
 
-
     /**
      * Returns true if the specified string is in the underscore caps format.
      *
@@ -1663,7 +1634,6 @@ class PHP_CodeSniffer
         return $validName;
 
     }//end isUnderscoreName()
-
 
     /**
      * Returns a valid variable type for param/var tag.
@@ -1734,7 +1704,6 @@ class PHP_CodeSniffer
 
     }//end suggestType()
 
-
     /**
      * Get a list of all coding standards installed.
      *
@@ -1785,7 +1754,6 @@ class PHP_CodeSniffer
 
     }//end getInstalledStandards()
 
-
     /**
      * Determine if a standard is installed.
      *
@@ -1825,7 +1793,6 @@ class PHP_CodeSniffer
 
     }//end isInstalledStandard()
 
-
     /**
      * Get a single config value.
      *
@@ -1853,7 +1820,6 @@ class PHP_CodeSniffer
         return $phpCodeSnifferConfig[$key];
 
     }//end getConfigData()
-
 
     /**
      * Set a single config value.
@@ -1915,7 +1881,6 @@ class PHP_CodeSniffer
 
     }//end setConfigData()
 
-
     /**
      * Get all config data in an array.
      *
@@ -1943,7 +1908,7 @@ class PHP_CodeSniffer
 
     }//end getAllConfigData()
 
-
 }//end class
 
 ?>
+

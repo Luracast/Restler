@@ -60,7 +60,6 @@ class Squiz_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff implements PHP_CodeSnif
 
     }//end register()
 
-
     /**
      * Processes this sniff, when one of its tokens is encountered.
      *
@@ -199,7 +198,7 @@ class Squiz_Sniffs_WhiteSpace_SuperfluousWhitespaceSniff implements PHP_CodeSnif
 
     }//end process()
 
-
 }//end class
 
 ?>
+

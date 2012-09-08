@@ -32,7 +32,6 @@
 class Squiz_Tests_ControlStructures_ElseIfDeclarationUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -50,7 +49,6 @@ class Squiz_Tests_ControlStructures_ElseIfDeclarationUnitTest extends AbstractSn
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -65,7 +63,7 @@ class Squiz_Tests_ControlStructures_ElseIfDeclarationUnitTest extends AbstractSn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

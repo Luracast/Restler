@@ -7,11 +7,12 @@ require_once '../../restler3/debugformat/debugformat.php';
 spl_autoload_register('spl_autoload');
 $r = new Restler();
 $r->setSupportedFormats(
-    'DebugFormat', 
-    'MustacheFormat', 
-    'JsonFormat', 
+    'DebugFormat',
+    'MustacheFormat',
+    'JsonFormat',
     'XmlFormat'
 );
 $r->addAPIClass('BMI');
 $r->addAPIClass('Author');
 $r->handle();
+

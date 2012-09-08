@@ -45,7 +45,6 @@ class Squiz_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSnif
                         T_COMMENT,
                        );
 
-
     /**
      * Processes this test, when one of its tokens is encountered.
      *
@@ -130,7 +129,6 @@ class Squiz_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSnif
 
     }//end processVariable()
 
-
     /**
      * Processes class member variables.
      *
@@ -182,7 +180,6 @@ class Squiz_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSnif
 
     }//end processMemberVar()
 
-
     /**
      * Processes the variable found within a double quoted string.
      *
@@ -230,14 +227,14 @@ class Squiz_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSnif
                     $error = 'Variable "%s" is not in valid camel caps format';
                     $data  = array($originalVarName);
                     $phpcsFile->addError($error, $stackPtr, 'StringNotCamelCaps', $data);
-                    
+
                 }
             }
         }//end if
 
     }//end processVariableInString()
 
-
 }//end class
 
 ?>
+

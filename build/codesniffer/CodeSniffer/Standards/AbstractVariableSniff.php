@@ -61,7 +61,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
      */
     protected $currentFile = null;
 
-
     /**
      * Constructs an AbstractVariableTest.
      */
@@ -81,7 +80,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
         parent::__construct($listen, $scopes, true);
 
     }//end __construct()
-
 
     /**
      * Processes the token in the specified PHP_CodeSniffer_File.
@@ -156,7 +154,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
 
     }//end processTokenWithinScope()
 
-
     /**
      * Processes the token outside the scope in the file.
      *
@@ -180,7 +177,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
 
     }//end processTokenOutsideScope()
 
-
     /**
      * Called to process class member vars.
      *
@@ -195,7 +191,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
         $stackPtr
     );
 
-
     /**
      * Called to process normal member vars.
      *
@@ -209,7 +204,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
         PHP_CodeSniffer_File $phpcsFile,
         $stackPtr
     );
-
 
     /**
      * Called to process variables found in duoble quoted strings.
@@ -230,7 +224,7 @@ abstract class PHP_CodeSniffer_Standards_AbstractVariableSniff extends PHP_CodeS
         $stackPtr
     );
 
-
 }//end class
 
 ?>
+

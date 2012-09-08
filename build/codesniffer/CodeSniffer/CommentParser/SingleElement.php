@@ -53,7 +53,6 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
      */
     protected $contentWhitespace = '';
 
-
     /**
      * Constructs a SingleElement doc tag.
      *
@@ -80,7 +79,6 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
 
     }//end __construct()
 
-
     /**
      * Returns the element names that this tag is comprised of, in the order
      * that they appear in the tag.
@@ -93,7 +91,6 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
         return array('content');
 
     }//end getSubElements()
-
 
     /**
      * Processes the sub element with the specified name.
@@ -113,7 +110,6 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
 
     }//end processSubElement()
 
-
     /**
      * Returns the content of this tag.
      *
@@ -125,7 +121,6 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
 
     }//end getContent()
 
-
     /**
      * Returns the witespace before the content of this tag.
      *
@@ -136,7 +131,6 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
         return $this->contentWhitespace;
 
     }//end getWhitespaceBeforeContent()
-
 
     /**
      * Processes a content check for single doc element.
@@ -166,7 +160,7 @@ class PHP_CodeSniffer_CommentParser_SingleElement extends PHP_CodeSniffer_Commen
 
     }//end process()
 
-
 }//end class
 
 ?>
+

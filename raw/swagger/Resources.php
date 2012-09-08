@@ -166,3 +166,4 @@ class Parameter
     public $allowMultiple = FALSE;
     public $paramType = 'query';
 }
+

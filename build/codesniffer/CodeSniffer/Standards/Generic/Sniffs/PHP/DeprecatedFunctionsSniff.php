@@ -43,7 +43,6 @@ class Generic_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_For
      */
     protected $forbiddenFunctions = array();
 
-
     /**
      * Constructor.
      *
@@ -63,7 +62,7 @@ class Generic_Sniffs_PHP_DeprecatedFunctionsSniff extends Generic_Sniffs_PHP_For
 
     }//end __construct()
 
-
 }//end class
 
 ?>
+

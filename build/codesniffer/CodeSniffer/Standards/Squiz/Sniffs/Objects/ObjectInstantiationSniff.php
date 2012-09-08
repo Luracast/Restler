@@ -31,7 +31,6 @@
 class Squiz_Sniffs_Objects_ObjectInstantiationSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Registers the token types that this sniff wishes to listen to.
      *
@@ -42,7 +41,6 @@ class Squiz_Sniffs_Objects_ObjectInstantiationSniff implements PHP_CodeSniffer_S
         return array(T_NEW);
 
     }//end register()
-
 
     /**
      * Process the tokens that this sniff is listening for.
@@ -75,7 +73,7 @@ class Squiz_Sniffs_Objects_ObjectInstantiationSniff implements PHP_CodeSniffer_S
 
     }//end process()
 
-
 }//end class
 
 ?>
+

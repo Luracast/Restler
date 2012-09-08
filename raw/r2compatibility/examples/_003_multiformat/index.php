@@ -2,17 +2,17 @@
 /*
  Title: Multi-format.
  Tagline: Serving what the client wants.
- Description: This BMI calculator service shows how you can serve data in different 
- formats using Rester. This example uses JsonFormat (default) and XmlFormat. 
- 
- First  format specified in `Restler::setSuportedFormats` is used as the default 
- format when client does not specify the format. 
- 
- Client can specify the format either using  extension like .json or specify 
+ Description: This BMI calculator service shows how you can serve data in different
+ formats using Rester. This example uses JsonFormat (default) and XmlFormat.
+
+ First  format specified in `Restler::setSuportedFormats` is used as the default
+ format when client does not specify the format.
+
+ Client can specify the format either using  extension like .json or specify
  the MIME type in HTTP Accept Header.
- 
- Example 1: GET bmi returns 
- 
+
+ Example 1: GET bmi returns
+
  {
   "bmi": 31.77,
   "message": "Obesity",
@@ -26,8 +26,8 @@
   }
 }.
 
- Example 2: GET bmi.xml returns 
-  
+ Example 2: GET bmi.xml returns
+
 <?xml version="1.0"?>
 <response>
   <bmi>31.77</bmi>
@@ -42,8 +42,8 @@
   </imperial>
 </response>.
 
- Example 3: GET bmi.json returns 
- 
+ Example 3: GET bmi.json returns
+
  {
   "bmi": 31.77,
   "message": "Obesity",
@@ -66,3 +66,4 @@ $r->setCompatibilityMode(2);
 $r->setSupportedFormats('JsonFormat', 'XmlFormat');
 $r->addAPIClass('BMI');
 $r->handle();
+

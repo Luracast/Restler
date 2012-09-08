@@ -48,7 +48,6 @@ class Squiz_Tests_CSS_LowercaseStyleDefinitionUnitTest extends AbstractSniffUnit
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -63,7 +62,7 @@ class Squiz_Tests_CSS_LowercaseStyleDefinitionUnitTest extends AbstractSniffUnit
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

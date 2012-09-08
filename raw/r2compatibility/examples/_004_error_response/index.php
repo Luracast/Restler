@@ -2,17 +2,17 @@
 /*
  Title: Error Response.
  Tagline: Making use of HTTP status codes.
- Description: API methods can make use of RestException class to provide 
- error information to the user. 
- 
- use `throw new RestException($httpStatusCode)` to send the error response 
- to the client. 
- 
- For the list of HTTP Status codes and their meaning take a look at 
+ Description: API methods can make use of RestException class to provide
+ error information to the user.
+
+ use `throw new RestException($httpStatusCode)` to send the error response
+ to the client.
+
+ For the list of HTTP Status codes and their meaning take a look at
  [Wikipedia](http://en.wikipedia.org/wiki/Http_status_codes).
- 
- Example 1: GET currency/format returns 
- 
+
+ Example 1: GET currency/format returns
+
 {
   "error": {
     "code": 400,
@@ -20,8 +20,8 @@
   }
 }.
 
- Example 2: GET currency/format/not_a_number returns 
-  
+ Example 2: GET currency/format/not_a_number returns
+
 {
   "error": {
     "code": 412,
@@ -39,8 +39,8 @@ spl_autoload_register('spl_autoload');
 
 require_once '../../../../vendor/restler.php';
 
-
 $r = new Restler();
 $r->setCompatibilityMode(2);
 $r->addAPIClass('Currency');
 $r->handle();
+

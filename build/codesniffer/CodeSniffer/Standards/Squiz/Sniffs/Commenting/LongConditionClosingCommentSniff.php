@@ -62,7 +62,6 @@ class Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff implements PHP_Co
      */
     protected $lineLimit = 20;
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -73,7 +72,6 @@ class Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff implements PHP_Co
         return array(T_CLOSE_CURLY_BRACKET);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -185,8 +183,7 @@ class Squiz_Sniffs_Commenting_LongConditionClosingCommentSniff implements PHP_Co
 
     }//end process()
 
-
 }//end class
 
-
 ?>
+

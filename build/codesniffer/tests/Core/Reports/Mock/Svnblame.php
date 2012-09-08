@@ -114,7 +114,6 @@ class PHP_CodeSniffer_Reports_Mock_Svnblame extends PHP_CodeSniffer_Reports_Svnb
                                           '219571   devel1        * @return void',
                                          );
 
-
     /**
      * Mocks the svnblame command.
      *
@@ -146,7 +145,6 @@ class PHP_CodeSniffer_Reports_Mock_Svnblame extends PHP_CodeSniffer_Reports_Svnb
 
     }//end getSvnblameContent()
 
-
     /**
      * Needed to test protected method.
      *
@@ -160,7 +158,7 @@ class PHP_CodeSniffer_Reports_Mock_Svnblame extends PHP_CodeSniffer_Reports_Svnb
 
     }//end testGetSvnAuthor()
 
-
 }//end class
 
 ?>
+

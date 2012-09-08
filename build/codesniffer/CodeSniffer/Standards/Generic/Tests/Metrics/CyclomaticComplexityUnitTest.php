@@ -32,7 +32,6 @@
 class Generic_Tests_Metrics_CyclomaticComplexityUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -48,7 +47,6 @@ class Generic_Tests_Metrics_CyclomaticComplexityUnitTest extends AbstractSniffUn
                );
 
     }//end getErrorList()
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -67,7 +65,7 @@ class Generic_Tests_Metrics_CyclomaticComplexityUnitTest extends AbstractSniffUn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

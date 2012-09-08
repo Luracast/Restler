@@ -34,10 +34,9 @@ require_once dirname(__FILE__).'/AbstractTestCase.php';
 class Core_Reports_FullTest extends Core_Reports_AbstractTestCase
 {
 
-
     /**
      * Test standard report.
-     * 
+     *
      * @return void
      */
     public function testGenerate()
@@ -59,7 +58,7 @@ class Core_Reports_FullTest extends Core_Reports_AbstractTestCase
 
     }//end testGenerate()
 
-
 }//end class
 
 ?>
+

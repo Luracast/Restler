@@ -42,3 +42,4 @@ $r->addAPIClass('Simple','');
 $r->addAPIClass('Secured');
 $r->addAuthenticationClass('SimpleAuth');
 $r->handle();
+

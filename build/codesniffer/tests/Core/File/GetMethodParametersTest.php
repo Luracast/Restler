@@ -40,7 +40,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
      */
     private $_phpcsFile;
 
-
     /**
      * Initialize & tokenize PHP_CodeSniffer_File with code from this file.
      *
@@ -65,7 +64,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
 
     }//end setUp()
 
-
     /**
      * Clean up after finished test.
      *
@@ -76,7 +74,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
         unset($this->_phpcsFile);
 
     }//end tearDown()
-
 
     /**
      * Verify pass-by-reference parsing.
@@ -106,7 +103,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
 
     }//end testPassByReference()
 
-
     /**
      * Verify array hint parsing.
      *
@@ -134,7 +130,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $found);
 
     }//end testArrayHint()
-
 
     /**
      * Verify type hint parsing.
@@ -170,7 +165,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
 
     }//end testTypeHint()
 
-
     /**
      * Verify variable.
      *
@@ -198,7 +192,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $found);
 
     }//end testVariable()
-
 
     /**
      * Verify default value parsing with a single function param.
@@ -228,7 +221,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $found);
 
     }//end testSingleDefaultValue()
-
 
     /**
      * Verify default value parsing.
@@ -264,7 +256,6 @@ class Core_File_GetMethodParametersTest extends PHPUnit_Framework_TestCase
         $this->assertSame($expected, $found);
 
     }//end testDefaultValues()
-
 
 }//end class
 

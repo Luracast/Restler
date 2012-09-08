@@ -31,7 +31,6 @@
 class Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -42,7 +41,6 @@ class Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff implements PHP_
         return array(T_FOREACH);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -139,7 +137,7 @@ class Squiz_Sniffs_ControlStructures_ForEachLoopDeclarationSniff implements PHP_
 
     }//end process()
 
-
 }//end class
 
 ?>
+

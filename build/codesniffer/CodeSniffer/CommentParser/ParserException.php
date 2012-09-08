@@ -38,7 +38,6 @@ class PHP_CodeSniffer_CommentParser_ParserException extends Exception
      */
     private $_line = 0;
 
-
     /**
      * Constructs a DocCommentParserException.
      *
@@ -54,7 +53,6 @@ class PHP_CodeSniffer_CommentParser_ParserException extends Exception
 
     }//end __construct()
 
-
     /**
      * Returns the line number within the comment where the exception occured.
      *
@@ -66,7 +64,7 @@ class PHP_CodeSniffer_CommentParser_ParserException extends Exception
 
     }//end getLineWithinComment()
 
-
 }//end class
 
 ?>
+

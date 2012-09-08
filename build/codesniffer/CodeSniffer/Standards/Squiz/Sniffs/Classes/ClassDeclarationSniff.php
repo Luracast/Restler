@@ -36,7 +36,6 @@ if (class_exists('PEAR_Sniffs_Classes_ClassDeclarationSniff', true) === false) {
 class Squiz_Sniffs_Classes_ClassDeclarationSniff extends PEAR_Sniffs_Classes_ClassDeclarationSniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -50,7 +49,6 @@ class Squiz_Sniffs_Classes_ClassDeclarationSniff extends PEAR_Sniffs_Classes_Cla
                );
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -275,7 +273,7 @@ class Squiz_Sniffs_Classes_ClassDeclarationSniff extends PEAR_Sniffs_Classes_Cla
 
     }//end process()
 
-
 }//end class
 
 ?>
+

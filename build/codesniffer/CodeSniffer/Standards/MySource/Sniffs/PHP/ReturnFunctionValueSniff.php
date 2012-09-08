@@ -27,7 +27,6 @@
 class MySource_Sniffs_PHP_ReturnFunctionValueSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -38,7 +37,6 @@ class MySource_Sniffs_PHP_ReturnFunctionValueSniff implements PHP_CodeSniffer_Sn
         return array(T_RETURN);
 
     }//end register()
-
 
     /**
      * Processes this sniff, when one of its tokens is encountered.
@@ -71,7 +69,7 @@ class MySource_Sniffs_PHP_ReturnFunctionValueSniff implements PHP_CodeSniffer_Sn
 
     }//end process()
 
-
 }//end class
 
 ?>
+

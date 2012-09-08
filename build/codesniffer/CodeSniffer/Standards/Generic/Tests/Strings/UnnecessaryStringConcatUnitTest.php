@@ -30,7 +30,6 @@
 class Generic_Tests_Strings_UnnecessaryStringConcatUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -66,7 +65,6 @@ class Generic_Tests_Strings_UnnecessaryStringConcatUnitTest extends AbstractSnif
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -81,7 +79,7 @@ class Generic_Tests_Strings_UnnecessaryStringConcatUnitTest extends AbstractSnif
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

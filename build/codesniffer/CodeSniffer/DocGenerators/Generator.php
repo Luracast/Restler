@@ -49,7 +49,6 @@ class PHP_CodeSniffer_DocGenerators_Generator
      */
     private $_sniffs = array();
 
-
     /**
      * Constructs a PHP_CodeSniffer_DocGenerators_Generator object.
      *
@@ -67,7 +66,6 @@ class PHP_CodeSniffer_DocGenerators_Generator
 
     }//end __construct()
 
-
     /**
      * Retrieves the title of the sniff from the DOMNode supplied.
      *
@@ -83,7 +81,6 @@ class PHP_CodeSniffer_DocGenerators_Generator
 
     }//end getTitle()
 
-
     /**
      * Retrieves the name of the standard we are generating docs for.
      *
@@ -94,7 +91,6 @@ class PHP_CodeSniffer_DocGenerators_Generator
         return $this->_standard;
 
     }//end getStandard()
-
 
     /**
      * Generates the documentation for a standard.
@@ -118,7 +114,6 @@ class PHP_CodeSniffer_DocGenerators_Generator
         }
 
     }//end generate()
-
 
     /**
      * Returns a list of paths to XML standard files for all sniffs in a standard.
@@ -173,7 +168,6 @@ class PHP_CodeSniffer_DocGenerators_Generator
 
     }//end getStandardFiles()
 
-
     /**
      * Process the documentation for a single sniff.
      *
@@ -191,7 +185,7 @@ class PHP_CodeSniffer_DocGenerators_Generator
 
     }//end processSniff()
 
-
 }//end class
 
 ?>
+

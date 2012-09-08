@@ -27,7 +27,7 @@ return $this->age;
 
     /**
      *
-     * @param int $age            
+     * @param int $age
     public function setAge($age)
 {
 $this->age = ( int ) $age;
@@ -39,3 +39,4 @@ $this->age = ( int ) $age;
         return $this->age < 26;
     }
 }
+

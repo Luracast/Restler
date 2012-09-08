@@ -794,7 +794,6 @@ class Restler extends EventEmitter
         return $path;
     }
 
-
     /**
      * Parses the request to figure out format of the request data
      *
@@ -1199,3 +1198,4 @@ class Restler extends EventEmitter
         }
     }
 }
+

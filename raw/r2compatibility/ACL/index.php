@@ -48,3 +48,4 @@ UserDetails::$role='admin';
         return(isset(self::$objstore[$name]));
     }
     */
+

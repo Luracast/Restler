@@ -33,7 +33,6 @@ require_once 'PHPUnit/Framework/TestSuite.php';
 class PHP_CodeSniffer_TestSuite extends PHPUnit_Framework_TestSuite
 {
 
-
     /**
      * Runs the tests and collects their result in a TestResult.
      *
@@ -51,7 +50,7 @@ class PHP_CodeSniffer_TestSuite extends PHPUnit_Framework_TestSuite
 
     }//end run()
 
-
 }//end class
 
 ?>
+

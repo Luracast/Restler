@@ -45,7 +45,6 @@ class JsonFormat extends Format
     const MIME = 'application/json';
     const EXTENSION = 'json';
 
-
     public function encode($data, $humanReadable = false)
     {
         if (!is_null(self::$prettyPrint)) {
@@ -133,7 +132,6 @@ class JsonFormat extends Format
         return Util::objectToArray($decoded);
     }
 
-
     /**
      * Pretty print JSON string
      *
@@ -201,3 +199,4 @@ class JsonFormat extends Format
         return $newJson;
     }
 }
+

@@ -39,3 +39,4 @@ require_once '../../restler/restler.php';
 $r = new Restler();
 $r->addAPIClass('Currency');
 $r->handle();
+

@@ -38,7 +38,6 @@ require_once dirname(__FILE__).'/AbstractSniffUnitTest.php';
 class PHP_CodeSniffer_Standards_AllSniffs
 {
 
-
     /**
      * Prepare the test runner.
      *
@@ -49,7 +48,6 @@ class PHP_CodeSniffer_Standards_AllSniffs
         PHPUnit_TextUI_TestRunner::run(self::suite());
 
     }//end main()
-
 
     /**
      * Add all sniff unit tests into a test suite.
@@ -121,7 +119,7 @@ class PHP_CodeSniffer_Standards_AllSniffs
 
     }//end suite()
 
-
 }//end class
 
 ?>
+

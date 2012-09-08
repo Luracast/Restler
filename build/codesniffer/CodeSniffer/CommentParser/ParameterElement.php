@@ -76,7 +76,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
      */
     private $_typeWhitespace = '';
 
-
     /**
      * Constructs a PHP_CodeSniffer_CommentParser_ParameterElement.
      *
@@ -115,7 +114,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end __construct()
 
-
     /**
      * Returns the element names that this tag is comprised of, in the order
      * that they appear in the tag.
@@ -132,7 +130,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
                );
 
     }//end getSubElements()
-
 
     /**
      * Processes the sub element with the specified name.
@@ -154,7 +151,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end processSubElement()
 
-
     /**
      * Returns the variable name that this parameter tag represents.
      *
@@ -165,7 +161,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
         return $this->_varName;
 
     }//end getVarName()
-
 
     /**
      * Returns the variable type that this string represents.
@@ -178,7 +173,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end getType()
 
-
     /**
      * Returns the comment of this comment for this parameter.
      *
@@ -189,7 +183,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
         return $this->_comment;
 
     }//end getComment()
-
 
     /**
      * Returns the whitespace before the variable type.
@@ -204,7 +197,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end getWhiteSpaceBeforeType()
 
-
     /**
      * Returns the whitespace before the variable name.
      *
@@ -218,7 +210,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end getWhiteSpaceBeforeVarName()
 
-
     /**
      * Returns the whitespace before the comment.
      *
@@ -231,7 +222,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
         return $this->_commentWhitespace;
 
     }//end getWhiteSpaceBeforeComment()
-
 
     /**
      * Returns the postition of this parameter are it appears in the comment.
@@ -250,7 +240,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
         }
 
     }//end getPosition()
-
 
     /**
      * Returns true if this parameter's variable aligns with the other's.
@@ -278,7 +267,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end alignsVariableWith()
 
-
     /**
      * Returns true if this parameter's comment aligns with the other's.
      *
@@ -305,7 +293,6 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end alignsCommentWith()
 
-
     /**
      * Returns true if this parameter aligns with the other paramter.
      *
@@ -329,7 +316,7 @@ class PHP_CodeSniffer_CommentParser_ParameterElement extends PHP_CodeSniffer_Com
 
     }//end alignsWith()
 
-
 }//end class
 
 ?>
+

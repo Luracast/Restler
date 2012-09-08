@@ -123,7 +123,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
                                        ),
                 );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -134,7 +133,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         return array(T_OPEN_TAG);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -321,7 +319,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end process()
 
-
     /**
      * Check that the PHP version is specified.
      *
@@ -339,7 +336,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         }
 
     }//end processPHPVersion()
-
 
     /**
      * Processes each required or optional tag.
@@ -507,7 +503,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processTags()
 
-
     /**
      * Get the indentation information of each tag.
      *
@@ -534,7 +529,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         return 0;
 
     }//end getIndentation()
-
 
     /**
      * Process the category tag.
@@ -574,7 +568,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processCategory()
 
-
     /**
      * Process the package tag.
      *
@@ -613,7 +606,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processPackage()
 
-
     /**
      * Process the subpackage tag.
      *
@@ -651,7 +643,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         }
 
     }//end processSubpackage()
-
 
     /**
      * Process the author tag(s) that this header comment has.
@@ -692,7 +683,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         }
 
     }//end processAuthors()
-
 
     /**
      * Process the copyright tags.
@@ -735,7 +725,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processCopyrights()
 
-
     /**
      * Process the license tag.
      *
@@ -756,7 +745,6 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
         }
 
     }//end processLicense()
-
 
     /**
      * Process the version tag.
@@ -785,7 +773,7 @@ class PEAR_Sniffs_Commenting_FileCommentSniff implements PHP_CodeSniffer_Sniff
 
     }//end processVersion()
 
-
 }//end class
 
 ?>
+

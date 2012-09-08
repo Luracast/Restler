@@ -32,7 +32,6 @@
 class Generic_Tests_Functions_CallTimePassByReferenceUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -52,7 +51,6 @@ class Generic_Tests_Functions_CallTimePassByReferenceUnitTest extends AbstractSn
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -67,7 +65,7 @@ class Generic_Tests_Functions_CallTimePassByReferenceUnitTest extends AbstractSn
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

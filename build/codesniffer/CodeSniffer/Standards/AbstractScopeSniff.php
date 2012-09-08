@@ -83,7 +83,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff implements PHP_CodeS
      */
     private $_listenOutside = false;
 
-
     /**
      * Constructs a new AbstractScopeTest.
      *
@@ -126,7 +125,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff implements PHP_CodeS
 
     }//end __construct()
 
-
     /**
      * The method that is called to register the tokens this test wishes to
      * listen to.
@@ -146,7 +144,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff implements PHP_CodeS
         }
 
     }//end register()
-
 
     /**
      * Processes the tokens that this test is listening for.
@@ -194,7 +191,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff implements PHP_CodeS
 
     }//end process()
 
-
     /**
      * Processes a token that is found within the scope that this test is
      * listening to.
@@ -214,7 +210,6 @@ abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff implements PHP_CodeS
         $currScope
     );
 
-
     /**
      * Processes a token that is found within the scope that this test is
      * listening to.
@@ -233,7 +228,7 @@ abstract class PHP_CodeSniffer_Standards_AbstractScopeSniff implements PHP_CodeS
 
     }//end processTokenOutsideScope()
 
-
 }//end class
 
 ?>
+

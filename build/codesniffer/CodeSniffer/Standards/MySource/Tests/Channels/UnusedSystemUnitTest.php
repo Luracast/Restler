@@ -30,7 +30,6 @@
 class MySource_Tests_Channels_UnusedSystemUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -52,7 +51,6 @@ class MySource_Tests_Channels_UnusedSystemUnitTest extends AbstractSniffUnitTest
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -67,7 +65,7 @@ class MySource_Tests_Channels_UnusedSystemUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

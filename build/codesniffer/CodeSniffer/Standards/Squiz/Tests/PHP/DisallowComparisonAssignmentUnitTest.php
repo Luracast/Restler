@@ -32,7 +32,6 @@
 class Squiz_Tests_PHP_DisallowComparisonAssignmentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -54,7 +53,6 @@ class Squiz_Tests_PHP_DisallowComparisonAssignmentUnitTest extends AbstractSniff
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -69,7 +67,7 @@ class Squiz_Tests_PHP_DisallowComparisonAssignmentUnitTest extends AbstractSniff
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

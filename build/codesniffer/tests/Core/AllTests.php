@@ -53,7 +53,6 @@ if (is_file(dirname(__FILE__).'/../../CodeSniffer.php') === true) {
 class PHP_CodeSniffer_Core_AllTests
 {
 
-
     /**
      * Prepare the test runner.
      *
@@ -64,7 +63,6 @@ class PHP_CodeSniffer_Core_AllTests
         PHPUnit2_TextUI_TestRunner::run(self::suite());
 
     }//end main()
-
 
     /**
      * Add all core unit tests into a test suite.
@@ -91,7 +89,7 @@ class PHP_CodeSniffer_Core_AllTests
 
     }//end suite()
 
-
 }//end class
 
 ?>
+

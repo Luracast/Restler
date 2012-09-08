@@ -15,3 +15,4 @@ class SimpleAuth implements iAuthenticate
         return SimpleAuth::KEY;
     }
 }
+

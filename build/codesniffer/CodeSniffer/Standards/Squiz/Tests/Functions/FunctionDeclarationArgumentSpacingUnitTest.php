@@ -32,7 +32,6 @@
 class Squiz_Tests_Functions_FunctionDeclarationArgumentSpacingUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -59,7 +58,6 @@ class Squiz_Tests_Functions_FunctionDeclarationArgumentSpacingUnitTest extends A
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -74,7 +72,7 @@ class Squiz_Tests_Functions_FunctionDeclarationArgumentSpacingUnitTest extends A
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

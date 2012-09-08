@@ -1,6 +1,6 @@
 <?php
 class Validate {
-    
+
     /*
      *
      */
@@ -11,14 +11,14 @@ class Validate {
      *
      * Long Description comes
      * here
-     * 
+     *
      * but can go beyond
      * three lines
      *
      * @param string $str
      *   ``` choice=one,two,three&message=str+should+be+one+or+two+or+three```
      * @return string
-     * 
+     *
      * {@inheritDoc}
      ************************/
     function string($str = 'none')
@@ -60,7 +60,7 @@ class Validate {
     {
         return "Number : $num";
     }
-    
+
     /**
      * Custom instance for our functions
      * @param Custom $instance instance of Custom class {@validate true}
@@ -90,3 +90,4 @@ class Validate {
         return "IP Address : $ip";
     }
 }
+

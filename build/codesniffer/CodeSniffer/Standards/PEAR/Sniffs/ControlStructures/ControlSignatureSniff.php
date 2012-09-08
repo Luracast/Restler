@@ -33,7 +33,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractPatternSniff', true) === fal
 class PEAR_Sniffs_ControlStructures_ControlSignatureSniff extends PHP_CodeSniffer_Standards_AbstractPatternSniff
 {
 
-
     /**
      * Constructs a PEAR_Sniffs_ControlStructures_ControlSignatureSniff.
      */
@@ -42,7 +41,6 @@ class PEAR_Sniffs_ControlStructures_ControlSignatureSniff extends PHP_CodeSniffe
         parent::__construct(true);
 
     }//end __construct()
-
 
     /**
      * Returns the patterns that this test wishes to verify.
@@ -65,7 +63,7 @@ class PEAR_Sniffs_ControlStructures_ControlSignatureSniff extends PHP_CodeSniffe
 
     }//end getPatterns()
 
-
 }//end class
 
 ?>
+

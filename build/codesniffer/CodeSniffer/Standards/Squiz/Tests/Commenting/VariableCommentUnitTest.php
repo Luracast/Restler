@@ -29,7 +29,6 @@
 class Squiz_Tests_Commenting_VariableCommentUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -73,7 +72,6 @@ class Squiz_Tests_Commenting_VariableCommentUnitTest extends AbstractSniffUnitTe
 
     }//end getErrorList()
 
-
     /**
      * Returns the lines where warnings should occur.
      *
@@ -90,7 +88,7 @@ class Squiz_Tests_Commenting_VariableCommentUnitTest extends AbstractSniffUnitTe
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

@@ -44,3 +44,4 @@ class CommentParserTest extends \PHPUnit_Framework_TestCase
         $this->object->removeCommentTags($comment);
     }
 }
+

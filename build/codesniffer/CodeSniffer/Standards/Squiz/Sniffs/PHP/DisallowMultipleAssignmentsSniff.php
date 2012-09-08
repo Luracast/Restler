@@ -32,7 +32,6 @@
 class Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -43,7 +42,6 @@ class Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff implements PHP_CodeSniff
         return array(T_EQUAL);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -178,7 +176,7 @@ class Squiz_Sniffs_PHP_DisallowMultipleAssignmentsSniff implements PHP_CodeSniff
 
     }//end process()
 
-
 }//end class
 
 ?>
+

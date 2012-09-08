@@ -36,7 +36,6 @@ class Squiz_Sniffs_CSS_LowercaseStyleDefinitionSniff implements PHP_CodeSniffer_
      */
     public $supportedTokenizers = array('CSS');
 
-
     /**
      * Returns the token types that this sniff is interested in.
      *
@@ -47,7 +46,6 @@ class Squiz_Sniffs_CSS_LowercaseStyleDefinitionSniff implements PHP_CodeSniffer_
         return array(T_OPEN_CURLY_BRACKET);
 
     }//end register()
-
 
     /**
      * Processes the tokens that this sniff is interested in.
@@ -82,3 +80,4 @@ class Squiz_Sniffs_CSS_LowercaseStyleDefinitionSniff implements PHP_CodeSniffer_
 
 }//end class
 ?>
+

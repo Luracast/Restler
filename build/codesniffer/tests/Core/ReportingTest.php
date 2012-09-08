@@ -42,7 +42,7 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
 
     /**
      * Report error fixtures.
-     * 
+     *
      * @var array
      */
     protected $fixtureErrors = array(
@@ -80,7 +80,7 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
 
     /**
      * Report warning fixtures.
-     * 
+     *
      * @var array
      */
     protected $fixtureWarnings = array(
@@ -104,10 +104,9 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
                                         ),
                                  );
 
-
     /**
      * Gives a Reporting instance.
-     * 
+     *
      * @return void
      */
     public function setUp()
@@ -115,7 +114,6 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
         $this->reporting = new PHP_CodeSniffer_Reporting();
 
     }//end setUp()
-
 
     /**
      * Test report factory method.
@@ -135,10 +133,9 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
 
     }//end testFactory()
 
-
     /**
      * Compose fixture violations.
-     * 
+     *
      * @return array
      */
     protected function getFixtureFilesViolations()
@@ -166,10 +163,9 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
 
     }//end getFixtureFilesViolations()
 
-
     /**
      * Test prepare report method.
-     * 
+     *
      * @return void
      */
     public function testPrepare()
@@ -229,7 +225,7 @@ class Core_ReportingTest extends PHPUnit_Framework_TestCase
 
     }//end testPrepare()
 
-
 }//end class
 
 ?>
+

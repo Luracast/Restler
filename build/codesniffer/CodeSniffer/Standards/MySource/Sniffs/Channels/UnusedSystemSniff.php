@@ -27,7 +27,6 @@
 class MySource_Sniffs_Channels_UnusedSystemSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -38,7 +37,6 @@ class MySource_Sniffs_Channels_UnusedSystemSniff implements PHP_CodeSniffer_Snif
         return array(T_DOUBLE_COLON);
 
     }//end register()
-
 
     /**
      * Processes this sniff, when one of its tokens is encountered.
@@ -152,7 +150,7 @@ class MySource_Sniffs_Channels_UnusedSystemSniff implements PHP_CodeSniffer_Snif
 
     }//end process()
 
-
 }//end class
 
 ?>
+

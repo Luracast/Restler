@@ -31,7 +31,6 @@
 class Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff implements PHP_CodeSniffer_Sniff
 {
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -48,7 +47,6 @@ class Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff implements PHP_CodeS
                );
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -76,7 +74,7 @@ class Squiz_Sniffs_Functions_LowercaseFunctionKeywordsSniff implements PHP_CodeS
 
     }//end process()
 
-
 }//end class
 
 ?>
+

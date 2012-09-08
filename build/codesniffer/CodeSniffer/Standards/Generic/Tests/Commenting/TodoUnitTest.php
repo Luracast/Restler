@@ -32,7 +32,6 @@
 class Generic_Tests_Commenting_TodoUnitTest extends AbstractSniffUnitTest
 {
 
-
     /**
      * Returns the lines where errors should occur.
      *
@@ -48,7 +47,6 @@ class Generic_Tests_Commenting_TodoUnitTest extends AbstractSniffUnitTest
         return array();
 
     }//end getErrorList()
-
 
     /**
      * Returns the lines where warnings should occur.
@@ -92,7 +90,7 @@ class Generic_Tests_Commenting_TodoUnitTest extends AbstractSniffUnitTest
 
     }//end getWarningList()
 
-
 }//end class
 
 ?>
+

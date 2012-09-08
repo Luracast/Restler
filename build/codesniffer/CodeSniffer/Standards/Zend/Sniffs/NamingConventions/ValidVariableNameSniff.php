@@ -45,7 +45,6 @@ class Zend_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
                         T_COMMENT,
                        );
 
-
     /**
      * Processes this test, when one of its tokens is encountered.
      *
@@ -140,7 +139,6 @@ class Zend_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 
     }//end processVariable()
 
-
     /**
      * Processes class member variables.
      *
@@ -189,7 +187,6 @@ class Zend_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
         }
 
     }//end processMemberVar()
-
 
     /**
      * Processes the variable found within a double quoted string.
@@ -248,7 +245,7 @@ class Zend_Sniffs_NamingConventions_ValidVariableNameSniff extends PHP_CodeSniff
 
     }//end processVariableInString()
 
-
 }//end class
 
 ?>
+

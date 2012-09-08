@@ -57,7 +57,6 @@ class Generic_Sniffs_WhiteSpace_ScopeIndentSniff implements PHP_CodeSniffer_Snif
      */
     protected $nonIndentingScopes = array();
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -68,7 +67,6 @@ class Generic_Sniffs_WhiteSpace_ScopeIndentSniff implements PHP_CodeSniffer_Snif
         return PHP_CodeSniffer_Tokens::$scopeOpeners;
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -290,7 +288,6 @@ class Generic_Sniffs_WhiteSpace_ScopeIndentSniff implements PHP_CodeSniffer_Snif
 
     }//end process()
 
-
     /**
      * Calculates the expected indent of a token.
      *
@@ -331,7 +328,7 @@ class Generic_Sniffs_WhiteSpace_ScopeIndentSniff implements PHP_CodeSniffer_Snif
 
     }//end calculateExpectedIndent()
 
-
 }//end class
 
 ?>
+

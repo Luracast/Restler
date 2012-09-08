@@ -53,7 +53,6 @@ class MySource_Sniffs_CSS_BrowserSpecificStylesSniff implements PHP_CodeSniffer_
                                       'webkit',
                                      );
 
-
     /**
      * Returns the token types that this sniff is interested in.
      *
@@ -64,7 +63,6 @@ class MySource_Sniffs_CSS_BrowserSpecificStylesSniff implements PHP_CodeSniffer_
         return array(T_STYLE);
 
     }//end register()
-
 
     /**
      * Processes the tokens that this sniff is interested in.
@@ -97,7 +95,7 @@ class MySource_Sniffs_CSS_BrowserSpecificStylesSniff implements PHP_CodeSniffer_
 
     }//end process()
 
-
 }//end class
 
 ?>
+

@@ -44,3 +44,4 @@ class MustacheFormat extends Format
         throw new RestException(405, 'MustacheFormat is write only');
     }
 }
+

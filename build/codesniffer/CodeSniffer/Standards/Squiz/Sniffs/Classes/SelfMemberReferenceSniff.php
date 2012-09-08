@@ -41,7 +41,6 @@ if (class_exists('PHP_CodeSniffer_Standards_AbstractScopeSniff', true) === false
 class Squiz_Sniffs_Classes_SelfMemberReferenceSniff extends PHP_CodeSniffer_Standards_AbstractScopeSniff
 {
 
-
     /**
      * Constructs a Squiz_Sniffs_Classes_SelfMemberReferenceSniff.
      */
@@ -50,7 +49,6 @@ class Squiz_Sniffs_Classes_SelfMemberReferenceSniff extends PHP_CodeSniffer_Stan
         parent::__construct(array(T_CLASS), array(T_DOUBLE_COLON));
 
     }//end __construct()
-
 
     /**
      * Processes the function tokens within the class.
@@ -100,7 +98,7 @@ class Squiz_Sniffs_Classes_SelfMemberReferenceSniff extends PHP_CodeSniffer_Stan
 
     }//end processTokenWithinScope()
 
-
 }//end class
 
 ?>
+

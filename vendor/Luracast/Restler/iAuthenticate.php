@@ -20,3 +20,4 @@ interface iAuthenticate extends iFilter
      */
     public function __isAllowed();
 }
+

@@ -92,7 +92,6 @@ class Squiz_Sniffs_Operators_ComparisonOperatorUsageSniff implements PHP_CodeSni
                                             ),
                                   );
 
-
     /**
      * Registers the token types that this sniff wishes to listen to.
      *
@@ -106,7 +105,6 @@ class Squiz_Sniffs_Operators_ComparisonOperatorUsageSniff implements PHP_CodeSni
                );
 
     }//end register()
-
 
     /**
      * Process the tokens that this sniff is listening for.
@@ -204,7 +202,7 @@ class Squiz_Sniffs_Operators_ComparisonOperatorUsageSniff implements PHP_CodeSni
 
     }//end process()
 
-
 }//end class
 
 ?>
+

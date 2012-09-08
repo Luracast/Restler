@@ -34,3 +34,4 @@ class PHP_CodeSniffer_Exception extends PEAR_Exception
 }//end class
 
 ?>
+

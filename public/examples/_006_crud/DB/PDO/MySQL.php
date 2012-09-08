@@ -105,3 +105,4 @@ class DB_PDO_MySQL
         ");
     }
 }
+

@@ -2,7 +2,7 @@
 /**
  * SQLite DB. All data is stored in data_pdo_sqlite.sq3 file
  * This file will be automatically created when missing
- * Make sure this folder has sufficient write permission 
+ * Make sure this folder has sufficient write permission
  * for this page to create the file.
  */
 class DB_PDO_Sqlite
@@ -83,3 +83,4 @@ class DB_PDO_Sqlite
         ");
     }
 }
+

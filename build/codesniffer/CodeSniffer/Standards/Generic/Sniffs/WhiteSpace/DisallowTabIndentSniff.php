@@ -42,7 +42,6 @@ class Generic_Sniffs_WhiteSpace_DisallowTabIndentSniff implements PHP_CodeSniffe
                                    'CSS',
                                   );
 
-
     /**
      * Returns an array of tokens this test wants to listen for.
      *
@@ -53,7 +52,6 @@ class Generic_Sniffs_WhiteSpace_DisallowTabIndentSniff implements PHP_CodeSniffe
         return array(T_WHITESPACE);
 
     }//end register()
-
 
     /**
      * Processes this test, when one of its tokens is encountered.
@@ -81,7 +79,7 @@ class Generic_Sniffs_WhiteSpace_DisallowTabIndentSniff implements PHP_CodeSniffe
 
     }//end process()
 
-
 }//end class
 
 ?>
+

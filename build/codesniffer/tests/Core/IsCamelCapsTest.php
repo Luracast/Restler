@@ -31,7 +31,6 @@ require_once 'PHPUnit/Framework/TestCase.php';
 class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
 {
 
-
     /**
      * Test valid public function/method names.
      *
@@ -43,7 +42,6 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(PHP_CodeSniffer::isCamelCaps('thisISCamelCaps', false, true, false));
 
     }//end testValidNotClassFormatPublic()
-
 
     /**
      * Test invalid public function/method names.
@@ -67,7 +65,6 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
 
     }//end testInvalidNotClassFormatPublic()
 
-
     /**
      * Test valid private method names.
      *
@@ -81,7 +78,6 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(PHP_CodeSniffer::isCamelCaps('_i18n', false, false, true));
 
     }//end testValidNotClassFormatPrivate()
-
 
     /**
      * Test invalid private method names.
@@ -103,7 +99,6 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
 
     }//end testInvalidNotClassFormatPrivate()
 
-
     /**
      * Test valid class names.
      *
@@ -117,7 +112,6 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
 
     }//end testValidClassFormatPublic()
 
-
     /**
      * Test invalid class names.
      *
@@ -130,7 +124,6 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(PHP_CodeSniffer::isCamelCaps('This_Is_Camel_Caps', true));
 
     }//end testInvalidClassFormat()
-
 
     /**
      * Test invalid class names with the private flag set.
@@ -147,7 +140,7 @@ class Core_IsCamelCapsTest extends PHPUnit_Framework_TestCase
 
     }//end testInvalidClassFormatPrivate()
 
-
 }//end class
 
 ?>
+

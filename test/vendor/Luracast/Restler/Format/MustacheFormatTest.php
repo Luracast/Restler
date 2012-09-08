@@ -52,3 +52,4 @@ class MustacheFormatTest extends \PHPUnit_Framework_TestCase
         $this->object->decode($data);
     }
 }
+
