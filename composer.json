@@ -38,9 +38,7 @@
             "url": "https:\/\/github.com\/zendframework\/ZendAmf.git"
         }
     ],
-    {
-        "bin": ["vendor/restler.php"]
-    },
+    "bin": ["vendor/restler.php"],
     "autoload": {
         "psr-0": {
             "Luracast\\Restler": "vendor\/"
