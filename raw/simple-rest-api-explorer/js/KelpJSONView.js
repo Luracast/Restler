@@ -4,14 +4,42 @@
  */
 $.extend(jQuery,
 {
-    // json ¥i¶Ç¤J json ©Î JavaScript Object
-    // container ¬°¿é¥Xªº®e¾¹¡AjQuery Object
+    JSONEdit: function (json, container) {
+        var ob = (typeof json == 'string') ? JSON.parse(json) : json,
+            p,
+            l = [],
+            c = container;
+
+        var repeat = function (s, n) {
+            return new Array(n + 1).join(s);
+        };
+
+        // Check whether a string is an URL – Added by Bramus!
+        var isUrl = function(s) {
+            var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+            return regexp.test(s);
+        };
+
+        // Escape string for output – Added by Bramus!
+        var htmlEntities = function(str) {
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+
+        // Inject HTML String into container
+        c.addClass('KelpJSONView').val(JSON.stringify(ob, null, 4));
+
+    }
+});
+
+$.extend(jQuery,
+{
     JSONView: function (json, container) {
         var ob = (typeof json == 'string') ? JSON.parse(json) : json,
-		    p, 
-		    l = [], 
+		    p,
+		    l = [],
 		    c = container;
-		
+
         var repeat = function (s, n) {
             return new Array(n + 1).join(s);
         };
@@ -21,12 +49,12 @@ $.extend(jQuery,
 			var regexp = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
 			return regexp.test(s);
 		};
-		
+
 		// Escape string for output – Added by Bramus!
 		var htmlEntities = function(str) {
 		    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 		}
-		
+
         //²£¥Í JSON µ²ºc¸ê®Æªº»¼°j¨ç¼Æ
         //o     ¨Ó·½ª«¥ó
         //isar  ¸ê®Æ¬O true ªº¸Ü¥Nªí³o¤@¦¸»¼°j¬°°}¦C¸ê®Æ
@@ -114,9 +142,9 @@ $.extend(jQuery,
             html += '<li>' + repeat(' &nbsp; &nbsp;', jobject.Step) + jobject.Text + '</li>';
         }
 		html += '</ol>';
-		
+
 		// Inject HTML String into container
 		c.addClass('KelpJSONView').html(html);
-		
+
     }
 });

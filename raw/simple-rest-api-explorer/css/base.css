@@ -52,12 +52,18 @@
 /* #Basic Styles
 ================================================== */
 	body {
-		background: #fff;
-		font: 14px/21px "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-		color: #444;
-		-webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
+        background-color: #f7eded;
+        font: 14px/21px "Droid Sans", sans-serif, "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		color: #999999;
+        -webkit-font-smoothing: antialiased; /* Fix for webkit rendering */
 		-webkit-text-size-adjust: 100%;
  }
+    #header {
+        background-color: #646257;
+        padding: 14px;
+        color: #fff;
+        margin-bottom: 30px;
+    }
 
 
 /* #Typography

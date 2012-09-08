@@ -15,7 +15,7 @@
 	<link rel="stylesheet" href="css/base.css">
 	<link rel="stylesheet" href="css/skeleton.css">
 	<link rel="stylesheet" href="css/layout.css">
-	
+
 	<link rel="stylesheet" href="css/explorer.css">
 	<link rel="stylesheet" href="css/KelpJSONView.css">
 
@@ -27,29 +27,31 @@
 	<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
 	<link rel="apple-touch-icon" sizes="72x72" href="img/apple-touch-icon-72x72.png">
 	<link rel="apple-touch-icon" sizes="114x114" href="img/apple-touch-icon-114x114.png">
-	
+
 </head>
 <body>
 
 	<div class="container">
-		<div class="sixteen columns">
+		<div id="header" class="sixteen columns">
 			<h1 class="remove-bottom" style="margin-top: 40px">Simple REST API Explorer <img src="img/spinner.gif" id="loading" alt="" title="" width="16" height="16" style="display: none;" /></h1>
-			<h5>MoviesDB Example API</h5>
+			<h5 id="head-title">Restler Example API</h5>
 			<hr />
 		</div>
 		<div class="four columns" id="sidebar">
-			<dl>
-				<dt style="margin-top: 0"><h4>Movies</h4></dt>
-				<dd><a href="/movies" data-requestmethod="get">overview</a><small>GET /movies</small></dd>
-				<dd><a href="/movies/1" data-requestmethod="get">detail</a><small>GET /movies/#</small></dd>
-				<dt><h4>People</h4></dt>
-				<dd><a href="/people/1" data-requestmethod="get">detail</a><small>GET /people/#</small></dd>
-				<dt><h4>Genres</h4></dt>
-				<dd><a href="/genres" data-requestmethod="get">overview</a><small>GET /genres</small></dd>
-				<dd><a href="/genres/5" data-requestmethod="get">detail</a><small>GET /genres/#</small></dd>
-				<dd><a href="/genres" data-requestmethod="post" data-extradata="title=Fantasy">insert</a><small>POST /genres</small></dd>
-				<dd><a href="/genres/5" data-requestmethod="put" data-extradata="title=New title">update</a><small>PUT /genres/#</small></dd>
-				<dd><a href="/genres/5" data-requestmethod="delete">delete</a><small>DELETE /genres/#</small></dd>
+			<dl class="res-display">
+				<dt><h4>Status:</h4>
+				<h3 id="res-status"></h3></dt>
+				<dd><dl id="res-result" class="res-display"></dl></span></dd>
+			</dl>
+			<small>Powered by <a href="http://visionmedia.github.com/superagent/">superagent</a></small>
+			<hr>
+			<dl id="author-links">
+				<dt style="margin-top: -20px"><h4>Authors</h4></dt>
+				<dd><a id="sidebar-list" href="/authors" data-requestmethod="get">overview</a><small>GET /authors</small></dd>
+				<dd><a href="/authors/1" data-requestmethod="get">detail</a><small>GET /authors/#</small></dd>
+				<dd><a href="/authors" data-requestmethod="post" data-extradata="name=Alice+Wonder&email=alice@wonder.land">insert</a><small>POST /authors</small></dd>
+				<dd><a id="sidebar-put" href="/authors/5" data-requestmethod="put" data-extradata="name=Alice4Wonder&email=alice@wonder.l.and">update</a><small>PUT /authors/#</small></dd>
+				<dd><a id="sidebar-del" href="/authors/5" data-requestmethod="delete">delete</a><small>DELETE /authors/#</small></dd>
 			</dl>
 		</div>
 		<div class="eleven columns">
@@ -65,23 +67,25 @@
 				<label class="nine columns omega">
 					<input type="text" id="apiurl" />
 				</label>
-			</form>	
+			</form>
 			<div id="result"></div>
+			<textarea id="result-edit" >
+			</textarea>
 		</div>
 		<div class="twelve columns offset-by-four">
-			<p>Simple REST API Explorer, built by Bramus! &mdash; <a href="http://www.bram.us/">http://www.bram.us/</a></p>
-			<p><em>The API used in this example is a simple CORS-enabled RESTful API, also built by Bramus! For demonstration purposes, the API requires an API-Key which needs to be sent via an <code>X-Api-Key</code> header.</em></p>
+			<small>Simple REST API Explorer, built by Bramus! &mdash; <a href="http://www.bram.us/">http://www.bram.us/</a> remastered by <a href="https://github.com/nickl-">nickl-</a></small>
 		</div>
 	</div>
 
 	<script src="js/jquery-1.7.1.min.js"></script>
 	<script src="js/KelpJSONView.js"></script>
 	<script>
-		var apiBaseUrl = 'http://moviesdb.brm.us/api';
+		var apiBaseUrl = '/public/examples/_006_crud/index.php';
 		var apiDataType = 'json';
 		var apiExtraHeaders = { 'X-Api-Key' : 'WV4tP4zT-qJNdN8Fb-XrQCLmJs-5gwvVr9e-Ge5bNar6' };
 		var apiUrlSuffix = '';
 	</script>
 	<script src="js/main.js"></script>
+	<script src="js/superagent.min.js"></script>
 </body>
 </html>
