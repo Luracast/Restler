@@ -25,6 +25,11 @@ class Restler
     const VERSION = '2.2.1';
 
     /**
+     * Current Restler object.
+     */
+    static public $current;
+    
+    /**
      * URL of the currently mapped service
      * @var string
      */
@@ -197,6 +202,10 @@ class Restler
         $this->production_mode = $production_mode;
         $this->cache_dir = getcwd();
         $this->base_dir = RESTLER_PATH;
+        if (isset(Restler::$current) && (Restler::$current != NIL)) {
+    		throw new RestException(500);
+    	}
+    	Restler::$current = $this;
     }
 
 
@@ -205,6 +214,10 @@ class Restler
      */
     public function __destruct()
     {
+    	if (Restler::$current != $this) {
+    		throw new RestException(500);
+    	}
+    	Restler::$current = NIL;
         if ($this->production_mode && !($this->cached)) {
             $this->saveCache();
         }
@@ -540,7 +553,23 @@ class Restler
                 . " in order to save cache and improve performance.");
         }
     }
-
+    
+    /**
+     * Return the proper formatter for the current input format.
+     */
+    public function getRequestFormatter()
+    {
+    	return $this->getRequestFormat();
+    }
+    
+    /**
+     * Return the proper formatter for the current output format.
+     */
+    public function getResponseFormatter()
+    {
+    	return $this->getResponseFormat();
+    }
+    
     // ==================================================================
     //
     // Protected functions
@@ -1072,6 +1101,16 @@ interface iFormat
      * @return array associative array of the parsed data
      */
     public function decode($data);
+    
+    /**
+     * Encode the given date into the proper format for this format type.
+     */
+    public function encodeDate($aDate);
+    
+    /**
+     * Decode the given date string for this format type into a date.
+     */
+    public function decodeDateString($aDateString);
 }
 
 /**
@@ -1139,6 +1178,17 @@ class UrlEncodedFormat implements iFormat
         return $this->getExtension();
     }
 
+    public function encodeDate($aDate)
+    {
+    	return strftime('%G%m%dT%H%M%S', $aDate);
+    }
+    
+    public function decodeDateString($aDateString)
+    {
+    	$timeParts = strptime($aDateString, '%G%m%dT%H%M%S'); 
+    	return mktime($timeParts['tm_hour'], $timeParts['tm_min'], $timeParts['tm_sec'],
+    			1 + $timeParts['tm_mon'], $timeParts['tm_mday'], 1900 + $timeParts['tm_year']);
+    }
 }
 
 /**
@@ -1307,6 +1357,17 @@ class JsonFormat implements iFormat
         return $this->getExtension();
     }
 
+    public function encodeDate($aDate)
+    {
+    	return strftime('/Date(%s)/', $aDate);
+    }
+    
+    public function decodeDateString($aDateString)
+    {
+    	$timeParts = strptime($aDateString, '/Date(%s)/'); 
+    	return mktime($timeParts['tm_hour'], $timeParts['tm_min'], $timeParts['tm_sec'],
+    			1 + $timeParts['tm_mon'], $timeParts['tm_mday'], 1900 + $timeParts['tm_year']);
+    }
 }
 
 /**
