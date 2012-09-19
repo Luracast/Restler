@@ -1,0 +1,438 @@
+<?php
+namespace Luracast\Restler;
+
+use stdClass;
+
+/**
+ * API Class to create Swagger Spec 1.1 compatible resource and operation
+ * listing
+ *
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc1
+ */
+class Resources implements iUseAuthentication
+{
+    /**
+     * @var bool should protected resources be shown to unauthenticated users?
+     */
+    public static $hideProtected = true;
+    /**
+     * Injected at runtime
+     *
+     * @var Restler instance of restler
+     */
+    public $restler;
+
+    private $_models;
+
+    private $_bodyParam = array('required' => false, 'description' => array());
+
+    private $crud = array('POST' => 'create', 'GET' => 'retrieve',
+        'PUT' => 'update', 'DELETE' => 'delete', 'PATCH' => 'partial update');
+
+    private $_authenticated = false;
+
+    /**
+     * This method will be called first for filter classes and api classes so
+     * that they can respond accordingly for filer method call and api method
+     * calls
+     *
+     *
+     * @param bool $isAuthenticated passes true when the authentication is
+     *                              done, false otherwise
+     *
+     * @return mixed
+     */
+    public function __setAuthenticationStatus($isAuthenticated = false)
+    {
+        $this->_authenticated = $isAuthenticated;
+    }
+
+    /**
+     * @access hybrid
+     *
+     * @param $name
+     * @param $shortName
+     * @param $version
+     *
+     * @throws RestException
+     * @return null|stdClass
+     *
+     * @url    GET {name}/{shortName}_v{version}
+     */
+    public function get($name, $shortName, $version)
+    {
+        if (!Defaults::$useUrlBasedVersioning
+            && $version != $this->restler->_requestedApiVersion
+        ) {
+            throw new RestException(404);
+        }
+        $this->_models = new stdClass();
+        $r = null;
+        $name = strtolower(str_replace('-', '\\', $name));
+        $count = 0;
+        foreach ($this->restler->routes as $httpMethod => $value) {
+            foreach ($value as $key => $route) {
+                if (0 == strcasecmp($name, $route['className'])) {
+                    if (0 !== strpos($route['path'], "v$version")) {
+                        continue;
+                    }
+                    if (
+                        self::$hideProtected
+                        && !$this->_authenticated
+                        && $route['accessLevel'] > 1
+                    ) {
+                        continue;
+                    }
+                    $count++;
+                    $className = $this->_noNamespace($route['className']);
+                    $m = $route['metadata'];
+                    if (!$r) {
+                        $resourcePath = '/'
+                            . trim($m['resourcePath'], '/');
+                        if (!Defaults::$useUrlBasedVersioning) {
+                            $resourcePath = str_replace("/v$version", '',
+                                $resourcePath);
+                        }
+                        $r = $this->_operationListing($resourcePath);
+                    }
+                    $parts = explode('/', $key);
+                    $pos = count($parts) - 1;
+                    if (count($parts) == 1 && $httpMethod == 'GET') {
+                    } else {
+                        for ($i = 0; $i < count($parts); $i++) {
+                            if ($parts[$i]{0} == '{') {
+                                $pos = $i - 1;
+                                break;
+                            }
+                        }
+                    }
+                    $nickname = implode('_', $parts);
+                    $nickname = preg_replace('/[^A-Za-z0-9-]/', '', $nickname);
+                    $parts[$pos] .= ".{format}";
+                    // $parts[0] .= ".{format}";
+                    if (!Defaults::$useUrlBasedVersioning) {
+                        array_shift($parts);
+                    }
+                    $key = implode('/', $parts);
+                    $description = isset(
+                    $m['classDescription'])
+                        ? $m['classDescription']
+                        : $className . ' API';
+                    $api = $this->_api("/$key", $description);
+                    if (empty($m['description'])) {
+                        $m['description'] = $this->restler->_productionMode
+                            ? ''
+                            : 'routes to <mark>'
+                                . $route['className']
+                                . '::'
+                                . $route['methodName'] . '();</mark>';
+                    }
+                    if (empty($m['longDescription'])) {
+                        $m['longDescription'] = $this->restler->_productionMode
+                            ? ''
+                            : 'Add PHP Doc long description to '
+                                . "<mark>$className::"
+                                . $route['methodName'] . '();</mark>'
+                                . '  (the api method) to write here';
+                    }
+                    $operation = $this->_operation(
+                        $nickname,
+                        $httpMethod,
+                        $m['description'],
+                        $m['longDescription']
+                    );
+                    if (isset($m['throws'])) {
+                        foreach ($m['throws'] as $exception) {
+                            $operation->errorResponses[] = array(
+                                'reason' => $exception['reason'],
+                                'code' => $exception['code']);
+                        }
+                    }
+                    if (isset($m['param'])) {
+                        foreach ($m['param'] as $param) {
+                            //combine body params as one
+                            $p = $this->_parameter($param);
+                            if ($p->paramType == 'body') {
+                                $this->_appendToBody($p);
+                            } else {
+                                $operation->parameters[] = $p;
+                            }
+                        }
+                    }
+                    if (count($this->_bodyParam['description'])) {
+                        $operation->parameters[] = $this->_getBody();
+                    }
+                    if (isset($m['return']['type'])) {
+                        $responseClass = $m['return']['type'];
+                        if (is_string($responseClass)) {
+                            if (class_exists($responseClass)) {
+                                $this->_model($responseClass);
+                                $operation->responseClass
+                                    = $this->_noNamespace($responseClass);
+                            } elseif (strtolower($responseClass) == 'array') {
+                                $operation->responseClass = 'Array';
+                                $rt = $m['return'];
+                                if (isset(
+                                $rt[CommentParser::$embeddedDataName]['type'])
+                                ) {
+                                    $rt = $rt[CommentParser::$embeddedDataName]
+                                    ['type'];
+                                    if (class_exists($rt)) {
+                                        $this->_model($rt);
+                                        $operation->responseClass
+                                            .= '[' . $rt . ']';
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    $api->operations[] = $operation;
+                    $r->apis[] = $api;
+                }
+            }
+        }
+        if (!$count) {
+            throw new RestException(404);
+        }
+        if (!is_null($r))
+            $r->models = $this->_models;
+        return $r;
+    }
+
+    /**
+     * @access hybrid
+     * @return \stdClass
+     */
+    public function index()
+    {
+        $r = $this->_resourceListing();
+        $mappedResource = array();
+        foreach ($this->restler->routes as $verb => $routes) {
+            foreach ($routes as $route) {
+                if (
+                    self::$hideProtected
+                    && !$this->_authenticated
+                    && $route['accessLevel'] > 1
+                ) {
+                    continue;
+                }
+                $path = $route['path'];
+                $name = strtolower(str_replace('\\', '-', $route['className']));
+                $shortName = explode('-', $name);
+                $shortName = end($shortName);
+                $classDescription = isset(
+                $route['metadata']['classDescription'])
+                    ? $route['metadata']['classDescription']
+                    : $route['className'] . ' API';
+                if (
+                    !isset($mappedResource[$path])
+                    && false === strpos($path, 'resources')
+                ) {
+                    $version = intval(substr($path, 1));
+                    if (!Defaults::$useUrlBasedVersioning
+                        && $version != $this->restler->_requestedApiVersion
+                    ) {
+                        continue;
+                    }
+                    //add resource
+                    $r->apis[] = array(
+                        'path' => "/resources/{$name}/{$shortName}_v{$version}"
+                            . ".{format}",
+                        'description' => $classDescription
+                    );
+                }
+                $mappedResource[$path] = TRUE;
+            }
+        }
+        return $r;
+    }
+
+    /**
+     * Find the data type of the given value.
+     *
+     *
+     * @param mixed $o              given value for finding type
+     *
+     * @param bool  $appendToModels if an object is found should we append to
+     *                              our models list?
+     *
+     * @return string
+     *
+     * @access private
+     */
+    public function getType($o, $appendToModels = false)
+    {
+        if (is_object($o)) {
+            $oc = get_class($o);
+            if ($appendToModels) {
+                $this->_model($oc, $o);
+            }
+            return $this->_noNamespace($oc);
+        }
+        if (is_array($o)) return 'Array';
+        if (is_bool($o)) return 'boolean';
+        if (is_numeric($o)) return is_float($o) ? 'float' : 'int';
+        return 'string';
+    }
+
+    private function _resourceListing()
+    {
+        $r = new stdClass();
+        $r->apiVersion = (string)$this->restler->_apiVersion;
+        $r->swaggerVersion = "1.1";
+        $r->basePath = $this->restler->baseUrl;
+        $r->apis = array();
+        return $r;
+    }
+
+    private function _operationListing($resourcePath = '/')
+    {
+        $r = $this->_resourceListing();
+        $r->resourcePath = $resourcePath;
+        $r->models = new stdClass();
+        return $r;
+    }
+
+    private function _api($path, $description = '')
+    {
+        $r = new stdClass();
+        $r->path = $path;
+        $r->description =
+            empty($description) && $this->restler->_productionMode
+                ? 'Use PHP Doc comment to describe here'
+                : $description;
+        $r->operations = array();
+        return $r;
+    }
+
+    private function _operation(
+        $nickname,
+        $httpMethod = 'GET',
+        $summary = 'description',
+        $notes = 'long description',
+        $responseClass = 'void'
+    )
+    {
+        $r = new stdClass();
+        $r->httpMethod = $httpMethod;
+        $r->nickname = $nickname;
+        $r->responseClass = $responseClass;
+
+        $r->parameters = array();
+
+        $r->summary = $summary;
+        $r->notes = $notes;
+
+        $r->errorResponses = array();
+        return $r;
+    }
+
+    private function _appendToBody($p)
+    {
+        $this->_bodyParam['description'][$p->name]
+            = "<mark>$p->name</mark>"
+            . ($p->required ? ' (required)' : '');
+        $this->_bodyParam['required'] = $p->required
+            || $this->_bodyParam['required'];
+    }
+
+    private function _getBody()
+    {
+        $r = new stdClass();
+        $r->name = 'request_body';
+        $p = array_values($this->_bodyParam['description']);
+        $r->description = "Paste JSON data here with " .
+            implode(", ", $p)
+            . (count($p) > 1 ? ' properties.' : ' property.');
+        $r->paramType = 'body';
+        $r->required = $this->_bodyParam['required'];
+        $r->allowMultiple = false;
+        $r->dataType = 'string';
+        return $r;
+    }
+
+    private function _parameter($param)
+    {
+        $r = new stdClass();
+        $r->name = $param['name'];
+        $r->description = !empty($param['description'])
+            ? $param['description'] . '.'
+            : ($this->restler->_productionMode
+                ? ''
+                : 'add <mark>@param {type} $' . $r->name
+                    . ' {comment}</mark> to describe here');
+        //paramType can be path or query or body or header
+        $r->paramType = $param['from'];
+        $r->required = $param['required'];
+        $r->allowMultiple = false;
+        $r->dataType = 'string';
+        if (isset($param[CommentParser::$embeddedDataName])) {
+            $p = $param[CommentParser::$embeddedDataName];
+            if (isset($p['min']) && isset($p['max'])) {
+                /*
+                $r->allowableValues = array(
+                    'min'=> $p['min'],
+                    'max'=> $p['max'],
+                    'valueType' => 'Range'
+                );
+                */
+            } elseif (isset($p['choice'])) {
+                //TODO: use validation info to set allowable values below
+                /*
+                $r->allowableValues = array(
+                    'valueType' => 'List'
+                );
+                */
+            }
+        }
+        return $r;
+    }
+
+    private function _model($className, $instance = null)
+    {
+        $properties = array();
+        if (!$instance) {
+            $instance = new $className();
+        }
+        $data = get_object_vars($instance);
+        //TODO: parse the comments of properties, use it for type, description
+        foreach ($data as $key => $value) {
+
+            $type = $this->getType($value, true);
+            $properties[$key] = array(
+                'type' => $type,
+                /*'description' => '' */ //TODO: add description
+            );
+            if ($type == 'Array') {
+                $itemType = count($value)
+                    ? $this->getType($value[0], true)
+                    : 'string';
+                $properties[$key]['item'] = array(
+                    'type' => $itemType,
+                    /*'description' => '' */ //TODO: add description
+                );
+            }
+        }
+        if (!empty($properties)) {
+            $id = $this->_noNamespace($className);
+            $model = new stdClass();
+            $model->id = $id;
+            $model->properties = $properties;
+            $this->_models->{$id} = $model;
+        }
+    }
+
+    private function _noNamespace($className)
+    {
+        $className = explode('\\', $className);
+        return end($className);
+    }
+}
+

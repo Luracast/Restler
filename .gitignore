@@ -1,0 +1,17 @@
+.foundation
+*.tgz
+*.phar
+*.lock
+*tmp
+scratch/*
+test/reports
+bin/behat
+vendor/behat
+vendor/ChiperSoft
+vendor/composer
+vendor/guzzle
+vendor/Luracast/explorer
+vendor/autoload.php
+vendor/symfony
+vendor/mustache
+vendor/zendframework
