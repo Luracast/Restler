@@ -26,15 +26,16 @@
 
 {
   "error": {
-    "code": 412,
-    "message": "Precondition Failed: not a valid number"
+    "code": 400,
+    "message": "Bad Request: not a valid number"
   }
 }
 
  Example 3: GET currency/format?number=55 returns "USD55.00"
 */
 
-require_once '../../restler/restler.php';
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
 
 $r = new Restler();
 $r->addAPIClass('Currency');
