@@ -1,6 +1,13 @@
 Luracast Restler 2.0
 ====================
 
+***
+
+> **Update:-** *Restler 3 SP1* (PHP 5.3+) is available with more features, 
+[check it out](https://github.com/Luracast/Restler/tree/v3)!
+
+***
+
 Restler is a simple and effective multi-protocol REST API Server written in PHP. 
 Just deal with your business logic in php, restler will take care of the REST!
 
