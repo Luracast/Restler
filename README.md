@@ -1,4 +1,4 @@
-Luracast Restler 3.0 Sp1
+Luracast Restler 3.0 RC1
 ========================
 
 Restler is a simple and effective multi-protocol REST API Server written in PHP. 
