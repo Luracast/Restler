@@ -26,7 +26,7 @@
 
 {
   "error": {
-    "code": 412,
+    "code": 400,
     "message": "Precondition Failed: not a valid number"
   }
 }

@@ -17,17 +17,11 @@ class Api
     }
 
     /**
-     * Auto routed method that creates all possible routes
-     * this was the standard behavior
-     *
-     * @param        $p1 {@validate false}
-     * @param array  $p2 {@validate true} {@fix false}
-     * @param string $p3
-     *
-     * @return bool|string
-     * @smart-auto-routing true
+     * Auto routed method that creates all possible routes.
+     * This was the standard behavior for Restler 2
+     * @smart-auto-routing false
      */
-    public function soManyWays($p1, array $p2, $p3 = 'optional')
+    public function soManyWays($p1, $p2, $p3 = 'optional')
     {
         return 'you have called Api::soManyWays()';
     }

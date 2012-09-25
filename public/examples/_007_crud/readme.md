@@ -1,10 +1,17 @@
-<?php
-/*
- Title: CRUD
- Tagline: using POST, GET, PUT and DELETE
- Tags: create, retrieve, read, update, delete, post, get, put, routing
- Requires: PHP >= 5.3
- Description: Create, Retrieve, Update and Delete using
+CRUD <requires>PHP >= 5.3</requires>
+----
+
+<tag>create</tag>
+<tag>retrieve</tag>
+<tag>read</tag>
+<tag>update</tag>
+<tag>delete</tag>
+<tag>post</tag>
+<tag>get</tag>
+<tag>put</tag>
+<tag>routing</tag>
+
+Create, Retrieve, Update and Delete using
  HTTP methods POST, GET, PUT and DELETE respectively.
 
 
@@ -41,9 +48,27 @@ instead of Session.php to get full functionality.
 > * MySQL.php (helper)
 
 by un-commenting the respective line in Authors.php and commenting others.
+> This API Server is made using the following php files/folders
 
- Example 1: GET authors returns
+> * index.php      (gateway)
+> * Authors.php      (api)
+> * Session.php      (helper)
+> * restler.php      (framework)
 
+This API Server exposes the following URIs
+
+    GET    authors      ⇠ Authors::index()
+    GET    authors/{id} ⇠ Authors::get()
+    POST   authors      ⇠ Authors::post()
+    PUT    authors/{id} ⇠ Authors::put()
+    DELETE authors/{id} ⇠ Authors::delete()
+
+
+Try the following links in your browser
+
+GET [authors](index.php/authors)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [
   {
     "id": 1,
@@ -56,18 +81,20 @@ by un-commenting the respective line in Authors.php and commenting others.
     "email": "arul@luracast.com"
   }
 ]
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- Example 2: GET authors/2 returns
-
+GET [authors/2](index.php/authors/2)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
   "id": 2,
   "name": "Arul Kumaran",
   "email": "arul@luracast.com"
 }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
- Usage:
 
- > Note: When we want the entire data that is sent to the API,
+> Note: When we want the entire data that is sent to the API,
  > we need to use `$request_data` as the name of the parameter any other name
  > will only get partial data under the specified key
 
@@ -84,7 +111,7 @@ by un-commenting the respective line in Authors.php and commenting others.
     X-Requested-With: XMLHttpRequest
     User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1
     Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-    Accept: *//*
+    Accept: /*
     Accept-Encoding: gzip,deflate,sdch
     Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
     Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
@@ -98,7 +125,7 @@ by un-commenting the respective line in Authors.php and commenting others.
     X-Requested-With: XMLHttpRequest
     User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1
     Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-    Accept: *//*
+    Accept: /*
     Accept-Encoding: gzip,deflate,sdch
     Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
     Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
@@ -115,7 +142,7 @@ by un-commenting the respective line in Authors.php and commenting others.
     X-Requested-With: XMLHttpRequest
     User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1
     Content-Type: application/json; charset=UTF-8
-    Accept: *//*
+    Accept: /*
     Accept-Encoding: gzip,deflate,sdch
     Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.3
     Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
@@ -140,19 +167,11 @@ and the response could be
       "id": 7
     }
 
- Helpers: DB\Session
-
- Content:
-
 *[MySQL.php]: _007_crud//DB/PDO/MySQL.php
 *[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
 *[SerializedFile.php]: _007_crud/DB/SerializedFile.php
-
-*/
-require_once '../../../vendor/restler.php';
-use Luracast\Restler\Restler;
-
-$r = new Restler();
-$r->addAPIClass('Authors');
-$r->handle();
+*[index.php]: _007_crud/index.php
+*[Authors.php]: _007_crud/Authors.php
+*[Session.php]: _007_crud/DB/Session.php
+*[restler.php]: ../../vendor/restler.php
 

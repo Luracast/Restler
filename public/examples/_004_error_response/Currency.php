@@ -3,8 +3,10 @@ class Currency
 {
     function format($number = NULL)
     {
-        //There is a better way to validate in Restler 3
-        //Here we manually validate show the use of exceptions
+        /**
+        There is a better way to validate in Restler 3
+        Here we manually validate to show the use of exceptions
+         */
         if (is_null($number))
             throw new RestException(400);
         if (!is_numeric($number))

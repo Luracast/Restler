@@ -1,7 +1,7 @@
 <?php
 /**
  * All methods in this class are protected
- * @protected
+ * @access protected
  */
 class Secured {
 	function index() {

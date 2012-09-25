@@ -1,10 +1,12 @@
-<?php
-/*
-Title: Routing
-Tagline: Ways to map api methods to url
-Tags: routing, get, post, put, delete, patch
-Requires: PHP >= 5.3
-Description:
+Routing <requires>PHP >= 5.3</requires>
+-------
+
+<tag>routing</tag>
+<tag>get</tag>
+<tag>post</tag>
+<tag>put</tag>
+<tag>delete</tag>
+<tag>patch</tag>
 
 ### Two ways of Routing
 
@@ -82,31 +84,66 @@ For example
 
 Take a look at the api class used here and compare it with the routes below to
 understand.
+> This API Server is made using the following php files/folders
 
-Example 1: GET api/somanyways/1 returns "you have called Api::soManyWays()"
+> * index.php      (gateway)
+> * Api.php      (api)
+> * restler.php      (framework)
 
-Example 2: GET api/somanyways/1/2 returns "you have called Api::soManyWays()"
+This API Server exposes the following URIs
 
-Example 3: GET api/somanyways/1/2/3 returns "you have called Api::soManyWays()"
+    POST api/method/{param1}           ⇠ Api::postMethod()
+    POST api/method2                   ⇠ Api::whatEver()
+    POST api/method2/{anything}        ⇠ Api::whatEver()
+    GET  api/somanyways                ⇠ Api::soManyWays()
+    GET  api/somanyways/{p1}           ⇠ Api::soManyWays()
+    GET  api/somanyways/{p1}/{p2}      ⇠ Api::soManyWays()
+    GET  api/somanyways/{p1}/{p2}/{p3} ⇠ Api::soManyWays()
+    GET  api/what/ever/you/want        ⇠ Api::whatEver()
 
-Example 4: GET api/what/ever/you/want returns
 
+Try the following links in your browser
+
+GET [api/somanyways/1](index.php/api/somanyways/1)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"you have called Api::soManyWays()"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET [api/somanyways/1/2](index.php/api/somanyways/1/2)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"you have called Api::soManyWays()"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET [api/somanyways/1/2/3](index.php/api/somanyways/1/2/3)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+"you have called Api::soManyWays()"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET [api/what/ever/you/want](index.php/api/what/ever/you/want)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 {
   "error": {
     "code": 400,
     "message": "Bad Request: anything is missing."
   }
 }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Example 5: GET api/what/ever/you/want?anything=something returns
-
+GET [api/what/ever/you/want?anything=something](index.php/api/what/ever/you/want?anything=something)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "you have called Api::whatEver()"
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*/
-require_once '../../../vendor/restler.php';
-use Luracast\Restler\Restler;
 
-$r = new Restler();
-$r->addAPIClass('Api');
-$r->handle();
+
+
+
+*[index.php]: _006_routing/index.php
+*[Api.php]: _006_routing/Api.php
+*[restler.php]: ../../vendor/restler.php
 
