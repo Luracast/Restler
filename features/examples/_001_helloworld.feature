@@ -1,3 +1,4 @@
+@example1 @helloworld
 Feature: Testing Helloworld Example
 
   Scenario: Saying Hello world

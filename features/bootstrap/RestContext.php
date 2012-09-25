@@ -24,6 +24,8 @@ class RestContext extends BehatContext
     private $_response = null;
     private $_requestBody = null;
     private $_requestUrl = null;
+    private $_type = null;
+    private $_data = null;
 
     private $_parameters = array();
 
@@ -107,6 +109,7 @@ class RestContext extends BehatContext
 
     /**
      * @Given /^that "([^"]*)" header is set to "([^"]*)"$/
+     * @Given /^that "([^"]*)" header is set to (\d+)$/
      */
     public function thatHeaderIsSetTo($header, $value)
     {
@@ -124,9 +127,41 @@ class RestContext extends BehatContext
      * @Given /^that "([^"]*)" is set to "([^"]*)"$/
      * @Given /^"([^"]*)" is set to "([^"]*)"$/
      */
-    public function thatTheItsIs($propertyName, $propertyValue)
+    public function thatItsStringPropertyIs($propertyName, $propertyValue)
     {
         $this->_restObject->$propertyName = $propertyValue;
+    }
+
+    /**
+     * @Given /^that its "([^"]*)" is (\d+)$/
+     * @Given /^that his "([^"]*)" is (\d+)$/
+     * @Given /^that her "([^"]*)" is (\d+)$/
+     * @Given /^its "([^"]*)" is (\d+)$/
+     * @Given /^his "([^"]*)" is (\d+)$/
+     * @Given /^her "([^"]*)" is (\d+)$/
+     * @Given /^that "([^"]*)" is set to (\d+)$/
+     * @Given /^"([^"]*)" is set to (\d+)$/
+     */
+    public function thatItsNumericPropertyIs($propertyName, $propertyValue)
+    {
+        $this->_restObject->$propertyName = is_float($propertyValue)
+            ? floatval($propertyValue)
+            : intval($propertyValue);
+    }
+
+    /**
+     * @Given /^that its "([^"]*)" is (true|false)$/
+     * @Given /^that his "([^"]*)" is (true|false)$/
+     * @Given /^that her "([^"]*)" is (true|false)$/
+     * @Given /^its "([^"]*)" is (true|false)$/
+     * @Given /^his "([^"]*)" is (true|false)$/
+     * @Given /^her "([^"]*)" is (true|false)$/
+     * @Given /^that "([^"]*)" is set to (true|false)$/
+     * @Given /^"([^"]*)" is set to (true|false)$/
+     */
+    public function thatItsBooleanPropertyIs($propertyName, $propertyValue)
+    {
+        $this->_restObject->$propertyName = $propertyValue == 'true';
     }
 
     /**
@@ -190,6 +225,50 @@ class RestContext extends BehatContext
                     ->send();
                 break;
         }
+        //detect type, extract data
+        switch ($this->_response->getHeader('Content-type')) {
+            case 'application/json':
+                $this->_type = 'json';
+                $this->_data = json_decode($this->_response->getBody(true));
+                switch (json_last_error()) {
+                    case JSON_ERROR_NONE :
+                        return;
+                    case JSON_ERROR_DEPTH :
+                        $message = 'maximum stack depth exceeded';
+                        break;
+                    case JSON_ERROR_STATE_MISMATCH :
+                        $message = 'underflow or the modes mismatch';
+                        break;
+                    case JSON_ERROR_CTRL_CHAR :
+                        $message = 'unexpected control character found';
+                        break;
+                    case JSON_ERROR_SYNTAX :
+                        $message = 'malformed JSON';
+                        break;
+                    case JSON_ERROR_UTF8 :
+                        $message = 'malformed UTF-8 characters, possibly ' .
+                            'incorrectly encoded';
+                        break;
+                    default :
+                        $message = 'unknown error';
+                        break;
+                }
+                throw new Exception ('Error parsing JSON, ' . $message);
+                break;
+            case 'application/xml':
+                $this->_type = 'xml';
+                libxml_use_internal_errors(true);
+                $this->_data = @simplexml_load_string(
+                    $this->_response->getBody(true));
+                if (!$this->_data) {
+                    $message = '';
+                    foreach (libxml_get_errors() as $error) {
+                        $message .= $error->message . PHP_EOL;
+                    }
+                    throw new Exception ('Error parsing XML, ' . $message);
+                }
+                break;
+        }
     }
 
     /**
@@ -198,9 +277,7 @@ class RestContext extends BehatContext
      */
     public function theResponseIsJson()
     {
-        $data = json_decode($this->_response->getBody(true));
-
-        if (empty($data)) {
+        if ($this->_type != 'json') {
             throw new Exception("Response was not JSON\n" . $this->_response);
         }
     }
@@ -211,9 +288,7 @@ class RestContext extends BehatContext
      */
     public function theResponseIsXml()
     {
-        $data = @simplexml_load_string($this->_response->getBody(true));
-
-        if (empty($data)) {
+        if ($this->_type != 'xml') {
             throw new Exception("Response was not XML\n" . $this->_response);
         }
     }
@@ -224,7 +299,7 @@ class RestContext extends BehatContext
      */
     public function theTypeIs($type)
     {
-        $data = json_decode($this->_response->getBody(true));
+        $data = $this->_data;
 
         switch ($type) {
             case 'string':
@@ -250,10 +325,28 @@ class RestContext extends BehatContext
      */
     public function theValueEquals($sample)
     {
-        $data = json_decode($this->_response->getBody(true));
-        if ($data != $sample)
+        $data = $this->_data;
+        if ($data !== $sample)
             throw new Exception("Response value does not match '$sample'\n"
                 . $this->echoLastResponse());
+    }
+
+    /**
+     * @Given /^the value equals (\d+)$/
+     */
+    public function theNumericValueEquals($sample)
+    {
+        $sample = is_float($sample) ? floatval($sample) : intval($sample);
+        return $this->theValueEquals($sample);
+    }
+
+    /**
+     * @Given /^the value equals (true|false)$/
+     */
+    public function theBooleanValueEquals($sample)
+    {
+        $sample = $sample == 'true';
+        return $this->theValueEquals($sample);
     }
 
     /**
@@ -261,11 +354,11 @@ class RestContext extends BehatContext
      */
     public function theResponseIsJsonWithType($type)
     {
-        $data = json_decode($this->_response->getBody(true));
-
-        if (empty($data)) {
+        if ($this->_type != 'json') {
             throw new Exception("Response was not JSON\n" . $this->_response);
         }
+
+        $data = $this->_data;
 
         switch ($type) {
             case 'string':
@@ -295,16 +388,13 @@ class RestContext extends BehatContext
      */
     public function theResponseHasAProperty($propertyName)
     {
-        $data = json_decode($this->_response->getBody(true));
+        $data = $this->_data;
 
         if (!empty($data)) {
             if (!isset($data->$propertyName)) {
                 throw new Exception("Property '"
                     . $propertyName . "' is not set!\n");
             }
-        } else {
-            throw new Exception("Response was not JSON\n"
-                . $this->_response->getBody(true));
         }
     }
 
@@ -313,7 +403,7 @@ class RestContext extends BehatContext
      */
     public function thePropertyEquals($propertyName, $propertyValue)
     {
-        $data = json_decode($this->_response->getBody(true));
+        $data = $this->_data;
 
         if (!empty($data)) {
             if (!isset($data->$propertyName)) {
@@ -332,11 +422,29 @@ class RestContext extends BehatContext
     }
 
     /**
+     * @Then /^the "([^"]*)" property equals (\d+)$/
+     */
+    public function thePropertyEqualsNumber($propertyName, $propertyValue)
+    {
+        $propertyValue = is_float($propertyValue)
+            ? floatval($propertyValue) : intval($propertyValue);
+        return $this->thePropertyEquals($propertyName, $propertyValue);
+    }
+
+    /**
+     * @Then /^the "([^"]*)" property equals (true|false)$/
+     */
+    public function thePropertyEqualsBoolean($propertyName, $propertyValue)
+    {
+        return $this->thePropertyEquals($propertyName, $propertyValue == 'true');
+    }
+
+    /**
      * @Given /^the type of the "([^"]*)" property is ([^"]*)$/
      */
-    public function theTypeOfThePropertyIsNumeric($propertyName, $typeString)
+    public function theTypeOfThePropertyIs($propertyName, $typeString)
     {
-        $data = json_decode($this->_response->getBody(true));
+        $data = $this->_data;
 
         if (!empty($data)) {
             if (!isset($data->$propertyName)) {
@@ -349,7 +457,7 @@ class RestContext extends BehatContext
                     if (!is_numeric($data->$propertyName)) {
                         throw new Exception("Property '"
                             . $propertyName . "' is not of the correct type: "
-                            . $theTypeOfThePropertyIsNumeric . "!\n");
+                            . $typeString . "!\n");
                     }
                     break;
             }

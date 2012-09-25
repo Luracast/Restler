@@ -1,3 +1,4 @@
+@example2 @minimal
 Feature: Testing Minimal Example
 
   Scenario: Add using Default Values
@@ -5,7 +6,7 @@ Feature: Testing Minimal Example
     Then the response status code should be 200
     And the response is JSON
     And the type is "int"
-    And the value equals "2"
+    And the value equals 2
 
   Scenario: Add 5 and 10
     Given that "n1" is set to "5"
@@ -14,7 +15,7 @@ Feature: Testing Minimal Example
     Then the response status code should be 200
     And the response is JSON
     And the type is "int"
-    And the value equals "15"
+    And the value equals 15
 
   Scenario: Verify Validation
     Given that "n1" is set to "NaN"
@@ -29,7 +30,7 @@ Feature: Testing Minimal Example
     When I request "/examples/_002_minimal/math/multiply/{n1}/{n2}"
     And the response is JSON
     And the response has a "result" property
-    And the "result" property equals "50"
+    And the "result" property equals 50
 
   Scenario: Multiply with out value
     When I request "/examples/_002_minimal/math/multiply"

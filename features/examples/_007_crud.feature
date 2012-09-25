@@ -1,3 +1,4 @@
+@example7 @crud
 Feature: Testing CRUD Example
 
   Scenario: Creating new Author by POSTing vars
@@ -23,7 +24,7 @@ Feature: Testing CRUD Example
     Given that I want to update "Author"
     And his "name" is "Jac"
     And his "email" is "jac@wright.com"
-    And his "id" is "1"
+    And his "id" is 1
     And the request is sent as JSON
     When I request "/examples/_007_crud/authors/{id}"
     Then the response status code should be 200
@@ -34,14 +35,14 @@ Feature: Testing CRUD Example
     Given that I want to update "Author"
     And his "name" is "Jac"
     And his "email" is "jac@wright.com"
-    And his "id" is "1"
+    And his "id" is 1
     And the request is sent as JSON
     When I request "/examples/_007_crud/authors"
     Then the response status code should be 404
 
   Scenario: Deleting Author
     Given that I want to delete an "Author"
-    And his "id" is "1"
+    And his "id" is 1
     When I request "/examples/_007_crud/authors/{id}"
     Then the response status code should be 200
     And the response should be JSON
