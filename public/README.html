@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+</head>
+<body>
+<article>
+<h1>Luracast Restler 3.0 RC1</h1>
+
+<p>Restler is a simple and effective multi-protocol REST API Server written in PHP.<br />
+Just deal with your business logic in php, restler will take care of the REST!</p>
+
+<h3>Restler 3 - <em>Better APIs by Design</em></h3>
+
+<ul>
+<li><a href="http://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
+<li><a href="http://bit.ly/r3-examples" target="_blank">Live Examples</a></li>
+<li>Updates on <a href="https://www.facebook.com/Luracast" target="_blank">Facebook</a> and <a href="http://twitter.com/Luracast" target="_blank">Twitter</a></li>
+</ul>
+
+<h2>Features</h2>
+
+<ul>
+<li>No Learning Curve</li>
+<li>Light weight</li>
+<li>Flexible</li>
+<li>Highly Customizable</li>
+<li>Many Examples that can be tried on your localhost to get started</li>
+<li>Supports HTTP request methods  GET, POST, PUT, DELETE, and PATCH</li>
+<li>Supports both RESTful and Pragmatic REST API Design</li>
+<li>Clients can use X-HTTP-Method-Override header</li>
+<li>Two way format(media type) conversion<br />
+<br />
+<ul>
+<li>Pluggable Formatters</li>
+<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats</li>
+</ul></li>
+<li>Pluggable Authentication schemes<br />
+<br />
+<ul>
+<li><code>[planned]</code> OAuth 2</li>
+</ul></li>
+<li>Pluggable Filters to effectively manage API usage<br />
+<br />
+<ul>
+<li><code>[planned]</code> API Rate Limiting Filter</li>
+</ul></li>
+<li>Routing<br />
+<br />
+<ul>
+<li>Manual Routing<br />
+<br />
+<ul>
+<li>Using <code>@url GET my/custom/url/{param}</code> PHPDoc comments</li>
+</ul></li>
+<li>Auto Routing<br />
+<br />
+<ul>
+<li>URL to Method mapping</li>
+<li>URL part to Method parameter mapping</li>
+<li>Query parameters to Method parameter mapping</li>
+<li>Request body to Method parameter mapping</li>
+<li><code>[planned]</code> Header to Method parameter mapping</li>
+</ul></li>
+</ul></li>
+<li>Cache support<br />
+<br />
+<ul>
+<li>Client Side Caching support</li>
+<li>Proxy Caching support</li>
+<li>Server Side Caching<br />
+<br />
+<ul>
+<li><code>[planned]</code> ETag, If-None-Match support</li>
+<li><code>[planned]</code> Last-Modified, If-Modified-Since support</li>
+</ul></li>
+</ul></li>
+<li>API Design<br />
+<br />
+<ul>
+<li>Always supports URLEncoded format for simplified input (POST vars)</li>
+<li>Automatic parameter validation and type conversion</li>
+<li>API versioning support by URL and/or vendor specific MIME</li>
+<li>API documentation and discovery using <a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a></li>
+<li>API throttling</li>
+</ul></li>
+<li>Management<br />
+<br />
+<ul>
+<li><code>[planned]</code> Unit Testing using <a href="https://github.com/sebastianbergmann/phpunit/" target="_blank">PHPUnit</a></li>
+<li>Behaviour Driven API testing using <a href="http://behat.org/" target="_blank">Behat</a> and <a href="https://github.com/guzzle/guzzle" target="_blank">Guzzle</a></li>
+<li>Commandline Project Management using <a href="https://github.com/Respect/Foundation" target="_blank">Respect/Foundation</a></li>
+<li>Dependency Management using <a href="http://getcomposer.org/" target="_blank">Composer</a></li>
+<li>Source code distributed under LGPL</li>
+</ul></li>
+</ul>
+
+<h2>Installation</h2>
+
+<p>Installation is a two step process. Do the following in the folder where you want Restler to be setup</p>
+
+<ol>
+<li><a href="https://github.com/Luracast/Restler/zipball/v3" target="_blank">Download</a> and unpack Restler 3, or Checkout using Terminal/Commandline</li>
+</ol>
+
+<pre><code>git clone git://github.com/Luracast/Restler.git -b v3 ./
+</code></pre>
+
+<ol>
+<li>Download the dependencies using make. Using Terminal/Commandline</li>
+</ol>
+
+<pre><code>make composer-install
+</code></pre>
+
+<p>Now the vendor folder will have all dependencies.</p>
+
+<ol>
+<li><p>Ideally public folder should be mapped as your web root (optional, but recommeneded)</p></li>
+<li><p>Try the examples in your local host</p></li>
+<li><p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p></li>
+</ol>
+
+<pre><code>bin/behat
+</code></pre>
+
+<p>This will test the examples against the behaviors expected, for example</p>
+
+<pre><code class="language-yml">Scenario: Creating new Author with JSON
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    And the request is sent as JSON
+    When I request "/examples/_007_crud/authors"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has a "id" property
+</code></pre>
+
+<p>Thats all, Happy Restling! :)</p>
+
+<h2>Changes from Restler 2.0</h2>
+
+<p><strong>Restler 3.0</strong> is completly rewriten from Restler 2.0 with best practices in mind for</p>
+
+<ul>
+<li>PHP Coding</li>
+<li>RESTfulness and/or Pragmatic REST</li>
+<li>API Design</li>
+</ul>
+
+<p><strong>Restler 3.0</strong></p>
+
+<ul>
+<li>uses namespaces, Late Static Bindings, and Closures and thus it is <strong>PHP 5.3+</strong> only<br />
+(if you need <strong>PHP 5.0+</strong> support use <a href="https://github.com/Luracast/Restler/tree/v2" target="_blank">Restler 2</a>)</li>
+<li>provides backword compatibility for Restler 1 and 2.<br />
+Use <code>$r-&gt;setCompatibilityMode($version);</code></li>
+<li>supports hybrid api which provides extended data to authenticated users<br />
+Use <code>@access hybrid</code> PHPDoc comment</li>
+<li>uses smart auto routing by default where API method parameters that<br />
+have default values are no longer mapped to the URL, instead they are<br />
+mapped to query strings to reduce ambiquity in the url.</li>
+<li>supports <code>suppress_response_codes</code> as query string, when set to true;<br />
+all http responses will be returned with HTTP OK with the errors in the<br />
+body to accomodate mobile and less privilaged clients.</li>
+<li>has improved <code>CommentParser</code> which adds support for embeded data in multiple formats<br />
+<br />
+<ul>
+<li>inline doc comments <code>{@name value}</code></li>
+<li>querystring params &#96;&#96;&#96; param1=value&amp;param2=value2&#96;&#96;&#96;</li>
+<li>json &#96;&#96;&#96; {"parm1": value, "param2": value2}&#96;&#96;&#96; which can be placed in multi-lines</li>
+</ul></li>
+<li>has <code>Defaults</code> class with static properties that can be changed to suit the needs</li>
+<li>iAuthenticate is now using <code>__isAllowed</code> method instead of <code>__isAuthenticated</code> so that same<br />
+class can be used for Authentication or Filtering</li>
+<li>iUseAuthentication interface added to help hybrid access api methods and filters to<br />
+find out about user authentication status</li>
+<li>iFilter interface updated to provide charset support</li>
+<li>...(more to follow)</li>
+</ul>
+
+<h2>Changes from Restler 1.0</h2>
+
+<p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized<br />
+for performance. Here are some of the major changes and improvements</p>
+
+<ul>
+<li>PHPDoc comments to map a method to URI are now optional.</li>
+<li>All public methods that does not begin with an underscore are mapped<br />
+automatically to the method name (<code>gateway\classname\methodname\param1\...</code>)</li>
+<li>If we do not specify the second parameter for <code>$restler-&gt;addAPIClass</code> it will be mapped to the<br />
+class name instead of mapping it to the root</li>
+<li>Restler 2 is written for PHP 5.3 and above but it make use of compat.php and work on<br />
+any version of PHP starting from PHP 5.0</li>
+</ul>
+
+</article>
+</body>
+</html>

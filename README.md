@@ -7,6 +7,7 @@ Just deal with your business logic in php, restler will take care of the REST!
 ### Restler 3 - *Better APIs by Design*
 
 * [Developer Home](http://luracast.com/products/restler/)
+* [Live Examples](http://bit.ly/r3-examples)
 * Updates on [Facebook](https://www.facebook.com/Luracast) and [Twitter](http://twitter.com/Luracast)
 
 Features
@@ -73,6 +74,32 @@ make composer-install
 
 Now the vendor folder will have all dependencies.
 
+3. Ideally public folder should be mapped as your web root (optional, but recommeneded)
+
+4. Try the examples in your local host
+
+5. Update the base_url specified in `behat.yml` and then try the following command
+
+```
+bin/behat
+```
+
+This will test the examples against the behaviors expected, for example
+
+```yml
+Scenario: Creating new Author with JSON
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    And the request is sent as JSON
+    When I request "/examples/_007_crud/authors"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has a "id" property
+```
+
+Thats all, Happy Restling! :)
+
 
 Changes from Restler 2.0
 ------------------------
@@ -102,6 +129,11 @@ Changes from Restler 2.0
     * querystring params \`\`\` param1=value&param2=value2\`\`\`
     * json \`\`\` {"parm1": value, "param2": value2}\`\`\` which can be placed in multi-lines
 * has `Defaults` class with static properties that can be changed to suit the needs
+* iAuthenticate is now using `__isAllowed` method instead of `__isAuthenticated` so that same
+  class can be used for Authentication or Filtering
+* iUseAuthentication interface added to help hybrid access api methods and filters to
+  find out about user authentication status
+* iFilter interface updated to provide charset support
 * ...(more to follow)
 
 Changes from Restler 1.0
