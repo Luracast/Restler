@@ -3,6 +3,7 @@ namespace Luracast\Restler;
 
 /**
  * Interface for creating authentication classes
+ *
  * @category   Framework
  * @package    restler
  * @subpackage auth
@@ -13,11 +14,5 @@ namespace Luracast\Restler;
  */
 interface iAuthenticate extends iFilter
 {
-    /**
-     * Auth function that is called when a protected method is requested
-     *
-     * @return boolean true when authenticated, false otherwise
-     */
-    public function __isAllowed();
 }
 
