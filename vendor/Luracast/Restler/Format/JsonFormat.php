@@ -5,12 +5,13 @@ namespace Luracast\Restler\Format;
  * Javascript Object Notation Format
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @subpackage format
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 use Luracast\Restler\Data\Util;
 use Luracast\Restler\RestException;
@@ -65,17 +66,17 @@ class JsonFormat extends Format
             if (self::$bigIntAsString) $options |= JSON_BIGINT_AS_STRING;
             if (self::$unEscapedUnicode) $options |= JSON_UNESCAPED_UNICODE;
             return json_encode(
-                Util::objectToArray($data), $options
+                Util::objectToArray($data, true), $options
             );
         }
 
-        $result = json_encode(Util::objectToArray($data));
+        $result = json_encode(Util::objectToArray($data, true));
         if ($humanReadable) $result = $this->formatJson($result);
         if (self::$unEscapedUnicode) {
             $result = preg_replace_callback('/\\\u(\w\w\w\w)/',
                 function($matches)
                 {
-                    return chr(hexdec($matches[1]));
+                    return mb_convert_encoding(pack('H*', $matches[1]), 'UTF-8', 'UTF-16BE');
                 }
                 , $result);
         }

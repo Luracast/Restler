@@ -4,9 +4,17 @@ namespace Luracast\Restler\Data;
 use Luracast\Restler\CommentParser;
 
 /**
- * ValueObject for validation information
+ * ValueObject for validation information. An instance is created and
+ * populated by Restler to pass it to iValidate implementing classes for
+ * validation
  *
- * @author arulkumaran
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 class ValidationInfo implements iValueObject
 {
@@ -16,6 +24,18 @@ class ValidationInfo implements iValueObject
      * @var string variable name
      */
     public $name;
+
+    /**
+     * @var bool is it required or not
+     */
+    public $required;
+
+    /**
+     * @var string body or header or query where this parameter is coming from
+     * in the http request
+     */
+    public $from;
+
     /**
      * Data type of the variable being validated.
      * It will be mostly string
@@ -148,6 +168,12 @@ class ValidationInfo implements iValueObject
     {
         $this->name = isset($info ['name']) ? $info ['name'] :
             'Unknown';
+        $this->required = isset($info['required'])
+            ? (bool)$info['required']
+            : false;
+        $this->from = isset($info['from'])
+            ? $info['from']
+            : 'query';
         $this->rules = $rules = isset($info [CommentParser::$embeddedDataName])
             ? $info [CommentParser::$embeddedDataName] : $info;
         $this->type = isset($info['type']) ? $info ['type'] : 'mixed';
@@ -174,9 +200,7 @@ class ValidationInfo implements iValueObject
         if (isset ($rules ['choice'])) {
             $this->rules ['choice'] = $this->choice
                 = is_array($rules ['choice'])
-                ? $rules ['choice'] : array(
-                    $rules ['pattern']
-                );
+                ? $rules ['choice'] : array($rules ['choice']);
             unset ($rules ['pattern']);
         }
         foreach ($rules as $key => $value) {
@@ -184,11 +208,7 @@ class ValidationInfo implements iValueObject
                 $this->{$key} = $value;
             }
         }
-        $type = explode('|', $this->type);
-        if (count($type) > 1) {
-            $this->type = $type;
-        }
-        if ($this->type == 'integer') {
+        if (is_string($this->type) && $this->type == 'integer') {
             $this->type = 'int';
         }
     }

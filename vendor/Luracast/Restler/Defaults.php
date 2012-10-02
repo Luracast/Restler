@@ -10,20 +10,33 @@ use Luracast\Restler\Data\Validator;
  * change them per request by adding the properties to Defaults::$overridables
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0
+ * @version    3.0.0rc3
  */
 class Defaults
 {
+    // ==================================================================
+    //
+    // Class Mappings
+    //
+    // ------------------------------------------------------------------
+
     /**
      * @var string of name of the class that implements
      * \Luracast\Restler\iCache the cache class to be used
      */
     public static $cacheClass = 'Luracast\\Restler\\HumanReadableCache';
+
+    /**
+     * @var string full path of the directory where all the generated files will
+     * be kept. When set to null (default) it will use the cache folder that is
+     * in the same folder as index.php (gateway)
+     */
+    public static $cacheDirectory;
 
     /**
      * @var string of name of the class that implements
@@ -37,11 +50,11 @@ class Defaults
      */
     public static $responderClass = 'Luracast\\Restler\\Responder';
 
-    /**
-     * @var string name to be used for the method parameter to capture the
-     * entire request data
-     */
-    public static $fullRequestDataName = 'request_data';
+    // ==================================================================
+    //
+    // Routing
+    //
+    // ------------------------------------------------------------------
 
     /**
      * @var bool should auto routing for public and protected api methods
@@ -51,10 +64,65 @@ class Defaults
     public static $autoRoutingEnabled = true;
 
     /**
+     * @var boolean avoids creating multiple routes that can increase the
+     * ambiguity when set to true. when a method parameter is optional it is
+     * not mapped to the url and should only be used in request body or as
+     * query string `/resource?id=value`. When a parameter is required and is
+     * scalar, it will be mapped as part of the url `/resource/{id}`
+     */
+    public static $smartAutoRouting = true;
+
+    // ==================================================================
+    //
+    // Versioning
+    //
+    // ------------------------------------------------------------------
+
+    /**
+     * @var null|string name that is used for vendor specific media type and
+     * versioning using the Accept Header for example
+     * application/vnd.{vendor}-v1+json
+     *
+     * Keep this null if you do not want to use vendor MIME versioning
+     */
+    public static $apiVendor = null;
+
+    /**
+     * @var bool set it to true to force vendor specific MIME for versioning.
+     * It will be automatically set to true when Defaults::$vendor is not
+     * null and client is requesting for the custom MIME type
+     */
+    public static $useVendorMIMEVersioning = false;
+
+    /**
+     * @var bool set it to true to use enableUrl based versioning
+     */
+    public static $useUrlBasedVersioning = false;
+
+
+    // ==================================================================
+    //
+    // Request
+    //
+    // ------------------------------------------------------------------
+
+    /**
+     * @var string name to be used for the method parameter to capture the
+     * entire request data
+     */
+    public static $fullRequestDataName = 'request_data';
+
+    /**
      * @var bool should auto validating api parameters should be enabled by
      * default or not. Set this to false to avoid validation.
      */
     public static $autoValidationEnabled = true;
+
+    // ==================================================================
+    //
+    // Response
+    //
+    // ------------------------------------------------------------------
 
     /**
      * @var bool HTTP status codes are set on all responses by default.
@@ -67,10 +135,43 @@ class Defaults
      */
     public static $suppressResponseCode = false;
 
+    public static $supportedCharsets = array('utf-8', 'iso-8859-1');
+    public static $supportedLanguages = array('en', 'en-US');
+
+    public static $charset = 'utf-8';
+    public static $language = 'en';
+
     /**
-     * @var string default Cache-Control string that is set in the header
+     * @var bool enables CORS support
      */
-    public static $headerCacheControl = 'no-cache, must-revalidate';
+    public static $crossOriginResourceSharing = false;
+    public static $accessControlAllowOrigin = '*';
+    public static $accessControlAllowMethods =
+        'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
+
+    // ==================================================================
+    //
+    // Header
+    //
+    // ------------------------------------------------------------------
+
+    /**
+     * @var array default Cache-Control template that used to set the
+     * Cache-Control header and has two values, first one is used when
+     * Defaults::$headerExpires is 0 and second one when it has some time
+     * value specified. When only one value is specified it will be used for
+     * both cases
+     */
+    public static $headerCacheControl = array(
+        'no-cache, must-revalidate',
+
+        /* "public, " or "private, " will be prepended based on api method
+         * called (public or protected)
+         */
+        'max-age={expires}, must-revalidate',
+
+    );
+
 
     /**
      * @var int sets the content to expire immediately when set to zero
@@ -80,16 +181,11 @@ class Defaults
      */
     public static $headerExpires = 0;
 
-    /**
-     * @var int time in milliseconds for bandwidth throttling,
-     * which is the minimum response time for each api request. You can
-     * change it per api method by setting `@throttle 3000` in php doc
-     * comment either at the method level or class level
-     */
-    public static $throttle = 0;
-
-    public static $charset = 'utf-8';
-    public static $language = 'en';
+    // ==================================================================
+    //
+    // Access Control
+    //
+    // ------------------------------------------------------------------
 
     /**
      * @var int set the default api access mode
@@ -107,13 +203,18 @@ class Defaults
     public static $authenticationMethod = '__isAllowed';
 
     /**
-     * @var boolean avoids creating multiple routes that can increase the
-     * ambiguity when set to true. when a method parameter is optional it is
-     * not mapped to the url and should only be used in request body or as
-     * query string `/resource?id=value. When a parameter is required and is
-     * scalar, it will be mapped as part of the url `/resource/{id}`
+     * @var int time in milliseconds for bandwidth throttling,
+     * which is the minimum response time for each api request. You can
+     * change it per api method by setting `@throttle 3000` in php doc
+     * comment either at the method level or class level
      */
-    public static $smartAutoRouting = true;
+    public static $throttle = 0;
+
+    // ==================================================================
+    //
+    // API User Options
+    //
+    // ------------------------------------------------------------------
 
     /**
      * @var array use 'alternativeName'=> 'actualName' to set alternative
@@ -128,6 +229,34 @@ class Defaults
         'suppress_response_codes' => 'suppressResponseCode',
     );
 
+    /**
+     * @var array determines the defaults that can be overridden by the api
+     * user by passing them as URL parameters
+     */
+    public static $overridables = array(
+        'suppressResponseCode',
+    );
+
+    /**
+     * @var array contains validation details for defaults to be used when
+     * set through URL parameters
+     */
+    public static $validation = array(
+        'suppressResponseCode' => array('type' => 'bool'),
+        'headerExpires' => array('type' => 'int', 'min' => 0),
+        'headerCacheControl' => array('type' => 'array', 'fix' => true),
+    );
+
+    // ==================================================================
+    //
+    // API Developer Options
+    //
+    // ------------------------------------------------------------------
+
+    /**
+     * @var array determines what are the phpdoc comment tags that will
+     * override the Defaults here with their values
+     */
     public static $fromComments = array(
 
         /**
@@ -166,22 +295,11 @@ class Defaults
         'smart-auto-routing' => 'smartAutoRouting',
     );
 
-    /**
-     * @var array determines the defaults that can be overridden by the api
-     * user by passing them as URL parameters
-     */
-    public static $overridables = array(
-        'suppressResponseCode',
-    );
-
-    /**
-     * @var array contains validation details for defaults to be used when
-     * set through URL parameters
-     */
-    public static $validation = array(
-        'suppressResponseCode' => array('type' => 'bool'),
-        'headerExpires' => array('type' => 'int', 'min' => 0),
-    );
+    // ==================================================================
+    //
+    // Util
+    //
+    // ------------------------------------------------------------------
 
     /**
      * Use this method to set value to a static properly of Defaults when
@@ -190,8 +308,8 @@ class Defaults
      *
      * @static
      *
-     * @param $name  name of the static property
-     * @param $value value to set the property to
+     * @param string $name  name of the static property
+     * @param mixed  $value value to set the property to
      *
      * @return bool
      */

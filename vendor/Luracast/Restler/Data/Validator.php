@@ -3,23 +3,34 @@ namespace Luracast\Restler\Data;
 
 use Luracast\Restler\RestException;
 
+/**
+ * Default Validator class used by Restler. It can be replaced by any
+ * iValidate implementing class by setting Defaults::$validatorClass
+ *
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
+ */
 class Validator implements iValidate
 {
 
     public static function validate($input, ValidationInfo $info)
     {
-        /*
-        header("Content-type: text/plain");
-        var_dump($info);
-        exit;
-        trace ( "validating \$$info->name with "
-            . var_export( $input, true )
-            . ' for type '.$info->type );
-         */
+        if (is_null($input)) {
+            if($info->required){
+                throw new RestException (400,
+                    "$info->name is missing.");
+            }
+            return null;
+        }
 
         $error = isset ($info->rules ['message'])
             ? $info->rules ['message']
-            : "invalid value specified for '$info->name'";
+            : "invalid value specified for $info->name";
 
         //if a validation method is specified
         if (!empty($info->method)) {
@@ -122,9 +133,7 @@ class Validator implements iValidate
                 if (is_array($input)) {
                     return $input;
                 }
-                //if ($info->fix) {
                 return array($input);
-                //}
                 break;
             case 'mixed':
             case 'unknown_type':

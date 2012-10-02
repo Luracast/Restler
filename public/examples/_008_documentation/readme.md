@@ -1,6 +1,18 @@
 Documentation <requires>PHP >= 5.3</requires>
 -------------
-<tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag> <tag>doc</tag> <tag>production</tag> <tag>debug</tag> 
+
+<tag>create</tag>
+<tag>retrieve</tag>
+<tag>read</tag>
+<tag>update</tag>
+<tag>delete</tag>
+<tag>post</tag>
+<tag>get</tag>
+<tag>put</tag>
+<tag>routing</tag>
+<tag>doc</tag>
+<tag>production</tag>
+<tag>debug</tag>
 
 How to document and let your users explore your API.
 We have modified SwaggerUI to create 
@@ -26,7 +38,7 @@ mode. Try changing rester to run in production mode (`$r = new Restler(true)`)
 Happy Exploring! :)
 
 > This API Server is made using the following php files/folders
-> 
+
 > * index.php      (gateway)
 > * Authors.php      (api)
 > * Resources.php      (api)
@@ -44,7 +56,6 @@ This API Server exposes the following URIs
     PUT    authors/{id}              ⇠ improved\Authors::put()
     PATCH  authors/{id}              ⇠ improved\Authors::patch()
     DELETE authors/{id}              ⇠ improved\Authors::delete()
-
 
 
 

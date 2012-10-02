@@ -4,12 +4,12 @@ namespace Luracast\Restler\Format;
  * Describe the purpose of this class/interface/trait
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0
+ * @version    3.0.0rc3
  */
 abstract class MultiFormat implements iFormat
 {

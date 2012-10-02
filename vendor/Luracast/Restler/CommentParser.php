@@ -1,7 +1,7 @@
 <?php
 namespace Luracast\Restler;
 /**
- * Parses the PHPDoc comments for metadata. Inspired by Documentor code base.
+ * Parses the PHPDoc comments for metadata. Inspired by `Documentor` code base.
  *
  * @category   Framework
  * @package    Restler
@@ -10,6 +10,7 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 class CommentParser
 {
@@ -54,7 +55,7 @@ class CommentParser
     /**
      * character sequence used to escape end of comment
      */
-    const escapedCommendEnd = ' {@*}';
+    const escapedCommendEnd = '{@*}';
 
     /**
      * Instance of Restler class injected at runtime.
@@ -191,7 +192,7 @@ class CommentParser
             list(, $param, $value) = preg_split('/\@|\s/', $line, 3)
                 + array('', '', '');
             list($value, $embedded) = $this->parseEmbeddedData($value);
-            $value = preg_split('/\s+/ms', $value);
+            $value = array_filter(preg_split('/\s+/ms', $value));
             $this->parseParam($param, $value, $embedded);
         }
         return $this->_data;
@@ -225,8 +226,7 @@ class CommentParser
                 break;
             case 'expires' :
             case 'status' :
-                $value = explode(' ', $value, 2);
-                $value[0] = intval($value[0]);
+                $value = intval($value[0]);
                 break;
             case 'throws' :
                 $value = $this->formatThrows($value);
@@ -296,6 +296,11 @@ class CommentParser
             $subject = str_replace($matches[0], '', $subject);
             if ($matches[2] == 'true' || $matches[2] == 'false') {
                 $matches[2] = $matches[2] == 'true';
+            }
+            if ($matches[1] != 'pattern'
+                && false !== strpos($matches[2], static::$arrayDelimiter)
+            ) {
+                $matches[2] = explode(static::$arrayDelimiter, $matches[2]);
             }
             $data[$matches[1]] = $matches[2];
         }

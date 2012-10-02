@@ -8,12 +8,13 @@ namespace Luracast\Restler\Format;
  * This class is capable of serving both xml plist and binary plist.
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @subpackage format
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 use Luracast\Restler\Data\Util;
 use CFPropertyList\CFTypeDetector;

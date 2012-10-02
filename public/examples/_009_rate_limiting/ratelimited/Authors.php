@@ -16,9 +16,7 @@ class Authors
      * Retrieve all Authors
      *
      * Get all Authors and their details
-     * @cache max-age={expires}, max-stale=3000, must-revalidate
-     * @expires 30
-     * @throttle 200
+     *
      * @return array
      */
     function index()
@@ -34,7 +32,7 @@ class Authors
      *
      * @param int $id AuthorID
      *
-     * @throws 404 Author not found
+     * @throws RestException
      * @return Author
      */
     function get($id)

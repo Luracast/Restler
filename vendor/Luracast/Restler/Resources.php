@@ -4,16 +4,16 @@ namespace Luracast\Restler;
 use stdClass;
 
 /**
- * API Class to create Swagger Spec 1.1 compatible resource and operation
+ * API Class to create Swagger Spec 1.1 compatible id and operation
  * listing
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0
+ * @version    3.0.0rc3
  */
 class Resources implements iUseAuthentication
 {
@@ -21,14 +21,51 @@ class Resources implements iUseAuthentication
      * @var bool should protected resources be shown to unauthenticated users?
      */
     public static $hideProtected = true;
+
+    /**
+     * @var bool should we use format as extension?
+     */
+    public static $useFormatAsExtension = true;
+
+    /**
+     * @var array all http methods specified here will be excluded from
+     * documentation
+     */
+    public static $excludedHttpMethods = array('OPTIONS');
+
+    /**
+     * @var array all paths beginning with any of the following will be excluded
+     * from documentation
+     */
+    public static $excludedPaths = array();
+
+    /**
+     * @var bool
+     */
+    public static $placeFormatExtensionBeforeDynamicParts = true;
+
+    /**
+     * @var null|callable if the api methods are under access control mechanism
+     * you can attach a function here that returns true or false to determine
+     * visibility of a protected api method. this function will receive method
+     * info as the only parameter.
+     */
+    public static $accessControlFunction = null;
+
     /**
      * Injected at runtime
      *
      * @var Restler instance of restler
      */
     public $restler;
+    public $formatString = '';
 
     private $_models;
+
+    private $_bodyParam;
+
+    private $crud = array('POST' => 'create', 'GET' => 'retrieve',
+        'PUT' => 'update', 'DELETE' => 'delete', 'PATCH' => 'partial update');
 
     private $_authenticated = false;
 
@@ -39,7 +76,7 @@ class Resources implements iUseAuthentication
      *
      *
      * @param bool $isAuthenticated passes true when the authentication is
-     *                              done false otherwise
+     *                              done, false otherwise
      *
      * @return mixed
      */
@@ -48,103 +85,181 @@ class Resources implements iUseAuthentication
         $this->_authenticated = $isAuthenticated;
     }
 
+    public function __construct()
+    {
+        if (static::$useFormatAsExtension) {
+            $this->formatString = '.{format}';
+        }
+    }
+
     /**
      * @access hybrid
      *
-     * @param $name
+     * @param $id
+     * @param $version
      *
-     * @return null|stdClass
      * @throws RestException
+     * @return null|stdClass
+     *
+     * @url    GET {id}-v{version}
+     * @url    GET v{version}
      */
-    public function get($name)
+    public function get($version, $id = '')
     {
+        if (!Defaults::$useUrlBasedVersioning
+            && $version != $this->restler->_requestedApiVersion
+        ) {
+            throw new RestException(404);
+        }
         $this->_models = new stdClass();
         $r = null;
-        $name = strtolower(str_replace('-', '\\', $name));
         $count = 0;
-        foreach ($this->restler->routes as $httpMethod => $value) {
-            foreach ($value as $key => $route) {
-                if (0 == strcasecmp($name, $route['className'])) {
-                    if (
-                        self::$hideProtected
-                        && !$this->_authenticated
-                        && $route['accessLevel'] > 1
-                    ) {
-                        continue;
-                    }
-                    $count++;
-                    $className = $this->_noNamespace($route['className']);
-                    $m = $route['metadata'];
-                    if (!$r) {
-                        $resourcePath = '/'
-                            . trim($m['resourcePath'], '/');
-                        $r = $this->_operationListing($resourcePath);
-                    }
-                    $parts = explode('/', $key);
-                    if (count($parts) == 1 && $httpMethod == 'GET') {
 
-                    } else {
-                        for ($i = 0; $i < count($parts); $i++) {
-                            if ($parts[$i][0] == ':') {
-                                $parts[$i] = '{' . substr($parts[$i], 1) . '}';
-                            }
+        $target = empty($id) ? "v$version" : "v$version/$id";
+
+        foreach ($this->restler->routes as $httpMethod => $value) {
+            if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                continue;
+            }
+            foreach ($value as $fullPath => $route) {
+                if ($route['path'] != $target) {
+                    continue;
+                }
+                if (
+                    self::$hideProtected
+                    && !$this->_authenticated
+                    && $route['accessLevel'] > 1
+                ) {
+                    continue;
+                }
+                foreach (static::$excludedPaths as $exclude) {
+                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                        continue 2;
+                    }
+                }
+                $m = $route['metadata'];
+                if ($id == '' && $m['resourcePath'] != "v$version/") {
+                    continue;
+                }
+                if ($this->_authenticated
+                    && static::$accessControlFunction
+                    && (!call_user_func(
+                        static::$accessControlFunction, $route['metadata']))
+                ) {
+                    continue;
+                }
+                $count++;
+                $className = $this->_noNamespace($route['className']);
+                if (!$r) {
+                    $resourcePath = '/'
+                        . trim($m['resourcePath'], '/');
+                    if (!Defaults::$useUrlBasedVersioning) {
+                        $resourcePath = str_replace("/v$version", '',
+                            $resourcePath);
+                    }
+                    $r = $this->_operationListing($resourcePath);
+                }
+                $parts = explode('/', $fullPath);
+                $pos = count($parts) - 1;
+                if (count($parts) == 1 && $httpMethod == 'GET') {
+                } else {
+                    for ($i = 0; $i < count($parts); $i++) {
+                        if ($parts[$i]{0} == '{') {
+                            $pos = $i - 1;
+                            break;
                         }
                     }
-                    $nickname = implode('_', $parts);
-                    $nickname = preg_replace('/[^A-Za-z0-9-]/', '', $nickname);
-                    $parts[0] .= ".{format}";
-                    $key = implode('/', $parts);
-                    $description = isset(
-                    $m['classDescription'])
-                        ? $m['classDescription']
-                        : $className . ' API';
-                    $api = $this->_api("/$key", $description);
-                    if (!isset($m['description'])) {
-                        $m['description'] = strtolower($httpMethod) . ' '
-                            . $route['methodName'];
+                }
+                $nickname = preg_replace(
+                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
+                    array('_', '-'),
+                    implode('-', $parts));
+                $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
+                    .= $this->formatString;
+                // $parts[0] .= $this->formatString; //".{format}";
+                if (!Defaults::$useUrlBasedVersioning) {
+                    array_shift($parts);
+                }
+                $fullPath = implode('/', $parts);
+                $description = isset(
+                $m['classDescription'])
+                    ? $m['classDescription']
+                    : $className . ' API';
+                $api = $this->_api("/$fullPath", $description);
+                if (empty($m['description'])) {
+                    $m['description'] = $this->restler->_productionMode
+                        ? ''
+                        : 'routes to <mark>'
+                            . $route['className']
+                            . '::'
+                            . $route['methodName'] . '();</mark>';
+                }
+                if (empty($m['longDescription'])) {
+                    $m['longDescription'] = $this->restler->_productionMode
+                        ? ''
+                        : 'Add PHPDoc long description to '
+                            . "<mark>$className::"
+                            . $route['methodName'] . '();</mark>'
+                            . '  (the api method) to write here';
+                }
+                $operation = $this->_operation(
+                    $nickname,
+                    $httpMethod,
+                    $m['description'],
+                    $m['longDescription']
+                );
+                if (isset($m['throws'])) {
+                    foreach ($m['throws'] as $exception) {
+                        $operation->errorResponses[] = array(
+                            'reason' => $exception['reason'],
+                            'code' => $exception['code']);
                     }
-                    if (!isset($m['longDescription'])) {
-                        $m['longDescription'] = 'add php doc comment to '
-                        .' the api method to describe your api';
-                    }
-                    $operation = $this->_operation(
-                        $nickname,
-                        $httpMethod,
-                        $m['description'],
-                        $m['longDescription']
-                    );
-                    if (isset($m['throws'])) {
-                        foreach ($m['throws'] as $exception) {
-                            $operation->errorResponses[] = array(
-                                'reason' => $exception['reason'],
-                                'code' => $exception['code']);
+                }
+                if (isset($m['param'])) {
+                    foreach ($m['param'] as $param) {
+                        //combine body params as one
+                        $p = $this->_parameter($param);
+                        if ($p->paramType == 'body') {
+                            $this->_appendToBody($p);
+                        } else {
+                            $operation->parameters[] = $p;
                         }
                     }
-                    if (isset($m['param'])) {
-                        foreach ($m['param'] as $param) {
-                            $operation->parameters[]
-                                = $this->_parameter($param);
-                        }
-                    }
-                    if (isset($m['return']['type'])) {
-                        $responseClass = $m['return']['type'];
-                        if (
-                            is_string($responseClass)
-                            && !strpos($responseClass, '|')
-                            && class_exists($responseClass)
-                        ) {
+                }
+                if (count($this->_bodyParam['description'])) {
+                    $operation->parameters[] = $this->_getBody();
+                }
+                if (isset($m['return']['type'])) {
+                    $responseClass = $m['return']['type'];
+                    if (is_string($responseClass)) {
+                        if (class_exists($responseClass)) {
                             $this->_model($responseClass);
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
+                        } elseif (strtolower($responseClass) == 'array') {
+                            $operation->responseClass = 'Array';
+                            $rt = $m['return'];
+                            if (isset(
+                            $rt[CommentParser::$embeddedDataName]['type'])
+                            ) {
+                                $rt = $rt[CommentParser::$embeddedDataName]
+                                ['type'];
+                                if (class_exists($rt)) {
+                                    $this->_model($rt);
+                                    $operation->responseClass .= '[' .
+                                        $this->_noNamespace($rt) . ']';
+                                }
+
+                            }
                         }
                     }
-                    $api->operations[] = $operation;
-                    $r->apis[] = $api;
                 }
+                $api->operations[] = $operation;
+                $r->apis[] = $api;
             }
         }
         if (!$count) {
-            throw new RestException(404, 'Not Found');
+            throw new RestException(404);
         }
         if (!is_null($r))
             $r->models = $this->_models;
@@ -158,9 +273,12 @@ class Resources implements iUseAuthentication
     public function index()
     {
         $r = $this->_resourceListing();
-        $mappedResource = array();
-        foreach ($this->restler->routes as $verb => $routes) {
-            foreach ($routes as $route) {
+        $map = array();
+        foreach ($this->restler->routes as $httpMethod => $routes) {
+            if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                continue;
+            }
+            foreach ($routes as $fullPath => $route) {
                 if (
                     self::$hideProtected
                     && !$this->_authenticated
@@ -168,24 +286,48 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
-                $path = $route['path'];
-                $name = strtolower(str_replace('\\', '-', $route['className']));
-                $classDescription = isset(
-                $route['metadata']['classDescription'])
-                    ? $route['metadata']['classDescription']
-                    : $route['className'] . ' API';
-                if (
-                    !isset($mappedResource[$path])
-                    && FALSE === strpos($path, 'resources')
+                $path = explode('/', $route['path']);
+
+                $resource = isset($path[1]) ? $path[1] : '';
+
+                $version = intval(substr($path[0], 1));
+
+                if ($resource == 'resources'
+                    || (!Defaults::$useUrlBasedVersioning
+                        && $version != $this->restler->_requestedApiVersion)
                 ) {
-                    //add resource
-                    $r->apis[] = array(
-                        'path' => "/resources/$name.{format}",
-                        'description' => $classDescription
-                    );
+                    continue;
                 }
-                $mappedResource[$path] = TRUE;
+
+                foreach (static::$excludedPaths as $exclude) {
+                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                        continue 2;
+                    }
+                }
+
+                if ($this->_authenticated
+                    && static::$accessControlFunction
+                    && (!call_user_func(
+                        static::$accessControlFunction, $route['metadata']))
+                ) {
+                    continue;
+                }
+
+                $resource = $resource ? $resource . "-v$version" : "v$version";
+
+                if (empty($map[$resource])) {
+                    $map[$resource] = isset(
+                    $route['metadata']['classDescription'])
+                        ? $route['metadata']['classDescription'] : '';
+                }
             }
+        }
+        foreach ($map as $path => $description) {
+            //add id
+            $r->apis[] = array(
+                'path' => "/resources/{$path}$this->formatString",
+                'description' => $description
+            );
         }
         return $r;
     }
@@ -221,9 +363,9 @@ class Resources implements iUseAuthentication
     private function _resourceListing()
     {
         $r = new stdClass();
-        $r->apiVersion = (string)$this->restler->apiVersion;
+        $r->apiVersion = (string)$this->restler->_apiVersion;
         $r->swaggerVersion = "1.1";
-        $r->basePath = $this->restler->baseUrl;
+        $r->basePath = $this->restler->_baseUrl;
         $r->apis = array();
         return $r;
     }
@@ -240,7 +382,10 @@ class Resources implements iUseAuthentication
     {
         $r = new stdClass();
         $r->path = $path;
-        $r->description = $description;
+        $r->description =
+            empty($description) && $this->restler->_productionMode
+                ? 'Use PHPDoc comment to describe here'
+                : $description;
         $r->operations = array();
         return $r;
     }
@@ -253,6 +398,12 @@ class Resources implements iUseAuthentication
         $responseClass = 'void'
     )
     {
+        //reset body params
+        $this->_bodyParam = array(
+            'required' => false,
+            'description' => array()
+        );
+
         $r = new stdClass();
         $r->httpMethod = $httpMethod;
         $r->nickname = $nickname;
@@ -267,20 +418,75 @@ class Resources implements iUseAuthentication
         return $r;
     }
 
+    private function _appendToBody($p)
+    {
+        $this->_bodyParam['description'][$p->name]
+            = "<mark>$p->name</mark>"
+            . ($p->required ? ' <i>(required)</i>: ' : ': ')
+            . $p->description;
+        $this->_bodyParam['required'] = $p->required
+            || $this->_bodyParam['required'];
+        $this->_bodyParam['names'][$p->name] = true;
+    }
+
+    private function _getBody()
+    {
+        $r = new stdClass();
+        $r->name = 'REQUEST_BODY';
+        $p = array_values($this->_bodyParam['description']);
+        $r->description = "Paste JSON data here";
+        if (count($p) == 1
+            && isset(
+            $this->_bodyParam['description'][Defaults::$fullRequestDataName])
+        ) {
+
+        } else {
+            $r->description .= " with the following"
+                . (count($p) > 1 ? ' properties.' : ' property.')
+                . '<hr/>'
+                . implode("<hr/>", $p);
+        }
+        $r->paramType = 'body';
+        $r->required = $this->_bodyParam['required'];
+        $r->allowMultiple = false;
+        $r->dataType = 'string';
+        return $r;
+    }
+
     private function _parameter($param)
     {
         $r = new stdClass();
         $r->name = $param['name'];
-        $r->description = isset($param['description'])
+        $r->description = !empty($param['description'])
             ? $param['description'] . '.'
-            : '';
+            : ($this->restler->_productionMode
+                ? ''
+                : 'add <mark>@param {type} $' . $r->name
+                    . ' {comment}</mark> to describe here');
         //paramType can be path or query or body or header
         $r->paramType = $param['from'];
         $r->required = $param['required'];
         $r->allowMultiple = false;
         $r->dataType = 'string';
-        //TODO: use validation info to set allowable values below
-        //$r->allowableValues;
+        if (isset($param[CommentParser::$embeddedDataName])) {
+            $p = $param[CommentParser::$embeddedDataName];
+            if (isset($p['min']) && isset($p['max'])) {
+                /*
+                $r->allowableValues = array(
+                    'min'=> $p['min'],
+                    'max'=> $p['max'],
+                    'valueType' => 'Range'
+                );
+                */
+            } elseif (isset($p['choice'])) {
+                //TODO: use validation info to set allowable values below
+                /*
+                $r->allowableValues = array(
+                    'valueType' => 'List'
+                );
+                */
+            }
+        }
         return $r;
     }
 

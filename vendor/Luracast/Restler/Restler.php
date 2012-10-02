@@ -2,7 +2,6 @@
 namespace Luracast\Restler;
 
 use stdClass;
-use DirectoryIterator;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
@@ -26,7 +25,7 @@ use Luracast\Restler\Data\ValidationInfo;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0
+ * @version    3.0.0rc3
  */
 class Restler extends EventEmitter
 {
@@ -37,14 +36,7 @@ class Restler extends EventEmitter
     //
     // ------------------------------------------------------------------
 
-    const VERSION = '3.0.0';
-
-    /**
-     * Base URL currently being used
-     *
-     * @var string
-     */
-    public $baseUrl;
+    const VERSION = '3.0.0rc3';
 
     /**
      * URL of the currently mapped service
@@ -86,13 +78,6 @@ class Restler extends EventEmitter
     public $cache;
 
     /**
-     * base directory to locate format and auth files
-     *
-     * @var string
-     */
-    public $baseDir;
-
-    /**
      * method information including metadata
      *
      * @var stdClass
@@ -122,6 +107,13 @@ class Restler extends EventEmitter
     // Private & Protected variables
     //
     // ------------------------------------------------------------------
+
+    /**
+     * Base URL currently being used
+     *
+     * @var string
+     */
+    protected $baseUrl;
 
     /**
      * When set to false, it will run in debug mode and parse the
@@ -158,6 +150,7 @@ class Restler extends EventEmitter
      * @var array
      */
     protected $filterClasses = array();
+    protected $filterObjects = array();
 
     /**
      * list of authentication classes
@@ -183,8 +176,8 @@ class Restler extends EventEmitter
     protected $apiVersion = 1;
     protected $requestedApiVersion = 1;
     protected $apiMinimumVersion = 1;
-    protected $apiClassPath = '';
-    protected $log = '';
+
+    protected $log = array();
     protected $startTime;
     protected $authenticated = false;
 
@@ -207,15 +200,17 @@ class Restler extends EventEmitter
     public function __construct($productionMode = false, $refreshCache = false)
     {
         $this->startTime = time();
+        Util::$restler = $this;
         $this->productionMode = $productionMode;
-        $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
+        if (is_null(Defaults::$cacheDirectory)) {
+            Defaults::$cacheDirectory = dirname($_SERVER['SCRIPT_FILENAME']) .
+                DIRECTORY_SEPARATOR . 'cache';
+        }
         $this->cache = new Defaults::$cacheClass();
-        $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
             $this->cached = false;
         }
-        Util::$restler = $this;
     }
 
     /**
@@ -237,90 +232,32 @@ class Restler extends EventEmitter
      */
     public function setCompatibilityMode($version = 2)
     {
-        switch ($version) {
-
-            case 2:
-                //changes in auto loading
-                $classMap = array();
-                //find lowercase php files representing a class/interface
-                foreach (explode(PATH_SEPARATOR, get_include_path()) as $path)
-                    foreach (new DirectoryIterator($path) as $fileInfo)
-                        if ($fileInfo->isFile()
-                            && 'php' === $fileInfo->getExtension()
-                            && ctype_lower($fileInfo->getBasename('.php'))
-                            && preg_match(
-                                '/^ *(class|interface|abstract +class)'
-                                    . ' +([a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/m',
-                                file_get_contents($fileInfo->getPathname()),
-                                $matches
-                            )
-                        )
-                            $classMap[$matches[2]] = $fileInfo->getPathname();
-
-                AutoLoader::seen($classMap);
-
-                //changes in iAuthenticate
-                Defaults::$authenticationMethod = '__isAuthenticated';
-                eval('
-                interface iAuthenticate{
-                    public function __isAuthenticated();
-                }
-                ');
-
-                //changes in auto routing
-                Defaults::$smartAutoRouting = false;
-                Defaults::$autoValidationEnabled = false;
-
-                //changes in parsing embedded data in comments
-                CommentParser::$embeddedDataPattern = '/\((\S+)\)/ms';
-                CommentParser::$embeddedDataIndex = 1;
-
-                break;
-
-            case 1:
-
-                //changes in iAuthenticate
-                Defaults::$authenticationMethod = 'isAuthenticated';
-                eval('
-                interface iAuthenticate{
-                    public function isAuthenticated();
-                }
-                ');
-
-                //changes in routing
-                Defaults::$autoRoutingEnabled = false;
-                Defaults::$autoValidationEnabled = false;
-                break;
-
-            default:
-                throw new \OutOfRangeException();
+        if ($version <= intval(self::VERSION) && $version > 0) {
+            require_once "restler{$version}.php";
+            return;
         }
+        throw new \OutOfRangeException();
     }
 
-    public function setApiClassPath($path)
+    /**
+     * @param int         $version         maximum version number supported
+     *                                     by  the api
+     * @param int         $minimum         minimum version number supported
+     * (optional)
+     *
+     * @throws \InvalidArgumentException
+     * @return void
+     */
+    public function setAPIVersion($version = 1, $minimum = 1)
     {
-        $this->apiClassPath = !empty($path) &&
-            $path{0} == '/' ? $path : $_SERVER['DOCUMENT_ROOT'] .
-            dirname($_SERVER['SCRIPT_NAME']) . '/' . $path;
-        $this->apiClassPath = rtrim($this->apiClassPath, '/');
-    }
-
-    public function setAPIVersion($version, $minimum = 0, $apiClassPath = '')
-    {
-        if (!is_int($version)) {
+        if (!is_int($version) && $version < 1) {
             throw new InvalidArgumentException
-            ('version should be an integer');
+            ('version should be an integer greater than 0');
         }
         $this->apiVersion = $version;
         if (is_int($minimum)) {
             $this->apiMinimumVersion = $minimum;
         }
-        if (!empty($apiClassPath)) {
-            $this->setAPIClassPath($apiClassPath);
-        }
-        $path = $this->apiClassPath . DIRECTORY_SEPARATOR .
-            "v$this->apiVersion" . DIRECTORY_SEPARATOR;
-        set_include_path($path . PATH_SEPARATOR . get_include_path());
     }
 
     /**
@@ -379,22 +316,50 @@ class Restler extends EventEmitter
      */
     public function addAPIClass($className, $resourcePath = null)
     {
-        if (!class_exists($className, true)) {
-            throw new Exception("API class $className is missing.");
-        }
         $this->loadCache();
         if (!$this->cached) {
-            if (is_null($resourcePath)) {
-                $resourcePath = str_replace('__v', '/v',
-                    strtolower($className));
-                $index = strrpos($className, '\\');
-                if ($index !== false)
-                    $resourcePath = substr($resourcePath, $index + 1);
-            } else
-                $resourcePath = trim($resourcePath, '/');
-            if (strlen($resourcePath) > 0)
-                $resourcePath .= '/';
-            $this->generateMap($className, $resourcePath);
+            $foundClass = array();
+            if (class_exists($className)) {
+                $foundClass[$className] = $className;
+            }
+
+            //versioned api
+            if (false !== ($index = strrpos($className, '\\'))) {
+                $name = substr($className, 0, $index)
+                    . '\\v{$version}' . substr($className, $index);
+            } else if (false !== ($index = strrpos($className, '_'))) {
+                $name = substr($className, 0, $index)
+                    . '_v{$version}' . substr($className, $index);
+            } else {
+                $name = 'v{$version}\\' . $className;
+            }
+
+            for ($version = $this->apiMinimumVersion;
+                 $version <= $this->apiVersion;
+                 $version++) {
+
+                $versionedClassName = str_replace('{$version}', $version,
+                    $name);
+                if (class_exists($versionedClassName)) {
+                    $this->generateMap($versionedClassName,
+                        Util::getResourcePath(
+                            $className,
+                            $resourcePath,
+                            "v{$version}/"
+                        )
+                    );
+                    $foundClass[$className] = $versionedClassName;
+                } elseif (isset($foundClass[$className])) {
+                    $this->generateMap($foundClass[$className],
+                        Util::getResourcePath(
+                            $className,
+                            $resourcePath,
+                            "v{$version}/"
+                        )
+                    );
+                }
+            }
+
         }
     }
 
@@ -471,6 +436,18 @@ class Restler extends EventEmitter
      */
     public function init()
     {
+        if (Defaults::$crossOriginResourceSharing
+            && $this->requestMethod == 'OPTIONS'
+        ) {
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+                header('Access-Control-Allow-Methods: '
+                    . Defaults::$accessControlAllowMethods);
+
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+                header('Access-Control-Allow-Headers: '
+                    . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+            exit(0);
+        }
         if (empty($this->formatMap)) {
             $this->setSupportedFormats('JsonFormat');
         }
@@ -484,21 +461,43 @@ class Restler extends EventEmitter
         } else {
             $this->requestFormat->restler = $this;
         }
-        if ($this->requestMethod == 'PUT' ||
-            $this->requestMethod == 'PATCH' ||
-            $this->requestMethod == 'POST'
-        ) {
-            $this->requestData = $this->getRequestData();
-        }
-        //parse defaults
-        foreach ($_GET as $key => $value) {
-            if (isset(Defaults::$aliases[$key])) {
-                $_GET[Defaults::$aliases[$key]] = $value;
-                unset($_GET[$key]);
-                $key = Defaults::$aliases[$key];
+        if (isset($_SERVER['HTTP_ACCEPT_CHARSET'])) {
+            $found = false;
+            $charList = Util::sortByPriority($_SERVER['HTTP_ACCEPT_CHARSET']);
+            foreach ($charList as $charset => $quality) {
+                if (in_array($charset, Defaults::$supportedCharsets)) {
+                    $found = true;
+                    Defaults::$charset = $charset;
+                    break;
+                }
             }
-            if (in_array($key, Defaults::$overridables)) {
-                Defaults::setProperty($$key, $value);
+            if (!$found) {
+                if (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], '*') !== false) {
+                    //use default charset
+                } else {
+                    $this->handleError(406, 'Content negotiation failed. '
+                        . "Requested charset is not supported");
+                }
+            }
+        }
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $found = false;
+            $langList = Util::sortByPriority($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            foreach ($langList as $lang => $quality) {
+                foreach (Defaults::$supportedLanguages as $supported) {
+                    if (strcasecmp($supported, $lang) == 0) {
+                        $found = true;
+                        Defaults::$language = $supported;
+                        break 2;
+                    }
+                }
+            }
+            if (!$found) {
+                if (strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], '*') !== false) {
+                    //use default language
+                } else {
+                    //ignore
+                }
             }
         }
     }
@@ -512,134 +511,171 @@ class Restler extends EventEmitter
      */
     public function handle()
     {
-        $this->init();
-        $this->apiMethodInfo = $o = $this->mapUrlToMethod();
-        if (isset($o->metadata)) {
-            foreach (Defaults::$fromComments as $key => $defaultsKey) {
-                if (array_key_exists($key, $o->metadata)) {
-                    $value = $o->metadata[$key];
-                    Defaults::setProperty($defaultsKey, $value);
+        try {
+            $this->init();
+            foreach ($this->filterClasses as $filterClass) {
+                /**
+                 * @var iFilter
+                 */
+                $filterObj = new $filterClass;
+                $filterObj->restler = $this;
+                if (!$filterObj instanceof iFilter) {
+                    throw new RestException (
+                        500, 'Filter Class ' .
+                        'should implement iFilter');
+                } else {
+                    $ok = $filterObj->__isAllowed();
+                    if (is_null($ok)
+                        && $filterObj instanceof iUseAuthentication
+                    ) {
+                        //handle at authentication stage
+                        $this->filterObjects[] = $filterObj;
+                        continue;
+                    }
+                    throw new RestException(403); //Forbidden
                 }
             }
-        }
-        $result = null;
-        if (!isset($o->className)) {
-            $this->handleError(404);
-        } else {
-            try {
-                $accessLevel = max(Defaults::$apiAccessLevel, $o->accessLevel);
-                if ($accessLevel) {
-                    if (!count($this->authClasses)) {
-                        throw new RestException(401);
+            Util::setProperties(
+                get_class($this->requestFormat),
+                null, $this->requestFormat
+            );
+
+            $this->requestData = $this->getRequestData();
+
+            //parse defaults
+            foreach ($_GET as $key => $value) {
+                if (isset(Defaults::$aliases[$key])) {
+                    $_GET[Defaults::$aliases[$key]] = $value;
+                    unset($_GET[$key]);
+                    $key = Defaults::$aliases[$key];
+                }
+                if (in_array($key, Defaults::$overridables)) {
+                    Defaults::setProperty($key, $value);
+                }
+            }
+
+            $this->apiMethodInfo = $o = $this->mapUrlToMethod();
+            if (isset($o->metadata)) {
+                foreach (Defaults::$fromComments as $key => $defaultsKey) {
+                    if (array_key_exists($key, $o->metadata)) {
+                        $value = $o->metadata[$key];
+                        Defaults::setProperty($defaultsKey, $value);
                     }
-                    foreach ($this->authClasses as $authClass) {
-                        $authObj = Util::setProperties(
-                            $authClass,
-                            $o->metadata
-                        );
-                        if (!method_exists($authObj,
-                            Defaults::$authenticationMethod)
-                        ) {
-                            throw new RestException (
-                                500, 'Authentication Class ' .
-                                'should implement iAuthenticate');
-                        } elseif (
-                            !$authObj->{Defaults::$authenticationMethod}()
-                        ) {
+                }
+            }
+
+            $result = null;
+            if (!isset($o->className)) {
+                $this->handleError(404);
+            } else {
+                try {
+                    $accessLevel = max(Defaults::$apiAccessLevel,
+                        $o->accessLevel);
+                    if ($accessLevel || count($this->filterObjects)) {
+                        if (!count($this->authClasses)) {
                             throw new RestException(401);
                         }
-                    }
-                    $this->authenticated = true;
-                }
-            } catch (RestException $e) {
-                if ($accessLevel > 1) { //when it is not a hybrid api
-                    $this->handleError($e->getCode(), $e->getMessage());
-                } else {
-                    $this->authenticated = false;
-                }
-            }
-            try {
-                foreach ($this->filterClasses as $filterClass) {
-                    /**
-                     * @var iFilter
-                     */
-                    $filterObj = Util::setProperties(
-                        $filterClass,
-                        $o->metadata
-                    );
-                    if (!$filterObj instanceof iFilter) {
-                        throw new RestException (
-                            500, 'Filter Class ' .
-                            'should implement iFilter');
-                    } elseif (!$filterObj->__isAllowed()) {
-                        throw new RestException(403); //Forbidden
-                    }
-                }
-                Util::setProperties(
-                    get_class($this->requestFormat),
-                    $o->metadata, $this->requestFormat
-                );
-
-                $preProcess = '_' . $this->requestFormat->getExtension() .
-                    '_' . $o->methodName;
-                $this->apiMethod = $o->methodName;
-                $object = $this->apiClassInstance = null;
-                // TODO:check if the api version requested is allowed by class
-                // TODO: validate params using iValidate
-                if (Defaults::$autoValidationEnabled) {
-                    foreach ($o->metadata['param'] as $index => $param) {
-                        $info = &$param [CommentParser::$embeddedDataName];
-                        if (!isset ($info['validate'])
-                            || $info['validate'] != false
-                        ) {
-                            if (isset($info['method'])) {
-                                if (!isset($object)) {
-                                    $object = $this->apiClassInstance
-                                        = Util::setProperties($o->className);
-                                }
-                                $info ['apiClassInstance'] = $object;
+                        foreach ($this->authClasses as $authClass) {
+                            $authObj = Util::setProperties(
+                                $authClass,
+                                $o->metadata
+                            );
+                            if (!method_exists($authObj,
+                                Defaults::$authenticationMethod)
+                            ) {
+                                throw new RestException (
+                                    500, 'Authentication Class ' .
+                                    'should implement iAuthenticate');
+                            } elseif (
+                                !$authObj->{Defaults::$authenticationMethod}()
+                            ) {
+                                throw new RestException(401);
                             }
-                            //convert to instance of ValidationInfo
-                            $info = new ValidationInfo($param);
-                            $valid = Validator::validate(
-                                $o->arguments[$index], $info);
-                            $o->arguments[$index] = $valid;
+                        }
+                        $this->authenticated = true;
+                    }
+                } catch (RestException $e) {
+                    if ($accessLevel > 1) { //when it is not a hybrid api
+                        $this->handleError($e->getCode(), $e->getMessage());
+                    } else {
+                        $this->authenticated = false;
+                    }
+                }
+                try {
+                    foreach ($this->filterObjects as $filterObj) {
+                        Util::setProperties(get_class($filterObj),
+                            $o->metadata,
+                            $filterObj);
+                    }
+                    $preProcess = '_' . $this->requestFormat->getExtension() .
+                        '_' . $o->methodName;
+                    $this->apiMethod = $o->methodName;
+                    $object = $this->apiClassInstance = null;
+                    // TODO:check if the api version requested is allowed by class
+                    if (Defaults::$autoValidationEnabled) {
+                        foreach ($o->metadata['param'] as $index => $param) {
+                            $info = &$param [CommentParser::$embeddedDataName];
+                            if (!isset ($info['validate'])
+                                || $info['validate'] != false
+                            ) {
+                                if (isset($info['method'])) {
+                                    if (!isset($object)) {
+                                        $object = $this->apiClassInstance
+                                            = Util::setProperties($o->className);
+                                    }
+                                    $info ['apiClassInstance'] = $object;
+                                }
+                                //convert to instance of ValidationInfo
+                                $info = new ValidationInfo($param);
+                                $valid = Validator::validate(
+                                    $o->arguments[$index], $info);
+                                $o->arguments[$index] = $valid;
+                            }
                         }
                     }
-                }
-                if (!isset($object)) {
-                    $object = $this->apiClassInstance
-                        = Util::setProperties($o->className);
-                }
-                if (method_exists($o->className, $preProcess)) {
-                    call_user_func_array(array(
-                        $object,
-                        $preProcess
-                    ), $o->arguments);
-                }
-                switch ($accessLevel) {
-                    case 3 : //protected method
-                        $reflectionMethod = new ReflectionMethod(
+                    if (!isset($object)) {
+                        $object = $this->apiClassInstance
+                            = Util::setProperties($o->className);
+                    }
+                    if (method_exists($o->className, $preProcess)) {
+                        call_user_func_array(array(
                             $object,
-                            $o->methodName
-                        );
-                        $reflectionMethod->setAccessible(true);
-                        $result = $reflectionMethod->invokeArgs(
-                            $object,
-                            $o->arguments
-                        );
-                        break;
-                    default :
-                        $result = call_user_func_array(array(
-                            $object,
-                            $o->methodName
+                            $preProcess
                         ), $o->arguments);
+                    }
+                    switch ($accessLevel) {
+                        case 3 : //protected method
+                            $reflectionMethod = new ReflectionMethod(
+                                $object,
+                                $o->methodName
+                            );
+                            $reflectionMethod->setAccessible(true);
+                            $result = $reflectionMethod->invokeArgs(
+                                $object,
+                                $o->arguments
+                            );
+                            break;
+                        default :
+                            $result = call_user_func_array(array(
+                                $object,
+                                $o->methodName
+                            ), $o->arguments);
+                    }
+                } catch (RestException $e) {
+                    $this->handleError($e->getCode(), $e->getMessage());
                 }
-            } catch (RestException $e) {
-                $this->handleError($e->getCode(), $e->getMessage());
+            }
+            $this->sendData($result);
+        } catch (RestException $e) {
+            $this->handleError($e->getCode(), $e->getMessage());
+        } catch (\Exception $e) {
+            $this->log[] = $e->getMessage();
+            if ($this->productionMode) {
+                $this->handleError(500);
+            } else {
+                $this->handleError(500, $e->getMessage());
             }
         }
-        $this->sendData($result);
     }
 
     /**
@@ -651,15 +687,32 @@ class Restler extends EventEmitter
      */
     public function sendData($data, $statusCode = 0, $statusMessage = null)
     {
-        //$this->log = ob_get_clean ();
-        @header('Cache-Control: ' . Defaults::$headerCacheControl);
-        $expires = Defaults::$headerExpires;
+        //$this->log []= ob_get_clean ();
+        //only GET method should be cached if allowed by API developer
+        $expires = $this->requestMethod == 'GET' ? Defaults::$headerExpires : 0;
+        $cacheControl = Defaults::$headerCacheControl[0];
         if ($expires > 0) {
+            $cacheControl = $this->apiMethodInfo->accessLevel
+                ? 'private, ' : 'public, ';
+            $cacheControl .= end(Defaults::$headerCacheControl);
+            $cacheControl = str_replace('{expires}', $expires, $cacheControl);
             $expires = gmdate('D, d M Y H:i:s \G\M\T', time() + $expires);
         }
+        @header('Cache-Control: ' . $cacheControl);
         @header('Expires: ' . $expires);
-        @header('Content-Type: ' . $this->responseFormat->getMIME());
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+
+        if (Defaults::$crossOriginResourceSharing
+            && isset($_SERVER['HTTP_ORIGIN'])
+        ) {
+            header('Access-Control-Allow-Origin: ' .
+                    (Defaults::$accessControlAllowOrigin == '*'
+                        ? $_SERVER['HTTP_ORIGIN']
+                        : Defaults::$accessControlAllowOrigin)
+            );
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: 86400');
+        }
 
         if (isset($this->apiMethodInfo->metadata['header'])) {
             foreach ($this->apiMethodInfo->metadata['header'] as $header)
@@ -676,6 +729,19 @@ class Restler extends EventEmitter
                 ? $this->apiMethodInfo->metadata
                 : null
         );
+        $this->responseFormat->setCharset(Defaults::$charset);
+        $charset = $this->responseFormat->getCharset()
+            ? : Defaults::$charset;
+        @header('Content-Type: ' . (
+            Defaults::$useVendorMIMEVersioning
+                ? 'application/vnd.'
+                . Defaults::$apiVendor
+                . "-v{$this->requestedApiVersion}"
+                . '+' . $this->responseFormat->getExtension()
+                : $this->responseFormat->getMIME())
+                . '; charset=' . $charset
+        );
+        @header('Content-Language: ' . Defaults::$language);
         if ($statusCode == 0) {
             if (isset($this->apiMethodInfo->metadata['status'])) {
                 $this->setStatus($this->apiMethodInfo->metadata['status']);
@@ -732,15 +798,17 @@ class Restler extends EventEmitter
     /**
      * Magic method to expose some protected variables
      *
-     * @param string $name
+     * @param string $name name of the hidden property
      *
-     * @return null
+     * @return null|mixed
      */
     public function __get($name)
     {
-        $privateProperty = "_$name";
-        if (isset($this->$privateProperty)) {
-            return $this->$privateProperty;
+        if ($name{0} == '_') {
+            $hiddenProperty = substr($name, 1);
+            if (isset($this->$hiddenProperty)) {
+                return $this->$hiddenProperty;
+            }
         }
         return null;
     }
@@ -781,7 +849,9 @@ class Restler extends EventEmitter
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace($this->formatMap['extensions'], '', $path);
-        if ($this->apiVersion && strlen($path) && $path{0} == 'v') {
+        if (Defaults::$useUrlBasedVersioning
+            && strlen($path) && $path{0} == 'v'
+        ) {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->apiVersion) {
                 $this->requestedApiVersion = $version;
@@ -804,7 +874,7 @@ class Restler extends EventEmitter
     {
         $format = null;
         // check if client has sent any information on request format
-        if (isset($_SERVER['CONTENT_TYPE'])) {
+        if (!empty($_SERVER['CONTENT_TYPE'])) {
             $mime = $_SERVER['CONTENT_TYPE'];
             if (false !== $pos = strpos($mime, ';')) {
                 $mime = substr($mime, 0, $pos);
@@ -858,30 +928,46 @@ class Restler extends EventEmitter
         }
         // check if client has sent list of accepted data formats
         if (isset($_SERVER['HTTP_ACCEPT'])) {
-            $acceptList = array();
-            $accepts = explode(',', strtolower($_SERVER['HTTP_ACCEPT']));
-            if (!is_array($accepts)) {
-                $accepts = array($accepts);
-            }
-            foreach ($accepts as $pos => $accept) {
-                $parts = explode(';q=', trim($accept));
-                $type = array_shift($parts);
-                $quality = count($parts) ?
-                    floatval(array_shift($parts)) :
-                    (1000 - $pos) / 1000;
-                $acceptList[$type] = $quality;
-            }
-            arsort($acceptList);
+            $acceptList = Util::sortByPriority($_SERVER['HTTP_ACCEPT']);
             foreach ($acceptList as $accept => $quality) {
                 if (isset($this->formatMap[$accept])) {
                     $format = $this->formatMap[$accept];
                     $format = is_string($format) ? new $format : $format;
+                    //TODO: check if the string verfication above is needed
                     $format->setMIME($accept);
                     //echo "MIME $accept";
                     // Tell cache content is based on Accept header
-                    @header("Vary: Accept");
+                    @header('Vary: Accept');
 
                     return $format;
+                } elseif (false !== ($index = strrpos($accept, '+'))) {
+                    $mime = substr($accept, 0, $index);
+                    if (is_string(Defaults::$apiVendor)
+                        && 0 === strpos($mime,
+                            'application/vnd.'
+                                . Defaults::$apiVendor . '-v')
+                    ) {
+                        $extension = substr($accept, $index + 1);
+                        if (isset($this->formatMap[$extension])) {
+                            //check the MIME and extract version
+                            $version = intVal(substr($mime,
+                                18 + strlen(Defaults::$apiVendor)));
+                            if ($version > 0 && $version <= $this->apiVersion) {
+                                $this->requestedApiVersion = $version;
+                                $format = $this->formatMap[$extension];
+                                $format = is_string($format)
+                                    ? new $format ()
+                                    : $format;
+                                $format->setExtension($extension);
+                                // echo "Extension $extension";
+                                Defaults::$useVendorMIMEVersioning = true;
+                                @header('Vary: Accept');
+
+                                return $format;
+                            }
+                        }
+                    }
+
                 }
             }
         } else {
@@ -905,11 +991,13 @@ class Restler extends EventEmitter
             // server cannot send a response which is acceptable according to
             // the combined Accept field value, then the server SHOULD send
             // a 406 (not acceptable) response.
-            @header('HTTP/1.1 406 Not Acceptable');
-            die('406 Not Acceptable: The server was unable to ' .
-                'negotiate content for this request.');
+            $format = $this->formatMap['default'];
+            $format = new $format;
+            $this->responseFormat = $format;
+            $this->handleError(406, 'Content negotiation failed. '
+                . 'Try \'' . $format->getMIME() . '\' instead.');
         } else {
-            // Tell cache content is based ot Accept header
+            // Tell cache content is based at Accept header
             @header("Vary: Accept");
             return $format;
         }
@@ -920,18 +1008,27 @@ class Restler extends EventEmitter
      *
      * @return array php data
      */
-    protected function getRequestData()
+    public function getRequestData()
     {
-        try {
-            $r = file_get_contents('php://input');
-            if (is_null($r)) {
-                return $_GET;
+        if ($this->requestMethod == 'PUT'
+            || $this->requestMethod == 'PATCH'
+            || $this->requestMethod == 'POST'
+        ) {
+            if (!empty($this->requestData)) {
+                return $this->requestData;
             }
-            $r = $this->requestFormat->decode($r);
-            return is_null($r) ? array() : $r;
-        } catch (RestException $e) {
-            $this->handleError($e->getCode(), $e->getMessage());
+            try {
+                $r = file_get_contents('php://input');
+                if (is_null($r)) {
+                    return array();
+                }
+                $r = $this->requestFormat->decode($r);
+                return is_null($r) ? array() : $r;
+            } catch (RestException $e) {
+                $this->handleError($e->getCode(), $e->getMessage());
+            }
         }
+        return array();
     }
 
     /**
@@ -949,25 +1046,30 @@ class Restler extends EventEmitter
             return new stdClass ();
         }
         $found = false;
-        $this->requestData += $_GET;
-        $params = array(
-            'request_data' => $this->requestData
-        );
-        $params += $this->requestData;
-        $lc = strtolower($this->url);
+        if (!is_array($this->requestData)) {
+            $this->requestData = array(
+                Defaults::$fullRequestDataName => $this->requestData
+            );
+            $this->requestData += $_GET;
+            $params = $this->requestData;
+        } else {
+            $this->requestData += $_GET;
+            $params = array(
+                Defaults::$fullRequestDataName => $this->requestData
+            );
+            $params = $this->requestData + $params;
+
+        }
         $call = new stdClass;
+        $currentUrl = "v{$this->requestedApiVersion}/{$this->url}";
+        $lc = strtolower($currentUrl);
         foreach ($urls as $url => $call) {
             $this->trigger('onRoute', array('url' => $url, 'target' => $call));
             $call = (object)$call;
             if (strstr($url, '{')) {
-                $regex = str_replace(array(
-                    '{',
-                    '}'
-                ), array(
-                    '(?P<',
-                    '>[^/]+)'
-                ), $url);
-                if (preg_match(":^$regex$:i", $this->url, $matches)) {
+                $regex = str_replace(array('{', '}'),
+                    array('(?P<', '>[^/]+)'), $url);
+                if (preg_match(":^$regex$:i", $currentUrl, $matches)) {
                     foreach ($matches as $arg => $match) {
                         if (isset($call->arguments[$arg])) {
                             $params[$arg] = $match;
@@ -982,7 +1084,7 @@ class Restler extends EventEmitter
                     '(?P<$1>[^/]+)',
                     preg_quote($url)
                 );
-                if (preg_match(":^$regex$:i", $this->url, $matches)) {
+                if (preg_match(":^$regex$:i", $currentUrl, $matches)) {
                     foreach ($matches as $arg => $match) {
                         if (isset($call->arguments[$arg])) {
                             $params[$arg] = $match;
@@ -1182,6 +1284,14 @@ class Restler extends EventEmitter
                 $position = 1;
                 foreach ($params as $param) {
                     $from = $metadata ['param'] [$position - 1] ['from'];
+
+                    if ($from == 'body' && ($httpMethod == 'GET' ||
+                        $httpMethod == 'DELETE')
+                    ) {
+                        $from = $metadata ['param'] [$position - 1] ['from']
+                            = 'query';
+                    }
+
                     if (!$allowAmbiguity && $from != 'path') {
                         break;
                     }

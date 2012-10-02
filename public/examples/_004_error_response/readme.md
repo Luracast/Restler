@@ -1,6 +1,9 @@
 Error Response <requires>PHP >= 5.3</requires>
 --------------
-<tag>exception</tag> <tag>http status</tag> <tag>validation</tag> 
+
+<tag>exception</tag>
+<tag>http status</tag>
+<tag>validation</tag>
 
 API methods can make use of RestException class to provide
  error information to the user.
@@ -12,7 +15,7 @@ API methods can make use of RestException class to provide
  [Wikipedia](http://en.wikipedia.org/wiki/Http_status_codes)
 
 > This API Server is made using the following php files/folders
-> 
+
 > * index.php      (gateway)
 > * Currency.php      (api)
 > * restler.php      (framework)
@@ -46,7 +49,7 @@ GET [currency/format?number=not_a_number](index.php/currency/format?number=not_a
 {
   "error": {
     "code": 400,
-    "message": "Bad Request: not a valid number"
+    "message": "Precondition Failed: not a valid number"
   }
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +59,6 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "USD55.00"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 
 

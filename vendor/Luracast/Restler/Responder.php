@@ -2,9 +2,10 @@
 namespace Luracast\Restler;
 
 /**
- * Default structure for HTTP response
+ * Default Responder to provide standard structure for all HTTP responses
+ *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @subpackage result
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
@@ -20,52 +21,21 @@ class Responder implements iRespond
      * @var Restler
      */
     public $restler;
-    public static $customMIMEType;
-    public static $customMIMEVersion;
-
-    private function setCustomMIMEHeader()
-    {
-        if (! isset ( $this->restler->serviceMethodInfo )) {
-            return;
-        }
-        $metadata = $this->restler->serviceMethodInfo->metadata;
-        if (! empty ( $metadata ['mime'] )) {
-            self::$customMIMEType = $metadata ['mime'];
-        }
-        if (! empty ( $metadata ['version'] )) {
-            self::$customMIMEVersion = $metadata ['version'];
-        }
-        if (! empty ( self::$customMIMEType )) {
-            $header = 'Content-Type: ' . self::$customMIMEType;
-            if (! empty ( self::$customMIMEVersion )) {
-                $header .= '-v' . self::$customMIMEVersion;
-            }
-            $header .= '+' . $this->restler->responseFormat->getExtension ();
-            header ( $header );
-        }
-    }
 
     public function formatResponse($result)
     {
-        $this->setCustomMIMEHeader ();
-        /*
-         * $className = get_class($this->classInstance); header( 'Content-Type:
-         * application/vnd.mycompany.' . strtolower($className) . '-v' .
-         * $className::VERSION . "+" . $this->formatInstance->getExtension());
-         */
-
+        //TODO: check Defaults::language and change result accordingly
         return $result;
     }
 
     public function formatError($statusCode, $message)
     {
-        $this->setCustomMIMEHeader ();
-
-        return array (
-                'error' => array (
-                        'code' => $statusCode,
-                        'message' => $message
-                )
+        //TODO: check Defaults::language and change result accordingly
+        return array(
+            'error' => array(
+                'code' => $statusCode,
+                'message' => $message
+            )
         );
     }
 }

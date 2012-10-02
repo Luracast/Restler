@@ -6,12 +6,12 @@ namespace Luracast\Restler\Data;
  * in to associative array
  *
  * @category   Framework
- * @package    restler
- * @subpackage format
+ * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 class Util
 {
@@ -31,11 +31,18 @@ class Util
      *
      * @static
      *
-     * @param mixed        $object that needs to be converted
+     * @param mixed        $object                   that needs to be converted
+     *
+     * @param bool         $forceObjectTypeWhenEmpty when set to true outputs
+     *                                               actual type  (array or
+     *                                               object) rather than
+     *                                               always an array when the
+     *                                               array/object is empty
      *
      * @return array
      */
-    public static function objectToArray($object)
+    public static function objectToArray($object,
+                                         $forceObjectTypeWhenEmpty = false)
     {
         if ($object instanceof JsonSerializable) {
             $object = $object->jsonSerialize();
@@ -44,7 +51,8 @@ class Util
             $properties = $object->__sleep();
             $array = array();
             foreach ($properties as $key) {
-                $value = self::objectToArray($object->{$key});
+                $value = self::objectToArray($object->{$key},
+                    $forceObjectTypeWhenEmpty);
                 if (self::$stringEncoderFunction && is_string($value)) {
                     $value = self::$stringEncoderFunction ($value);
                 } elseif (self::$numberEncoderFunction && is_numeric($value)) {
@@ -52,7 +60,6 @@ class Util
                 }
                 $array [$key] = $value;
             }
-
             return $array;
 
         }
@@ -60,7 +67,7 @@ class Util
             $count = 0;
             $array = array();
             foreach ($object as $key => $value) {
-                $value = self::objectToArray($value);
+                $value = self::objectToArray($value, $forceObjectTypeWhenEmpty);
                 if (self::$stringEncoderFunction && is_string($value)) {
                     $value = self::$encoderFunctionName ($value);
                 } elseif (self::$numberEncoderFunction && is_numeric($value)) {
@@ -69,7 +76,7 @@ class Util
                 $array [$key] = $value;
                 $count++;
             }
-            return $count ? $array : $object;
+            return $forceObjectTypeWhenEmpty && $count == 0 ? $object : $array;
         }
 
         return $object;

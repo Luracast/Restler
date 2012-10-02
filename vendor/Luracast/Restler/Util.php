@@ -4,12 +4,12 @@ namespace Luracast\Restler;
  * Describe the purpose of this class/interface/trait
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0
+ * @version    3.0.0rc3
  */
 class Util
 {
@@ -30,6 +30,27 @@ class Util
     public static function isObjectOrArray($type)
     {
         return !(boolean)strpos('|bool|boolean|int|float|string|', $type);
+    }
+
+    public static function getResourcePath($className,
+                                           $resourcePath = null,
+                                           $prefix = '')
+    {
+        if (is_null($resourcePath)) {
+            if (Defaults::$autoRoutingEnabled) {
+                $resourcePath = strtolower($className);
+                if (false !== ($index = strrpos($className, '\\')))
+                    $resourcePath = substr($resourcePath, $index + 1);
+                if (false !== ($index = strrpos($resourcePath, '_')))
+                    $resourcePath = substr($resourcePath, $index + 1);
+            } else {
+                $resourcePath = '';
+            }
+        } else
+            $resourcePath = trim($resourcePath, '/');
+        if (strlen($resourcePath) > 0)
+            $resourcePath .= '/';
+        return $prefix . $resourcePath;
     }
 
     /**
@@ -94,6 +115,36 @@ class Util
     }
 
     /**
+     * Pass any content negotiation header such as Accept,
+     * Accept-Language to break it up and sort the resulting array by
+     * the order of negotiation.
+     *
+     * @static
+     *
+     * @param string $accept header value
+     *
+     * @return array sorted by the priority
+     */
+    public static function sortByPriority($accept)
+    {
+        $acceptList = array();
+        $accepts = explode(',', strtolower($accept));
+        if (!is_array($accepts)) {
+            $accepts = array($accepts);
+        }
+        foreach ($accepts as $pos => $accept) {
+            $parts = explode(';q=', trim($accept));
+            $type = array_shift($parts);
+            $quality = count($parts) ?
+                floatval(array_shift($parts)) :
+                (1000 - $pos) / 1000;
+            $acceptList[$type] = $quality;
+        }
+        arsort($acceptList);
+        return $acceptList;
+    }
+
+    /**
      * Apply static and non-static properties for the instance of the given
      * class name using the method information metadata annotation provided,
      * creating new instance when the given instance is null
@@ -139,7 +190,8 @@ class Util
         }
 
         if ($instance instanceof iUseAuthentication) {
-            $instance->__setAuthenticationStatus(self::$restler->authenticated);
+            $instance->__setAuthenticationStatus
+            (self::$restler->_authenticated);
         }
 
         return $instance;

@@ -8,10 +8,11 @@ namespace Luracast\Restler {
  * In addition we enable namespace prefixing and class aliases.
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @subpackage helper
  * @author     Nick Lombard <github@jigsoft.co.za>
  * @copyright  2012 Luracast
+ * @version    3.0.0rc3
  */
 class AutoLoader
 {
@@ -23,6 +24,7 @@ class AutoLoader
                          'Luracast\\Restler' => null,
                          'Luracast\\Restler\\Format' => null,
                          'Luracast\\Restler\\Data' => null,
+                         'Luracast\\Restler\\Filter' => null,
                      );
 
     /**
@@ -231,14 +233,15 @@ class AutoLoader
         if (preg_match('/(.+)(\\\\\w+$)/U', $className, $parts))
             for (
                 $i = 0,
-                    $aliases = @static::$aliases[$parts[1]] ?: array(),
-                    $count = count($aliases);
+                $aliases = isset(static::$aliases[$parts[1]])
+                    ? static::$aliases[$parts[1]] : array(),
+                $count = count($aliases);
                 $i < $count && false === $file;
                 $file = $this->discover(
                     "{$aliases[$i++]}$parts[2]",
                     $className
                 )
-            );
+            ) ;
 
         return $file;
     }
@@ -256,6 +259,7 @@ class AutoLoader
      * @return bool false unless className now exists
      */
     private function loadLastResort($className, $loader = null) {
+        return false;
         $loaders = array_unique(static::$rogueLoaders);
         if (isset($loader)) {
             if (false === array_search($loader, $loaders))

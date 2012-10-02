@@ -163,20 +163,6 @@ mark {
     background: rgba(255, 255, 255, 0.8);
 }
 
-tag {
-    font-family: Verdana,Arial,Helvetica,sans-serif;
-    background-color: #999999;
-    padding: 1px 3px 2px;
-    font-size: xx-small;
-    font-weight: bold;
-    color: #ffffff;
-    letter-spacing: 1px;
-    white-space: nowrap;
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
-
 .markdown h3 {
     color: #547f00;
 }
@@ -1166,9 +1152,9 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
     display: block;
     margin: 0 0 0 0;
     padding: 0;
-    background-color: #FCE9E3;
+    background-color: #faebf2;
     border: 1px solid black;
-    border-color: #F5D5C3;
+    border-color: #f0cecb;
 }
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.heading h3 {
@@ -1189,7 +1175,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.heading h3 span.http_method a {
     text-transform: uppercase;
-    background-color: #D38042;
+    background-color: #993300;
     text-decoration: none;
     color: white;
     display: inline-block;
@@ -1249,12 +1235,12 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.heading ul.options li {
     border-right-color: #f0cecb;
-    color: #D38042;
+    color: #993300;
     font-size: 0.9em;
 }
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.heading ul.options li a {
-    color: #D38042;
+    color: #993300;
     text-decoration: none;
 }
 
@@ -1284,7 +1270,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 }
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.content h4 {
-    color: #D38042;
+    color: #993300;
     font-size: 1.1em;
     margin: 0;
     padding: 15px 0 5px 0px;
@@ -1292,7 +1278,7 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.content form input[type='text'].error {
     outline: 2px solid black;
-    outline-color: #F5D5C3;
+    outline-color: #cc0000;
 }
 
 body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operation.patch div.content div.sandbox_header {
@@ -1523,16 +1509,3 @@ body ul#resources li.resource ul.endpoints li.endpoint ul.operations li.operatio
     max-height: 400px;
     overflow-y: auto;
 }
-
-
-.model-signature {
-    font-family: "Droid Sans", sans-serif;
-    font-size: 1em;
-    line-height: 1.5em;
-}
-.model-signature span {
-    font-size: 0.9em;
-    line-height: 1.5em;
-}
-.model-signature span:nth-child(odd)    { color:#333; }
-.model-signature span:nth-child(even)    { color:#C5862B; }

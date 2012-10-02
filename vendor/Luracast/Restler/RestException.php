@@ -5,7 +5,7 @@ namespace Luracast\Restler;
  * Special Exception for raising API errors
  * that can be used in API methods
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @subpackage exception
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast

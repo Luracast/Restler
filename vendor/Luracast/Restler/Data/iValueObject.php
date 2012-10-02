@@ -5,7 +5,13 @@ namespace Luracast\Restler\Data;
  * Restler is using many ValueObjects across to make it easy for the developers
  * to use them with the help of code hinting etc.,
  *
- * @author arulkumaran
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 interface iValueObject
 {
@@ -19,7 +25,7 @@ interface iValueObject
      *
      * @param array $properties
      *
-     * @return IValueObject
+     * @return iValueObject
      */
     public static function __set_state(array $properties);
 

@@ -1,15 +1,18 @@
 <?php
 namespace Luracast\Restler;
+
+use Luracast\Restler\Util;
+
 /**
- * Default cache
+ * Default Cache that writes/reads human readable files for caching purpose
  *
  * @category   Framework
- * @package    restler
+ * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0
+ * @version    3.0.0rc3
  */
 class HumanReadableCache implements iCache
 {
@@ -21,13 +24,15 @@ class HumanReadableCache implements iCache
     public function __construct()
     {
         if (is_null(self::$cacheDir)) {
-            self::$cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
+            self::$cacheDir = Defaults::$cacheDirectory;
+        }
+        if (Util::$restler->_production_mode && !is_writable(self::$cacheDir)) {
+            $this->throwException();
         }
     }
 
     /**
      * store data in the cache
-     *
      *
      * @param string $name
      * @param mixed  $data
@@ -67,19 +72,13 @@ class HumanReadableCache implements iCache
         $r = @file_put_contents($file, "<?php $s");
         @chmod($file, 0777);
         if ($r === false) {
-            throw new \Exception(
-                "The cache directory located at '" . self::$cacheDir .
-                    "' needs to have the permissions " .
-                    "set to read/write/execute for everyone " .
-                    "in order to save cache and improve performance."
-            );
+            $this->throwException();
         }
         return $r;
     }
 
     /**
      * retrieve data from the cache
-     *
      *
      * @param string     $name
      * @param bool       $ignoreErrors
@@ -97,7 +96,6 @@ class HumanReadableCache implements iCache
     /**
      * delete data from the cache
      *
-     *
      * @param string     $name
      * @param bool       $ignoreErrors
      *
@@ -111,7 +109,6 @@ class HumanReadableCache implements iCache
     /**
      * check if the given name is cached
      *
-     *
      * @param string $name
      *
      * @return boolean true if cached
@@ -124,6 +121,14 @@ class HumanReadableCache implements iCache
     private function _file($name)
     {
         return self::$cacheDir . '/' . $name . '.php';
+    }
+
+    private function throwException()
+    {
+        throw new \Exception(
+            'The cache directory `'
+                . self::$cacheDir . '` should exist with write permission.'
+        );
     }
 }
 
