@@ -9,7 +9,7 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc1
+ * @version    3.0.0rc2
  */
 class HumanReadableCache implements iCache
 {
@@ -21,7 +21,8 @@ class HumanReadableCache implements iCache
     public function __construct()
     {
         if (is_null(self::$cacheDir)) {
-            self::$cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
+            self::$cacheDir = dirname($_SERVER['SCRIPT_FILENAME']) .
+                DIRECTORY_SEPARATOR . 'cache';
         }
     }
 

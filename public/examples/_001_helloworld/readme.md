@@ -4,11 +4,13 @@ Hello World Example <requires>PHP >= 5.3</requires>
 <tag>basic</tag>
 
 Basic hello world example to get started with Restler 3.
+
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * Say.php      (api)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
@@ -39,7 +41,7 @@ GET [say/hello?to=R.Arul%20Kumaran](say/hello?to=R.Arul%20Kumaran)
 GET [say/hi/restler3.0](say/hi/restler3.0)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"Hi Restler3.0!"
+"Hi restler3.0!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -61,7 +63,7 @@ GET [index.php/say/hello?to=R.Arul%20Kumaran](index.php/say/hello?to=R.Arul%20Ku
 GET [index.php/say/hi/restler3.0](index.php/say/hi/restler3.0)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"Hi Restler3.0!"
+"Hi restler3.0!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -69,3 +71,4 @@ GET [index.php/say/hi/restler3.0](index.php/say/hi/restler3.0)
 *[index.php]: _001_helloworld/index.php
 *[Say.php]: _001_helloworld/Say.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php

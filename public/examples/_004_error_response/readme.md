@@ -13,15 +13,21 @@ API methods can make use of RestException class to provide
 
  For the list of HTTP Status codes and their meaning take a look at
  [Wikipedia](http://en.wikipedia.org/wiki/Http_status_codes)
+
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * Currency.php      (api)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
     GET currency/format ⇠ Currency::format()
+
+
+
+
 
 
 Try the following links in your browser
@@ -57,8 +63,8 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 
 
 
-
 *[index.php]: _004_error_response/index.php
 *[Currency.php]: _004_error_response/Currency.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

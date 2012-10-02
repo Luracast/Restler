@@ -5,14 +5,14 @@ class BMI
     {
         $result = new stdClass();
 
-        #	1 pound = 0.45359237 kilograms
-        #	1 meter = 3.2808399  feet
-        #	1 meter = 39.3700787 inches
-        #	1 meter = 100		 cms
+        //	1 pound = 0.45359237 kilograms
+        //	1 meter = 3.2808399  feet
+        //	1 meter = 39.3700787 inches
+        //	1 meter = 100		 cms
 
-        #assume height is given in centimeters
+        // assume height is given in centimeters
         $cm = $height;
-        #assume weight is given in kilograms
+        // assume weight is given in kilograms
         $kg = $weight;
 
         $meter = $cm / 100;

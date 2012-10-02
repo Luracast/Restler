@@ -16,15 +16,22 @@ This BMI calculator service shows how you can serve data in different
  When we make the request from the browser we will get xml when we
  skip the extension because XML is one of the requested formats specified in
  the HTTP Accept Header where as a AJAX request or CURL will return JSON.
+
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * BMI.php      (api)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
+> * XmlFormat.php      (format)
 
 This API Server exposes the following URIs
 
     GET bmi ⇠ BMI::index()
+
+
+
+
 
 
 Try the following links in your browser
@@ -85,8 +92,9 @@ GET [bmi.json](index.php/bmi.json)
 
 
 
-
 *[index.php]: _003_multiformat/index.php
 *[BMI.php]: _003_multiformat/BMI.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[XmlFormat.php]: ../../vendor/Luracast/Restler/Format/XmlFormat.php
 

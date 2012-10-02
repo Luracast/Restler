@@ -83,7 +83,7 @@ For example
 Take a look at the api class used here and compare it with the routes below to
 understand.
 
-Example 1: GET api/somanyways/1 returns "you have called Api::soManyWays()"
+Example 1: GET api/somanyways/1?p2=something returns "you have called Api::soManyWays()"
 
 Example 2: GET api/somanyways/1/2 returns "you have called Api::soManyWays()"
 

@@ -84,11 +84,13 @@ For example
 
 Take a look at the api class used here and compare it with the routes below to
 understand.
+
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * Api.php      (api)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
@@ -102,9 +104,13 @@ This API Server exposes the following URIs
     GET  api/what/ever/you/want        ⇠ Api::whatEver()
 
 
+
+
+
+
 Try the following links in your browser
 
-GET [api/somanyways/1](index.php/api/somanyways/1)
+GET [api/somanyways/1?p2=something](index.php/api/somanyways/1?p2=something)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "you have called Api::soManyWays()"
@@ -142,8 +148,8 @@ GET [api/what/ever/you/want?anything=something](index.php/api/what/ever/you/want
 
 
 
-
 *[index.php]: _006_routing/index.php
 *[Api.php]: _006_routing/Api.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

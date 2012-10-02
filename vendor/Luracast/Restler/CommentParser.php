@@ -10,7 +10,7 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc1
+ * @version    3.0.0rc2
  */
 class CommentParser
 {
@@ -55,7 +55,7 @@ class CommentParser
     /**
      * character sequence used to escape end of comment
      */
-    const escapedCommendEnd = ' {@*}';
+    const escapedCommendEnd = '{@*}';
 
     /**
      * Instance of Restler class injected at runtime.
@@ -192,7 +192,7 @@ class CommentParser
             list(, $param, $value) = preg_split('/\@|\s/', $line, 3)
                 + array('', '', '');
             list($value, $embedded) = $this->parseEmbeddedData($value);
-            $value = preg_split('/\s+/ms', $value);
+            $value = array_filter(preg_split('/\s+/ms', $value));
             $this->parseParam($param, $value, $embedded);
         }
         return $this->_data;
@@ -226,8 +226,7 @@ class CommentParser
                 break;
             case 'expires' :
             case 'status' :
-                $value = explode(' ', $value, 2);
-                $value[0] = intval($value[0]);
+                $value = intval($value[0]);
                 break;
             case 'throws' :
                 $value = $this->formatThrows($value);

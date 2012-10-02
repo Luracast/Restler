@@ -6,7 +6,7 @@ class DB_Session
 {
     function __construct ()
     {
-        session_start();
+        @session_start();
         if (! isset($_SESSION['pk'])) {
             $this->install();
         }

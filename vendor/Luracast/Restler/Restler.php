@@ -25,7 +25,7 @@ use Luracast\Restler\Data\ValidationInfo;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc1
+ * @version    3.0.0rc2
  */
 class Restler extends EventEmitter
 {
@@ -36,7 +36,7 @@ class Restler extends EventEmitter
     //
     // ------------------------------------------------------------------
 
-    const VERSION = '3.0.0rc1';
+    const VERSION = '3.0.0rc2';
 
     /**
      * Base URL currently being used
@@ -157,6 +157,7 @@ class Restler extends EventEmitter
      * @var array
      */
     protected $filterClasses = array();
+    protected $filterObjects = array();
 
     /**
      * list of authentication classes
@@ -238,6 +239,7 @@ class Restler extends EventEmitter
     {
         if ($version <= intval(self::VERSION) && $version > 0) {
             require_once "restler{$version}.php";
+            return;
         }
         throw new \OutOfRangeException();
     }
@@ -469,14 +471,21 @@ class Restler extends EventEmitter
                 /**
                  * @var iFilter
                  */
-                $filterObj = Util::setProperties(
-                    $filterClass
-                );
+                $filterObj = new $filterClass;
+                $filterObj->restler = $this;
                 if (!$filterObj instanceof iFilter) {
                     throw new RestException (
                         500, 'Filter Class ' .
                         'should implement iFilter');
-                } elseif (!$filterObj->__isAllowed()) {
+                } else {
+                    $ok = $filterObj->__isAllowed();
+                    if (is_null($ok)
+                        && $filterObj instanceof iUseAuthentication
+                    ) {
+                        //handle at authentication stage
+                        $this->filterObjects[] = $filterObj;
+                        continue;
+                    }
                     throw new RestException(403); //Forbidden
                 }
             }
@@ -515,8 +524,9 @@ class Restler extends EventEmitter
                 $this->handleError(404);
             } else {
                 try {
-                    $accessLevel = max(Defaults::$apiAccessLevel, $o->accessLevel);
-                    if ($accessLevel) {
+                    $accessLevel = max(Defaults::$apiAccessLevel,
+                        $o->accessLevel);
+                    if ($accessLevel || count($this->filterObjects)) {
                         if (!count($this->authClasses)) {
                             throw new RestException(401);
                         }
@@ -547,6 +557,11 @@ class Restler extends EventEmitter
                     }
                 }
                 try {
+                    foreach ($this->filterObjects as $filterObj) {
+                        Util::setProperties(get_class($filterObj),
+                            $o->metadata,
+                            $filterObj);
+                    }
                     $preProcess = '_' . $this->requestFormat->getExtension() .
                         '_' . $o->methodName;
                     $this->apiMethod = $o->methodName;
@@ -773,7 +788,8 @@ class Restler extends EventEmitter
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace($this->formatMap['extensions'], '', $path);
         if (Defaults::$useUrlBasedVersioning
-            && strlen($path) && $path{0} == 'v') {
+            && strlen($path) && $path{0} == 'v'
+        ) {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->apiVersion) {
                 $this->requestedApiVersion = $version;

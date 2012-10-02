@@ -20,6 +20,7 @@ implements `iAuthenticate`. Also note that An Authentication class is also an
 API class so all public methods that does not begin with `_` will be exposed as
 API for example [SimpleAuth::key](simpleauth/key). It can be used to create
 login/logout methods.
+
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
@@ -27,6 +28,7 @@ login/logout methods.
 > * Secured.php      (api)
 > * SimpleAuth.php      (auth)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
@@ -35,6 +37,10 @@ This API Server exposes the following URIs
     GET restricted2    ⇠ Simple::restricted2()
     GET secured        ⇠ Secured::index()
     GET simpleauth/key ⇠ SimpleAuth::key()
+
+
+
+
 
 
 Try the following links in your browser
@@ -65,10 +71,10 @@ GET [secured?key=rEsTlEr2](index.php/secured?key=rEsTlEr2)
 
 
 
-
 *[index.php]: _005_protected_api/index.php
 *[Simple.php]: _005_protected_api/Simple.php
 *[Secured.php]: _005_protected_api/Secured.php
 *[SimpleAuth.php]: _005_protected_api/SimpleAuth.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

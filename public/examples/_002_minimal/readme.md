@@ -8,18 +8,23 @@ Minimal Example <requires>PHP >= 5.3</requires>
 Shows the bare minimum code needed to get your RESTful api server
  up and running
 
-> **Note:-** Take note of the php doc comments, they make sure the data is sent
-  in the right type validated automatically before calling the api method.
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * Math.php      (api)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
     GET math/add                ⇠ Math::add()
     GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
+
+
+> **Note:-** Take note of the php doc comments, they make sure the
+ data is sent in the right type and validated automatically before calling
+ the api method.
+
 
 
 Try the following links in your browser
@@ -56,8 +61,8 @@ GET [math/multiply/4/NaN](index.php/math/multiply/4/NaN)
 
 
 
-
 *[index.php]: _002_minimal/index.php
 *[Math.php]: _002_minimal/Math.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

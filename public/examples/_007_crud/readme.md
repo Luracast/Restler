@@ -19,7 +19,12 @@ Restler uses *get, put, post, and delete* as prefix to map PHP methods to
 respective HTTP methods. When they are the only method names they map at
 the class level similar to *index*
 
-> **Note:-** Read the [Routes](../_006_routing/readme.html) example for better understanding.
+> **Note:-**
+>
+> 1. Read the [Routes](../_006_routing/readme.html) example for better understanding.
+> 2. When we want the entire data that is sent to the API,
+>    we need to use `$request_data` as the name of the parameter any other name
+>    will only get partial data under the specified key
 
 For simplicity and making it work out of the box this example is using
  a session based fake database, thus depending on a client that
@@ -31,7 +36,7 @@ For simplicity and making it work out of the box this example is using
 
  Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the command line.
 
-    curl -X POST http://help.luracast.com/restler/examples/_006_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+    curl -X POST http://restler3.phpfogapp.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
 
     {
       "name": "Another",
@@ -48,12 +53,14 @@ instead of Session.php to get full functionality.
 > * MySQL.php (helper)
 
 by un-commenting the respective line in Authors.php and commenting others.
+
 > This API Server is made using the following php files/folders
 
 > * index.php      (gateway)
 > * Authors.php      (api)
 > * Session.php      (helper)
 > * restler.php      (framework)
+> * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
@@ -62,6 +69,12 @@ This API Server exposes the following URIs
     POST   authors      ⇠ Authors::post()
     PUT    authors/{id} ⇠ Authors::put()
     DELETE authors/{id} ⇠ Authors::delete()
+
+
+*[MySQL.php]: _007_crud//DB/PDO/MySQL.php
+*[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
+*[SerializedFile.php]: _007_crud/DB/SerializedFile.php
+
 
 
 Try the following links in your browser
@@ -93,10 +106,6 @@ GET [authors/2](index.php/authors/2)
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-> Note: When we want the entire data that is sent to the API,
- > we need to use `$request_data` as the name of the parameter any other name
- > will only get partial data under the specified key
 
 ###Creating new Author
 
@@ -152,7 +161,7 @@ GET [authors/2](index.php/authors/2)
 and the response could be
 
     HTTP/1.1 200 OK
-    Date: Fri, 19 Aug 2011 16:34:41 GMT
+    Date: Tue, 25 Sep 2012 10:05:06 GMT
     Server: Apache/2.2.19 (Unix) mod_ssl/2.2.19 OpenSSL/0.9.8r DAV/2 PHP/5.3.6 with Suhosin-Patch
     X-Powered-By: Luracast Restler v3.0.0
     Expires: 0
@@ -167,11 +176,9 @@ and the response could be
       "id": 7
     }
 
-*[MySQL.php]: _007_crud//DB/PDO/MySQL.php
-*[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
-*[SerializedFile.php]: _007_crud/DB/SerializedFile.php
 *[index.php]: _007_crud/index.php
 *[Authors.php]: _007_crud/Authors.php
 *[Session.php]: _007_crud/DB/Session.php
 *[restler.php]: ../../vendor/restler.php
+*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

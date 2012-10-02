@@ -4,7 +4,7 @@ namespace Luracast\Restler;
 use stdClass;
 
 /**
- * API Class to create Swagger Spec 1.1 compatible resource and operation
+ * API Class to create Swagger Spec 1.1 compatible id and operation
  * listing
  *
  * @category   Framework
@@ -13,7 +13,7 @@ use stdClass;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc1
+ * @version    3.0.0rc2
  */
 class Resources implements iUseAuthentication
 {
@@ -22,15 +22,34 @@ class Resources implements iUseAuthentication
      */
     public static $hideProtected = true;
     /**
+     * @var bool should we use format as extension?
+     */
+    public static $useFormatAsExtension = true;
+
+    /**
+     * @var bool
+     */
+    public static $placeFormatExtensionBeforeDynamicParts = true;
+
+    /**
+     * @var null|callable if the api methods are under access control mechanism
+     * you can attach a function here that returns true or false to determine
+     * visibility of a protected api method. this function will receive method
+     * info as the only parameter.
+     */
+    public static $accessControlFunction = null;
+
+    /**
      * Injected at runtime
      *
      * @var Restler instance of restler
      */
     public $restler;
+    public $formatString = '';
 
     private $_models;
 
-    private $_bodyParam = array('required' => false, 'description' => array());
+    private $_bodyParam;
 
     private $crud = array('POST' => 'create', 'GET' => 'retrieve',
         'PUT' => 'update', 'DELETE' => 'delete', 'PATCH' => 'partial update');
@@ -53,19 +72,26 @@ class Resources implements iUseAuthentication
         $this->_authenticated = $isAuthenticated;
     }
 
+    public function __construct()
+    {
+        if (static::$useFormatAsExtension) {
+            $this->formatString = '.{format}';
+        }
+    }
+
     /**
      * @access hybrid
      *
-     * @param $name
-     * @param $shortName
+     * @param $id
      * @param $version
      *
      * @throws RestException
      * @return null|stdClass
      *
-     * @url    GET {name}/{shortName}_v{version}
+     * @url    GET {id}-v{version}
+     * @url    GET v{version}
      */
-    public function get($name, $shortName, $version)
+    public function get($version, $id = '')
     {
         if (!Defaults::$useUrlBasedVersioning
             && $version != $this->restler->_requestedApiVersion
@@ -74,128 +100,141 @@ class Resources implements iUseAuthentication
         }
         $this->_models = new stdClass();
         $r = null;
-        $name = strtolower(str_replace('-', '\\', $name));
         $count = 0;
+
+        $target = empty($id) ? "v$version" : "v$version/$id";
+
         foreach ($this->restler->routes as $httpMethod => $value) {
             foreach ($value as $key => $route) {
-                if (0 == strcasecmp($name, $route['className'])) {
-                    if (0 !== strpos($route['path'], "v$version")) {
-                        continue;
-                    }
-                    if (
-                        self::$hideProtected
-                        && !$this->_authenticated
-                        && $route['accessLevel'] > 1
-                    ) {
-                        continue;
-                    }
-                    $count++;
-                    $className = $this->_noNamespace($route['className']);
-                    $m = $route['metadata'];
-                    if (!$r) {
-                        $resourcePath = '/'
-                            . trim($m['resourcePath'], '/');
-                        if (!Defaults::$useUrlBasedVersioning) {
-                            $resourcePath = str_replace("/v$version", '',
-                                $resourcePath);
-                        }
-                        $r = $this->_operationListing($resourcePath);
-                    }
-                    $parts = explode('/', $key);
-                    $pos = count($parts) - 1;
-                    if (count($parts) == 1 && $httpMethod == 'GET') {
-                    } else {
-                        for ($i = 0; $i < count($parts); $i++) {
-                            if ($parts[$i]{0} == '{') {
-                                $pos = $i - 1;
-                                break;
-                            }
-                        }
-                    }
-                    $nickname = implode('_', $parts);
-                    $nickname = preg_replace('/[^A-Za-z0-9-]/', '', $nickname);
-                    $parts[$pos] .= ".{format}";
-                    // $parts[0] .= ".{format}";
-                    if (!Defaults::$useUrlBasedVersioning) {
-                        array_shift($parts);
-                    }
-                    $key = implode('/', $parts);
-                    $description = isset(
-                    $m['classDescription'])
-                        ? $m['classDescription']
-                        : $className . ' API';
-                    $api = $this->_api("/$key", $description);
-                    if (empty($m['description'])) {
-                        $m['description'] = $this->restler->_productionMode
-                            ? ''
-                            : 'routes to <mark>'
-                                . $route['className']
-                                . '::'
-                                . $route['methodName'] . '();</mark>';
-                    }
-                    if (empty($m['longDescription'])) {
-                        $m['longDescription'] = $this->restler->_productionMode
-                            ? ''
-                            : 'Add PHP Doc long description to '
-                                . "<mark>$className::"
-                                . $route['methodName'] . '();</mark>'
-                                . '  (the api method) to write here';
-                    }
-                    $operation = $this->_operation(
-                        $nickname,
-                        $httpMethod,
-                        $m['description'],
-                        $m['longDescription']
-                    );
-                    if (isset($m['throws'])) {
-                        foreach ($m['throws'] as $exception) {
-                            $operation->errorResponses[] = array(
-                                'reason' => $exception['reason'],
-                                'code' => $exception['code']);
-                        }
-                    }
-                    if (isset($m['param'])) {
-                        foreach ($m['param'] as $param) {
-                            //combine body params as one
-                            $p = $this->_parameter($param);
-                            if ($p->paramType == 'body') {
-                                $this->_appendToBody($p);
-                            } else {
-                                $operation->parameters[] = $p;
-                            }
-                        }
-                    }
-                    if (count($this->_bodyParam['description'])) {
-                        $operation->parameters[] = $this->_getBody();
-                    }
-                    if (isset($m['return']['type'])) {
-                        $responseClass = $m['return']['type'];
-                        if (is_string($responseClass)) {
-                            if (class_exists($responseClass)) {
-                                $this->_model($responseClass);
-                                $operation->responseClass
-                                    = $this->_noNamespace($responseClass);
-                            } elseif (strtolower($responseClass) == 'array') {
-                                $operation->responseClass = 'Array';
-                                $rt = $m['return'];
-                                if (isset(
-                                $rt[CommentParser::$embeddedDataName]['type'])
-                                ) {
-                                    $rt = $rt[CommentParser::$embeddedDataName]
-                                    ['type'];
-                                    if (class_exists($rt)) {
-                                        $this->_model($rt);
-                                        $operation->responseClass
-                                            .= '[' . $rt . ']';
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                    $api->operations[] = $operation;
-                    $r->apis[] = $api;
+                if (0 !== strpos($route['path'], $target)) {
+                    continue;
                 }
+                if (
+                    self::$hideProtected
+                    && !$this->_authenticated
+                    && $route['accessLevel'] > 1
+                ) {
+                    continue;
+                }
+                $m = $route['metadata'];
+                if ($id == '' && $m['resourcePath'] != "v$version/") {
+                    continue;
+                }
+                if ($this->_authenticated
+                    && static::$accessControlFunction
+                    && (!call_user_func(
+                        static::$accessControlFunction, $route['metadata']))
+                ) {
+                    continue;
+                }
+                $count++;
+                $className = $this->_noNamespace($route['className']);
+                if (!$r) {
+                    $resourcePath = '/'
+                        . trim($m['resourcePath'], '/');
+                    if (!Defaults::$useUrlBasedVersioning) {
+                        $resourcePath = str_replace("/v$version", '',
+                            $resourcePath);
+                    }
+                    $r = $this->_operationListing($resourcePath);
+                }
+                $parts = explode('/', $key);
+                $pos = count($parts) - 1;
+                if (count($parts) == 1 && $httpMethod == 'GET') {
+                } else {
+                    for ($i = 0; $i < count($parts); $i++) {
+                        if ($parts[$i]{0} == '{') {
+                            $pos = $i - 1;
+                            break;
+                        }
+                    }
+                }
+                $nickname = preg_replace(
+                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
+                    array('_', '-'),
+                    implode('-', $parts));
+                $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
+                    .= $this->formatString;
+                // $parts[0] .= $this->formatString; //".{format}";
+                if (!Defaults::$useUrlBasedVersioning) {
+                    array_shift($parts);
+                }
+                $key = implode('/', $parts);
+                $description = isset(
+                $m['classDescription'])
+                    ? $m['classDescription']
+                    : $className . ' API';
+                $api = $this->_api("/$key", $description);
+                if (empty($m['description'])) {
+                    $m['description'] = $this->restler->_productionMode
+                        ? ''
+                        : 'routes to <mark>'
+                            . $route['className']
+                            . '::'
+                            . $route['methodName'] . '();</mark>';
+                }
+                if (empty($m['longDescription'])) {
+                    $m['longDescription'] = $this->restler->_productionMode
+                        ? ''
+                        : 'Add PHPDoc long description to '
+                            . "<mark>$className::"
+                            . $route['methodName'] . '();</mark>'
+                            . '  (the api method) to write here';
+                }
+                $operation = $this->_operation(
+                    $nickname,
+                    $httpMethod,
+                    $m['description'],
+                    $m['longDescription']
+                );
+                if (isset($m['throws'])) {
+                    foreach ($m['throws'] as $exception) {
+                        $operation->errorResponses[] = array(
+                            'reason' => $exception['reason'],
+                            'code' => $exception['code']);
+                    }
+                }
+                if (isset($m['param'])) {
+                    foreach ($m['param'] as $param) {
+                        //combine body params as one
+                        $p = $this->_parameter($param);
+                        if ($p->paramType == 'body') {
+                            $this->_appendToBody($p);
+                        } else {
+                            $operation->parameters[] = $p;
+                        }
+                    }
+                }
+                if (count($this->_bodyParam['description'])) {
+                    $operation->parameters[] = $this->_getBody();
+                }
+                if (isset($m['return']['type'])) {
+                    $responseClass = $m['return']['type'];
+                    if (is_string($responseClass)) {
+                        if (class_exists($responseClass)) {
+                            $this->_model($responseClass);
+                            $operation->responseClass
+                                = $this->_noNamespace($responseClass);
+                        } elseif (strtolower($responseClass) == 'array') {
+                            $operation->responseClass = 'Array';
+                            $rt = $m['return'];
+                            if (isset(
+                            $rt[CommentParser::$embeddedDataName]['type'])
+                            ) {
+                                $rt = $rt[CommentParser::$embeddedDataName]
+                                ['type'];
+                                if (class_exists($rt)) {
+                                    $this->_model($rt);
+                                    $operation->responseClass
+                                        .= '[' . $rt . ']';
+                                }
+
+                            }
+                        }
+                    }
+                }
+                $api->operations[] = $operation;
+                $r->apis[] = $api;
             }
         }
         if (!$count) {
@@ -213,7 +252,7 @@ class Resources implements iUseAuthentication
     public function index()
     {
         $r = $this->_resourceListing();
-        $mappedResource = array();
+        $map = array();
         foreach ($this->restler->routes as $verb => $routes) {
             foreach ($routes as $route) {
                 if (
@@ -223,33 +262,42 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
-                $path = $route['path'];
-                $name = strtolower(str_replace('\\', '-', $route['className']));
-                $shortName = explode('-', $name);
-                $shortName = end($shortName);
-                $classDescription = isset(
-                $route['metadata']['classDescription'])
-                    ? $route['metadata']['classDescription']
-                    : $route['className'] . ' API';
-                if (
-                    !isset($mappedResource[$path])
-                    && false === strpos($path, 'resources')
+                $path = explode('/', $route['path']);
+
+                $resource = isset($path[1]) ? $path[1] : '';
+
+                $version = intval(substr($path[0], 1));
+
+                if ($resource == 'resources'
+                    || (!Defaults::$useUrlBasedVersioning
+                        && $version != $this->restler->_requestedApiVersion)
                 ) {
-                    $version = intval(substr($path, 1));
-                    if (!Defaults::$useUrlBasedVersioning
-                        && $version != $this->restler->_requestedApiVersion
-                    ) {
-                        continue;
-                    }
-                    //add resource
-                    $r->apis[] = array(
-                        'path' => "/resources/{$name}/{$shortName}_v{$version}"
-                            . ".{format}",
-                        'description' => $classDescription
-                    );
+                    continue;
                 }
-                $mappedResource[$path] = TRUE;
+
+                if ($this->_authenticated
+                    && static::$accessControlFunction
+                    && (!call_user_func(
+                        static::$accessControlFunction, $route['metadata']))
+                ) {
+                    continue;
+                }
+
+                $resource = $resource ? $resource .= "-v$version" : "v$version";
+
+                if (empty($map[$resource])) {
+                    $map[$resource] = isset(
+                    $route['metadata']['classDescription'])
+                        ? $route['metadata']['classDescription'] : '';
+                }
             }
+        }
+        foreach ($map as $path => $description) {
+            //add id
+            $r->apis[] = array(
+                'path' => "/resources/{$path}$this->formatString",
+                'description' => $description
+            );
         }
         return $r;
     }
@@ -306,7 +354,7 @@ class Resources implements iUseAuthentication
         $r->path = $path;
         $r->description =
             empty($description) && $this->restler->_productionMode
-                ? 'Use PHP Doc comment to describe here'
+                ? 'Use PHPDoc comment to describe here'
                 : $description;
         $r->operations = array();
         return $r;
@@ -320,6 +368,12 @@ class Resources implements iUseAuthentication
         $responseClass = 'void'
     )
     {
+        //reset body params
+        $this->_bodyParam = array(
+            'required' => false,
+            'description' => array()
+        );
+
         $r = new stdClass();
         $r->httpMethod = $httpMethod;
         $r->nickname = $nickname;
