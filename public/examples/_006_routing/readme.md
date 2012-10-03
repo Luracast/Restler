@@ -1,12 +1,6 @@
 Routing <requires>PHP >= 5.3</requires>
 -------
-
-<tag>routing</tag>
-<tag>get</tag>
-<tag>post</tag>
-<tag>put</tag>
-<tag>delete</tag>
-<tag>patch</tag>
+<tag>routing</tag> <tag>get</tag> <tag>post</tag> <tag>put</tag> <tag>delete</tag> <tag>patch</tag> 
 
 ### Two ways of Routing
 
@@ -86,7 +80,7 @@ Take a look at the api class used here and compare it with the routes below to
 understand.
 
 > This API Server is made using the following php files/folders
-
+> 
 > * index.php      (gateway)
 > * Api.php      (api)
 > * restler.php      (framework)
@@ -144,6 +138,7 @@ GET [api/what/ever/you/want?anything=something](index.php/api/what/ever/you/want
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "you have called Api::whatEver()"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 
 

@@ -1,17 +1,6 @@
 Rate Limiting <requires>PHP >= 5.3</requires>
 -------------
-
-<tag>create</tag>
-<tag>retrieve</tag>
-<tag>read</tag>
-<tag>update</tag>
-<tag>delete</tag>
-<tag>post</tag>
-<tag>get</tag>
-<tag>put</tag>
-<tag>filter</tag>
-<tag>throttle</tag>
-<tag>rate-limiting</tag>
+<tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>filter</tag> <tag>throttle</tag> <tag>rate-limiting</tag> 
 
 How to Rate Limit API access using a Filter class that implements
 `iFilter` interface.
@@ -36,7 +25,7 @@ If you have hit the API Rate Limit or screwed up the Authors DB, you can easily 
 PHP_SESSION cookie using the Developer Tools in your browser.
 
 > This API Server is made using the following php files/folders
-
+> 
 > * index.php      (gateway)
 > * Resources.php      (api)
 > * RateLimit.php      (filter)
@@ -57,6 +46,7 @@ This API Server exposes the following URIs
     PUT    authors/{id}              ⇠ ratelimited\Authors::put()
     PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
     DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
+
 
 
 

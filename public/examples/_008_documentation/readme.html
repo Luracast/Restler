@@ -6,9 +6,9 @@
 
 <link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/style.css" />
+<link rel="stylesheet" type="text/css" href="../resources/highlight.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css" />
+<link rel="stylesheet" type="text/css" href="../resources/style.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
@@ -16,35 +16,48 @@
  
 <script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
 
-<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
-
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
 <script type="text/javascript" src="../resources/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="../resources/highlight.pack.js"></script>
+
 <script type="text/javascript">
     $(document).ready(
             function() {
+                $('dd pre code').each(function(i, e) {
+                    text = $(e).text();
+                    $(e).addClass(text.charAt(0) == '<' ? 'xml' : 'json')
+                    //hljs.highlightBlock(e);
+                });
+                $('pre code').each(function(i, e) {
+                    if($(e).attr('class'))
+                        hljs.highlightBlock(e);
+                });
                 $('abbr').parents().not('a').children('abbr').click(
                         function() {
                             $('#codeviewer').load(
                                     '../resources/getsource.php?file='
                                             + $(this).attr("title"),
                                     function() {
+                                        /*
                                         $("pre#php").snippet("php", {
                                             style : "acid",
                                             showNum : false
                                         });
+                                        */
+
                                         jQuery.facebox({
                                             div : '#codeviewer'
                                         });
+                                        hljs.highlightBlock($("pre#php")[1]);
                                     });
                         });
                 var curURL = window.location.pathname.split('/examples/')[1];
                 if (curURL == '')
                     curURL = 'index.html';
                 $("a").each(function() {
-                    if ($(this).attr("href").indexOf(curURL) > -1) {
+                    if ($(this).attr("href") && $(this).attr("href").indexOf(curURL) > -1) {
                         $(this).addClass("active");
                     }
                 });
@@ -89,13 +102,13 @@
 <body>
     <nav class="floating-menu">
 <ul>
-<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/">Home</a></li>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
-<li><a class="active" href="../index.html">Examples</a></li>
-<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA">Support</a></li>
-<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler">GitHub</a></li>
-<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast">Twitter</a></li>
-<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast">Facebook</a></li>
+<li><a class="active" href="../index.html"><img src="../resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="../resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="../resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="../resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="../resources/facebook.png" width="16" height="16"/> Connect</a></li>
 </ul>
 </nav>
     <div id="codeviewer" style="display: none;"></div>
@@ -115,18 +128,20 @@
             <li><a href="../_006_routing/readme.html" title="Ways to map api methods to url">Routing</a></li>
             <li><a href="../_007_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li>
             <li><a href="../_008_documentation/readme.html" title="Commenting the classes can be more rewarding">Documentation</a></li>
-            <li><a href="../_009_rate_limiting/readme.html" title="Take control of your server">Rate Limiting</a></li>
+            <li><a href="../_009_rate_limiting/readme.html" title="Abuse no more">Rate Limiting</a></li>
             <li><a href="../_010_access_control/readme.html" title="Who can do what">Access Control</a></li>
         </ul>
     </nav>
     <nav id="right">
         <h3><a href="../index.html">Examples by Tag</a></h3>
         <ul class="tags">
-<li><tag title="Access-control Acl Secure Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt;">access-control acl secure</tag></li>
+<li><tag title="Access-control Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt;">access-control</tag></li>
 
-<li><tag title="Authentication Example(s)" data-content="&lt;a href=&quot;../_005_protected_api/readme.html&quot;&gt;Protected API&lt;/a&gt;">authentication</tag></li>
+<li><tag title="Acl Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt;">acl</tag></li>
 
-<li><tag title="Authorization Example(s)" data-content="&lt;a href=&quot;../_005_protected_api/readme.html&quot;&gt;Protected API&lt;/a&gt;">authorization</tag></li>
+<li><tag title="Authentication Example(s)" data-content="&lt;a href=&quot;../_005_protected_api/readme.html&quot;&gt;Protected API&lt;/a&gt; &lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt;">authentication</tag><badge>2</badge></li>
+
+<li><tag title="Authorization Example(s)" data-content="&lt;a href=&quot;../_005_protected_api/readme.html&quot;&gt;Protected API&lt;/a&gt; &lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt;">authorization</tag><badge>2</badge></li>
 
 <li><tag title="Basic Example(s)" data-content="&lt;a href=&quot;../_001_helloworld/readme.html&quot;&gt;Hello World Example&lt;/a&gt; &lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt;">basic</tag><badge>2</badge></li>
 
@@ -164,6 +179,8 @@
 
 <li><tag title="Routing Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">routing</tag><badge>3</badge></li>
 
+<li><tag title="Secure Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt;">secure</tag></li>
+
 <li><tag title="Throttle Example(s)" data-content="&lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">throttle</tag></li>
 
 <li><tag title="Update Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">update</tag><badge>3</badge></li>
@@ -175,20 +192,9 @@
     </nav>
     <article id="page">
 <div class="right"><small>8</small></div>
-<h2>Documentation <requires>PHP >= 5.3</requires></h2>
+<p><a id="documentation-x-565xphp----5-3x-566x"></a><h2>Documentation <requires>PHP >= 5.3</requires></h2></p>
 
-<p><tag>create</tag>
-<tag>retrieve</tag>
-<tag>read</tag>
-<tag>update</tag>
-<tag>delete</tag>
-<tag>post</tag>
-<tag>get</tag>
-<tag>put</tag>
-<tag>routing</tag>
-<tag>doc</tag>
-<tag>production</tag>
-<tag>debug</tag></p>
+<p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag> <tag>doc</tag> <tag>production</tag> <tag>debug</tag></p>
 
 <p>How to document and let your users explore your API.
 We have modified SwaggerUI to create 

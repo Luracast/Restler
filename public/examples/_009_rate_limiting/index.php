@@ -1,7 +1,7 @@
 <?php
 /*
 Title: Rate Limiting
-Tagline: Take control of your server
+Tagline: Abuse no more
 Tags: create, retrieve, read, update, delete, post, get, put, filter, throttle, rate-limiting
 Requires: PHP >= 5.3
 Description: How to Rate Limit API access using a Filter class that implements
@@ -37,7 +37,7 @@ use Luracast\Restler\Filter\RateLimit;
 //used only for demo, comment the following line
 Defaults::$cacheClass = 'SessionCache';
 //set extreme value for quick testing
-RateLimit::$unauthenticatedUsagePerHour = 10;
+RateLimit::$usagePerUnit = 10;
 
 $r = new Restler();
 
