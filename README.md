@@ -3,7 +3,7 @@ Luracast Restler 2.0
 
 ***
 
-> **Update:-** *Restler 3 RC2* (PHP 5.3+) is available with more features, take a look at the
+> **Update:-** *Restler 3 RC* (PHP 5.3+) is available with more features, take a look at the
 [Repository](https://github.com/Luracast/Restler/tree/v3) and try the [Live Examples](http://bit.ly/r3-examples)
 
 ***
