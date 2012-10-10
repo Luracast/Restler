@@ -39,6 +39,13 @@ class Restler extends EventEmitter
     const VERSION = '3.0.0rc3';
 
     /**
+     * Base URL currently being used
+     *
+     * @var string
+     */
+    public $baseUrl;
+
+    /**
      * URL of the currently mapped service
      *
      * @var string
@@ -78,6 +85,13 @@ class Restler extends EventEmitter
     public $cache;
 
     /**
+     * base directory to locate format and auth files
+     *
+     * @var string
+     */
+    public $baseDir;
+
+    /**
      * method information including metadata
      *
      * @var stdClass
@@ -107,13 +121,6 @@ class Restler extends EventEmitter
     // Private & Protected variables
     //
     // ------------------------------------------------------------------
-
-    /**
-     * Base URL currently being used
-     *
-     * @var string
-     */
-    protected $baseUrl;
 
     /**
      * When set to false, it will run in debug mode and parse the
@@ -200,17 +207,15 @@ class Restler extends EventEmitter
     public function __construct($productionMode = false, $refreshCache = false)
     {
         $this->startTime = time();
-        Util::$restler = $this;
         $this->productionMode = $productionMode;
-        if (is_null(Defaults::$cacheDirectory)) {
-            Defaults::$cacheDirectory = dirname($_SERVER['SCRIPT_FILENAME']) .
-                DIRECTORY_SEPARATOR . 'cache';
-        }
+        $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
         $this->cache = new Defaults::$cacheClass();
+        $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
             $this->cached = false;
         }
+        Util::$restler = $this;
     }
 
     /**
@@ -436,18 +441,6 @@ class Restler extends EventEmitter
      */
     public function init()
     {
-        if (Defaults::$crossOriginResourceSharing
-            && $this->requestMethod == 'OPTIONS'
-        ) {
-            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
-                header('Access-Control-Allow-Methods: '
-                    . Defaults::$accessControlAllowMethods);
-
-            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
-                header('Access-Control-Allow-Headers: '
-                    . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
-            exit(0);
-        }
         if (empty($this->formatMap)) {
             $this->setSupportedFormats('JsonFormat');
         }
@@ -488,7 +481,7 @@ class Restler extends EventEmitter
                     if (strcasecmp($supported, $lang) == 0) {
                         $found = true;
                         Defaults::$language = $supported;
-                        break 2;
+                        break;
                     }
                 }
             }
@@ -702,18 +695,6 @@ class Restler extends EventEmitter
         @header('Expires: ' . $expires);
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
 
-        if (Defaults::$crossOriginResourceSharing
-            && isset($_SERVER['HTTP_ORIGIN'])
-        ) {
-            header('Access-Control-Allow-Origin: ' .
-                    (Defaults::$accessControlAllowOrigin == '*'
-                        ? $_SERVER['HTTP_ORIGIN']
-                        : Defaults::$accessControlAllowOrigin)
-            );
-            header('Access-Control-Allow-Credentials: true');
-            header('Access-Control-Max-Age: 86400');
-        }
-
         if (isset($this->apiMethodInfo->metadata['header'])) {
             foreach ($this->apiMethodInfo->metadata['header'] as $header)
                 @header($header, true);
@@ -729,19 +710,6 @@ class Restler extends EventEmitter
                 ? $this->apiMethodInfo->metadata
                 : null
         );
-        $this->responseFormat->setCharset(Defaults::$charset);
-        $charset = $this->responseFormat->getCharset()
-            ? : Defaults::$charset;
-        @header('Content-Type: ' . (
-            Defaults::$useVendorMIMEVersioning
-                ? 'application/vnd.'
-                . Defaults::$apiVendor
-                . "-v{$this->requestedApiVersion}"
-                . '+' . $this->responseFormat->getExtension()
-                : $this->responseFormat->getMIME())
-                . '; charset=' . $charset
-        );
-        @header('Content-Language: ' . Defaults::$language);
         if ($statusCode == 0) {
             if (isset($this->apiMethodInfo->metadata['status'])) {
                 $this->setStatus($this->apiMethodInfo->metadata['status']);
@@ -770,6 +738,19 @@ class Restler extends EventEmitter
                 $responder->formatError($statusCode, $message),
                 !$this->productionMode);
         }
+        $this->responseFormat->setCharset(Defaults::$charset);
+        $charset = $this->responseFormat->getCharset()
+            ? : Defaults::$charset;
+        @header('Content-Type: ' . (
+            Defaults::$useVendorMIMEVersioning
+                ? 'application/vnd.'
+                . Defaults::$apiVendor
+                . "-v{$this->requestedApiVersion}"
+                . '+' . $this->responseFormat->getExtension()
+                : $this->responseFormat->getMIME())
+                . '; charset=' . $charset
+        );
+        @header('Content-Language: ' . Defaults::$language);
         //handle throttling
         if (Defaults::$throttle) {
             $elapsed = time() - $this->startTime;
@@ -874,7 +855,7 @@ class Restler extends EventEmitter
     {
         $format = null;
         // check if client has sent any information on request format
-        if (!empty($_SERVER['CONTENT_TYPE'])) {
+        if (isset($_SERVER['CONTENT_TYPE'])) {
             $mime = $_SERVER['CONTENT_TYPE'];
             if (false !== $pos = strpos($mime, ';')) {
                 $mime = substr($mime, 0, $pos);
@@ -1046,20 +1027,11 @@ class Restler extends EventEmitter
             return new stdClass ();
         }
         $found = false;
-        if (!is_array($this->requestData)) {
-            $this->requestData = array(
-                Defaults::$fullRequestDataName => $this->requestData
-            );
-            $this->requestData += $_GET;
-            $params = $this->requestData;
-        } else {
-            $this->requestData += $_GET;
-            $params = array(
-                Defaults::$fullRequestDataName => $this->requestData
-            );
-            $params = $this->requestData + $params;
-
-        }
+        $this->requestData += $_GET;
+        $params = array(
+            'request_data' => $this->requestData
+        );
+        $params += $this->requestData;
         $call = new stdClass;
         $currentUrl = "v{$this->requestedApiVersion}/{$this->url}";
         $lc = strtolower($currentUrl);

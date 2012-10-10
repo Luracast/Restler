@@ -76,7 +76,7 @@ class JsonFormat extends Format
             $result = preg_replace_callback('/\\\u(\w\w\w\w)/',
                 function($matches)
                 {
-                    return mb_convert_encoding(pack('H*', $matches[1]), 'UTF-8', 'UTF-16BE');
+                    return utf8_encode(chr(hexdec($matches[1])));
                 }
                 , $result);
         }

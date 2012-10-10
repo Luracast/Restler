@@ -8,5 +8,5 @@ the project root (where the vendor folder resides)
 
     bin/behat features/examples
 
-> **Note:-** This requires the dependencies for restler framework to be
-> installed
+> **Note:-** This requires the dependecies for restler framework to be
+> installed first

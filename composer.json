@@ -1,59 +1,64 @@
 {
-    "name": "luracast\/restler",
-    "description": "<p>Restler is a simple and effective multi-protocol REST API Server written in PHP.<br \/>\nJust deal with your business logic in php, restler will take care of the REST!<\/p>",
-    "version": "3.0.0",
-    "type": "library",
-    "minimum-stability": "dev",
-    "time": "2012-07-04 13:49:04",
-    "homepage": "http:\/\/luracast.com\/products\/restler\/",
-    "license": "LGPL-2.1",
-    "authors": [
+    "name":"luracast/restler",
+    "description":"<p>Restler is a simple and effective multi-protocol REST API Server written in PHP.<br />\nJust deal with your business logic in php, restler will take care of the REST!</p>",
+    "version":"3.0.0",
+    "type":"library",
+    "minimum-stability":"dev",
+    "time":"2012-07-04 13:49:04",
+    "homepage":"http://luracast.com/products/restler/",
+    "license":"LGPL-2.1",
+    "authors":[
         {
-            "name": "Luracast",
-            "email": "arul@luracast.com"
+            "name":"Luracast",
+            "email":"arul@luracast.com"
         },
         {
-            "name": "Nick Lombard",
-            "email": "github@jigsoft.co.za"
+            "name":"Nick Lombard",
+            "email":"github@jigsoft.co.za"
         }
     ],
-    "require": {
-        "php": ">=5.3.0",
-        "ChiperSoft/CFPropertyList": ">=0.1.0",
-        "mustache\/mustache": "dev-master",
-        "zendframework\/zendamf": "dev-master",
-        "symfony\/yaml": "*",
-        "luracast/explorer": "*"
+    "require":{
+        "php":">=5.3.0",
+        "luracast/explorer":"*",
+        "ChiperSoft/CFPropertyList":">=0.1.0",
+        "mustache/mustache":"dev-master",
+        "zendframework/zendamf":"dev-master",
+        "symfony/yaml":"*",
+        "guzzle/guzzle":"2.4.*",
+        "behat/behat":"2.4.*@stable"
     },
-    "repositories": [
+    "repositories":[
         {
-            "type": "vcs",
-            "url": "https:\/\/github.com\/ChiperSoft\/CFPropertyList"
+            "type":"vcs",
+            "url":"https://github.com/ChiperSoft/CFPropertyList"
         },
         {
-            "type": "vcs",
-            "url": "https:\/\/github.com\/bobthecow\/mustache.php.git"
+            "type":"vcs",
+            "url":"https://github.com/bobthecow/mustache.php.git"
         },
         {
-            "type": "vcs",
-            "url": "https:\/\/github.com\/zendframework\/ZendAmf.git"
+            "type":"vcs",
+            "url":"https://github.com/zendframework/ZendAmf.git"
         },
         {
-            "type": "package",
-            "package": {
-                "name": "luracast/explorer",
-                "version": "v3.0.0",
-                "dist": {
-                  "type": "zip",
-                  "url": "https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
+            "type":"package",
+            "package":{
+                "name":"luracast/explorer",
+                "version":"v3.0.0",
+                "dist":{
+                    "type":"zip",
+                    "url":"https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
                 }
             }
         }
     ],
-    "bin": ["vendor/restler.php"],
-    "autoload": {
-        "psr-0": {
-            "Luracast\\Restler": "vendor\/"
+    "config":{
+        "bin-dir":"bin/"
+    },
+    "bin":["vendor/restler.php"],
+    "autoload":{
+        "psr-0":{
+            "Luracast\\Restler":"vendor/"
         }
     }
 }
