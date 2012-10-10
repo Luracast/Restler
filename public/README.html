@@ -104,8 +104,8 @@ Just deal with your business logic in php, restler will take care of the REST!</
 
 <ul>
 <li><code>[planned]</code> Unit Testing using <a href="https://github.com/sebastianbergmann/phpunit/" target="_blank">PHPUnit</a></li>
-<li>Behaviour Driven API testing using <a href="http://behat.org/" target="_blank">Behat</a> and <a href="https://github.com/guzzle/guzzle" target="_blank">Guzzle</a></li>
-<li>Commandline Project Management using <a href="https://github.com/Respect/Foundation" target="_blank">Respect/Foundation</a></li>
+<li>Behavior Driven API testing using <a href="http://behat.org/" target="_blank">Behat</a> and <a href="https://github.com/guzzle/guzzle" target="_blank">Guzzle</a></li>
+<li>Command line Project Management using <a href="https://github.com/Respect/Foundation" target="_blank">Respect/Foundation</a></li>
 <li>Dependency Management using <a href="http://getcomposer.org/" target="_blank">Composer</a></li>
 <li>Source code distributed under LGPL</li>
 </ul></li>
@@ -136,11 +136,11 @@ or Checkout using Terminal/Commandline</p>
 
 <h3>3.</h3>
 
-<p>Ideally public folder should be mapped as your web root (optional, but recommeneded)</p>
+<p>Ideally public folder should be mapped as your web root (optional, but recommended)</p>
 
 <h3>4.</h3>
 
-<p>Try the examples in your local host</p>
+<p>Try the examples in your localhost</p>
 
 <h3>5.</h3>
 
@@ -169,32 +169,102 @@ or Checkout using Terminal/Commandline</p>
 
 <h2>Quick Start Guide</h2>
 
-<p>Once you have got restler installed with the above steps, you can quicky create<br />
+<p>Once you have got restler installed with the above steps, you can quickly create<br />
 your application by following these steps</p>
 
 <h3>1.</h3>
 
-<p>Create your API classes with all needded public and protected methods</p>
+<p>Create your <strong>API classes</strong> with all needed public and protected methods</p>
 
 <h3>2.</h3>
 
-<p>Create the gateway (index.php) as follows</p>
+<p>Create the <strong>gateway (index.php)</strong> as follows</p>
+
+<pre><code class="language-php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+
+$r = new Restler();
+$r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
+$r-&gt;handle(); //serve the response
+</code></pre>
 
 <h3>3.</h3>
 
-<p>Enable URL Rewriting</p>
+<p><strong>Enable URL Rewriting</strong></p>
+
+<p>Make sure all the requests are routed to index.php by enabling URL Rewriting for your website</p>
+
+<p>For example:-</p>
+
+<p>If you are on Apache, you can use an .htaccess file such as</p>
+
+<pre><code class="language-apache">DirectoryIndex index.php
+&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine On
+    RewriteRule ^$ index.php [QSA,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+&lt;/IfModule&gt;
+&lt;IfModule mod_php5.c&gt;
+    php_flag display_errors On
+&lt;/IfModule&gt;
+</code></pre>
 
 <h3>4.</h3>
 
 <p>Fine tune to suit your needs</p>
 
+<pre><code class="language-php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+use Luracast\Restler\Defaults;
+//set the defaults to match your requirements
+Default::$throttle = 20; //time in milliseconds for bandwidth throttling
+//setup restler
+$r = new Restler();
+$r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
+$r-&gt;addAPIClass('Resources'); //from restler framework for API Explorer
+$r-&gt;addFilterClass('RateLimit'); //Add Filters as needed
+$r-&gt;handle(); //serve the response
+</code></pre>
+
+<p>If you have successfuly completed Installation Step 2, you should have<br />
+<a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a> installed in <code>vendor/Luracast/explorer</code> folder<br />
+Create a symoblic link of <code>vendor/Luracast/explorer/dist</code> or copy the folder and name it as <code>explorer</code></p>
+
+<p>Place the explorer in the same folder as the <code>index.php</code></p>
+
+<p>Explore the api and try it out by opending <code>explorer/index.html</code> from the web root on your browser</p>
+
+<p>Happy Exploring! :)</p>
+
 <h3>5.</h3>
 
 <p>Protect your api</p>
 
+<pre><code class="language-php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+$r = new Restler();
+$r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
+$r-&gt;addAuthenticationClass('CustomAuth'); //Add Authentication classes as needed
+$r-&gt;handle(); //serve the response
+</code></pre>
+
 <h3>6.</h3>
 
 <p>Turn on production mode</p>
+
+<pre><code class="language-php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+
+//setup restler
+$r = new Restler(true); //turns on production mode. make sure cache folder is writable
+//...
+</code></pre>
 
 <h2>Changes from Restler 3.0 RC1</h2>
 
@@ -202,6 +272,22 @@ your application by following these steps</p>
 <li>Filter classes can use authentication status and respond deferently for<br />
 authenticated users by implementing iUseAuthentication interface</li>
 <li><code>RateLimit</code> class added to rate limit the api usage</li>
+<li>Fixed a bug with setCompatibilityMode</li>
+<li>Resources updated to use only paths for resource identification instead of class name
+
+<ul>
+<li>Enabled Access Control for Documentatation</li>
+</ul></li>
+<li>Fixed CommentParser to ignore repeated white space so that it parses comments correctly</li>
+<li>Fixed comment parsing for @status and @expires tags</li>
+<li>Added the following Examples
+
+<ul>
+<li>Documentation</li>
+<li>Rate Limit</li>
+<li>Access Control</li>
+</ul></li>
+<li>Crud example updated to include PATCH support</li>
 </ul>
 
 <h2>Changes from Restler 2.0</h2>
