@@ -8,8 +8,8 @@ Access Control <requires>PHP >= 5.3</requires>
 <tag>authorization</tag>
 
 This example shows how you can extend the authentication system to create
-a robust access control sytem. As a added bonus we also restrict api
-documentatation based on the same.
+a robust access control system. As a added bonus we also restrict api
+documentation based on the same.
 
 When the `api_key` is
 

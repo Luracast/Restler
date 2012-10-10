@@ -1,4 +1,4 @@
-Luracast Restler 3.0 RC2
+Luracast Restler 3.0 RC3
 ========================
 
 Restler is a simple and effective multi-protocol REST API Server written in PHP. 
@@ -221,6 +221,20 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 ```
 
 
+
+Changes from Restler 3.0 RC2
+----------------------------
+* RateLimit class re-written to support all range of time units
+  second|minute|hour|day|week|month to have fine grained control
+* Resources class improved to include description for body parameters
+* Fixes unescaped unicode bug in PHP < 5.4
+* Added Charset support
+* Added Language (basic) support
+* Updated the BDD tests to include new features
+* Fixes a bug in Restler class which affects $_GET overriding `Defaults`
+
+
+
 Changes from Restler 3.0 RC1
 ----------------------------
 * Filter classes can use authentication status and respond deferently for
@@ -235,7 +249,7 @@ Changes from Restler 3.0 RC1
     * Documentation
     * Rate Limit
     * Access Control
-* Crud example updated to include PATCH support
+* CRUD example updated to include PATCH support
 
 
 

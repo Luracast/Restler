@@ -37,7 +37,7 @@ use Luracast\Restler\Filter\RateLimit;
 //used only for demo, comment the following line
 Defaults::$cacheClass = 'SessionCache';
 //set extreme value for quick testing
-RateLimit::$unauthenticatedUsagePerHour = 10;
+RateLimit::$usagePerUnit = 10;
 
 $r = new Restler();
 

@@ -11,7 +11,7 @@ namespace Luracast\Restler\Format;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc2
+ * @version    3.0.0rc3
  */
 use Luracast\Restler\Data\Util;
 use Luracast\Restler\RestException;
@@ -76,7 +76,7 @@ class JsonFormat extends Format
             $result = preg_replace_callback('/\\\u(\w\w\w\w)/',
                 function($matches)
                 {
-                    return chr(hexdec($matches[1]));
+                    return utf8_encode(chr(hexdec($matches[1])));
                 }
                 , $result);
         }

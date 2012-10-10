@@ -24,11 +24,13 @@ class Responder implements iRespond
 
     public function formatResponse($result)
     {
+        //TODO: check Defaults::language and change result accordingly
         return $result;
     }
 
     public function formatError($statusCode, $message)
     {
+        //TODO: check Defaults::language and change result accordingly
         return array(
             'error' => array(
                 'code' => $statusCode,

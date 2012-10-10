@@ -25,7 +25,7 @@ use Luracast\Restler\Data\ValidationInfo;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc2
+ * @version    3.0.0rc3
  */
 class Restler extends EventEmitter
 {
@@ -36,7 +36,7 @@ class Restler extends EventEmitter
     //
     // ------------------------------------------------------------------
 
-    const VERSION = '3.0.0rc2';
+    const VERSION = '3.0.0rc3';
 
     /**
      * Base URL currently being used
@@ -454,6 +454,45 @@ class Restler extends EventEmitter
         } else {
             $this->requestFormat->restler = $this;
         }
+        if (isset($_SERVER['HTTP_ACCEPT_CHARSET'])) {
+            $found = false;
+            $charList = Util::sortByPriority($_SERVER['HTTP_ACCEPT_CHARSET']);
+            foreach ($charList as $charset => $quality) {
+                if (in_array($charset, Defaults::$supportedCharsets)) {
+                    $found = true;
+                    Defaults::$charset = $charset;
+                    break;
+                }
+            }
+            if (!$found) {
+                if (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], '*') !== false) {
+                    //use default charset
+                } else {
+                    $this->handleError(406, 'Content negotiation failed. '
+                        . "Requested charset is not supported");
+                }
+            }
+        }
+        if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            $found = false;
+            $langList = Util::sortByPriority($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+            foreach ($langList as $lang => $quality) {
+                foreach (Defaults::$supportedLanguages as $supported) {
+                    if (strcasecmp($supported, $lang) == 0) {
+                        $found = true;
+                        Defaults::$language = $supported;
+                        break;
+                    }
+                }
+            }
+            if (!$found) {
+                if (strpos($_SERVER['HTTP_ACCEPT_LANGUAGE'], '*') !== false) {
+                    //use default language
+                } else {
+                    //ignore
+                }
+            }
+        }
     }
 
     /**
@@ -504,10 +543,9 @@ class Restler extends EventEmitter
                     $key = Defaults::$aliases[$key];
                 }
                 if (in_array($key, Defaults::$overridables)) {
-                    Defaults::setProperty($$key, $value);
+                    Defaults::setProperty($key, $value);
                 }
             }
-
 
             $this->apiMethodInfo = $o = $this->mapUrlToMethod();
             if (isset($o->metadata)) {
@@ -655,14 +693,6 @@ class Restler extends EventEmitter
         }
         @header('Cache-Control: ' . $cacheControl);
         @header('Expires: ' . $expires);
-        @header('Content-Type: ' . (
-            Defaults::$useVendorMIMEVersioning
-                ? 'application/vnd.'
-                . Defaults::$apiVendor
-                . "-v{$this->requestedApiVersion}"
-                . '+' . $this->responseFormat->getExtension()
-                : $this->responseFormat->getMIME())
-        );
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
 
         if (isset($this->apiMethodInfo->metadata['header'])) {
@@ -708,6 +738,19 @@ class Restler extends EventEmitter
                 $responder->formatError($statusCode, $message),
                 !$this->productionMode);
         }
+        $this->responseFormat->setCharset(Defaults::$charset);
+        $charset = $this->responseFormat->getCharset()
+            ? : Defaults::$charset;
+        @header('Content-Type: ' . (
+            Defaults::$useVendorMIMEVersioning
+                ? 'application/vnd.'
+                . Defaults::$apiVendor
+                . "-v{$this->requestedApiVersion}"
+                . '+' . $this->responseFormat->getExtension()
+                : $this->responseFormat->getMIME())
+                . '; charset=' . $charset
+        );
+        @header('Content-Language: ' . Defaults::$language);
         //handle throttling
         if (Defaults::$throttle) {
             $elapsed = time() - $this->startTime;

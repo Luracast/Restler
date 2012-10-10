@@ -13,7 +13,7 @@ use stdClass;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc2
+ * @version    3.0.0rc3
  */
 class Resources implements iUseAuthentication
 {
@@ -392,19 +392,29 @@ class Resources implements iUseAuthentication
     {
         $this->_bodyParam['description'][$p->name]
             = "<mark>$p->name</mark>"
-            . ($p->required ? ' (required)' : '');
+            . ($p->required ? ' <i>(required)</i>: ' : ': ')
+            . $p->description;
         $this->_bodyParam['required'] = $p->required
             || $this->_bodyParam['required'];
+        $this->_bodyParam['names'][$p->name] = true;
     }
 
     private function _getBody()
     {
         $r = new stdClass();
-        $r->name = 'request_body';
+        $r->name = 'REQUEST_BODY';
         $p = array_values($this->_bodyParam['description']);
-        $r->description = "Paste JSON data here with " .
-            implode(", ", $p)
-            . (count($p) > 1 ? ' properties.' : ' property.');
+        $r->description = "Paste JSON data here";
+        if (count($p) == 1
+            && $this->_bodyParam['description'][Defaults::$fullRequestDataName]
+        ) {
+
+        } else {
+            $r->description .= " with the following"
+                . (count($p) > 1 ? ' properties.' : ' property.')
+                . '<hr/>'
+                .implode("<hr/>", $p);
+        }
         $r->paramType = 'body';
         $r->required = $this->_bodyParam['required'];
         $r->allowMultiple = false;

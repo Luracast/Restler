@@ -22,9 +22,12 @@ class RestContext extends BehatContext
     private $_restObjectMethod = 'get';
     private $_client = null;
     private $_response = null;
+    private $_request = null;
     private $_requestBody = null;
     private $_requestUrl = null;
     private $_type = null;
+    private $_charset = null;
+    private $_language = null;
     private $_data = null;
 
     private $_parameters = array();
@@ -48,6 +51,7 @@ class RestContext extends BehatContext
                 switch ($event['response']->getStatusCode()) {
                     case 400:
                     case 404:
+                    case 406:
                         $event->stopPropagation();
                 }
             });
@@ -169,7 +173,7 @@ class RestContext extends BehatContext
      */
     public function theRequestIsSentAsJson()
     {
-        $this->_headers['Content-Type'] = 'application/json; charset=UTF-8';
+        $this->_headers['Content-Type'] = 'application/json; charset=utf-8';
         $this->_requestBody = json_encode((array)$this->_restObject);
     }
 
@@ -186,47 +190,56 @@ class RestContext extends BehatContext
 
         switch (strtoupper($this->_restObjectMethod)) {
             case 'HEAD':
-                $this->_response = $this->_client
-                    ->head($url, $this->_headers)
-                    ->send();
+
+                $this->_request = $this->_client
+                    ->head($url, $this->_headers);
+                $this->_response = $this->_request->send();
                 break;
             case 'GET':
-                $this->_response = $this->_client
-                    ->get($url, $this->_headers)
-                    ->send();
+                $this->_request = $this->_client
+                    ->get($url, $this->_headers);
+                $this->_response = $this->_request->send();
                 break;
             case 'POST':
                 $postFields = (array)$this->_restObject;
-                $this->_response = $this->_client
+                $this->_request = $this->_client
                     ->post($url, $this->_headers,
                     (empty($this->_requestBody) ? $postFields :
-                        $this->_requestBody))
-                    ->send();
+                        $this->_requestBody));
+                $this->_response = $this->_request->send();
                 break;
             case 'PUT' :
                 $putFields = (array)$this->_restObject;
-                $this->_response = $this->_client
+                $this->_request = $this->_client
                     ->put($url, $this->_headers,
                     (empty($this->_requestBody) ? $putFields :
-                        $this->_requestBody))
-                    ->send();
+                        $this->_requestBody));
+                $this->_response = $this->_request->send();
                 break;
             case 'PATCH' :
                 $putFields = (array)$this->_restObject;
-                $this->_response = $this->_client
+                $this->_request = $this->_client
                     ->patch($url, $this->_headers,
                     (empty($this->_requestBody) ? $putFields :
-                        $this->_requestBody))
-                    ->send();
+                        $this->_requestBody));
+                $this->_response = $this->_request->send();
                 break;
             case 'DELETE':
-                $this->_response = $this->_client
-                    ->delete($url, $this->_headers)
-                    ->send();
+                $this->_request = $this->_client
+                    ->delete($url, $this->_headers);
+                $this->_response = $this->_request->send();
                 break;
         }
         //detect type, extract data
-        switch ($this->_response->getHeader('Content-type')) {
+        $this->_language = $this->_response->getHeader('Content-Language');
+
+        $cType = explode('; ', $this->_response->getHeader('Content-type'));
+        if (count($cType) > 1) {
+            $charset = $cType[1];
+            $this->_charset = substr($charset, strpos($charset, '=') + 1);
+        }
+        $cType = $cType[0];
+        switch ($cType) {
             case 'application/json':
                 $this->_type = 'json';
                 $this->_data = json_decode($this->_response->getBody(true));
@@ -253,7 +266,8 @@ class RestContext extends BehatContext
                         $message = 'unknown error';
                         break;
                 }
-                throw new Exception ('Error parsing JSON, ' . $message);
+                throw new Exception ('Error parsing JSON, ' . $message
+                    . "\n\n" . $this->echoLastResponse());
                 break;
             case 'application/xml':
                 $this->_type = 'xml';
@@ -278,7 +292,7 @@ class RestContext extends BehatContext
     public function theResponseIsJson()
     {
         if ($this->_type != 'json') {
-            throw new Exception("Response was not JSON\n" . $this->_response);
+            throw new Exception("Response was not JSON\n\n" . $this->echoLastResponse());
         }
     }
 
@@ -289,7 +303,28 @@ class RestContext extends BehatContext
     public function theResponseIsXml()
     {
         if ($this->_type != 'xml') {
-            throw new Exception("Response was not XML\n" . $this->_response);
+            throw new Exception("Response was not XML\n\n" . $this->echoLastResponse());
+        }
+    }
+
+    /**
+     * @Then /^the response charset is "([^"]*)"$/
+     */
+    public function theResponseCharsetIs($charset)
+    {
+        if ($this->_charset != $charset) {
+            throw new Exception("Response charset was not $charset\n\n" . $this->echoLastResponse());
+        }
+    }
+
+    /**
+     * @Then /^the response language is "([^"]*)"$/
+     */
+    public function theResponseLanguageIs($language)
+    {
+        if ($this->_language != $language) {
+            throw new Exception("Response Language was not $language\n\n"
+                . $this->echoLastResponse());
         }
     }
 
@@ -316,8 +351,8 @@ class RestContext extends BehatContext
                 if (is_null($data)) return;
         }
 
-        throw new Exception("Response is not of type '$type'\n" .
-            $this->_response);
+        throw new Exception("Response is not of type '$type'\n\n" .
+            $this->echoLastResponse());
     }
 
     /**
@@ -327,7 +362,7 @@ class RestContext extends BehatContext
     {
         $data = $this->_data;
         if ($data !== $sample)
-            throw new Exception("Response value does not match '$sample'\n"
+            throw new Exception("Response value does not match '$sample'\n\n"
                 . $this->echoLastResponse());
     }
 
@@ -355,7 +390,7 @@ class RestContext extends BehatContext
     public function theResponseIsJsonWithType($type)
     {
         if ($this->_type != 'json') {
-            throw new Exception("Response was not JSON\n" . $this->_response);
+            throw new Exception("Response was not JSON\n\n" . $this->echoLastResponse());
         }
 
         $data = $this->_data;
@@ -375,8 +410,8 @@ class RestContext extends BehatContext
                 if (is_null($data)) return;
         }
 
-        throw new Exception("Response was JSON\n but not of type '$type'\n" .
-            $this->_response);
+        throw new Exception("Response was JSON\n but not of type '$type'\n\n" .
+            $this->echoLastResponse());
     }
 
 
@@ -393,7 +428,8 @@ class RestContext extends BehatContext
         if (!empty($data)) {
             if (!isset($data->$propertyName)) {
                 throw new Exception("Property '"
-                    . $propertyName . "' is not set!\n");
+                    . $propertyName . "' is not set!\n\n"
+                    . $this->echoLastResponse());
             }
         }
     }
@@ -408,15 +444,17 @@ class RestContext extends BehatContext
         if (!empty($data)) {
             if (!isset($data->$propertyName)) {
                 throw new Exception("Property '"
-                    . $propertyName . "' is not set!\n");
+                    . $propertyName . "' is not set!\n\n"
+                    . $this->echoLastResponse());
             }
             if ($data->$propertyName != $propertyValue) {
                 throw new \Exception('Property value mismatch! (given: '
                     . $propertyValue . ', match: '
-                    . $data->$propertyName . ')');
+                    . $data->$propertyName . ")\n\n"
+                    . $this->echoLastResponse());
             }
         } else {
-            throw new Exception("Response was not JSON\n"
+            throw new Exception("Response was not JSON\n\n"
                 . $this->_response->getBody(true));
         }
     }
@@ -449,7 +487,8 @@ class RestContext extends BehatContext
         if (!empty($data)) {
             if (!isset($data->$propertyName)) {
                 throw new Exception("Property '"
-                    . $propertyName . "' is not set!\n");
+                    . $propertyName . "' is not set!\n\n"
+                    . $this->echoLastResponse());
             }
             // check our type
             switch (strtolower($typeString)) {
@@ -457,7 +496,8 @@ class RestContext extends BehatContext
                     if (!is_numeric($data->$propertyName)) {
                         throw new Exception("Property '"
                             . $propertyName . "' is not of the correct type: "
-                            . $typeString . "!\n");
+                            . $typeString . "!\n\n"
+                            . $this->echoLastResponse());
                     }
                     break;
             }
@@ -475,7 +515,8 @@ class RestContext extends BehatContext
     {
         if ((string)$this->_response->getStatusCode() !== $httpStatus) {
             throw new \Exception('HTTP code does not match ' . $httpStatus .
-                ' (actual: ' . $this->_response->getStatusCode() . ')');
+                ' (actual: ' . $this->_response->getStatusCode() . ")\n\n"
+                . $this->echoLastResponse());
         }
     }
 
@@ -484,10 +525,6 @@ class RestContext extends BehatContext
      */
     public function echoLastResponse()
     {
-        $this->printDebug(
-            $this->_requestUrl . "\n\n" .
-                print_r($this->_restObject, true) . "\n\n" .
-                $this->_response
-        );
+        $this->printDebug("$this->_request\n$this->_response");
     }
 }

@@ -7,7 +7,7 @@ class Simple {
 		return 'protected method';
 	}
 	/**
-	 * @protected
+	 * @access protected
 	 */
 	function restricted2(){
 		return 'protected by comment';

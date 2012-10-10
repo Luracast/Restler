@@ -15,7 +15,7 @@ use Luracast\Restler\Data\Validator;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc2
+ * @version    3.0.0rc3
  */
 class Defaults
 {
@@ -127,6 +127,9 @@ class Defaults
      * response to determine if an error occurred.
      */
     public static $suppressResponseCode = false;
+
+    public static $supportedCharsets = array('utf-8', 'iso-8859-1');
+    public static $supportedLanguages = array('en', 'en-US');
 
     public static $charset = 'utf-8';
     public static $language = 'en';

@@ -21,7 +21,7 @@
 </head>
 <body>
 <article>
-<h1>Luracast Restler 3.0 RC2</h1>
+<h1>Luracast Restler 3.0 RC3</h1>
 
 <p>Restler is a simple and effective multi-protocol REST API Server written in PHP.<br />
 Just deal with your business logic in php, restler will take care of the REST!</p>
@@ -266,6 +266,19 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 //...
 </code></pre>
 
+<h2>Changes from Restler 3.0 RC2</h2>
+
+<ul>
+<li>RateLimit class re-written to support all range of time units<br />
+second|minute|hour|day|week|month to have fine grained control</li>
+<li>Resources class improved to include description for body parameters</li>
+<li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
+<li>Added Charset support</li>
+<li>Added Language (basic) support</li>
+<li>Updated the BDD tests to include new features</li>
+<li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code></li>
+</ul>
+
 <h2>Changes from Restler 3.0 RC1</h2>
 
 <ul>
@@ -287,7 +300,7 @@ authenticated users by implementing iUseAuthentication interface</li>
 <li>Rate Limit</li>
 <li>Access Control</li>
 </ul></li>
-<li>Crud example updated to include PATCH support</li>
+<li>CRUD example updated to include PATCH support</li>
 </ul>
 
 <h2>Changes from Restler 2.0</h2>
