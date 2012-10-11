@@ -21,10 +21,23 @@ class Resources implements iUseAuthentication
      * @var bool should protected resources be shown to unauthenticated users?
      */
     public static $hideProtected = true;
+
     /**
      * @var bool should we use format as extension?
      */
     public static $useFormatAsExtension = true;
+
+    /**
+     * @var array all http methods specified here will be excluded from
+     * documentation
+     */
+    public static $excludedHttpMethods = array('OPTIONS');
+
+    /**
+     * @var array all paths beginning with any of the following will be excluded
+     * from documentation
+     */
+    public static $excludedPaths = array();
 
     /**
      * @var bool
@@ -105,7 +118,10 @@ class Resources implements iUseAuthentication
         $target = empty($id) ? "v$version" : "v$version/$id";
 
         foreach ($this->restler->routes as $httpMethod => $value) {
-            foreach ($value as $key => $route) {
+            if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                continue;
+            }
+            foreach ($value as $fullPath => $route) {
                 if (0 !== strpos($route['path'], $target)) {
                     continue;
                 }
@@ -115,6 +131,11 @@ class Resources implements iUseAuthentication
                     && $route['accessLevel'] > 1
                 ) {
                     continue;
+                }
+                foreach (static::$excludedPaths as $exclude){
+                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                        continue 2;
+                    }
                 }
                 $m = $route['metadata'];
                 if ($id == '' && $m['resourcePath'] != "v$version/") {
@@ -138,7 +159,7 @@ class Resources implements iUseAuthentication
                     }
                     $r = $this->_operationListing($resourcePath);
                 }
-                $parts = explode('/', $key);
+                $parts = explode('/', $fullPath);
                 $pos = count($parts) - 1;
                 if (count($parts) == 1 && $httpMethod == 'GET') {
                 } else {
@@ -159,12 +180,12 @@ class Resources implements iUseAuthentication
                 if (!Defaults::$useUrlBasedVersioning) {
                     array_shift($parts);
                 }
-                $key = implode('/', $parts);
+                $fullPath = implode('/', $parts);
                 $description = isset(
                 $m['classDescription'])
                     ? $m['classDescription']
                     : $className . ' API';
-                $api = $this->_api("/$key", $description);
+                $api = $this->_api("/$fullPath", $description);
                 if (empty($m['description'])) {
                     $m['description'] = $this->restler->_productionMode
                         ? ''
@@ -253,8 +274,11 @@ class Resources implements iUseAuthentication
     {
         $r = $this->_resourceListing();
         $map = array();
-        foreach ($this->restler->routes as $verb => $routes) {
-            foreach ($routes as $route) {
+        foreach ($this->restler->routes as $httpMethod => $routes) {
+            if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                continue;
+            }
+            foreach ($routes as $fullPath => $route) {
                 if (
                     self::$hideProtected
                     && !$this->_authenticated
@@ -275,6 +299,12 @@ class Resources implements iUseAuthentication
                     continue;
                 }
 
+                foreach (static::$excludedPaths as $exclude){
+                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                        continue 2;
+                    }
+                }
+
                 if ($this->_authenticated
                     && static::$accessControlFunction
                     && (!call_user_func(
@@ -283,7 +313,7 @@ class Resources implements iUseAuthentication
                     continue;
                 }
 
-                $resource = $resource ? $resource .= "-v$version" : "v$version";
+                $resource = $resource ? $resource . "-v$version" : "v$version";
 
                 if (empty($map[$resource])) {
                     $map[$resource] = isset(
@@ -413,7 +443,7 @@ class Resources implements iUseAuthentication
             $r->description .= " with the following"
                 . (count($p) > 1 ? ' properties.' : ' property.')
                 . '<hr/>'
-                .implode("<hr/>", $p);
+                . implode("<hr/>", $p);
         }
         $r->paramType = 'body';
         $r->required = $this->_bodyParam['required'];

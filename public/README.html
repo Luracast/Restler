@@ -212,6 +212,10 @@ $r-&gt;handle(); //serve the response
 &lt;/IfModule&gt;
 </code></pre>
 
+<blockquote>
+  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file</p>
+</blockquote>
+
 <h3>4.</h3>
 
 <p>Fine tune to suit your needs</p>
@@ -272,6 +276,12 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 <li>RateLimit class re-written to support all range of time units<br />
 second|minute|hour|day|week|month to have fine grained control</li>
 <li>Resources class improved to include description for body parameters</li>
+<li>Added two more ways to exclude API's from explorer/documentation
+
+<ul>
+<li><code>Resources::$excludedHttpMethods</code> (array)</li>
+<li><code>Resources::$excludedPaths</code> (array)</li>
+</ul></li>
 <li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
 <li>Added Charset support</li>
 <li>Added Language (basic) support</li>

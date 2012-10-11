@@ -163,6 +163,9 @@ DirectoryIndex index.php
 </IfModule>
 ```
 
+> **Note:-** This requires `AllowOverride` to be set to `All` instead of `None` in the `httpd.conf` file
+
+
 ### 4.
 
 Fine tune to suit your needs
@@ -227,6 +230,9 @@ Changes from Restler 3.0 RC2
 * RateLimit class re-written to support all range of time units
   second|minute|hour|day|week|month to have fine grained control
 * Resources class improved to include description for body parameters
+* Added two more ways to exclude API's from explorer/documentation
+    * `Resources::$excludedHttpMethods` (array)
+    * `Resources::$excludedPaths` (array)
 * Fixes unescaped unicode bug in PHP < 5.4
 * Added Charset support
 * Added Language (basic) support
