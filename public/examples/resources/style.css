@@ -285,6 +285,11 @@ ol.toc .right,ol.toc span {
 div.right {
     float:right;
 }
+
+a img {
+    vertical-align: text-bottom;
+}
+
 ol.toc .right {
     padding: 0 0 0 3px;
     right: 0;

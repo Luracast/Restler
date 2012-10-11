@@ -18,7 +18,7 @@ This API Server exposes the following URIs
     GET say/hi/{to} ⇠ Say::hi()
 
 
-> **Note:-** If you have used Restler 2 before you will wonder why
+> **Note:-** If you have used Restler 2 before, you will wonder why
  the generated routes are lesser with Restler 3.
  Read the [Routes](../_006_routing/readme.html) example to understand.
 
@@ -45,8 +45,11 @@ GET [say/hi/restler3.0](say/hi/restler3.0)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-If the above links fail, it could be due to missing `.htaccess` file or URL Rewriting is not supported in your server.
-Try the following links instead
+If the above links fail, it could be due to missing `.htaccess` file or URL
+Rewriting is not supported in your server. If you are on Apache Server, make sure
+`AllowOverride` is set to `All` instead of `None` in the `httpd.conf` file.
+
+In case you could not get URL Rewriting to work, try the following links instead
 
 GET [index.php/say/hello](index.php/say/hello)
 :    

@@ -89,13 +89,13 @@
 <body>
     <nav class="floating-menu">
 <ul>
-<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/">Home</a></li>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
-<li><a class="active" href="../index.html">Examples</a></li>
-<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA">Support</a></li>
-<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler">GitHub</a></li>
-<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast">Twitter</a></li>
-<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast">Facebook</a></li>
+<li><a class="active" href="../index.html"><img src="../resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="../resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="../resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="../resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="../resources/facebook.png" width="16" height="16"/> Connect</a></li>
 </ul>
 </nav>
     <div id="codeviewer" style="display: none;"></div>
@@ -203,7 +203,7 @@ GET say/hi/{to} ⇠ Say::hi()
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> If you have used Restler 2 before you will wonder why
+  <p><strong>Note:-</strong> If you have used Restler 2 before, you will wonder why
    the generated routes are lesser with Restler 3.
    Read the <a href="../_006_routing/readme.html" target="_blank">Routes</a> example to understand.</p>
 </blockquote>
@@ -233,8 +233,11 @@ GET say/hi/{to} ⇠ Say::hi()
 </dd>
 </dl>
 
-<p>If the above links fail, it could be due to missing <code>.htaccess</code> file or URL Rewriting is not supported in your server.
-Try the following links instead</p>
+<p>If the above links fail, it could be due to missing <code>.htaccess</code> file or URL
+Rewriting is not supported in your server. If you are on Apache Server, make sure
+<code>AllowOverride</code> is set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file.</p>
+
+<p>In case you could not get URL Rewriting to work, try the following links instead</p>
 
 <dl>
 <dt>GET <a href="index.php/say/hello" target="_blank"><abbr title="_001_helloworld/index.php">index.php</abbr>/say/hello</a></dt>
