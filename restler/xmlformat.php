@@ -209,5 +209,16 @@ class XmlFormat implements iFormat
 		(self::$parse_namespaces ? 'true' : 'false').";\n\n\n";
 		return $s;
 	}
-
+	
+	public function encodeDate($aDate)
+	{
+		return strftime('%Y-%m-%dT%H:%M:%S', $aDate);
+	}
+	
+	public function decodeDateString($aDateString)
+	{
+		$timeParts = strptime($aDateString, '%Y-%m-%dT%H:%M:%S');
+		return mktime($timeParts['tm_hour'], $timeParts['tm_min'], $timeParts['tm_sec'],
+				1 + $timeParts['tm_mon'], $timeParts['tm_mday'], 1900 + $timeParts['tm_year']);
+	}
 }
