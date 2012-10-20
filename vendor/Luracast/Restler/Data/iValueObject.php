@@ -25,7 +25,7 @@ interface iValueObject
      *
      * @param array $properties
      *
-     * @return IValueObject
+     * @return iValueObject
      */
     public static function __set_state(array $properties);
 

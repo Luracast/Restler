@@ -60,7 +60,7 @@ class Defaults
      * @var boolean avoids creating multiple routes that can increase the
      * ambiguity when set to true. when a method parameter is optional it is
      * not mapped to the url and should only be used in request body or as
-     * query string `/resource?id=value. When a parameter is required and is
+     * query string `/resource?id=value`. When a parameter is required and is
      * scalar, it will be mapped as part of the url `/resource/{id}`
      */
     public static $smartAutoRouting = true;
@@ -133,6 +133,14 @@ class Defaults
 
     public static $charset = 'utf-8';
     public static $language = 'en';
+
+    /**
+     * @var bool enables CORS support
+     */
+    public static $crossOriginResourceSharing = false;
+    public static $accessControlAllowOrigin = '*';
+    public static $accessControlAllowMethods =
+        'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
 
     // ==================================================================
     //
