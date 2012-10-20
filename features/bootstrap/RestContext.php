@@ -16,6 +16,7 @@ use Symfony\Component\Yaml\Yaml;
 class RestContext extends BehatContext
 {
 
+    private $_startTime = null;
     private $_restObject = null;
     private $_headers = array();
     private $_restObjectType = null;
@@ -50,6 +51,7 @@ class RestContext extends BehatContext
             function (\Guzzle\Common\Event $event) {
                 switch ($event['response']->getStatusCode()) {
                     case 400:
+                    case 401:
                     case 404:
                     case 406:
                         $event->stopPropagation();
@@ -182,6 +184,7 @@ class RestContext extends BehatContext
      */
     public function iRequest($pageUrl)
     {
+        $this->_startTime = microtime();
         $baseUrl = $this->getParameter('base_url');
         $this->_requestUrl = $baseUrl . $pageUrl;
         $url = false !== strpos($pageUrl, '{')
@@ -324,6 +327,44 @@ class RestContext extends BehatContext
     {
         if ($this->_language != $language) {
             throw new Exception("Response Language was not $language\n\n"
+                . $this->echoLastResponse());
+        }
+    }
+
+    /**
+     * @Then /^the response "([^"]*)" header should be "([^"]*)"$/
+     */
+    public function theResponseHeaderShouldBe($header, $value)
+    {
+        if (!$this->_response->hasHeader($header)) {
+            throw new Exception("Response header $header was not found\n\n"
+                . $this->echoLastResponse());
+        }
+        if ((string)$this->_response->getHeader($header) !== $value) {
+            throw new Exception("Response header $header"
+                . " does not match `$value`\n\n"
+                . $this->echoLastResponse());
+        }
+    }
+
+    /**
+     * @Then /^the response "Expires" header should be Date\+(\d+) seconds$/
+     */
+    public function theResponseExpiresHeaderShouldBeDatePlusGivenSeconds($seconds)
+    {
+        $value = gmdate('D, d M Y H:i:s \G\M\T', time() + $seconds);
+        return $this->theResponseHeaderShouldBe('Expires', $value);
+    }
+
+    /**
+     * @Then /^the response time should at least be (\d+) milliseconds$/
+     */
+    public function theResponseTimeShouldAtLeastBeMilliseconds($milliSeconds)
+    {
+        $diff = 1000 * (microtime() - $this->_startTime);
+        if ($diff < $milliSeconds) {
+            throw new Exception("Response time $diff is "
+                . "quicker than $milliSeconds\n\n"
                 . $this->echoLastResponse());
         }
     }
