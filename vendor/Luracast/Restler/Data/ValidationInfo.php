@@ -200,9 +200,7 @@ class ValidationInfo implements iValueObject
         if (isset ($rules ['choice'])) {
             $this->rules ['choice'] = $this->choice
                 = is_array($rules ['choice'])
-                ? $rules ['choice'] : array(
-                    $rules ['pattern']
-                );
+                ? $rules ['choice'] : array($rules ['choice']);
             unset ($rules ['pattern']);
         }
         foreach ($rules as $key => $value) {
