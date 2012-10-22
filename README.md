@@ -233,8 +233,7 @@ DirectoryIndex index.php
 </IfModule>
 ```
 
-> **Note:-** This requires `AllowOverride` to be set to `All` instead of 
-  `None` in the `httpd.conf` file
+> **Note:-** This requires `AllowOverride` to be set to `All` instead of `None` in the `httpd.conf` file
 
 
 ### 4.
@@ -442,13 +441,16 @@ Change Log
 
 ### Changes from Restler 3.0 RC2
 
+* Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern
 * RateLimit class re-written to support all range of time units
   second|minute|hour|day|week|month to have fine grained control
 * Resources class improved to include description for body parameters
+* Fixes Resources not to include namespace when the return type is array of custom class
 * Added two more ways to exclude API's from explorer/documentation
     * `Resources::$excludedHttpMethods` (array)
     * `Resources::$excludedPaths` (array)
 * Fixes unescaped unicode bug in PHP < 5.4
+* Fixes a bug with ValidationInfo parsing @choice inline comment
 * Added Charset support
 * Added Language (basic) support
 * Updated the BDD tests to include new features
