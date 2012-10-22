@@ -436,7 +436,8 @@ class Resources implements iUseAuthentication
         $p = array_values($this->_bodyParam['description']);
         $r->description = "Paste JSON data here";
         if (count($p) == 1
-            && $this->_bodyParam['description'][Defaults::$fullRequestDataName]
+            && isset(
+            $this->_bodyParam['description'][Defaults::$fullRequestDataName])
         ) {
 
         } else {
