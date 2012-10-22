@@ -281,8 +281,7 @@ $r-&gt;handle(); //serve the response
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of<br />
-    <code>None</code> in the <code>httpd.conf</code> file</p>
+  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file</p>
 </blockquote>
 
 <h3>4.</h3>
@@ -485,9 +484,11 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 <h3>Changes from Restler 3.0 RC2</h3>
 
 <ul>
+<li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
 <li>RateLimit class re-written to support all range of time units<br />
 second|minute|hour|day|week|month to have fine grained control</li>
 <li>Resources class improved to include description for body parameters</li>
+<li>Fixes Resources not to include namespace when the return type is array of custom class</li>
 <li>Added two more ways to exclude API's from explorer/documentation
 
 <ul>
@@ -495,6 +496,7 @@ second|minute|hour|day|week|month to have fine grained control</li>
 <li><code>Resources::$excludedPaths</code> (array)</li>
 </ul></li>
 <li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
+<li>Fixes a bug with ValidationInfo parsing @choice inline comment</li>
 <li>Added Charset support</li>
 <li>Added Language (basic) support</li>
 <li>Updated the BDD tests to include new features</li>
