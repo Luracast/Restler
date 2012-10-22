@@ -132,7 +132,7 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
-                foreach (static::$excludedPaths as $exclude){
+                foreach (static::$excludedPaths as $exclude) {
                     if (0 === strpos($fullPath, "v$version/$exclude")) {
                         continue 2;
                     }
@@ -246,8 +246,8 @@ class Resources implements iUseAuthentication
                                 ['type'];
                                 if (class_exists($rt)) {
                                     $this->_model($rt);
-                                    $operation->responseClass
-                                        .= '[' . $rt . ']';
+                                    $operation->responseClass .= '[' .
+                                        $this->_noNamespace($rt) . ']';
                                 }
 
                             }
@@ -299,7 +299,7 @@ class Resources implements iUseAuthentication
                     continue;
                 }
 
-                foreach (static::$excludedPaths as $exclude){
+                foreach (static::$excludedPaths as $exclude) {
                     if (0 === strpos($fullPath, "v$version/$exclude")) {
                         continue 2;
                     }
