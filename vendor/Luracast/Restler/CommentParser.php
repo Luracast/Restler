@@ -297,6 +297,11 @@ class CommentParser
             if ($matches[2] == 'true' || $matches[2] == 'false') {
                 $matches[2] = $matches[2] == 'true';
             }
+            if ($matches[1] != 'pattern'
+                && false !== strpos($matches[2], static::$arrayDelimiter)
+            ) {
+                $matches[2] = explode(static::$arrayDelimiter, $matches[2]);
+            }
             $data[$matches[1]] = $matches[2];
         }
 
