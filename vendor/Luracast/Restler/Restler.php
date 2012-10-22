@@ -441,6 +441,18 @@ class Restler extends EventEmitter
      */
     public function init()
     {
+        if (Defaults::$crossOriginResourceSharing
+            && $this->requestMethod == 'OPTIONS'
+        ) {
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+                header('Access-Control-Allow-Methods: '
+                    . Defaults::$accessControlAllowMethods);
+
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+                header('Access-Control-Allow-Headers: '
+                    . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+            exit(0);
+        }
         if (empty($this->formatMap)) {
             $this->setSupportedFormats('JsonFormat');
         }
@@ -694,6 +706,18 @@ class Restler extends EventEmitter
         @header('Cache-Control: ' . $cacheControl);
         @header('Expires: ' . $expires);
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+
+        if (Defaults::$crossOriginResourceSharing
+            && isset($_SERVER['HTTP_ORIGIN'])
+        ) {
+            header('Access-Control-Allow-Origin: ' .
+                    (Defaults::$accessControlAllowOrigin == '*'
+                        ? $_SERVER['HTTP_ORIGIN']
+                        : Defaults::$accessControlAllowOrigin)
+            );
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: 86400');
+        }
 
         if (isset($this->apiMethodInfo->metadata['header'])) {
             foreach ($this->apiMethodInfo->metadata['header'] as $header)
@@ -1027,11 +1051,20 @@ class Restler extends EventEmitter
             return new stdClass ();
         }
         $found = false;
-        $this->requestData += $_GET;
-        $params = array(
-            'request_data' => $this->requestData
-        );
-        $params += $this->requestData;
+        if (!is_array($this->requestData)) {
+            $this->requestData = array(
+                Defaults::$fullRequestDataName => $this->requestData
+            );
+            $this->requestData += $_GET;
+            $params = $this->requestData;
+        } else {
+            $this->requestData += $_GET;
+            $params = array(
+                Defaults::$fullRequestDataName => $this->requestData
+            );
+            $params = $this->requestData + $params;
+
+        }
         $call = new stdClass;
         $currentUrl = "v{$this->requestedApiVersion}/{$this->url}";
         $lc = strtolower($currentUrl);
