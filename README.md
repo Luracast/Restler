@@ -1,7 +1,8 @@
 Luracast Restler 3.0 RC3
 ========================
 
-Restler is a simple and effective multi-format Web API Server written in PHP. 
+Restler is a simple and effective multi-format Web API Server written in PHP.
+
 Just deal with your business logic in php, restler will take care of the REST!
 
 ### Restler 3 - *Better APIs by Design*
@@ -62,7 +63,9 @@ Features
 
 Installation
 ------------
-Installation is a two step process. Do the following in the folder where you want Restler to be setup
+Installation is a two step process. Do the following in the folder where you want Restler to be setup.
+
+Before proceeding make sure your server has **PHP 5.3** or higher.
 
 ### 1.
 [Download](https://github.com/Luracast/Restler/zipball/v3) and unpack Restler 3,
@@ -100,7 +103,9 @@ This creates the following folder structure
 ```
 
 ### 2.
-Download the dependencies using make. Using Terminal/Commandline
+Download the dependencies using make at the Terminal/Commandline.
+This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
+Otherwise you may safely skip this step.
 
 ```console
 
@@ -519,7 +524,7 @@ for performance. Here are some of the major changes and improvements
 * PHPDoc comments to map a method to URI are now optional.
 * All public methods that does not begin with an underscore are mapped
   automatically to the method name (`gateway\classname\methodname\param1\...`)
-* If we do not specify the second parameter for `$restler->addAPIClass` it will be mapped to the
-  class name instead of mapping it to the root
+* If we do not specify the second parameter for
+  `$restler->addAPIClass` it will be mapped to the class name instead of mapping it to the root
 * Restler 2 is written for PHP 5.3 and above but it make use of compat.php and work on
   any version of PHP starting from PHP 5.0
