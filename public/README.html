@@ -21,12 +21,13 @@
 </head>
 <body>
 <article>
-<h1>Luracast Restler 3.0 RC3</h1>
+<p><a id="luracast-restler-3-0-rc3"></a><h1>Luracast Restler 3.0 RC3</h1></p>
 
-<p>Restler is a simple and effective multi-format Web API Server written in PHP.<br />
-Just deal with your business logic in php, restler will take care of the REST!</p>
+<p>Restler is a simple and effective multi-format Web API Server written in PHP.</p>
 
-<h3>Restler 3 - <em>Better APIs by Design</em></h3>
+<p>Just deal with your business logic in php, restler will take care of the REST!</p>
+
+<p><a id="restler-3---x-18x"></a><h3>Restler 3 - <em>Better APIs by Design</em></h3></p>
 
 <ul>
 <li><a href="http://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
@@ -38,7 +39,7 @@ Just deal with your business logic in php, restler will take care of the REST!</
 <li><a href="#change-log" target="_blank">Change Log</a></li>
 </ul>
 
-<h2>Features</h2>
+<p><a id="features"></a><h2>Features</h2></p>
 
 <ul>
 <li>No Learning Curve</li>
@@ -115,11 +116,13 @@ Just deal with your business logic in php, restler will take care of the REST!</
 </ul></li>
 </ul>
 
-<h2>Installation</h2>
+<p><a id="installation"></a><h2>Installation</h2></p>
 
-<p>Installation is a two step process. Do the following in the folder where you want Restler to be setup</p>
+<p>Installation is a two step process. Do the following in the folder where you want Restler to be setup.</p>
 
-<h3>1.</h3>
+<p>Before proceeding make sure your server has <strong>PHP 5.3</strong> or higher.</p>
+
+<p><a id="1-"></a><h3>1.</h3></p>
 
 <p><a href="https://github.com/Luracast/Restler/zipball/v3" target="_blank">Download</a> and unpack Restler 3,<br />
 or Checkout using Terminal/Commandline</p>
@@ -153,9 +156,11 @@ or Checkout using Terminal/Commandline</p>
         └── Restler
 </code></pre>
 
-<h3>2.</h3>
+<p><a id="2-"></a><h3>2.</h3></p>
 
-<p>Download the dependencies using make. Using Terminal/Commandline</p>
+<p>Download the dependencies using make at the Terminal/Commandline.<br />
+This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.<br />
+Otherwise you may safely skip this step.</p>
 
 <pre><code class="language-console"><br />make composer-install
 
@@ -202,15 +207,15 @@ or Checkout using Terminal/Commandline</p>
 
 <p>Now the vendor folder will have all dependencies.</p>
 
-<h3>3.</h3>
+<p><a id="3-"></a><h3>3.</h3></p>
 
 <p>Ideally public folder should be mapped as your web root (optional, but recommended)</p>
 
-<h3>4.</h3>
+<p><a id="4-"></a><h3>4.</h3></p>
 
 <p>Try the examples in your localhost</p>
 
-<h3>5.</h3>
+<p><a id="5-"></a><h3>5.</h3></p>
 
 <p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p>
 
@@ -235,16 +240,16 @@ or Checkout using Terminal/Commandline</p>
 
 <p>All set, Happy Restling! :)</p>
 
-<h2>Quick Start Guide</h2>
+<p><a id="quick-start-guide"></a><h2>Quick Start Guide</h2></p>
 
 <p>Once you have got restler installed with the above steps, you can quickly create<br />
 your application by following these steps</p>
 
-<h3>1.</h3>
+<p><a id="1-"></a><h3>1.</h3></p>
 
 <p>Create your <strong>API classes</strong> with all needed public and protected methods</p>
 
-<h3>2.</h3>
+<p><a id="2-"></a><h3>2.</h3></p>
 
 <p>Create the <strong>gateway (index.php)</strong> as follows</p>
 
@@ -257,7 +262,7 @@ $r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
 $r-&gt;handle(); //serve the response
 </code></pre>
 
-<h3>3.</h3>
+<p><a id="3-"></a><h3>3.</h3></p>
 
 <p><strong>Enable URL Rewriting</strong></p>
 
@@ -284,7 +289,7 @@ $r-&gt;handle(); //serve the response
   <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file</p>
 </blockquote>
 
-<h3>4.</h3>
+<p><a id="4-"></a><h3>4.</h3></p>
 
 <p><strong>Fine tune to suit your needs</strong></p>
 
@@ -453,7 +458,7 @@ All tags except @url can also be defined at the class level.</p>
     </tr>
 </table>
 
-<h3>5.</h3>
+<p><a id="5-"></a><h3>5.</h3></p>
 
 <p>Protect your api, authenticate and alow valid users</p>
 
@@ -466,7 +471,7 @@ $r-&gt;addAuthenticationClass('CustomAuth'); //Add Authentication classes as nee
 $r-&gt;handle(); //serve the response
 </code></pre>
 
-<h3>6.</h3>
+<p><a id="6-"></a><h3>6.</h3></p>
 
 <p>Turn on production mode</p>
 
@@ -479,9 +484,9 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 //...
 </code></pre>
 
-<h2>Change Log</h2>
+<p><a id="change-log"></a><h2>Change Log</h2></p>
 
-<h3>Changes from Restler 3.0 RC2</h3>
+<p><a id="changes-from-restler-3-0-rc2"></a><h3>Changes from Restler 3.0 RC2</h3></p>
 
 <ul>
 <li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
@@ -504,7 +509,7 @@ second|minute|hour|day|week|month to have fine grained control</li>
 <li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code></li>
 </ul>
 
-<h3>Changes from Restler 3.0 RC1</h3>
+<p><a id="changes-from-restler-3-0-rc1"></a><h3>Changes from Restler 3.0 RC1</h3></p>
 
 <ul>
 <li>Filter classes can use authentication status and respond deferently for<br />
@@ -528,7 +533,7 @@ authenticated users by implementing iUseAuthentication interface</li>
 <li>CRUD example updated to include PATCH support</li>
 </ul>
 
-<h3>Changes from Restler 2.0</h3>
+<p><a id="changes-from-restler-2-0"></a><h3>Changes from Restler 2.0</h3></p>
 
 <p><strong>Restler 3.0</strong> is completly rewriten from Restler 2.0 with best practices in mind for</p>
 
@@ -569,7 +574,7 @@ find out about user authentication status</li>
 <li>...(more to follow)</li>
 </ul>
 
-<h3>Changes from Restler 1.0</h3>
+<p><a id="changes-from-restler-1-0"></a><h3>Changes from Restler 1.0</h3></p>
 
 <p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized<br />
 for performance. Here are some of the major changes and improvements</p>
@@ -578,8 +583,8 @@ for performance. Here are some of the major changes and improvements</p>
 <li>PHPDoc comments to map a method to URI are now optional.</li>
 <li>All public methods that does not begin with an underscore are mapped<br />
 automatically to the method name (<code>gateway\classname\methodname\param1\...</code>)</li>
-<li>If we do not specify the second parameter for <code>$restler-&gt;addAPIClass</code> it will be mapped to the<br />
-class name instead of mapping it to the root</li>
+<li>If we do not specify the second parameter for<br />
+<code>$restler-&gt;addAPIClass</code> it will be mapped to the class name instead of mapping it to the root</li>
 <li>Restler 2 is written for PHP 5.3 and above but it make use of compat.php and work on<br />
 any version of PHP starting from PHP 5.0</li>
 </ul>
