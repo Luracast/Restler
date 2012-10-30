@@ -70,6 +70,7 @@ GET [index.php/say/hi/restler3.0](index.php/say/hi/restler3.0)
 
 
 
+
 We expect the following behaviour from this example.
 
 ```gherkin
