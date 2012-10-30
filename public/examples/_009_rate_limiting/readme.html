@@ -6,9 +6,9 @@
 
 <link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/style.css" />
+<link rel="stylesheet" type="text/css" href="../resources/highlight.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css" />
+<link rel="stylesheet" type="text/css" href="../resources/style.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
@@ -16,35 +16,48 @@
  
 <script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
 
-<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
-
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
 <script type="text/javascript" src="../resources/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="../resources/highlight.pack.js"></script>
+
 <script type="text/javascript">
     $(document).ready(
             function() {
+                $('dd pre code').each(function(i, e) {
+                    text = $(e).text();
+                    $(e).addClass(text.charAt(0) == '<' ? 'xml' : 'json')
+                    //hljs.highlightBlock(e);
+                });
+                $('pre code').each(function(i, e) {
+                    if($(e).attr('class'))
+                        hljs.highlightBlock(e);
+                });
                 $('abbr').parents().not('a').children('abbr').click(
                         function() {
                             $('#codeviewer').load(
                                     '../resources/getsource.php?file='
                                             + $(this).attr("title"),
                                     function() {
+                                        /*
                                         $("pre#php").snippet("php", {
                                             style : "acid",
                                             showNum : false
                                         });
+                                        */
+
                                         jQuery.facebox({
                                             div : '#codeviewer'
                                         });
+                                        hljs.highlightBlock($("pre#php")[1]);
                                     });
                         });
                 var curURL = window.location.pathname.split('/examples/')[1];
                 if (curURL == '')
                     curURL = 'index.html';
                 $("a").each(function() {
-                    if ($(this).attr("href").indexOf(curURL) > -1) {
+                    if ($(this).attr("href") && $(this).attr("href").indexOf(curURL) > -1) {
                         $(this).addClass("active");
                     }
                 });
@@ -179,19 +192,9 @@
     </nav>
     <article id="page">
 <div class="right"><small>9</small></div>
-<h2>Rate Limiting <requires>PHP >= 5.3</requires></h2>
+<p><a id="rate-limiting-x-612xphp----5-3x-613x"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
 
-<p><tag>create</tag>
-<tag>retrieve</tag>
-<tag>read</tag>
-<tag>update</tag>
-<tag>delete</tag>
-<tag>post</tag>
-<tag>get</tag>
-<tag>put</tag>
-<tag>filter</tag>
-<tag>throttle</tag>
-<tag>rate-limiting</tag></p>
+<p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>filter</tag> <tag>throttle</tag> <tag>rate-limiting</tag></p>
 
 <p>How to Rate Limit API access using a Filter class that implements
 <code>iFilter</code> interface.</p>

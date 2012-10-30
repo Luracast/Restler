@@ -1,8 +1,6 @@
 Protected API <requires>PHP >= 5.3</requires>
 -------------
-
-<tag>authentication</tag>
-<tag>authorization</tag>
+<tag>authentication</tag> <tag>authorization</tag> 
 
 Not all the API exposed needs to be public, we need to protect
  some of our API.
@@ -22,7 +20,7 @@ API for example [SimpleAuth::key](simpleauth/key). It can be used to create
 login/logout methods.
 
 > This API Server is made using the following php files/folders
-
+> 
 > * index.php      (gateway)
 > * Simple.php      (api)
 > * Secured.php      (api)
@@ -67,6 +65,7 @@ GET [secured?key=rEsTlEr2](index.php/secured?key=rEsTlEr2)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "protected class"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 
 

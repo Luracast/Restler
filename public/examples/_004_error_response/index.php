@@ -27,7 +27,7 @@
 {
   "error": {
     "code": 400,
-    "message": "Precondition Failed: not a valid number"
+    "message": "Bad Request: not a valid number"
   }
 }
 

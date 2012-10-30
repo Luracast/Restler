@@ -6,9 +6,9 @@
 
 <link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/style.css" />
+<link rel="stylesheet" type="text/css" href="../resources/highlight.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css" />
+<link rel="stylesheet" type="text/css" href="../resources/style.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
@@ -16,35 +16,48 @@
  
 <script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
 
-<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
-
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
 <script type="text/javascript" src="../resources/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="../resources/highlight.pack.js"></script>
+
 <script type="text/javascript">
     $(document).ready(
             function() {
+                $('dd pre code').each(function(i, e) {
+                    text = $(e).text();
+                    $(e).addClass(text.charAt(0) == '<' ? 'xml' : 'json')
+                    //hljs.highlightBlock(e);
+                });
+                $('pre code').each(function(i, e) {
+                    if($(e).attr('class'))
+                        hljs.highlightBlock(e);
+                });
                 $('abbr').parents().not('a').children('abbr').click(
                         function() {
                             $('#codeviewer').load(
                                     '../resources/getsource.php?file='
                                             + $(this).attr("title"),
                                     function() {
+                                        /*
                                         $("pre#php").snippet("php", {
                                             style : "acid",
                                             showNum : false
                                         });
+                                        */
+
                                         jQuery.facebox({
                                             div : '#codeviewer'
                                         });
+                                        hljs.highlightBlock($("pre#php")[1]);
                                     });
                         });
                 var curURL = window.location.pathname.split('/examples/')[1];
                 if (curURL == '')
                     curURL = 'index.html';
                 $("a").each(function() {
-                    if ($(this).attr("href").indexOf(curURL) > -1) {
+                    if ($(this).attr("href") && $(this).attr("href").indexOf(curURL) > -1) {
                         $(this).addClass("active");
                     }
                 });
@@ -179,16 +192,11 @@
     </nav>
     <article id="page">
 <div class="right"><small>6</small></div>
-<h2>Routing <requires>PHP >= 5.3</requires></h2>
+<p><a id="routing-x-419xphp----5-3x-420x"></a><h2>Routing <requires>PHP >= 5.3</requires></h2></p>
 
-<p><tag>routing</tag>
-<tag>get</tag>
-<tag>post</tag>
-<tag>put</tag>
-<tag>delete</tag>
-<tag>patch</tag></p>
+<p><tag>routing</tag> <tag>get</tag> <tag>post</tag> <tag>put</tag> <tag>delete</tag> <tag>patch</tag></p>
 
-<h3>Two ways of Routing</h3>
+<p><a id="two-ways-of-routing"></a><h3>Two ways of Routing</h3></p>
 
 <p>API Methods can be mapped to URI in two ways</p>
 
@@ -197,7 +205,7 @@
 <li>Manual Routing</li>
 </ol>
 
-<h3>How automatic routing is done?</h3>
+<p><a id="how-automatic-routing-is-done-"></a><h3>How automatic routing is done?</h3></p>
 
 <p><strong>Role of Class Name</strong></p>
 
@@ -247,7 +255,7 @@ comment.</p>
 <pre><code>@smart-auto-routing false
 </code></pre>
 
-<h3>Manual Routing</h3>
+<p><a id="manual-routing"></a><h3>Manual Routing</h3></p>
 
 <p><strong>Role of Class Name</strong></p>
 
@@ -257,7 +265,7 @@ url segment to map it to, you may choose to keep it blank to map it to the root<
 <pre><code>$r-&gt;addAPIClass('MyClass','');
 </code></pre>
 
-<h3>Rest of the URI</h3>
+<p><a id="rest-of-the-uri"></a><h3>Rest of the URI</h3></p>
 
 <p>rest of the uri can be created manually using php doc comment as shown below or
 else automatically routed for public and protected methods unless they are

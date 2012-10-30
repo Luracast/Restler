@@ -1,11 +1,6 @@
 Access Control <requires>PHP >= 5.3</requires>
 --------------
-
-<tag>access-control</tag>
-<tag>acl</tag>
-<tag>secure</tag>
-<tag>authentication</tag>
-<tag>authorization</tag>
+<tag>access-control</tag> <tag>acl</tag> <tag>secure</tag> <tag>authentication</tag> <tag>authorization</tag> 
 
 This example shows how you can extend the authentication system to create
 a robust access control system. As a added bonus we also restrict api
@@ -20,7 +15,7 @@ When the `api_key` is
 Try it out yourself [here](explorer/index.html#!/v1)
 
 > This API Server is made using the following php files/folders
-
+> 
 > * index.php      (gateway)
 > * Resources.php      (api)
 > * RateLimit.php      (filter)
@@ -37,6 +32,7 @@ This API Server exposes the following URIs
     GET resources/{id}-v{version} ⇠ Resources::get()
     GET resources/v{version}      ⇠ Resources::get()
     GET resources                 ⇠ Resources::index()
+
 
 
 

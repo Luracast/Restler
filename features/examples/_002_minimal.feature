@@ -32,7 +32,7 @@ Feature: Testing Minimal Example
     And the response has a "result" property
     And the "result" property equals 50
 
-  Scenario: Multiply with out value
+  Scenario: Multiply without value
     When I request "/examples/_002_minimal/math/multiply"
     Then the response status code should be 404
     And the response is JSON

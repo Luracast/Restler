@@ -6,9 +6,9 @@
 
 <link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/style.css" />
+<link rel="stylesheet" type="text/css" href="../resources/highlight.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css" />
+<link rel="stylesheet" type="text/css" href="../resources/style.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
@@ -16,35 +16,48 @@
  
 <script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
 
-<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
-
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
 <script type="text/javascript" src="../resources/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="../resources/highlight.pack.js"></script>
+
 <script type="text/javascript">
     $(document).ready(
             function() {
+                $('dd pre code').each(function(i, e) {
+                    text = $(e).text();
+                    $(e).addClass(text.charAt(0) == '<' ? 'xml' : 'json')
+                    //hljs.highlightBlock(e);
+                });
+                $('pre code').each(function(i, e) {
+                    if($(e).attr('class'))
+                        hljs.highlightBlock(e);
+                });
                 $('abbr').parents().not('a').children('abbr').click(
                         function() {
                             $('#codeviewer').load(
                                     '../resources/getsource.php?file='
                                             + $(this).attr("title"),
                                     function() {
+                                        /*
                                         $("pre#php").snippet("php", {
                                             style : "acid",
                                             showNum : false
                                         });
+                                        */
+
                                         jQuery.facebox({
                                             div : '#codeviewer'
                                         });
+                                        hljs.highlightBlock($("pre#php")[1]);
                                     });
                         });
                 var curURL = window.location.pathname.split('/examples/')[1];
                 if (curURL == '')
                     curURL = 'index.html';
                 $("a").each(function() {
-                    if ($(this).attr("href").indexOf(curURL) > -1) {
+                    if ($(this).attr("href") && $(this).attr("href").indexOf(curURL) > -1) {
                         $(this).addClass("active");
                     }
                 });
@@ -179,7 +192,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>1</small></div>
-<h2>Hello World Example <requires>PHP >= 5.3</requires></h2>
+<p><a id="hello-world-example-x-208xphp----5-3x-209x"></a><h2>Hello World Example <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>basic</tag></p>
 
@@ -261,6 +274,54 @@ Rewriting is not supported in your server. If you are on Apache Server, make sur
 </code></pre>
 </dd>
 </dl>
+
+<p>We expect the following behaviour from this example.</p>
+
+<pre><code class="gherkin"><br />@example1 @helloworld
+Feature: Testing Helloworld Example
+
+  Scenario: Saying Hello world
+    When I request "/examples/_001_helloworld/say/hello"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "Hello world!"
+
+  Scenario: Saying Hello Restler
+    Given that "to" is set to "Restler"
+    When I request "/examples/_001_helloworld/say/hello{?to}"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "Hello Restler!"
+
+  Scenario: Saying
+    When I request "/examples/_001_helloworld/say"
+    Then the response status code should be 404
+    And the response is JSON
+    And the type is "array"
+
+  Scenario: Saying Hi
+    When I request "/examples/_001_helloworld/say/hi"
+    Then the response status code should be 404
+    And the response is JSON
+    And the type is "array"
+
+  Scenario: Saying Hi Arul
+    Given that "to" is set to "Arul"
+    When I request "/examples/_001_helloworld/say/hi/{to}"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "Hi Arul!"
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">/bin/behat  features/examples/_001_helloworld.feature
+</code></pre>
 
 </article>
 <footer>

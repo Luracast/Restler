@@ -6,9 +6,9 @@
 
 <link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/style.css" />
+<link rel="stylesheet" type="text/css" href="../resources/highlight.css" />
 
-<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css" />
+<link rel="stylesheet" type="text/css" href="../resources/style.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
@@ -16,35 +16,48 @@
  
 <script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
 
-<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
-
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
 <script type="text/javascript" src="../resources/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="../resources/highlight.pack.js"></script>
+
 <script type="text/javascript">
     $(document).ready(
             function() {
+                $('dd pre code').each(function(i, e) {
+                    text = $(e).text();
+                    $(e).addClass(text.charAt(0) == '<' ? 'xml' : 'json')
+                    //hljs.highlightBlock(e);
+                });
+                $('pre code').each(function(i, e) {
+                    if($(e).attr('class'))
+                        hljs.highlightBlock(e);
+                });
                 $('abbr').parents().not('a').children('abbr').click(
                         function() {
                             $('#codeviewer').load(
                                     '../resources/getsource.php?file='
                                             + $(this).attr("title"),
                                     function() {
+                                        /*
                                         $("pre#php").snippet("php", {
                                             style : "acid",
                                             showNum : false
                                         });
+                                        */
+
                                         jQuery.facebox({
                                             div : '#codeviewer'
                                         });
+                                        hljs.highlightBlock($("pre#php")[1]);
                                     });
                         });
                 var curURL = window.location.pathname.split('/examples/')[1];
                 if (curURL == '')
                     curURL = 'index.html';
                 $("a").each(function() {
-                    if ($(this).attr("href").indexOf(curURL) > -1) {
+                    if ($(this).attr("href") && $(this).attr("href").indexOf(curURL) > -1) {
                         $(this).addClass("active");
                     }
                 });
@@ -179,17 +192,9 @@
     </nav>
     <article id="page">
 <div class="right"><small>7</small></div>
-<h2>CRUD <requires>PHP >= 5.3</requires></h2>
+<p><a id="crud-x-497xphp----5-3x-498x"></a><h2>CRUD <requires>PHP >= 5.3</requires></h2></p>
 
-<p><tag>create</tag>
-<tag>retrieve</tag>
-<tag>read</tag>
-<tag>update</tag>
-<tag>delete</tag>
-<tag>post</tag>
-<tag>get</tag>
-<tag>put</tag>
-<tag>routing</tag></p>
+<p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag></p>
 
 <p>Create, Retrieve, Update and Delete using
  HTTP methods POST, GET, PUT and DELETE respectively.</p>
@@ -219,7 +224,7 @@ the class level similar to <em>index</em></p>
 
 <p>Alternatively you can use <a href="http://en.wikipedia.org/wiki/CURL" target="_blank">cURL</a> on the command line.</p>
 
-<pre><code>curl -X POST http://restler3.phpfogapp.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+<pre><code class="bash">curl -X POST http://restler3.phpfogapp.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
 
 {
   "name": "Another",
@@ -293,13 +298,13 @@ DELETE authors/{id} ⇠ Authors::delete()
 }
 </code></pre></dd>
 
-<h3>Creating new Author</h3>
+<p><a id="creating-new-author"></a><h3>Creating new Author</h3></p>
 
 <p>Typical post request to create a new author will be any of the following</p>
 
 <p><strong>Using query parameters</strong></p>
 
-<pre><code>POST /examples/_007_crud/index.php/authors?name=Another&amp;email=another@email.com HTTP/1.1
+<pre><code class="http">POST /examples/_007_crud/index.php/authors?name=Another&amp;email=another@email.com HTTP/1.1
 Host: restler3.dev
 Content-Length: 0
 Accept-Language: en
@@ -314,7 +319,7 @@ Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
 
 <p><strong>Using post vars</strong></p>
 
-<pre><code>POST /examples/_007_crud/index.php/authors HTTP/1.1
+<pre><code class="http">POST /examples/_007_crud/index.php/authors HTTP/1.1
 Host: restler3.dev
 Content-Length: 36
 Accept-Language: en
@@ -331,7 +336,7 @@ name=Another&amp;email=another@email.com
 
 <p><strong>Using JSON data</strong></p>
 
-<pre><code>POST /examples/_007_crud/index.php/authors HTTP/1.1
+<pre><code class="http">POST /examples/_007_crud/index.php/authors HTTP/1.1
 Host: restler3.dev
 Content-Length: 46
 Origin: chrome-extension://faceofpmfclkengnkgkgjkcibdbhemoc
@@ -347,9 +352,9 @@ Cookie: PHPSESSID=dcdfec433e86c1a6730f75303187071f
 {"name":"Another","email":"another@email.com"}
 </code></pre>
 
-<p>and the response could be</p>
+<p>and the response for all the above could be</p>
 
-<pre><code>HTTP/1.1 200 OK
+<pre><code class="http">HTTP/1.1 200 OK
 Date: Tue, 25 Sep 2012 10:05:06 GMT
 Server: Apache/2.2.19 (Unix) mod_ssl/2.2.19 OpenSSL/0.9.8r DAV/2 PHP/5.3.6 with Suhosin-Patch
 X-Powered-By: Luracast Restler v3.0.0
@@ -364,6 +369,66 @@ Content-Type: application/json
   "email": "another@email.com",
   "id": 7
 }
+```We expect the following behaviour from this example.
+
+```gherkin
+
+@example7 @crud
+Feature: Testing CRUD Example
+
+  Scenario: Creating new Author by POSTing vars
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    When I request "/examples/_007_crud/authors"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Creating new Author with JSON
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    And the request is sent as JSON
+    When I request "/examples/_007_crud/authors"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Updating Author with JSON
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "/examples/_007_crud/authors/{id}"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Failing to update Author with JSON
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "/examples/_007_crud/authors"
+    Then the response status code should be 404
+
+  Scenario: Deleting Author
+    Given that I want to delete an "Author"
+    And his "id" is 1
+    When I request "/examples/_007_crud/authors/{id}"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has an "id" property
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">/bin/behat  features/examples/_007_crud.feature
 </code></pre>
 
 </article>
