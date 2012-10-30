@@ -57,6 +57,7 @@ GET [math/multiply/4/NaN](index.php/math/multiply/4/NaN)
 
 
 
+
 We expect the following behaviour from this example.
 
 ```gherkin

@@ -175,7 +175,8 @@ Content-Type: application/json
   "email": "another@email.com",
   "id": 7
 }
-```We expect the following behaviour from this example.
+```
+We expect the following behaviour from this example.
 
 ```gherkin
 
