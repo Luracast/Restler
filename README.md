@@ -116,24 +116,8 @@ This expands the vendor folder as shown below
 
 ```
 .
-├── bin
-├── features
-│   ├── bootstrap
-│   ├── examples
-│   └── restler
-├── public
-│   └── examples
-│       ├── _001_helloworld
-│       ├── _002_minimal
-│       ├── _003_multiformat
-│       ├── _004_error_response
-│       ├── _005_protected_api
-│       ├── _006_routing
-│       ├── _007_crud
-│       ├── _008_documentation
-│       ├── _009_rate_limiting
-│       ├── _010_access_control
-│       └── resources
+│
+│
 └── vendor
     ├── ChiperSoft
     │   └── CFPropertyList
@@ -191,8 +175,7 @@ All set, Happy Restling! :)
 Quick Start Guide
 -----------------
 
-Once you have got restler installed with the above steps, you can quickly create
-your application by following these steps
+Once you have got restler installed with the above steps, you can quickly create your application by following these steps
 
 ### 1.
 

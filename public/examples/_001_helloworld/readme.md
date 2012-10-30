@@ -70,7 +70,6 @@ GET [index.php/say/hi/restler3.0](index.php/say/hi/restler3.0)
 
 
 
-
 We expect the following behaviour from this example.
 
 ```gherkin
@@ -119,7 +118,7 @@ from the project root (where the vendor folder resides). Make sure `base_url`
 in `behat.yml` is updated according to your web server.
 
 ```bash
-bin/behat  features/examples/_001_helloworld.feature
+/bin/behat  features/examples/_001_helloworld.feature
 ```
 
 

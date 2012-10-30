@@ -192,7 +192,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>7</small></div>
-<p><a id="crud-x-498xphp----5-3x-499x"></a><h2>CRUD <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="crud-x-497xphp----5-3x-498x"></a><h2>CRUD <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag></p>
 
@@ -369,11 +369,11 @@ Content-Type: application/json
   "email": "another@email.com",
   "id": 7
 }
-</code></pre>
+```We expect the following behaviour from this example.
 
-<p>We expect the following behaviour from this example.</p>
+```gherkin
 
-<pre><code class="gherkin"><br />@example7 @crud
+@example7 @crud
 Feature: Testing CRUD Example
 
   Scenario: Creating new Author by POSTing vars
@@ -428,7 +428,7 @@ Feature: Testing CRUD Example
 from the project root (where the vendor folder resides). Make sure <code>base_url</code>
 in <code>behat.yml</code> is updated according to your web server.</p>
 
-<pre><code class="bash">bin/behat  features/examples/_007_crud.feature
+<pre><code class="bash">/bin/behat  features/examples/_007_crud.feature
 </code></pre>
 
 </article>

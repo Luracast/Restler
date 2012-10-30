@@ -175,8 +175,7 @@ Content-Type: application/json
   "email": "another@email.com",
   "id": 7
 }
-```
-We expect the following behaviour from this example.
+```We expect the following behaviour from this example.
 
 ```gherkin
 
@@ -236,7 +235,7 @@ from the project root (where the vendor folder resides). Make sure `base_url`
 in `behat.yml` is updated according to your web server.
 
 ```bash
-bin/behat  features/examples/_007_crud.feature
+/bin/behat  features/examples/_007_crud.feature
 ```
 
 
