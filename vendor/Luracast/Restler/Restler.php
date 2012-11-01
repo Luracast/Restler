@@ -493,7 +493,7 @@ class Restler extends EventEmitter
                     if (strcasecmp($supported, $lang) == 0) {
                         $found = true;
                         Defaults::$language = $supported;
-                        break;
+                        break 2;
                     }
                 }
             }
