@@ -244,17 +244,17 @@ $r->addFilterClass('RateLimit'); //Add Filters as needed
 $r->handle(); //serve the response
 ```
 
-If you have successfuly completed Installation Step 2, you should have
+If you have successfully completed Installation Step 2, you should have
 [Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer) installed in `vendor/Luracast/explorer` folder
-Create a symoblic link of `vendor/Luracast/explorer/dist` or copy the folder and name it as `explorer`
+Create a symbolic link of `vendor/Luracast/explorer/dist` or copy the folder and name it as `explorer`
 
 Place the explorer in the same folder as the `index.php`
 
-Explore the api and try it out by opending `explorer/index.html` from the web root on your browser
+Explore the api and try it out by openings `explorer/index.html` from the web root on your browser
 
 Happy Exploring! :)
 
-You may use the following php doc comments to anotate your methods.
+You may use the following php doc comments to annotate your methods.
 All tags except @url can also be defined at the class level.
 
 <table>
@@ -306,7 +306,7 @@ All tags except @url can also be defined at the class level.
         <pre>@class ClassName {@propertyName value}</pre>
         Example:
         <pre>@class AccessControl {@requires user} {@level 5}</pre>
-        Inject property of the speficied class with specified value
+        Inject property of the specified class with specified value
         </td>
 	</tr>
 	<tr>
@@ -397,7 +397,7 @@ All tags except @url can also be defined at the class level.
 
 ### 5.
 
-Protect your api, authenticate and alow valid users
+Protect your api, authenticate and allow valid users
 
 ```php
 <?php
@@ -449,12 +449,12 @@ Change Log
 
 ### Changes from Restler 3.0 RC1
 
-* Filter classes can use authentication status and respond deferently for
+* Filter classes can use authentication status and respond differently for
   authenticated users by implementing iUseAuthentication interface
 * `RateLimit` class added to rate limit the api usage
 * Fixed a bug with setCompatibilityMode
 * Resources updated to use only paths for resource identification instead of class name
-    * Enabled Access Control for Documentatation
+    * Enabled Access Control for Documentation
 * Fixed CommentParser to ignore repeated white space so that it parses comments correctly
 * Fixed comment parsing for @status and @expires tags
 * Added the following Examples
@@ -467,7 +467,7 @@ Change Log
 
 ### Changes from Restler 2.0
 
-**Restler 3.0** is completly rewriten from Restler 2.0 with best practices in mind for
+**Restler 3.0** is completely rewritten from Restler 2.0 with best practices in mind for
 
 * PHP Coding
 * RESTfulness and/or Pragmatic REST
@@ -477,19 +477,19 @@ Change Log
 
 * uses namespaces, Late Static Bindings, and Closures and thus it is **PHP 5.3+** only
   (if you need **PHP 5.0+** support use [Restler 2](https://github.com/Luracast/Restler/tree/v2))
-* provides backword compatibility for Restler 1 and 2.
+* provides backward compatibility for Restler 1 and 2.
     Use `$r->setCompatibilityMode($version);`
 * supports hybrid api which provides extended data to authenticated users
   Use `@access hybrid` PHPDoc comment
 * uses smart auto routing by default where API method parameters that
   have default values are no longer mapped to the URL, instead they are
-  mapped to query strings to reduce ambiquity in the url.
+  mapped to query strings to reduce ambiguity in the url.
 * supports `suppress_response_codes` as query string, when set to true;
   all http responses will be returned with HTTP OK with the errors in the
-  body to accomodate mobile and less privilaged clients.
-* has improved `CommentParser` which adds support for embeded data in multiple formats
+  body to accommodate mobile and less privileged clients.
+* has improved `CommentParser` which adds support for embedded data in multiple formats
     * inline doc comments `{@name value}`
-    * querystring params \`\`\` param1=value&param2=value2\`\`\`
+    * query string params \`\`\` param1=value&param2=value2\`\`\`
     * json \`\`\` {"parm1": value, "param2": value2}\`\`\` which can be placed in multi-lines
 * has `Defaults` class with static properties that can be changed to suit the needs
 * iAuthenticate is now using `__isAllowed` method instead of `__isAuthenticated` so that same
