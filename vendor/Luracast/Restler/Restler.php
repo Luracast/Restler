@@ -441,6 +441,11 @@ class Restler extends EventEmitter
      */
     public function init()
     {
+        if (empty($this->formatMap)) {
+            $this->setSupportedFormats('JsonFormat');
+        }
+        $this->url = $this->getPath();
+        $this->requestMethod = Util::getRequestMethod();
         if (Defaults::$crossOriginResourceSharing
             && $this->requestMethod == 'OPTIONS'
         ) {
@@ -453,11 +458,6 @@ class Restler extends EventEmitter
                     . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
             exit(0);
         }
-        if (empty($this->formatMap)) {
-            $this->setSupportedFormats('JsonFormat');
-        }
-        $this->url = $this->getPath();
-        $this->requestMethod = Util::getRequestMethod();
         $this->responseFormat = $this->getResponseFormat();
         $this->requestFormat = $this->getRequestFormat();
         $this->responseFormat->restler = $this;
@@ -493,7 +493,7 @@ class Restler extends EventEmitter
                     if (strcasecmp($supported, $lang) == 0) {
                         $found = true;
                         Defaults::$language = $supported;
-                        break;
+                        break 2;
                     }
                 }
             }
