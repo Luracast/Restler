@@ -19,6 +19,7 @@ use SimpleXMLElement;
 
 class XmlFormat extends Format
 {
+    public static $importRootNameAndAttributesFromXml = false;
     public static $parseAttributes = true;
     public static $parseNamespaces = false;
     public static $attributeNames = array('xmlns');
@@ -66,13 +67,13 @@ class XmlFormat extends Format
 
     /**
      * The main function for converting to an XML document.
-     * Pass in a multi dimensional array and this recrusively loops through
+     * Pass in a multi dimensional array and this recursively loops through
      * and builds up an XML document.
      *
      * @param array  $data
      * @param string $rootNodeName
-     *            - what you want the root node to be -
-     *              defaults to data.
+     *            - what you want the root node to be
+     *            - defaults to data.
      * @param SimpleXMLElement $xml
      *            - should only be used recursively
      * @return string XML
@@ -115,13 +116,13 @@ class XmlFormat extends Format
                 }
                 // delete any char not allowed in XML element names
                 $key = preg_replace('/[^a-z0-9\-\_\.\:]/i', '', $key);
-                // if there is another array found recrusively
+                // if there is another array found recursively
                 // call this function
                 if (is_array($value)) {
                     $node = $this->isAssoc($value) || $numeric
                             ? $xml->addChild($key)
                             : $xml;
-                    // recrusive call.
+                    // reclusive call.
                     if ($numeric) {
                         $key = 'anon';
                     }
@@ -164,8 +165,8 @@ class XmlFormat extends Format
      * recursively loops through and builds a representative array
      *
      * @param string $xml
-     *            - XML document - can optionally be a
-     *            SimpleXMLElement object
+     *            - XML document
+     *            - can optionally be a SimpleXMLElement object
      * @return array ARRAY
      * @link http://bit.ly/n85yLi
      */
@@ -174,7 +175,7 @@ class XmlFormat extends Format
         try {
             $xml = new SimpleXMLElement($xml);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage());
+            return (string) $xml;
         }
         $hasChildren = false;
         if ($xml->children()) {
@@ -197,9 +198,11 @@ class XmlFormat extends Format
         }
         $arr = array();
         if ($firstCall) {
-            // reset the attribute names list
-            self::$attributeNames = array();
-            self::$rootName = $xml->getName();
+            if(self::$importRootNameAndAttributesFromXml){
+                // reset the attribute names list
+                self::$attributeNames = array();
+                self::$rootName = $xml->getName();
+            }
             if (self::$parseNamespaces) {
                 foreach ($xml->getDocNamespaces(true) as $namespace => $uri) {
                     if ($namespace == '') {
@@ -219,8 +222,7 @@ class XmlFormat extends Format
                     continue;
                 }
                 foreach ($xml->attributes($uri) as $attName => $attValue) {
-                    echo "ATTRIB " . $attName . " of NAME " .
-                        $xml->getName() . PHP_EOL;
+                    //echo "ATTRIB " . $attName . " of NAME " . $xml->getName() . PHP_EOL;
                     $attName = "_{$namespace}_{$attName}";
                     $arr [$attName] = (string) $attValue;
                     // add to attribute list for round trip support
@@ -228,7 +230,7 @@ class XmlFormat extends Format
                 }
             }
             foreach ($xml->attributes() as $attName => $attValue) {
-                echo "ATTRIB " . $attName . " of NAME " . $xml . PHP_EOL;
+                //echo "ATTRIB " . $attName . " of NAME " . $xml . PHP_EOL;
                 $arr [$attName] = (string) $attValue;
                 // add to attribute list for round trip support
                 self::$attributeNames [] = $attName;
@@ -236,7 +238,7 @@ class XmlFormat extends Format
         }
         $children = $xml->children();
         foreach ($children as $key => $node) {
-            echo "NAME " . $key . PHP_EOL;
+            //echo "NAME " . $key . PHP_EOL;
             $node = $this->toArray($node, $ns, false);
             if (is_string($node)) {
                 // echo "NAME ".$key.PHP_EOL;
@@ -267,7 +269,7 @@ class XmlFormat extends Format
                 }
                 $children = $xml->children($uri);
                 foreach ($children as $key => $node) {
-                    echo "NAME " . $key . PHP_EOL;
+                    //echo "NAME " . $key . PHP_EOL;
                     $node = $this->toArray($node, $ns, false);
                     // support for 'anon' non-associative arrays
                     if ($key == 'anon') {
