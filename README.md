@@ -444,6 +444,7 @@ Change Log
 * Added Language (basic) support
 * Updated the BDD tests to include new features
 * Fixes a bug in Restler class which affects $_GET overriding `Defaults`
+* Fixes a bug in XmlFormat parsing XML content to array
 
 
 
