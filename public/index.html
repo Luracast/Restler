@@ -480,6 +480,7 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 <p><a id="changes-from-restler-3-0-rc2"></a><h3>Changes from Restler 3.0 RC2</h3></p>
 
 <ul>
+<li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
 <li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
 <li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
 <li>RateLimit class re-written to support all range of time units

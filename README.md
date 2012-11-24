@@ -429,6 +429,7 @@ Change Log
 
 ### Changes from Restler 3.0 RC2
 
+* Added Defaults::$cacheDirectory to set cache directory in one central place
 * Fixes fatal error when the JSON sent in the request body is not an object or array
 * Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern
 * RateLimit class re-written to support all range of time units

@@ -16,3 +16,4 @@ vendor/symfony
 vendor/mustache
 vendor/zendframework
 .idea
+tag.sh
