@@ -365,7 +365,7 @@ class Resources implements iUseAuthentication
         $r = new stdClass();
         $r->apiVersion = (string)$this->restler->_apiVersion;
         $r->swaggerVersion = "1.1";
-        $r->basePath = $this->restler->baseUrl;
+        $r->basePath = $this->restler->_baseUrl;
         $r->apis = array();
         return $r;
     }
