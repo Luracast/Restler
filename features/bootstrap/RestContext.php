@@ -184,7 +184,7 @@ class RestContext extends BehatContext
      */
     public function iRequest($pageUrl)
     {
-        $this->_startTime = microtime();
+        $this->_startTime = microtime(true);
         $baseUrl = $this->getParameter('base_url');
         $this->_requestUrl = $baseUrl . $pageUrl;
         $url = false !== strpos($pageUrl, '{')
@@ -341,8 +341,9 @@ class RestContext extends BehatContext
                 . $this->echoLastResponse());
         }
         if ((string)$this->_response->getHeader($header) !== $value) {
-            throw new Exception("Response header $header"
-                . " does not match `$value`\n\n"
+            throw new Exception("Response header $header ("
+                . (string)$this->_response->getHeader($header)
+                . ") does not match `$value`\n\n"
                 . $this->echoLastResponse());
         }
     }
@@ -361,7 +362,8 @@ class RestContext extends BehatContext
      */
     public function theResponseTimeShouldAtLeastBeMilliseconds($milliSeconds)
     {
-        $diff = 1000 * (microtime() - $this->_startTime);
+        usleep(1);
+        $diff = 1000 * (microtime(true) - $this->_startTime);
         if ($diff < $milliSeconds) {
             throw new Exception("Response time $diff is "
                 . "quicker than $milliSeconds\n\n"
