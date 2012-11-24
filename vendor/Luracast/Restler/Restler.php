@@ -39,13 +39,6 @@ class Restler extends EventEmitter
     const VERSION = '3.0.0rc3';
 
     /**
-     * Base URL currently being used
-     *
-     * @var string
-     */
-    public $baseUrl;
-
-    /**
      * URL of the currently mapped service
      *
      * @var string
@@ -85,13 +78,6 @@ class Restler extends EventEmitter
     public $cache;
 
     /**
-     * base directory to locate format and auth files
-     *
-     * @var string
-     */
-    public $baseDir;
-
-    /**
      * method information including metadata
      *
      * @var stdClass
@@ -121,6 +107,13 @@ class Restler extends EventEmitter
     // Private & Protected variables
     //
     // ------------------------------------------------------------------
+
+    /**
+     * Base URL currently being used
+     *
+     * @var string
+     */
+    protected $baseUrl;
 
     /**
      * When set to false, it will run in debug mode and parse the
@@ -207,15 +200,17 @@ class Restler extends EventEmitter
     public function __construct($productionMode = false, $refreshCache = false)
     {
         $this->startTime = time();
+        Util::$restler = $this;
         $this->productionMode = $productionMode;
-        $this->cacheDir = dirname($_SERVER['SCRIPT_FILENAME']);
+        if (is_null(Defaults::$cacheDirectory)) {
+            Defaults::$cacheDirectory = dirname($_SERVER['SCRIPT_FILENAME']) .
+                DIRECTORY_SEPARATOR . 'cache';
+        }
         $this->cache = new Defaults::$cacheClass();
-        $this->baseDir = __DIR__;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
             $this->cached = false;
         }
-        Util::$restler = $this;
     }
 
     /**
