@@ -32,6 +32,13 @@ class Defaults
     public static $cacheClass = 'Luracast\\Restler\\HumanReadableCache';
 
     /**
+     * @var string full path of the directory where all the generated files will
+     * be kept. When set to null (default) it will use the cache folder that is
+     * in the same folder as index.php (gateway)
+     */
+    public static $cacheDirectory;
+
+    /**
      * @var string of name of the class that implements
      * \Luracast\Restler\Data\iValidate the validator class to be used
      */
