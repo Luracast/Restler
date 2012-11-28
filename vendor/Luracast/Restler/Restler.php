@@ -464,12 +464,16 @@ class Restler extends EventEmitter
         if (isset($_SERVER['HTTP_ACCEPT_CHARSET'])) {
             $found = false;
             $charList = Util::sortByPriority($_SERVER['HTTP_ACCEPT_CHARSET']);
-            foreach ($charList as $charset => $quality) {
-                if (in_array($charset, Defaults::$supportedCharsets)) {
-                    $found = true;
-                    Defaults::$charset = $charset;
-                    break;
-                }
+            if(isset($charList[Defaults::$charset])) {
+            	$found = true;
+            } else {
+            	foreach ($charList as $charset => $quality) {
+            		if (in_array($charset, Defaults::$supportedCharsets)) {
+            			$found = true;
+            			Defaults::$charset = $charset;
+            			break;
+            		}
+            	}
             }
             if (!$found) {
                 if (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], '*') !== false) {
