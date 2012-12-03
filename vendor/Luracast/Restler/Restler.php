@@ -729,6 +729,9 @@ class Restler extends EventEmitter
                 ? $this->apiMethodInfo->metadata
                 : null
         );
+        $this->responseFormat->setCharset(Defaults::$charset);
+        $charset = $this->responseFormat->getCharset()
+            ? : Defaults::$charset;
         if ($statusCode == 0) {
             if (isset($this->apiMethodInfo->metadata['status'])) {
                 $this->setStatus($this->apiMethodInfo->metadata['status']);
@@ -757,9 +760,6 @@ class Restler extends EventEmitter
                 $responder->formatError($statusCode, $message),
                 !$this->productionMode);
         }
-        $this->responseFormat->setCharset(Defaults::$charset);
-        $charset = $this->responseFormat->getCharset()
-            ? : Defaults::$charset;
         @header('Content-Type: ' . (
             Defaults::$useVendorMIMEVersioning
                 ? 'application/vnd.'
