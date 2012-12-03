@@ -436,6 +436,7 @@ Change Log
   second|minute|hour|day|week|month to have fine grained control
 * Resources class improved to include description for body parameters
 * Fixes Resources not to include namespace when the return type is array of custom class
+* Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API
 * Added two more ways to exclude API's from explorer/documentation
     * `Resources::$excludedHttpMethods` (array)
     * `Resources::$excludedPaths` (array)
@@ -446,6 +447,8 @@ Change Log
 * Updated the BDD tests to include new features
 * Fixes a bug in Restler class which affects $_GET overriding `Defaults`
 * Fixes a bug in XmlFormat parsing XML content to array
+* Fixes a bug in unicode un-escaping for JsonFormat in PHP < 5.4
+* Fixes the order so that responseFormat->setCharset is called before decoding
 
 
 

@@ -487,6 +487,7 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 second|minute|hour|day|week|month to have fine grained control</li>
 <li>Resources class improved to include description for body parameters</li>
 <li>Fixes Resources not to include namespace when the return type is array of custom class</li>
+<li>Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API</li>
 <li>Added two more ways to exclude API's from explorer/documentation
 
 <ul>
@@ -500,6 +501,8 @@ second|minute|hour|day|week|month to have fine grained control</li>
 <li>Updated the BDD tests to include new features</li>
 <li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code></li>
 <li>Fixes a bug in XmlFormat parsing XML content to array</li>
+<li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
+<li>Fixes the order so that responseFormat->setCharset is called before decoding</li>
 </ul>
 
 <p><a id="changes-from-restler-3-0-rc1"></a><h3>Changes from Restler 3.0 RC1</h3></p>
