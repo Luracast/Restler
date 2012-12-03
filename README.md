@@ -448,7 +448,7 @@ Change Log
 * Fixes a bug in Restler class which affects $_GET overriding `Defaults`
 * Fixes a bug in XmlFormat parsing XML content to array
 * Fixes a bug in unicode un-escaping for JsonFormat in PHP < 5.4
-* Fixes the order so that responseFormat->setCharset is called before decoding
+* Fixes the order so that responseFormat->setCharset is called before encoding the response
 
 
 
