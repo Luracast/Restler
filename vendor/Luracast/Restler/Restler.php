@@ -732,6 +732,16 @@ class Restler extends EventEmitter
         $this->responseFormat->setCharset(Defaults::$charset);
         $charset = $this->responseFormat->getCharset()
             ? : Defaults::$charset;
+        @header('Content-Type: ' . (
+            Defaults::$useVendorMIMEVersioning
+                ? 'application/vnd.'
+                . Defaults::$apiVendor
+                . "-v{$this->requestedApiVersion}"
+                . '+' . $this->responseFormat->getExtension()
+                : $this->responseFormat->getMIME())
+                . '; charset=' . $charset
+        );
+        @header('Content-Language: ' . Defaults::$language);
         if ($statusCode == 0) {
             if (isset($this->apiMethodInfo->metadata['status'])) {
                 $this->setStatus($this->apiMethodInfo->metadata['status']);
@@ -760,16 +770,6 @@ class Restler extends EventEmitter
                 $responder->formatError($statusCode, $message),
                 !$this->productionMode);
         }
-        @header('Content-Type: ' . (
-            Defaults::$useVendorMIMEVersioning
-                ? 'application/vnd.'
-                . Defaults::$apiVendor
-                . "-v{$this->requestedApiVersion}"
-                . '+' . $this->responseFormat->getExtension()
-                : $this->responseFormat->getMIME())
-                . '; charset=' . $charset
-        );
-        @header('Content-Language: ' . Defaults::$language);
         //handle throttling
         if (Defaults::$throttle) {
             $elapsed = time() - $this->startTime;
