@@ -481,6 +481,7 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 <ul>
 <li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
+<li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
 <li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
 <li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
 <li>RateLimit class re-written to support all range of time units
