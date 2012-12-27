@@ -17,3 +17,4 @@ vendor/mustache
 vendor/zendframework
 .idea
 tag.sh
+bin/*
