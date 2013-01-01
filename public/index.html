@@ -1,0 +1,602 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 3</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="examples/resources/highlight.css">
+<link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+<script src="examples/resources/highlight.pack.js"></script>
+<script type="text/javascript" src="examples/resources/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript">
+  hljs.initHighlightingOnLoad();
+</script>
+
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23777019-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body>
+<nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="examples/resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a class="active" title="Getting Started with Restler" href="#"><img src="examples/resources/quickstart.png" width="16" height="16"/>Quick Start</a></li>
+<li><a href="examples/index.html"><img src="examples/resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="examples/resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="examples/resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="examples/resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="examples/resources/facebook.png" width="16" height="16"/> Connect</a></li>
+</ul>
+</nav>
+<article>
+<p><a id="luracast-restler-3-0-rc3"></a><h1>Luracast Restler 3.0 RC3</h1></p>
+
+<p>Restler is a simple and effective multi-format Web API Server written in PHP.</p>
+
+<p>Just deal with your business logic in php, restler will take care of the REST!</p>
+
+<p><a id="restler-3---x-18x"></a><h3>Restler 3 - <em>Better APIs by Design</em></h3></p>
+
+<ul>
+<li><a href="http://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
+<li><a href="http://bit.ly/Restler3LiveExamples" target="_blank">Live Examples</a></li>
+<li>Updates on <a href="https://www.facebook.com/Luracast" target="_blank">Facebook</a> and <a href="http://twitter.com/Luracast" target="_blank">Twitter</a></li>
+<li><a href="#features" target="_blank">Features</a></li>
+<li><a href="#installation" target="_blank">Installation</a></li>
+<li><a href="#quick-start-guide" target="_blank">Quick Start Guide</a></li>
+<li><a href="#change-log" target="_blank">Change Log</a></li>
+</ul>
+
+<p><a id="features"></a><h2>Features</h2></p>
+
+<ul>
+<li>No Learning Curve</li>
+<li>Light weight</li>
+<li>Flexible</li>
+<li>Highly Customizable</li>
+<li>Many Examples that can be tried on your localhost to get started</li>
+<li>Supports HTTP request methods  GET, POST, PUT, DELETE, and PATCH</li>
+<li>Supports both RESTful and Pragmatic REST API Design</li>
+<li>Clients can use X-HTTP-Method-Override header</li>
+<li>Two way format(media type) conversion
+
+<ul>
+<li>Pluggable Formatters</li>
+<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats</li>
+</ul></li>
+<li>Pluggable Authentication schemes
+
+<ul>
+<li><code>[planned]</code> OAuth 2</li>
+</ul></li>
+<li>Pluggable Filters to effectively manage API usage
+
+<ul>
+<li>API Rate Limiting Filter</li>
+</ul></li>
+<li>Routing
+
+<ul>
+<li>Manual Routing
+
+<ul>
+<li>Using <code>@url GET my/custom/url/{param}</code> PHPDoc comments</li>
+</ul></li>
+<li>Auto Routing
+
+<ul>
+<li>URL to Method mapping</li>
+<li>URL part to Method parameter mapping</li>
+<li>Query parameters to Method parameter mapping</li>
+<li>Request body to Method parameter mapping</li>
+<li><code>[planned]</code> Header to Method parameter mapping</li>
+</ul></li>
+</ul></li>
+<li>Cache
+
+<ul>
+<li>Client Side Caching support</li>
+<li>Proxy Caching support</li>
+<li>Server Side Caching
+
+<ul>
+<li><code>[planned]</code> ETag, If-None-Match support</li>
+<li><code>[planned]</code> Last-Modified, If-Modified-Since support</li>
+</ul></li>
+</ul></li>
+<li>API Features
+
+<ul>
+<li>Always supports URLEncoded format for simplified input (POST vars)</li>
+<li>Automatic parameter validation and type conversion</li>
+<li>API versioning support by URL and/or vendor specific MIME</li>
+<li>API documentation and discovery using <a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a></li>
+<li>Throttling</li>
+</ul></li>
+<li>Management
+
+<ul>
+<li><code>[planned]</code> Unit Testing using <a href="https://github.com/sebastianbergmann/phpunit/" target="_blank">PHPUnit</a></li>
+<li>Behavior Driven API testing using <a href="http://behat.org/" target="_blank">Behat</a> and <a href="https://github.com/guzzle/guzzle" target="_blank">Guzzle</a></li>
+<li>Command line Project Management using <a href="https://github.com/Respect/Foundation" target="_blank">Respect/Foundation</a></li>
+<li>Dependency Management using <a href="http://getcomposer.org/" target="_blank">Composer</a></li>
+<li>Source code distributed under LGPL</li>
+</ul></li>
+</ul>
+
+<p><a id="installation"></a><h2>Installation</h2></p>
+
+<p>Installation is a two step process. Do the following in the folder where you want Restler to be setup.</p>
+
+<p>Before proceeding make sure your server has <strong>PHP 5.3</strong> or higher.</p>
+
+<p><a id="1-"></a><h3>1.</h3></p>
+
+<p><a href="https://github.com/Luracast/Restler/zipball/v3" target="_blank">Download</a> and unpack Restler 3,
+or Checkout using Terminal/Commandline</p>
+
+<pre><code class="console"><br />git clone git://github.com/Luracast/Restler.git -b v3 ./
+
+</code></pre>
+
+<p>This creates the following folder structure</p>
+
+<pre><code>.
+├── features
+│   ├── bootstrap
+│   ├── examples
+│   └── restler
+├── public
+│   └── examples
+│       ├── _001_helloworld
+│       ├── _002_minimal
+│       ├── _003_multiformat
+│       ├── _004_error_response
+│       ├── _005_protected_api
+│       ├── _006_routing
+│       ├── _007_crud
+│       ├── _008_documentation
+│       ├── _009_rate_limiting
+│       ├── _010_access_control
+│       └── resources
+└── vendor
+    └── Luracast
+        └── Restler
+</code></pre>
+
+<p><a id="2-"></a><h3>2.</h3></p>
+
+<p>Download the dependencies using make at the Terminal/Commandline.
+This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
+Otherwise you may safely skip this step.</p>
+
+<pre><code class="console"><br />make composer-install
+
+</code></pre>
+
+<p>This expands the vendor folder as shown below</p>
+
+<pre><code>.
+│
+│
+└── vendor
+    ├── ChiperSoft
+    │   └── CFPropertyList
+    ├── Luracast
+    │   ├── Restler
+    │   └── explorer
+    ├── behat
+    │   ├── behat
+    │   └── gherkin
+    ├── composer
+    ├── guzzle
+    │   └── guzzle
+    ├── symfony
+    │   └── yaml
+    └── zendframework
+        └── zendamf
+</code></pre>
+
+<p>Now the vendor folder will have all dependencies.</p>
+
+<p><a id="3-"></a><h3>3.</h3></p>
+
+<p>Ideally public folder should be mapped as your web root (optional, but recommended)</p>
+
+<p><a id="4-"></a><h3>4.</h3></p>
+
+<p>Try the examples in your localhost</p>
+
+<p><a id="5-"></a><h3>5.</h3></p>
+
+<p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p>
+
+<pre><code class="console"><br />bin/behat
+
+</code></pre>
+
+<p>This will test the examples against the behaviors expected, for example</p>
+
+<pre><code class="gherkin"><br />Feature: Testing CRUD Example
+    Scenario: Creating new Author with JSON
+        Given that I want to make a new "Author"
+        And his "name" is "Chris"
+        And his "email" is "chris@world.com"
+        And the request is sent as JSON
+        When I request "/examples/_007_crud/authors"
+        Then the response status code should be 200
+        And the response should be JSON
+        And the response has a "id" property
+
+</code></pre>
+
+<p>All set, Happy Restling! :)</p>
+
+<p><a id="quick-start-guide"></a><h2>Quick Start Guide</h2></p>
+
+<p>Once you have got restler installed with the above steps, you can quickly create your application by following these steps</p>
+
+<p><a id="1-"></a><h3>1.</h3></p>
+
+<p>Create your <strong>API classes</strong> with all needed public and protected methods</p>
+
+<p><a id="2-"></a><h3>2.</h3></p>
+
+<p>Create the <strong>gateway (index.php)</strong> as follows</p>
+
+<pre><code class="php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+
+$r = new Restler();
+$r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
+$r-&gt;handle(); //serve the response
+</code></pre>
+
+<p><a id="3-"></a><h3>3.</h3></p>
+
+<p><strong>Enable URL Rewriting</strong></p>
+
+<p>Make sure all the requests are routed to index.php by enabling URL Rewriting for your website</p>
+
+<p>For example:-</p>
+
+<p>If you are on Apache, you can use an .htaccess file such as</p>
+
+<pre><code class="apache">DirectoryIndex index.php
+&lt;IfModule mod_rewrite.c&gt;
+    RewriteEngine On
+    RewriteRule ^$ index.php [QSA,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+&lt;/IfModule&gt;
+&lt;IfModule mod_php5.c&gt;
+    php_flag display_errors On
+&lt;/IfModule&gt;
+</code></pre>
+
+<blockquote>
+  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file</p>
+</blockquote>
+
+<p><a id="4-"></a><h3>4.</h3></p>
+
+<p><strong>Fine tune to suit your needs</strong></p>
+
+<pre><code class="php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+use Luracast\Restler\Defaults;
+//set the defaults to match your requirements
+Defaults::$throttle = 20; //time in milliseconds for bandwidth throttling
+//setup restler
+$r = new Restler();
+$r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
+$r-&gt;addAPIClass('Resources'); //from restler framework for API Explorer
+$r-&gt;addFilterClass('RateLimit'); //Add Filters as needed
+$r-&gt;handle(); //serve the response
+</code></pre>
+
+<p>If you have successfully completed Installation Step 2, you should have
+<a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a> installed in <code>vendor/Luracast/explorer</code> folder
+Create a symbolic link of <code>vendor/Luracast/explorer/dist</code> or copy the folder and name it as <code>explorer</code></p>
+
+<p>Place the explorer in the same folder as the <code>index.php</code></p>
+
+<p>Explore the api and try it out by openings <code>explorer/index.html</code> from the web root on your browser</p>
+
+<p>Happy Exploring! :)</p>
+
+<p>You may use the following php doc comments to annotate your methods.
+All tags except @url can also be defined at the class level.</p>
+
+<table>
+    <tr>
+        <th>Tag</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>@url</td>
+        <td>
+        Syntax:
+        <pre>@url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route</pre>
+        Example:
+        <pre>@url POST authors/{id}/books</pre>
+        Overrides auto routes and creates manual routes. use as many as you need
+        </td>
+    </tr>
+    <tr>
+        <td>@access</td>
+        <td>
+        Syntax:
+        <pre>@access private|public|protected|hybrid</pre>
+        Example:
+        <pre>POST authors/{id}/books</pre>
+        Access control for api methods. PHPDoc only supports private and public,
+        Restler adds <b>protected</b> for api that needs authentication,
+        <b>hybrid</b> for api that enhances resulting data for authenticated users.
+        </td>
+    </tr>
+    <tr>
+        <td>@smart-auto-routing</td>
+        <td>
+        Syntax:
+        <pre>@smart-auto-routing true|false</pre>
+        Example:
+        <pre>@smart-auto-routing false</pre>
+        Smart auto routing is enabled by default. Avoids creating multiple
+        routes that can increase the ambiguity when set to true. when a method
+        parameter is optional it is not mapped to the url and should only be
+        used in request body or as query string `/resource?id=value`.
+        When a parameter is required and is  scalar, it will be mapped as
+        part of the url `/resource/{id}`
+        </td>
+    </tr>
+    <tr>
+        <td>@class</td>
+        <td>
+        Syntax:
+        <pre>@class ClassName {@propertyName value}</pre>
+        Example:
+        <pre>@class AccessControl {@requires user} {@level 5}</pre>
+        Inject property of the specified class with specified value
+        </td>
+    </tr>
+    <tr>
+        <td>@cache</td>
+        <td>
+        Syntax:
+        <pre>@cache headerCacheControlValue</pre>
+        Example:
+        <pre>@cache max-age={expires}, must-revalidate</pre>
+        Specify value to set CacheControl Header, it can use @expires value as
+        shown in the example
+        </td>
+    </tr>
+    <tr>
+        <td>@expires</td>
+        <td>
+        Syntax:
+        <pre>@expires numberOfSeconds</pre>
+        Example:
+        <pre>@expires 30</pre>
+        Sets the content to expire immediately when set to zero alternatively
+        you can specify the number of seconds the content will expire
+        </td>
+    </tr>
+    <tr>
+        <td>@throttle</td>
+        <td>
+        Syntax:
+        <pre>@throttle numberOfMilliSeconds</pre>
+        Example:
+        <pre>@throttle 3000</pre>
+        Sets the time in milliseconds for bandwidth throttling, which will
+        become the minimum response time for each API request.
+        </td>
+    </tr>
+    <tr>
+        <td>@status</td>
+        <td>
+        Syntax:
+        <pre>@status httpStatusCode</pre>
+        Example:
+        <pre>@status 201</pre>
+        Sets the HTTP Status code for the successful response.
+        </td>
+    </tr>
+    <tr>
+        <td>@header</td>
+        <td>
+        Syntax:
+        <pre>@header httpHeader</pre>
+        Example:
+        <pre>@header Link: &lt;meta.rdf>; rel=meta</pre>
+        Sets or overrides the specific HTTP Header.
+        </td>
+    </tr>
+    <tr>
+        <td>@param</td>
+        <td>
+        Syntax:
+        <pre>@param [type] Name [Description] {@name value}</pre>
+        Example:
+        <pre>@param int $num1 increment value {@min 5} {@max 100}</pre>
+        Sets the HTTP Status code for the successful response.
+        </td>
+    </tr>
+    <tr>
+        <td>@throws</td>
+        <td>
+        Syntax:
+        <pre>@throws httpStatusCode [Reason]</pre>
+        Example:
+        <pre>@throws 404 No Author for specified id</pre>
+        Documents possible error responses for the API call.
+        </td>
+    </tr>
+    <tr>
+        <td>@return</td>
+        <td>
+        Syntax:
+        <pre>@return type [Description]</pre>
+        Example:
+        <pre>@return Author an instance of iValueObject</pre>
+        Documents the structure of success response, user defined classes must
+        extend iValueObject.
+        </td>
+    </tr>
+</table>
+
+<p><a id="5-"></a><h3>5.</h3></p>
+
+<p>Protect your api, authenticate and allow valid users</p>
+
+<pre><code class="php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+$r = new Restler();
+$r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
+$r-&gt;addAuthenticationClass('CustomAuth'); //Add Authentication classes as needed
+$r-&gt;handle(); //serve the response
+</code></pre>
+
+<p><a id="6-"></a><h3>6.</h3></p>
+
+<p>Turn on production mode</p>
+
+<pre><code class="php">&lt;?php
+require_once '../../../vendor/restler.php';
+use Luracast\Restler\Restler;
+
+//setup restler
+$r = new Restler(true); //turns on production mode. make sure cache folder is writable
+//...
+</code></pre>
+
+<p><a id="change-log"></a><h2>Change Log</h2></p>
+
+<p><a id="changes-from-restler-3-0-rc2"></a><h3>Changes from Restler 3.0 RC2</h3></p>
+
+<ul>
+<li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
+<li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
+<li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
+<li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
+<li>RateLimit class re-written to support all range of time units
+second|minute|hour|day|week|month to have fine grained control</li>
+<li>Resources class improved to include description for body parameters</li>
+<li>Fixes Resources not to include namespace when the return type is array of custom class</li>
+<li>Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API</li>
+<li>Added two more ways to exclude API's from explorer/documentation
+
+<ul>
+<li><code>Resources::$excludedHttpMethods</code> (array)</li>
+<li><code>Resources::$excludedPaths</code> (array)</li>
+</ul></li>
+<li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
+<li>Fixes a bug with ValidationInfo parsing @choice inline comment</li>
+<li>Added Charset support</li>
+<li>Added Language (basic) support</li>
+<li>Updated the BDD tests to include new features</li>
+<li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code></li>
+<li>Fixes a bug in XmlFormat parsing XML content to array</li>
+<li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
+<li>Fixes the order so that responseFormat->setCharset is called before encoding the response</li>
+</ul>
+
+<p><a id="changes-from-restler-3-0-rc1"></a><h3>Changes from Restler 3.0 RC1</h3></p>
+
+<ul>
+<li>Filter classes can use authentication status and respond differently for
+authenticated users by implementing iUseAuthentication interface</li>
+<li><code>RateLimit</code> class added to rate limit the api usage</li>
+<li>Fixed a bug with setCompatibilityMode</li>
+<li>Resources updated to use only paths for resource identification instead of class name
+
+<ul>
+<li>Enabled Access Control for Documentation</li>
+</ul></li>
+<li>Fixed CommentParser to ignore repeated white space so that it parses comments correctly</li>
+<li>Fixed comment parsing for @status and @expires tags</li>
+<li>Added the following Examples
+
+<ul>
+<li>Documentation</li>
+<li>Rate Limit</li>
+<li>Access Control</li>
+</ul></li>
+<li>CRUD example updated to include PATCH support</li>
+</ul>
+
+<p><a id="changes-from-restler-2-0"></a><h3>Changes from Restler 2.0</h3></p>
+
+<p><strong>Restler 3.0</strong> is completely rewritten from Restler 2.0 with best practices in mind for</p>
+
+<ul>
+<li>PHP Coding</li>
+<li>RESTfulness and/or Pragmatic REST</li>
+<li>API Design</li>
+</ul>
+
+<p><strong>Restler 3.0</strong></p>
+
+<ul>
+<li>uses namespaces, Late Static Bindings, and Closures and thus it is <strong>PHP 5.3+</strong> only
+(if you need <strong>PHP 5.0+</strong> support use <a href="https://github.com/Luracast/Restler/tree/v2" target="_blank">Restler 2</a>)</li>
+<li>provides backward compatibility for Restler 1 and 2.
+Use <code>$r-&gt;setCompatibilityMode($version);</code></li>
+<li>supports hybrid api which provides extended data to authenticated users
+Use <code>@access hybrid</code> PHPDoc comment</li>
+<li>uses smart auto routing by default where API method parameters that
+have default values are no longer mapped to the URL, instead they are
+mapped to query strings to reduce ambiguity in the url.</li>
+<li>supports <code>suppress_response_codes</code> as query string, when set to true;
+all http responses will be returned with HTTP OK with the errors in the
+body to accommodate mobile and less privileged clients.</li>
+<li>has improved <code>CommentParser</code> which adds support for embedded data in multiple formats
+
+<ul>
+<li>inline doc comments <code>{@name value}</code></li>
+<li>query string params &#96;&#96;&#96; param1=value&amp;param2=value2&#96;&#96;&#96;</li>
+<li>json &#96;&#96;&#96; {"parm1": value, "param2": value2}&#96;&#96;&#96; which can be placed in multi-lines</li>
+</ul></li>
+<li>has <code>Defaults</code> class with static properties that can be changed to suit the needs</li>
+<li>iAuthenticate is now using <code>__isAllowed</code> method instead of <code>__isAuthenticated</code> so that same
+class can be used for Authentication or Filtering</li>
+<li>iUseAuthentication interface added to help hybrid access api methods and filters to
+find out about user authentication status</li>
+<li>iFilter interface updated to provide charset support</li>
+<li>...(more to follow)</li>
+</ul>
+
+<p><a id="changes-from-restler-1-0"></a><h3>Changes from Restler 1.0</h3></p>
+
+<p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized 
+for performance. Here are some of the major changes and improvements</p>
+
+<ul>
+<li>PHPDoc comments to map a method to URI are now optional.</li>
+<li>All public methods that does not begin with an underscore are mapped
+automatically to the method name (<code>gateway\classname\methodname\param1\...</code>)</li>
+<li>If we do not specify the second parameter for
+<code>$restler-&gt;addAPIClass</code> it will be mapped to the class name instead of mapping it to the root</li>
+<li>Restler 2 is written for PHP 5.3 and above but it make use of compat.php and work on
+any version of PHP starting from PHP 5.0</li>
+</ul>
+
+</article>
+</body>
+</html>
