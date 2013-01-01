@@ -35,11 +35,9 @@ DOC;
      */
     protected function setUp()
     {
-        if (!in_array(
-            $bootstrap = stream_resolve_include_path('bootstrap.php'),
-            get_included_files()
-        ))
-            include $bootstrap;
+        if (false !== $bootstrap = stream_resolve_include_path('bootstrap.php'))
+            if (!in_array($bootstrap, get_included_files()))
+                include $bootstrap;
 
         $this->object = new Restler();
     }
@@ -66,6 +64,7 @@ DOC;
     {
         $path = null;
         $this->object->setApiClassPath($path);
+        $this->assertTrue(false);
     }
 
     /**

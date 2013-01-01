@@ -31,6 +31,7 @@ class CommentParserTest extends \PHPUnit_Framework_TestCase
      */
     public function test_class_CommentParser_method_parse()
     {
+        $this->markTestIncomplete('This test has not been implemented yet.');
         $comment = $isPhpDoc = null;
         $this->object->parse($comment, $isPhpDoc);
     }

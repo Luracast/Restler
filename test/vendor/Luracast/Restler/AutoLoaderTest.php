@@ -16,11 +16,9 @@ class AutoLoaderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        if (!in_array(
-                $bootstrap = stream_resolve_include_path('bootstrap.php'),
-                get_included_files()
-            ))
-            include $bootstrap;
+        if (false !== $bootstrap = stream_resolve_include_path('bootstrap.php'))
+            if (!in_array($bootstrap, get_included_files()))
+                include $bootstrap;
 
         $this->object = AutoLoader::instance();
     }
