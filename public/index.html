@@ -488,35 +488,57 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 <p><a id="change-log"></a><h2>Change Log</h2></p>
 
-<p><a id="changes-from-restler-3-0-rc2"></a><h3>Changes from Restler 3.0 RC2</h3></p>
+<h3>
+  <a name="changes-from-restler-30-rc3" class="anchor" href="#changes-from-restler-30-rc3"></a>Changes from Restler 3.0 RC3</h3>
 
 <ul>
-<li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
-<li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
-<li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
-<li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
-<li>RateLimit class re-written to support all range of time units
-second|minute|hour|day|week|month to have fine grained control</li>
-<li>Resources class improved to include description for body parameters</li>
-<li>Fixes Resources not to include namespace when the return type is array of custom class</li>
-<li>Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API</li>
-<li>Added two more ways to exclude API's from explorer/documentation
+  <li>Fixes to composer.json and publish stable release as composer package on packagist
 
+    <ul>
+      <li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist">rodneyrehm/plist</a> package for CFPropertyList.</li>
+      <li>Removed required packages as they are not technically "required" perse, Restlec works out of the box.</li>
+      <li>Created supported packages as require-dev instead which will be installed via <code>composer intall --dev</code>
+      </li>
+      <li>Added suggested section for all the supported packages.</li>
+      <li>Added keywords to package descriptor</li>
+      <li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>
+      <li>Released Restler as package on packagist.</li>
+    </ul>
+  </li>
+</ul><h3>
+  <a id="changes-from-restler-30-rc2" class="anchor" href="#changes-from-restler-30-rc2"></a>Changes from Restler 3.0 RC2</h3>
 <ul>
-<li><code>Resources::$excludedHttpMethods</code> (array)</li>
-<li><code>Resources::$excludedPaths</code> (array)</li>
-</ul></li>
-<li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
-<li>Fixes a bug with ValidationInfo parsing @choice inline comment</li>
-<li>Added Charset support</li>
-<li>Added Language (basic) support</li>
-<li>Updated the BDD tests to include new features</li>
-<li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code></li>
-<li>Fixes a bug in XmlFormat parsing XML content to array</li>
-<li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
-<li>Fixes the order so that responseFormat->setCharset is called before encoding the response</li>
+  <li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
+  <li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
+  <li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
+  <li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
+  <li>RateLimit class re-written to support all range of time units
+    second|minute|hour|day|week|month to have fine grained control</li>
+  <li>Resources class improved to include description for body parameters</li>
+  <li>Fixes Resources not to include namespace when the return type is array of custom class</li>
+  <li>Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API</li>
+  <li>Added two more ways to exclude API's from explorer/documentation
+
+    <ul>
+      <li>
+        <code>Resources::$excludedHttpMethods</code> (array)</li>
+      <li>
+        <code>Resources::$excludedPaths</code> (array)</li>
+    </ul>
+  </li>
+  <li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
+  <li>Fixes a bug with ValidationInfo parsing @choice inline comment</li>
+  <li>Added Charset support</li>
+  <li>Added Language (basic) support</li>
+  <li>Updated the BDD tests to include new features</li>
+  <li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code>
+  </li>
+  <li>Fixes a bug in XmlFormat parsing XML content to array</li>
+  <li>Added support for JSONP via jsFormat extension of JsonFormat</li>
+  <li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
+  <li>Fixes the order so that responseFormat-&gt;setCharset is called before encoding the response</li>
+  <li>Documentiation improvements and minor bug fixes</li>
 </ul>
-
 <p><a id="changes-from-restler-3-0-rc1"></a><h3>Changes from Restler 3.0 RC1</h3></p>
 
 <ul>
@@ -584,7 +606,7 @@ find out about user authentication status</li>
 
 <p><a id="changes-from-restler-1-0"></a><h3>Changes from Restler 1.0</h3></p>
 
-<p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized 
+<p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized
 for performance. Here are some of the major changes and improvements</p>
 
 <ul>
