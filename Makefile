@@ -151,7 +151,6 @@ project-menu: .title
 	@echo "             tabs2spaces: Turns tabs into 4 spaces properly handling mixed tab/spaces"
 	@echo "          unix-line-ends: Fixes unix line endings"
 	@echo "         trailing_spaces: Removes trailing whitespace"
-	@echo "      single-blank-lines: Removes multiple blank lines adds blank line at end of file"
 	@echo "                        :   CODE CONTENT UTILITIES"
 	@echo "                cs-fixer: Run PHP Coding Standards Fixer to ensure your cs-style is correct"
 	@echo "               codesniff: Run PHP Code Sniffer to generate a report of code analysis"
@@ -792,50 +791,36 @@ install-uri-template: .check-foundation
 
 # Clean up utils
 
-tabs2spaces:
-	@printf "."
+tabs2spaces: .check-foundation
 	@if test "$(file)"; then \
-	  expand -t 4 "$(file)" > "$(file).tmp" && cp -f "$(file).tmp" "$(file)"; rm -f "$(file).tmp"; \
+	  expand -t 4 "$(file)" > "$(file).tmp" && mv -f "$(file).tmp" "$(file)"; \
 	else \
 		find . -type f -name "*.php" -exec make tabs2spaces file="{}" \;; \
-		echo; echo "Done converting tabs to spaces."; \
 	fi;
 
-trailing-spaces:
-	@printf "."
+trailing-spaces: .check-foundation
 	@if test "$(file)"; then \
-	  awk '{sub(/[ \t]+$$/, "")};1' "$(file)" > "$(file).tmp" && cp -f "$(file).tmp" "$(file)"; rm -f "$(file).tmp"; \
+	  awk '{sub(/[ \t]+$$/, "")};1' "$(file)" > "$(file).tmp" && mv -f "$(file).tmp" "$(file)"; \
 	else \
 		find . -type f -name "*.php" -exec make trailing-spaces file="{}" \;; \
-		echo; echo "Done removing trailing spaces."; \
 	fi;
 
-unix-line-ends:
-	@printf "."
+unix-line-ends: .check-foundation
 	@if test "$(file)"; then \
-	  awk '{sub(/\r$$/,"")};1' "$(file)" > "$(file).tmp" && cp -f "$(file).tmp" "$(file)"; rm -f "$(file).tmp"; \
+	  awk '{sub(/\r$$/,"")};1' "$(file)" > "$(file).tmp" && mv -f "$(file).tmp" "$(file)"; \
 	else \
 		find . -type f -name "*.php" -exec make unix-line-ends file="{}" \;; \
-		echo; echo "Done converting line endings."; \
-	fi;
-
-single-blank-lines:
-	@printf "."
-	@if test "$(file)"; then \
-	  awk '!NF{x="\n"};NF{print x $$0;x=""};END{print ""}' "$(file)" > "$(file).tmp" && cp -f "$(file).tmp" "$(file)"; rm -f "$(file).tmp"; \
-	else \
-		find . -type f -name "*.php" -exec make single-blank-lines file="{}" \;; \
-		echo; echo "Done converting to single blank lines."; \
 	fi;
 
 clean-whitespace: .check-foundation
 	@if test "$(file)"; then \
-		make tabs2spaces file="$(file)"; \
-		make unix-line-ends file="$(file)"; \
-		make trailing-spaces file="$(file)"; \
-		make single-blank-lines file="$(file)"; \
+		make tabs2spaces file="$(file)" > /dev/null; \
+		make unix-line-ends file="$(file)" > /dev/null; \
+		make trailing-spaces file="$(file)" > /dev/null; \
 	else \
-		make tabs2spaces; make unix-line-ends; make trailing-spaces; make single-blank-lines; \
+		make tabs2spaces > /dev/null; \
+		make unix-line-ends > /dev/null; \
+		make trailing-spaces > /dev/null; \
 	fi;
 
 
