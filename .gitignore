@@ -15,7 +15,9 @@ vendor/autoload.php
 vendor/symfony
 vendor/mustache
 vendor/zendframework
+vendor/rodneyrehm
 .idea
 tag.sh
 bin/*
 build/*
+
