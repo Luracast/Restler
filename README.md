@@ -1,4 +1,4 @@
-Luracast Restler 3.0 RC3
+Luracast Restler v3.0.0
 ========================
 
 Restler is a simple and effective multi-format Web API Server written in PHP.
@@ -426,6 +426,15 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 Change Log
 ----------
+### Changes from Restler 3.0 RC3
+* Fixes to composer.json and publish stable release as composer package on packagist
+ * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
+ * Removed required packages as they are not technically "required" perse, Restlec works out of the box.
+ * Created supported packages as require-dev instead which will be installed via `composer intall --dev`
+ * Added suggested section for all the supported packages.
+ * Added keywords to package descriptor
+ * Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev
+ * Released Restler as package on packagist.
 
 ### Changes from Restler 3.0 RC2
 
@@ -448,10 +457,10 @@ Change Log
 * Updated the BDD tests to include new features
 * Fixes a bug in Restler class which affects $_GET overriding `Defaults`
 * Fixes a bug in XmlFormat parsing XML content to array
+* Added support for JSONP via jsFormat extension of JsonFormat
 * Fixes a bug in unicode un-escaping for JsonFormat in PHP < 5.4
 * Fixes the order so that responseFormat->setCharset is called before encoding the response
-
-
+* Documentiation improvements and minor bug fixes
 
 ### Changes from Restler 3.0 RC1
 
@@ -507,7 +516,7 @@ Change Log
 
 ### Changes from Restler 1.0
 
-Restler 2.0 is a major rewrite to use convention over configuration and it is optimized 
+Restler 2.0 is a major rewrite to use convention over configuration and it is optimized
 for performance. Here are some of the major changes and improvements
 
 * PHPDoc comments to map a method to URI are now optional.
