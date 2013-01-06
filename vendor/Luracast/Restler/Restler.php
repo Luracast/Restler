@@ -943,7 +943,7 @@ class Restler extends EventEmitter
                 } elseif (false !== ($index = strrpos($accept, '+'))) {
                     $mime = substr($accept, 0, $index);
                     if (is_string(Defaults::$apiVendor)
-                        && 0 === strpos($mime,
+                        && 0 === stripos($mime,
                             'application/vnd.'
                                 . Defaults::$apiVendor . '-v')
                     ) {
