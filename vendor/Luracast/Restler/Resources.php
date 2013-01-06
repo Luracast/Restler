@@ -52,6 +52,20 @@ class Resources implements iUseAuthentication
      */
     public static $accessControlFunction = null;
 
+    public static $dataTypeAlias = array(
+        'string' => 'string',
+        'int' => 'int',
+        'number' => 'float',
+        'float' => 'float',
+        'bool' => 'boolean',
+        'boolean' => 'boolean',
+        'NULL' => 'null',
+        'array' => 'Array',
+        'object' => 'Object',
+        'stdClass' => 'Object',
+        'mixed' => 'string',
+    );
+
     /**
      * Injected at runtime
      *
@@ -95,8 +109,8 @@ class Resources implements iUseAuthentication
     /**
      * @access hybrid
      *
-     * @param $id
-     * @param $version
+     * @param int    $version
+     * @param string $id
      *
      * @throws RestException
      * @return null|stdClass
@@ -122,6 +136,7 @@ class Resources implements iUseAuthentication
                 continue;
             }
             foreach ($value as $fullPath => $route) {
+                //if (0 !== strpos($route['path'], $target)) {
                 if ($route['path'] != $target) {
                     continue;
                 }
@@ -354,7 +369,16 @@ class Resources implements iUseAuthentication
             }
             return $this->_noNamespace($oc);
         }
-        if (is_array($o)) return 'Array';
+        if (is_array($o)) {
+            if (count($o)) {
+                $child = end($o);
+                if (Util::isObjectOrArray($child)) {
+                    $childType = $this->getType($child, $appendToModels);
+                    return "Array[$childType]";
+                }
+            }
+            return 'array';
+        }
         if (is_bool($o)) return 'boolean';
         if (is_numeric($o)) return is_float($o) ? 'float' : 'int';
         return 'string';
@@ -449,7 +473,11 @@ class Resources implements iUseAuthentication
         $r->paramType = 'body';
         $r->required = $this->_bodyParam['required'];
         $r->allowMultiple = false;
-        $r->dataType = 'string';
+        $r->dataType = 'Object';
+        unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
+        $r->defaultValue = "{\n    \""
+            . implode("\": \"\",\n    \"", array_keys($this->_bodyParam['names']))
+            . "\": \"\"\n}";
         return $r;
     }
 
@@ -466,25 +494,37 @@ class Resources implements iUseAuthentication
         //paramType can be path or query or body or header
         $r->paramType = $param['from'];
         $r->required = $param['required'];
+        if (isset($param['default'])) {
+            $r->defaultValue = $param['default'];
+        } elseif (isset($param[CommentParser::$embeddedDataName]['example'])) {
+            $r->defaultValue
+                = $param[CommentParser::$embeddedDataName]['example'];
+        }
         $r->allowMultiple = false;
-        $r->dataType = 'string';
+        $type = 'string';
+        if (isset($param['type'])) {
+            $type = $param['type'];
+            if (is_array($type)) {
+                $type = array_shift($type);
+            }
+            $type = isset(static::$dataTypeAlias[$type])
+                ? static::$dataTypeAlias[$type]
+                : $type;
+        }
+        $r->dataType = $type;
         if (isset($param[CommentParser::$embeddedDataName])) {
             $p = $param[CommentParser::$embeddedDataName];
             if (isset($p['min']) && isset($p['max'])) {
-                /*
                 $r->allowableValues = array(
-                    'min'=> $p['min'],
-                    'max'=> $p['max'],
-                    'valueType' => 'Range'
+                    'valueType' => 'RANGE',
+                    'min' => $p['min'],
+                    'max' => $p['max'],
                 );
-                */
             } elseif (isset($p['choice'])) {
-                //TODO: use validation info to set allowable values below
-                /*
                 $r->allowableValues = array(
-                    'valueType' => 'List'
+                    'valueType' => 'LIST',
+                    'values' => $p['choice']
                 );
-                */
             }
         }
         return $r;
@@ -501,6 +541,9 @@ class Resources implements iUseAuthentication
         foreach ($data as $key => $value) {
 
             $type = $this->getType($value, true);
+            if (isset(static::$dataTypeAlias[$type])) {
+                $type = static::$dataTypeAlias[$type];
+            }
             $properties[$key] = array(
                 'type' => $type,
                 /*'description' => '' */ //TODO: add description
