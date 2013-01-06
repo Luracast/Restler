@@ -430,6 +430,13 @@ ol.toc small {
     color: white;
 }
 
+a.anchor{
+    display: block;
+    position: relative;
+    top: -50px;
+    visibility: hidden;
+}
+
 #left ul {
     list-style: none;
     padding: 0 0 0 0px;

@@ -38,14 +38,14 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 This API Server exposes the following URIs
 
     GET    authors                   ⇠ ratelimited\Authors::index()
-    GET    authors/{id}              ⇠ ratelimited\Authors::get()
-    GET    resources/{id}-v{version} ⇠ Resources::get()
-    GET    resources/v{version}      ⇠ Resources::get()
-    GET    resources                 ⇠ Resources::index()
     POST   authors                   ⇠ ratelimited\Authors::post()
-    PUT    authors/{id}              ⇠ ratelimited\Authors::put()
     PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
     DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
+    GET    authors/{id}              ⇠ ratelimited\Authors::get()
+    PUT    authors/{id}              ⇠ ratelimited\Authors::put()
+    GET    resources                 ⇠ Resources::index()
+    GET    resources/v{version}      ⇠ Resources::get()
+    GET    resources/{id}-v{version} ⇠ Resources::get()
 
 
 

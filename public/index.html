@@ -31,7 +31,7 @@
 <nav class="floating-menu">
 <ul>
 <li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="examples/resources/home.png" width="16" height="16"/> Home</a></li>
-<li><a class="active" title="Getting Started with Restler" href="#"><img src="examples/resources/quickstart.png" width="16" height="16"/>Quick Start</a></li>
+<li><a class="active" title="Getting Started with Restler" href="#"><img src="examples/resources/quickstart.png" width="16" height="16"/> Start</a></li>
 <li><a href="examples/index.html"><img src="examples/resources/examples.png" width="16" height="16"/> Examples</a></li>
 <li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="examples/resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
 <li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="examples/resources/github.png" width="16" height="16"/> Source</a></li>
@@ -39,14 +39,27 @@
 <li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="examples/resources/facebook.png" width="16" height="16"/> Connect</a></li>
 </ul>
 </nav>
+<nav id="left">
+        <img src="examples/resources/Restler3.gif" width="126"
+            height="126" title="Luracast Restler $version" />
+        <h3>
+            <a href="#luracast-restler-3-0-rc3">Quick Start</a>
+        </h3>
+        <ul>
+            <li><a href="#features" title="Feature List">Features</a></li>
+            <li><a href="#installation" title="Install">Installation</a></li>
+            <li><a href="#quick-start-guide" title="Quick Start">Getting Started</a></li>
+            <li><a href="#change-log" title="What has changed?">Change Log</a></li>
+        </ul>
+    </nav>
 <article>
-<p><a id="luracast-restler-3-0-rc3"></a><h1>Luracast Restler 3.0 RC3</h1></p>
+<p><a id="luracast-restler-v3-0-0" class="anchor"></a><h1>Luracast Restler v3.0.0</h1></p>
 
 <p>Restler is a simple and effective multi-format Web API Server written in PHP.</p>
 
 <p>Just deal with your business logic in php, restler will take care of the REST!</p>
 
-<p><a id="restler-3---x-18x"></a><h3>Restler 3 - <em>Better APIs by Design</em></h3></p>
+<p><a id="restler-3---x-18x" class="anchor"></a><h3>Restler 3 - <em>Better APIs by Design</em></h3></p>
 
 <ul>
 <li><a href="http://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
@@ -58,7 +71,7 @@
 <li><a href="#change-log" target="_blank">Change Log</a></li>
 </ul>
 
-<p><a id="features"></a><h2>Features</h2></p>
+<p><a id="features" class="anchor"></a><h2>Features</h2></p>
 
 <ul>
 <li>No Learning Curve</li>
@@ -135,13 +148,13 @@
 </ul></li>
 </ul>
 
-<p><a id="installation"></a><h2>Installation</h2></p>
+<p><a id="installation" class="anchor"></a><h2>Installation</h2></p>
 
 <p>Installation is a two step process. Do the following in the folder where you want Restler to be setup.</p>
 
 <p>Before proceeding make sure your server has <strong>PHP 5.3</strong> or higher.</p>
 
-<p><a id="1-"></a><h3>1.</h3></p>
+<p><a id="1-" class="anchor"></a><h3>1.</h3></p>
 
 <p><a href="https://github.com/Luracast/Restler/zipball/v3" target="_blank">Download</a> and unpack Restler 3,
 or Checkout using Terminal/Commandline</p>
@@ -175,7 +188,7 @@ or Checkout using Terminal/Commandline</p>
         └── Restler
 </code></pre>
 
-<p><a id="2-"></a><h3>2.</h3></p>
+<p><a id="2-" class="anchor"></a><h3>2.</h3></p>
 
 <p>Download the dependencies using make at the Terminal/Commandline.
 This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
@@ -210,15 +223,15 @@ Otherwise you may safely skip this step.</p>
 
 <p>Now the vendor folder will have all dependencies.</p>
 
-<p><a id="3-"></a><h3>3.</h3></p>
+<p><a id="3-" class="anchor"></a><h3>3.</h3></p>
 
 <p>Ideally public folder should be mapped as your web root (optional, but recommended)</p>
 
-<p><a id="4-"></a><h3>4.</h3></p>
+<p><a id="4-" class="anchor"></a><h3>4.</h3></p>
 
 <p>Try the examples in your localhost</p>
 
-<p><a id="5-"></a><h3>5.</h3></p>
+<p><a id="5-" class="anchor"></a><h3>5.</h3></p>
 
 <p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p>
 
@@ -243,15 +256,15 @@ Otherwise you may safely skip this step.</p>
 
 <p>All set, Happy Restling! :)</p>
 
-<p><a id="quick-start-guide"></a><h2>Quick Start Guide</h2></p>
+<p><a id="quick-start-guide" class="anchor"></a><h2>Quick Start Guide</h2></p>
 
 <p>Once you have got restler installed with the above steps, you can quickly create your application by following these steps</p>
 
-<p><a id="1-"></a><h3>1.</h3></p>
+<p><a id="1-" class="anchor"></a><h3>1.</h3></p>
 
 <p>Create your <strong>API classes</strong> with all needed public and protected methods</p>
 
-<p><a id="2-"></a><h3>2.</h3></p>
+<p><a id="2-" class="anchor"></a><h3>2.</h3></p>
 
 <p>Create the <strong>gateway (index.php)</strong> as follows</p>
 
@@ -264,7 +277,7 @@ $r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
 $r-&gt;handle(); //serve the response
 </code></pre>
 
-<p><a id="3-"></a><h3>3.</h3></p>
+<p><a id="3-" class="anchor"></a><h3>3.</h3></p>
 
 <p><strong>Enable URL Rewriting</strong></p>
 
@@ -291,7 +304,7 @@ $r-&gt;handle(); //serve the response
   <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file</p>
 </blockquote>
 
-<p><a id="4-"></a><h3>4.</h3></p>
+<p><a id="4-" class="anchor"></a><h3>4.</h3></p>
 
 <p><strong>Fine tune to suit your needs</strong></p>
 
@@ -460,7 +473,7 @@ All tags except @url can also be defined at the class level.</p>
     </tr>
 </table>
 
-<p><a id="5-"></a><h3>5.</h3></p>
+<p><a id="5-" class="anchor"></a><h3>5.</h3></p>
 
 <p>Protect your api, authenticate and allow valid users</p>
 
@@ -473,7 +486,7 @@ $r-&gt;addAuthenticationClass('CustomAuth'); //Add Authentication classes as nee
 $r-&gt;handle(); //serve the response
 </code></pre>
 
-<p><a id="6-"></a><h3>6.</h3></p>
+<p><a id="6-" class="anchor"></a><h3>6.</h3></p>
 
 <p>Turn on production mode</p>
 
@@ -486,60 +499,56 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 //...
 </code></pre>
 
-<p><a id="change-log"></a><h2>Change Log</h2></p>
+<p><a id="change-log" class="anchor"></a><h2>Change Log</h2></p>
 
-<h3>
-  <a name="changes-from-restler-30-rc3" class="anchor" href="#changes-from-restler-30-rc3"></a>Changes from Restler 3.0 RC3</h3>
+<p><a id="changes-from-restler-3-0-rc3" class="anchor"></a><h3>Changes from Restler 3.0 RC3</h3></p>
 
 <ul>
-  <li>Fixes to composer.json and publish stable release as composer package on packagist
+<li>Fixes to composer.json and publish stable release as composer package on packagist
 
-    <ul>
-      <li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist">rodneyrehm/plist</a> package for CFPropertyList.</li>
-      <li>Removed required packages as they are not technically "required" perse, Restlec works out of the box.</li>
-      <li>Created supported packages as require-dev instead which will be installed via <code>composer intall --dev</code>
-      </li>
-      <li>Added suggested section for all the supported packages.</li>
-      <li>Added keywords to package descriptor</li>
-      <li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>
-      <li>Released Restler as package on packagist.</li>
-    </ul>
-  </li>
-</ul><h3>
-  <a id="changes-from-restler-30-rc2" class="anchor" href="#changes-from-restler-30-rc2"></a>Changes from Restler 3.0 RC2</h3>
 <ul>
-  <li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
-  <li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
-  <li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
-  <li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
-  <li>RateLimit class re-written to support all range of time units
-    second|minute|hour|day|week|month to have fine grained control</li>
-  <li>Resources class improved to include description for body parameters</li>
-  <li>Fixes Resources not to include namespace when the return type is array of custom class</li>
-  <li>Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API</li>
-  <li>Added two more ways to exclude API's from explorer/documentation
-
-    <ul>
-      <li>
-        <code>Resources::$excludedHttpMethods</code> (array)</li>
-      <li>
-        <code>Resources::$excludedPaths</code> (array)</li>
-    </ul>
-  </li>
-  <li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
-  <li>Fixes a bug with ValidationInfo parsing @choice inline comment</li>
-  <li>Added Charset support</li>
-  <li>Added Language (basic) support</li>
-  <li>Updated the BDD tests to include new features</li>
-  <li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code>
-  </li>
-  <li>Fixes a bug in XmlFormat parsing XML content to array</li>
-  <li>Added support for JSONP via jsFormat extension of JsonFormat</li>
-  <li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
-  <li>Fixes the order so that responseFormat-&gt;setCharset is called before encoding the response</li>
-  <li>Documentiation improvements and minor bug fixes</li>
+<li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist" target="_blank">rodneyrehm/plist</a> package for CFPropertyList.</li>
+<li>Removed required packages as they are not technically "required" perse, Restlec works out of the box.</li>
+<li>Created supported packages as require-dev instead which will be installed via <code>composer intall --dev</code></li>
+<li>Added suggested section for all the supported packages.</li>
+<li>Added keywords to package descriptor</li>
+<li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>
+<li>Released Restler as package on packagist.</li>
+</ul></li>
 </ul>
-<p><a id="changes-from-restler-3-0-rc1"></a><h3>Changes from Restler 3.0 RC1</h3></p>
+
+<p><a id="changes-from-restler-3-0-rc2" class="anchor"></a><h3>Changes from Restler 3.0 RC2</h3></p>
+
+<ul>
+<li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
+<li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
+<li>Fixes fatal error when the JSON sent in the request body is not an object or array</li>
+<li>Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern</li>
+<li>RateLimit class re-written to support all range of time units
+second|minute|hour|day|week|month to have fine grained control</li>
+<li>Resources class improved to include description for body parameters</li>
+<li>Fixes Resources not to include namespace when the return type is array of custom class</li>
+<li>Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API</li>
+<li>Added two more ways to exclude API's from explorer/documentation
+
+<ul>
+<li><code>Resources::$excludedHttpMethods</code> (array)</li>
+<li><code>Resources::$excludedPaths</code> (array)</li>
+</ul></li>
+<li>Fixes unescaped unicode bug in PHP &lt; 5.4</li>
+<li>Fixes a bug with ValidationInfo parsing @choice inline comment</li>
+<li>Added Charset support</li>
+<li>Added Language (basic) support</li>
+<li>Updated the BDD tests to include new features</li>
+<li>Fixes a bug in Restler class which affects $_GET overriding <code>Defaults</code></li>
+<li>Fixes a bug in XmlFormat parsing XML content to array</li>
+<li>Added support for JSONP via jsFormat extension of JsonFormat</li>
+<li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
+<li>Fixes the order so that responseFormat->setCharset is called before encoding the response</li>
+<li>Documentiation improvements and minor bug fixes</li>
+</ul>
+
+<p><a id="changes-from-restler-3-0-rc1" class="anchor"></a><h3>Changes from Restler 3.0 RC1</h3></p>
 
 <ul>
 <li>Filter classes can use authentication status and respond differently for
@@ -563,7 +572,7 @@ authenticated users by implementing iUseAuthentication interface</li>
 <li>CRUD example updated to include PATCH support</li>
 </ul>
 
-<p><a id="changes-from-restler-2-0"></a><h3>Changes from Restler 2.0</h3></p>
+<p><a id="changes-from-restler-2-0" class="anchor"></a><h3>Changes from Restler 2.0</h3></p>
 
 <p><strong>Restler 3.0</strong> is completely rewritten from Restler 2.0 with best practices in mind for</p>
 
@@ -604,7 +613,7 @@ find out about user authentication status</li>
 <li>...(more to follow)</li>
 </ul>
 
-<p><a id="changes-from-restler-1-0"></a><h3>Changes from Restler 1.0</h3></p>
+<p><a id="changes-from-restler-1-0" class="anchor"></a><h3>Changes from Restler 1.0</h3></p>
 
 <p>Restler 2.0 is a major rewrite to use convention over configuration and it is optimized
 for performance. Here are some of the major changes and improvements</p>

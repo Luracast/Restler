@@ -30,7 +30,7 @@ For simplicity and making it work out of the box this example is using
  Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the command line.
 
 ```bash
-curl -X POST http://restler3.phpfogapp.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+curl -X POST http://restler3.luracast.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
 
 {
   "name": "Another",
@@ -154,7 +154,7 @@ Content-Type: application/json
 
  Content:
 
-*[MySQL.php]: _007_crud//DB/PDO/MySQL.php
+*[MySQL.php]: _007_crud/DB/PDO/MySQL.php
 *[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
 *[SerializedFile.php]: _007_crud/DB/SerializedFile.php
 
