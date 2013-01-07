@@ -5,6 +5,9 @@ Restler is a simple and effective multi-format Web API Server written in PHP.
 
 Just deal with your business logic in php, restler will take care of the REST!
 
+> if you do not have PHP 5.3 on your server and wont be able to upgrade you may
+> use [Restler 2](https://github.com/Luracast/Restler/tree/v2) instead
+
 ### Restler 3 - *Better APIs by Design*
 
 * [Developer Home](http://luracast.com/products/restler/)
