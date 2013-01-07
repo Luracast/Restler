@@ -211,6 +211,15 @@
 
 <p>This example shows how to use vendor specific media types for versioning</p>
 
+<p><a id="vendor-specific-media-types" class="anchor"></a><h3>Vendor-Specific Media Types</h3></p>
+
+<blockquote>
+  <p>Media types use the subtype prefix <code>vnd</code> to indicate that they are owned and
+  controlled by a <code>vendor</code>. Vendor-specific media types convey a clear description
+  of a message's content to the programs that understand their meaning.
+  - <a href="http://books.google.com.sg/books?id=eABpzyTcJNIC&amp;lpg=PA40&amp;ots=vxTC21e8JB&amp;dq=vendor%20specific%20media%20types&amp;pg=PA40#v=onepage&amp;q=vendor%20specific%20media%20types&amp;f=false" target="_blank">REST API Design Rulebook</a></p>
+</blockquote>
+
 <p>Important steps are</p>
 
 <pre><code class="php">Defaults::$apiVendor = "SomeVendor";

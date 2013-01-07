@@ -5,8 +5,14 @@ Tagline: custom media type for versioning
 Tags: versioning,mime,mediatype,vendor,custom
 Requires: PHP >= 5.3
 Description:
-
 This example shows how to use vendor specific media types for versioning
+
+###Vendor-Specific Media Types
+
+> Media types use the subtype prefix `vnd` to indicate that they are owned and
+> controlled by a `vendor`. Vendor-specific media types convey a clear description
+> of a message's content to the programs that understand their meaning.
+- [REST API Design Rulebook](http://books.google.com.sg/books?id=eABpzyTcJNIC&lpg=PA40&ots=vxTC21e8JB&dq=vendor%20specific%20media%20types&pg=PA40#v=onepage&q=vendor%20specific%20media%20types&f=false)
 
 Important steps are
 
