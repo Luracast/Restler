@@ -37,6 +37,7 @@
     "guzzle/guzzle":"2.4.*",
     "luracast/explorer":"*",
     "behat/behat":"2.4.*@stable",
+    "mustache/mustache": "dev-master",
     "rodneyrehm/plist":"dev-master",
     "zendframework/zendamf":"dev-master",
     "symfony/yaml":"*"
