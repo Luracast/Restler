@@ -23,26 +23,26 @@ Features
 * Flexible
 * Highly Customizable
 * Many Examples that can be tried on your localhost to get started
-* Supports HTTP request methods  GET, POST, PUT, DELETE, and PATCH
+* Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request paramater (method)
 * Supports both RESTful and Pragmatic REST API Design
-* Clients can use X-HTTP-Method-Override header
-* Two way format(media type) conversion
-    * Pluggable Formatters
-    * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats
+* Clients can use X-HTTP-Method-Override header, suuports Cross Origin Resource Sharing and JSONP
+* Two way format(media type) conversion both send and receive
+    * Pluggable content Formatter framework and api
+    * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support
 * Pluggable Authentication schemes
     * `[planned]` OAuth 2
 * Pluggable Filters to effectively manage API usage
     * API Rate Limiting Filter
 * Routing
-    * Manual Routing
+    * Manual Routing (Annotation)
         * Using `@url GET my/custom/url/{param}` PHPDoc comments
-    * Auto Routing
+    * Auto Routing (Reflection)
         * URL to Method mapping
         * URL part to Method parameter mapping
         * Query parameters to Method parameter mapping
         * Request body to Method parameter mapping
         * `[planned]` Header to Method parameter mapping
-* Cache
+* Cache built-in
     * Client Side Caching support
     * Proxy Caching support
     * Server Side Caching
@@ -53,7 +53,7 @@ Features
     * Automatic parameter validation and type conversion
     * API versioning support by URL and/or vendor specific MIME
     * API documentation and discovery using [Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer)
-    * Throttling
+    * Throttling and Performance tuning
 * Management
     * `[planned]` Unit Testing using [PHPUnit](https://github.com/sebastianbergmann/phpunit/)
     * Behavior Driven API testing using [Behat](http://behat.org/) and [Guzzle](https://github.com/guzzle/guzzle)
