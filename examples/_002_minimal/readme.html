@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 2.0 Example:- Minimal Example</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="../resources/style.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/jquery.snippet.min.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/facebox.css"/>
+<link rel="stylesheet" type="text/css" href="../resources/hacks.css"/>
+
+<script type="text/javascript" src="../resources/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../resources/jquery.snippet.min.js"></script>
+<script type="text/javascript" src="../resources/facebox.js"></script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+ 	 //$('a[target*=_blank]').facebox();
+	 $("abbr").click(function(){
+	 	$('#codeviewer').load('../resources/getsource.php?file='+$(this).attr("title"), function(){
+	 		$("pre#php").snippet("php",{style:"acid",showNum:false});
+	 		jQuery.facebox({ div: '#codeviewer' });
+	 	});
+ 	 });
+ })
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+(function(){if(!/*@cc_on!@*/0)return;var e = "abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video".split(',');for(var i=0;i<e.length;i++){document.createElement(e[i])}})()
+</script>
+<![endif]-->
+</head>
+<body>
+<nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" href="http://luracast.com/products/restler/">Home</a></li>
+<!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
+<li><a class="active" href="../index.html">Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." href="http://bit.ly/Restler-QA">Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" href="http://bit.ly/LuracastRestler">GitHub</a></li>
+<li><a title="Get updated on Twitter" href="http://twitter.com/Luracast">Twitter</a></li>
+</ul>
+</nav>
+<div id="codeviewer" style="display:none;"></div>
+<nav id="left">
+<img src="../resources/Restler2.gif" width="126" height="126" title="Luracast Restler 2.0"/>
+<h3><a href="../index.html">Examples</a></h3>
+<ul><li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li><li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li><li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li><li><a href="../_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li><li><a href="../_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li><li><a href="../_006_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li></ul>
+</nav>
+<article id="right">
+<div class="right"><small>2</small></div>
+<h2>Minimal Example</h2>
+
+<p>Shows the bare minimum code needed to get your RESTful api server up and running</p>
+
+<blockquote>
+  <p>This API Server is made using the following php files/folders</p>
+  
+  <ul>
+  <li><abbr title="_002_minimal/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_002_minimal/math.php">math.php</abbr>      (api)</li>
+  <li><abbr title="../restler/restler.php">restler.php</abbr>      (framework)</li>
+  </ul>
+</blockquote>
+
+<p>This API Server exposes the following URIs</p>
+
+<pre><code>GET math/add              ⇠ Math::add()
+GET math/add/:n1          ⇠ Math::add()
+GET math/add/:n1/:n2      ⇠ Math::add()
+GET math/multiply         ⇠ Math::multiply()
+GET math/multiply/:n1     ⇠ Math::multiply()
+GET math/multiply/:n1/:n2 ⇠ Math::multiply()
+</code></pre>
+
+<p>Try the following links in your browser</p>
+
+<dl>
+<dt>GET <a href="index.php/math/add" target="_blank">math/add</a></dt>
+<dd>
+<pre><code>2
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/math/add/4/3" target="_blank">math/add/4/3</a></dt>
+<dd><pre><code>7
+</code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/math/add?n1=6&amp;n2=4" target="_blank">math/add?n1=6&amp;n2=4</a></dt>
+<dd>
+<pre><code>10
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/math/multiply" target="_blank">math/multiply</a></dt>
+<dd><pre><code>{"result":10}
+</code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/math/multiply/4/3" target="_blank">math/multiply/4/3</a></dt>
+<dd>
+<pre><code>{"result":12}
+</code></pre>
+</dd>
+
+<dt>GET <a href="index.php/math/multiply?n2=4" target="_blank">math/multiply?n2=4</a></dt>
+<dd><pre><code>{"result":20}
+</code></pre></dd>
+
+</article>
+<footer>
+&#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
+</footer>
+</body>
+</html>

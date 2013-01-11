@@ -1,0 +1,2 @@
+<?php
+ require_once 'Zend/Amf/Value/Messaging/AsyncMessage.php'; class Zend_Amf_Value_Messaging_AcknowledgeMessage extends Zend_Amf_Value_Messaging_AsyncMessage { public function __construct($message) { $this->clientId = $this->generateId(); $this->destination = null; $this->messageId = $this->generateId(); $this->timestamp = time().'00'; $this->timeToLive = 0; $this->headers = new STDClass(); $this->body = null; if ($message && isset($message->messageId)) { $this->correlationId = $message->messageId; } } } 

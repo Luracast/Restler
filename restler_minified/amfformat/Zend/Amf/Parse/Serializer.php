@@ -1,0 +1,2 @@
+<?php
+ abstract class Zend_Amf_Parse_Serializer { protected $_stream; public function __construct(Zend_Amf_Parse_OutputStream $stream) { $this->_stream = $stream; } public abstract function writeTypeMarker($content, $markerType=null); } 
