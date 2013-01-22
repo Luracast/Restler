@@ -6,7 +6,7 @@ How to Rate Limit API access using a Filter class that implements
 `iFilter` interface.
 
 This example also shows how to use Defaults class to customize defaults, how to create your own
-iCache implementation, and how to make a hybrid filter class that behaves deferently
+iCache implementation, and how to make a hybrid filter class that behaves differently
 when the user is Authenticated
 
 [![Restler API Explorer](../resources/explorer1.png)](explorer/index.html#!/authors-v1)
@@ -18,8 +18,12 @@ to show Best Practices and Restler 3 Features.
 
 Make sure you compare them to understand.
 
-> **Note:-** Using session variables as DB and Cache is useless for real life and wrong. We are using it
-Only for demo purpose. Since API Explorer is browser based it works well with that.
+> **Note:-**
+>
+>  1. Using session variables as DB and Cache is useless for real life and wrong. We are using it
+>     Only for demo purpose. Since API Explorer is browser based it works well with that.
+>
+>  2. We are using Author.php to document return type of `GET authors/{id}` using `@return` comment
 
 If you have hit the API Rate Limit or screwed up the Authors DB, you can easily reset by deleting
 PHP_SESSION cookie using the Developer Tools in your browser.
@@ -32,6 +36,7 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 > * SessionCache.php      (helper)
 > * Authors.php      (api)
 > * KeyAuth.php      (auth)
+> * Author.php      (helper)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
@@ -60,6 +65,8 @@ This API Server exposes the following URIs
 *[SessionCache.php]: _009_rate_limiting/SessionCache.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
+*[Author.php]: _009_rate_limiting/Author.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 
+*[Author.php]: _009_rate_limiting/Author.php

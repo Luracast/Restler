@@ -205,7 +205,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>9</small></div>
-<p><a id="rate-limiting-x-621xphp----5-3x-622x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="rate-limiting-x-624xphp----5-3x-625x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>filter</tag> <tag>throttle</tag> <tag>rate-limiting</tag></p>
 
@@ -213,7 +213,7 @@
 <code>iFilter</code> interface.</p>
 
 <p>This example also shows how to use Defaults class to customize defaults, how to create your own
-iCache implementation, and how to make a hybrid filter class that behaves deferently
+iCache implementation, and how to make a hybrid filter class that behaves differently
 when the user is Authenticated</p>
 
 <p><a href="explorer/index.html#!/authors-v1" target="_blank"><img src="../resources/explorer1.png" alt="Restler API Explorer" /></a></p>
@@ -226,8 +226,13 @@ to show Best Practices and Restler 3 Features.</p>
 <p>Make sure you compare them to understand.</p>
 
 <blockquote>
-  <p><strong>Note:-</strong> Using session variables as DB and Cache is useless for real life and wrong. We are using it
-  Only for demo purpose. Since API Explorer is browser based it works well with that.</p>
+  <p><strong>Note:-</strong></p>
+  
+  <ol>
+  <li><p>Using session variables as DB and Cache is useless for real life and wrong. We are using it
+  Only for demo purpose. Since API Explorer is browser based it works well with that.</p></li>
+  <li><p>We are using <abbr title="_009_rate_limiting/Author.php">Author.php</abbr> to document return type of <code>GET authors/{id}</code> using <code>@return</code> comment</p></li>
+  </ol>
 </blockquote>
 
 <p>If you have hit the API Rate Limit or screwed up the Authors DB, you can easily reset by deleting
@@ -243,6 +248,7 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
   <li><abbr title="_009_rate_limiting/SessionCache.php">SessionCache.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/ratelimited/Authors.php">Authors.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/KeyAuth.php">KeyAuth.php</abbr>      (auth)</li>
+  <li><abbr title="_009_rate_limiting/Author.php">Author.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
