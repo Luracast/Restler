@@ -1061,7 +1061,9 @@ class Restler extends EventEmitter
 
         }
         $call = new stdClass;
-        $currentUrl = "v{$this->requestedApiVersion}/{$this->url}";
+        $currentUrl = 'v' . $this->requestedApiVersion;
+        if (!empty($this->url))
+            $currentUrl .= '/' . $this->url;
         $lc = strtolower($currentUrl);
         foreach ($urls as $url => $call) {
             $this->trigger('onRoute', array('url' => $url, 'target' => $call));
