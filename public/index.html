@@ -361,7 +361,7 @@ All tags except @url can also be defined at the class level.</p>
         Syntax:
         <pre>@access private|public|protected|hybrid</pre>
         Example:
-        <pre>POST authors/{id}/books</pre>
+        <pre>@access protected</pre>
         Access control for api methods. PHPDoc only supports private and public,
         Restler adds <b>protected</b> for api that needs authentication,
         <b>hybrid</b> for api that enhances resulting data for authenticated users.
@@ -506,12 +506,10 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 <p><a id="change-log" class="anchor"></a><h2>Change Log</h2></p>
 
-<p><a id="changes-from-restler-3-0-rc3" class="anchor"></a><h3>Changes from Restler 3.0 RC3</h3></p>
+<p><a id="changes-from-restler-3-0-rc3--only-available-on-the-v3-branch-" class="anchor"></a><h3>Changes from Restler 3.0 RC3 (only available on the v3 branch)</h3></p>
 
 <ul>
-<li>Fixes to composer.json and publish stable release as composer package on packagist
-
-<ul>
+<li>Fixes to composer.json and publish stable release as composer package on packagist</li>
 <li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist" target="_blank">rodneyrehm/plist</a> package for CFPropertyList.</li>
 <li>Removed required packages as they are not technically "required" perse, Restlec works out of the box.</li>
 <li>Created supported packages as require-dev instead which will be installed via <code>composer intall --dev</code></li>
@@ -519,7 +517,6 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 <li>Added keywords to package descriptor</li>
 <li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>
 <li>Released Restler as package on packagist.</li>
-</ul></li>
 </ul>
 
 <p><a id="changes-from-restler-3-0-rc2" class="anchor"></a><h3>Changes from Restler 3.0 RC2</h3></p>
@@ -550,7 +547,7 @@ second|minute|hour|day|week|month to have fine grained control</li>
 <li>Added support for JSONP via jsFormat extension of JsonFormat</li>
 <li>Fixes a bug in unicode un-escaping for JsonFormat in PHP &lt; 5.4</li>
 <li>Fixes the order so that responseFormat->setCharset is called before encoding the response</li>
-<li>Documentiation improvements and minor bug fixes</li>
+<li>Documentation improvements and minor bug fixes</li>
 </ul>
 
 <p><a id="changes-from-restler-3-0-rc1" class="anchor"></a><h3>Changes from Restler 3.0 RC1</h3></p>
