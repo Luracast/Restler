@@ -136,8 +136,12 @@ class Resources implements iUseAuthentication
                 continue;
             }
             foreach ($value as $fullPath => $route) {
-                //if (0 !== strpos($route['path'], $target)) {
-                if ($route['path'] != $target) {
+                if (0 !== strpos($route['path'], $target)) {
+                    continue;
+                }
+                if (strlen($route['path']) != strlen($target) &&
+                    0 !== strpos($route['path'], $target . '/')
+                ) {
                     continue;
                 }
                 if (
