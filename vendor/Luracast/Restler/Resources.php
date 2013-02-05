@@ -492,8 +492,8 @@ class Resources implements iUseAuthentication
                 : 'add <mark>@param {type} $' . $r->name
                     . ' {comment}</mark> to describe here');
         //paramType can be path or query or body or header
-        $r->paramType = $param['from'];
-        $r->required = $param['required'];
+        $r->paramType = isset($param['from']) ? $param['from'] : 'query';
+        $r->required = isset($param['required']) && $param['required'];
         if (isset($param['default'])) {
             $r->defaultValue = $param['default'];
         } elseif (isset($param[CommentParser::$embeddedDataName]['example'])) {
