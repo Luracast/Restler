@@ -136,11 +136,11 @@ class Resources implements iUseAuthentication
                 continue;
             }
             foreach ($value as $fullPath => $route) {
-                if (0 !== strpos($route['path'], $target)) {
+                if (0 !== strpos($fullPath, $target)) {
                     continue;
                 }
-                if (strlen($route['path']) != strlen($target) &&
-                    0 !== strpos($route['path'], $target . '/')
+                if (strlen($fullPath) != strlen($target) &&
+                    0 !== strpos($fullPath, $target . '/')
                 ) {
                     continue;
                 }
@@ -305,7 +305,7 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
-                $path = explode('/', $route['path']);
+                $path = explode('/', $fullPath);
 
                 $resource = isset($path[1]) ? $path[1] : '';
 
