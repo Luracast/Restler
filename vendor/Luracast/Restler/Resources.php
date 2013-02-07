@@ -448,6 +448,8 @@ class Resources implements iUseAuthentication
 
     private function _appendToBody($p)
     {
+        if($p->name === Defaults::$fullRequestDataName)
+        return;
         $this->_bodyParam['description'][$p->name]
             = "<mark>$p->name</mark>"
             . ($p->required ? ' <i>(required)</i>: ' : ': ')
