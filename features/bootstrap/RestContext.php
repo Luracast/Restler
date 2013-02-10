@@ -57,7 +57,9 @@ class RestContext extends BehatContext
                         $event->stopPropagation();
                 }
             });
-        date_default_timezone_set('UTC');
+        $timezone = ini_get('date.timezone');
+        if (empty($timezone))
+            date_default_timezone_set('UTC');
     }
 
     public function getParameter($name)
