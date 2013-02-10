@@ -354,11 +354,14 @@ class RestContext extends BehatContext
      */
     public function theResponseExpiresHeaderShouldBeDatePlusGivenSeconds($seconds)
     {
-        $value = gmdate(
-            'D, d M Y H:i:s \G\M\T',
-            strtotime($this->_response->getHeader('Date')) + $seconds
+        $server_time = strtotime($this->_response->getHeader('Date')) + $seconds;
+        $expires_time = strtotime($this->_response->getHeader('Expires'));
+        if ($expires_time === $server_time || $expires_time === $server_time + 1)
+            return;
+        return $this->theResponseHeaderShouldBe(
+            'Expires',
+            gmdate('D, d M Y H:i:s \G\M\T', $server_time)
         );
-        return $this->theResponseHeaderShouldBe('Expires', $value);
     }
 
     /**
