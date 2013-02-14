@@ -614,7 +614,7 @@ class Restler extends EventEmitter
                     // TODO:check if the api version requested is allowed by class
                     if (Defaults::$autoValidationEnabled) {
                         foreach ($o->metadata['param'] as $index => $param) {
-                            $info = &$param [CommentParser::$embeddedDataName];
+                            $info = & $param [CommentParser::$embeddedDataName];
                             if (!isset ($info['validate'])
                                 || $info['validate'] != false
                             ) {
@@ -763,8 +763,14 @@ class Restler extends EventEmitter
                 ), $data);
             }
         } else {
-            $message = RestException::$codes[$statusCode] .
-                (empty($statusMessage) ? '' : ': ' . $statusMessage);
+            if (isset(RestException::$codes[$statusCode])) {
+                $message = RestException::$codes[$statusCode] .
+                    (empty($statusMessage) ? '' : ': ' . $statusMessage);
+            } else {
+                trigger_error("Non standard http status codes [currently $statusCode] are discouraged", E_USER_WARNING);
+                $message = $statusMessage;
+
+            }
             $this->setStatus($statusCode);
             $data = $this->responseFormat->encode(
                 $responder->formatError($statusCode, $message),
@@ -1196,7 +1202,7 @@ class Restler extends EventEmitter
                 if (!isset($metadata['param'][$position])) {
                     $metadata['param'][$position] = array();
                 }
-                $m = &$metadata ['param'] [$position];
+                $m = & $metadata ['param'] [$position];
                 if (isset($type)) {
                     $m['type'] = $type;
                 }
