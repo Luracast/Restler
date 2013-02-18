@@ -47,7 +47,7 @@ class Util
                 $resourcePath = '';
             }
         } else
-            $resourcePath = trim($resourcePath, '/');
+            $resourcePath = strtolower(trim($resourcePath, '/'));
         if (strlen($resourcePath) > 0)
             $resourcePath .= '/';
         return $prefix . $resourcePath;
