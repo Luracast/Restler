@@ -20,7 +20,7 @@
     "require":{
         "php":">=5.3.0",
         "luracast/explorer":"*",
-        "guzzle/guzzle":"2.4.*",
+        "guzzle/guzzle":"~3.1.1",
         "behat/behat":"2.4.*@stable",
         "ChiperSoft/CFPropertyList":">=0.1.0",
         "zendframework/zendamf":"dev-master",
