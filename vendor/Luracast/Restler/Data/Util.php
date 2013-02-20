@@ -44,7 +44,10 @@ class Util
     public static function objectToArray($object,
                                          $forceObjectTypeWhenEmpty = false)
     {
-        if ($object instanceof JsonSerializable) {
+        if (is_object ($object)) {
+    		$interfaces = class_implements($object);
+		}
+        if ($object instanceof JsonSerializable || isset($interfaces['JsonSerializable'])) {
             $object = $object->jsonSerialize();
         }
         if (is_object($object) && method_exists($object, '__sleep')) {
