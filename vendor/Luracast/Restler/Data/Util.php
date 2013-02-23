@@ -47,8 +47,7 @@ class Util
         //if ($object instanceof JsonSerializable) { //wont work on PHP < 5.4
         if (method_exists($object, 'jsonSerialize')) {
             $object = $object->jsonSerialize();
-        }
-        if (is_object($object) && method_exists($object, '__sleep')) {
+        } elseif (is_object($object) && method_exists($object, '__sleep')) {
             $properties = $object->__sleep();
             $array = array();
             foreach ($properties as $key) {
