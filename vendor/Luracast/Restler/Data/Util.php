@@ -44,7 +44,8 @@ class Util
     public static function objectToArray($object,
                                          $forceObjectTypeWhenEmpty = false)
     {
-        if ($object instanceof JsonSerializable) {
+        //if ($object instanceof JsonSerializable) { //wont work on PHP < 5.4
+        if (method_exists($object, 'jsonSerialize')) {
             $object = $object->jsonSerialize();
         }
         if (is_object($object) && method_exists($object, '__sleep')) {
