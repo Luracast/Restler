@@ -58,7 +58,6 @@ class RateLimit implements iFilter, iUseAuthentication
         $unit, $usagePerUnit, $authenticatedUsagePerUnit = null
     )
     {
-        static::validate($unit);
         static::$unit = $unit;
         static::$usagePerUnit = $usagePerUnit;
         static::$authenticatedUsagePerUnit =
