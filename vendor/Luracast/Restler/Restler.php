@@ -523,8 +523,7 @@ class Restler extends EventEmitter
                     throw new RestException (
                         500, 'Filter Class ' .
                         'should implement iFilter');
-                } else {
-                    $ok = $filterObj->__isAllowed();
+                } else if (!($ok = $filterObj->__isAllowed())) {
                     if (is_null($ok)
                         && $filterObj instanceof iUseAuthentication
                     ) {
