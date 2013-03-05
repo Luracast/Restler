@@ -1069,7 +1069,6 @@ class Restler extends EventEmitter
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
             $currentUrl .= '/' . $this->url;
-        $lc = strtolower($currentUrl);
         foreach ($urls as $url => $call) {
             $this->trigger('onRoute', array('url' => $url, 'target' => $call));
             $call = (object)$call;
@@ -1100,7 +1099,7 @@ class Restler extends EventEmitter
                     $found = true;
                     break;
                 }
-            } elseif (strcasecmp($url, $lc)) {
+            } elseif (strcasecmp($url, $currentUrl)) {
                 $found = true;
                 break;
             }
