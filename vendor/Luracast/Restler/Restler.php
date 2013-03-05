@@ -1099,7 +1099,7 @@ class Restler extends EventEmitter
                     $found = true;
                     break;
                 }
-            } elseif (strcasecmp($url, $currentUrl)) {
+            } elseif (0 === strcasecmp($url, $currentUrl)) {
                 $found = true;
                 break;
             }
