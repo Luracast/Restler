@@ -35,11 +35,10 @@ function parse_backtrace($raw, $skip = 1)
         }
         //$output .= print_r($entry, true) . "\n";
         $output .= "\nFile: " . $entry['file'] . " (Line: " . $entry['line'] . ")\n";
-        $output .= $entry['class'] . "::"
-            . $entry['function']
+        if (isset($entry['class']))
+            $output .= $entry['class'] . "::";
+        $output .= $entry['function']
             . "( " . json_encode($entry['args']) . " )\n";
-        /*
-        */
     }
     return $output;
 }
@@ -68,7 +67,9 @@ function render($data)
         // field name
         foreach ($data as $key => $value) {
             $r .= '<li>';
-            $r .= is_numeric($key) ? "[<strong>$key</strong>]" : "<strong>$key: </strong>";
+            $r .= is_numeric($key)
+                ? "[<strong>$key</strong>]"
+                : "<strong>$key: </strong>";
             $r .= '<span>';
             if (is_array($value)) {
                 // recursive
@@ -95,6 +96,16 @@ function render($data)
     $r .= "</ul>\n";
     return $r;
 }
+$reqHeadersArr = array();
+$requestHeaders = $_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'] . ' ' . $_SERVER['SERVER_PROTOCOL'] . PHP_EOL;
+foreach ($reqHeadersArr as $key => $value) {
+    if ($key == 'Host')
+        continue;
+    $requestHeaders .= "$key: $value" . PHP_EOL;
+}
+// $requestHeaders = $this->encode(apache_request_headers(), FALSE,
+// FALSE);
+$responseHeaders = implode(PHP_EOL, headers_list());
 
 ?>
 <!DOCTYPE html>
@@ -102,7 +113,8 @@ function render($data)
 <head>
     <title>Restler v<?php echo Restler::VERSION?> - <?php echo $title?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link type="text/css" rel="stylesheet" media="all" href="<?php echo $baseUrl ?>/debug/debug.css">
+    <link type="text/css" rel="stylesheet" media="all"
+          href="<?php echo $baseUrl ?>/debug/debug.css">
 </head>
 <body>
 {$notices}
@@ -110,5 +122,16 @@ function render($data)
 
 <h2>Response:</h2>
 <?php echo render($response);?>
+<h2>Log:</h2>
+<pre>
+<?php echo $call_trace ?>
+<?php echo Util::$restler->log ?>
+{$all_traces}
+{$all_trace_infos}
+</pre>
+<h2>Request Headers:</h2>
+<pre><?php echo $requestHeaders ?></pre>
+<h2>Response Headers:</h2>
+<pre><?php echo $responseHeaders ?></pre>
 </body>
 </html>
