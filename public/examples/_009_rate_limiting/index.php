@@ -47,6 +47,7 @@ use Luracast\Restler\Filter\RateLimit;
 Defaults::$cacheClass = 'SessionCache';
 //set extreme value for quick testing
 RateLimit::$usagePerUnit = 10;
+RateLimit::setLimit('seconds',1);
 
 $r = new Restler();
 
