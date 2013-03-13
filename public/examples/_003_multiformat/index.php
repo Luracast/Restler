@@ -68,7 +68,7 @@ require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();
-$r->setSupportedFormats('TsonFormat', 'XmlFormat');
+$r->setSupportedFormats('JsonFormat', 'XmlFormat');
 $r->addAPIClass('BMI');
 $r->handle();
 
