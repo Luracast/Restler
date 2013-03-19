@@ -108,7 +108,7 @@ class Util
             }
         }
         // support for HEAD request
-        if ($method == 'HEAD') {
+        if (Defaults::$rewriteHeadToGet && $method == 'HEAD') {
             $method = 'GET';
         }
         return $method;
