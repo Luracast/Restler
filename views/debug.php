@@ -124,8 +124,8 @@ $responseHeaders = implode(PHP_EOL, headers_list());
 <?php echo render($response);?>
 <h2>Log:</h2>
 <pre>
-<?php echo $call_trace ?>
-<?php echo Util::$restler->log ?>
+<?php echo $call_trace; ?>
+<?php echo implode(PHP_EOL, Util::$restler->_log); ?>
 {$all_traces}
 {$all_trace_infos}
 </pre>
