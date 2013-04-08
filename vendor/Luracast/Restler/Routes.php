@@ -153,7 +153,9 @@ class Routes
                             $match = trim($matches[0], '{}:');
                             $index = $call['arguments'][$match];
                             return '{' .
-                                Routes::typeChar($call['metadata']['param'][$index]['type'])
+                                Routes::typeChar(isset($call['metadata']['param'][$index]['type'])
+                                    ? $call['metadata']['param'][$index]['type']
+                                    : null)
                                 . $index . '}';
                         }, $url);
                     static::addPath($url, $httpMethod, $call);
@@ -198,7 +200,9 @@ class Routes
                     $call['metadata']['url'] = "$httpMethod $url{"
                         . $param->getName() . '}';
                     $url .= '{' .
-                        static::typeChar($call['metadata']['param'][$position - 1]['type'])
+                        static::typeChar(isset($call['metadata']['param'][$position - 1]['type'])
+                            ? $call['metadata']['param'][$position - 1]['type']
+                            : null)
                         . ($position - 1) . '}';
                     if ($allowAmbiguity || $position == $ignorePathTill) {
                         static::addPath($url, $httpMethod, $call);
