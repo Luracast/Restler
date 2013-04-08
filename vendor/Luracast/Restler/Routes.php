@@ -214,7 +214,7 @@ class Routes
         Util::$restler->cache->set('new_routes', static::$routes);
     }
 
-    public static function find($path, $httpMethod)
+    public static function find($path, $httpMethod, array $data = array())
     {
         $p =& static::$routes;
         if (isset($p[$path][$httpMethod])) {
