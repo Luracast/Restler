@@ -17,20 +17,11 @@ use ReflectionMethod;
  */
 class Routes
 {
-    const PATH = '→';
     protected static $routes = array();
 
     public static function addPath($path, $httpMethod = 'GET', array $call)
     {
-        $p =& static::$routes;
-        $parts = explode('/', $path);
-        foreach ($parts as $part) {
-            if (!isset($p[static::PATH][$part])) {
-                $p[static::PATH][$part] = array();
-            }
-            $p = & $p[static::PATH][$part];
-        }
-        $p[$httpMethod] = $call;
+        static::$routes[$path][$httpMethod] = $call;
     }
 
     public static function addAPIClass($className, $resourcePath = '')
@@ -222,84 +213,49 @@ class Routes
     public static function find($path, $httpMethod)
     {
         $p =& static::$routes;
-        $parts = explode('/', $path);
-        $params = array();
-        $found = false;
-        foreach ($parts as $part) {
-            if (isset($p[static::PATH][$part])) {
-                //static path found
-                $p = & $p[static::PATH][$part];
-                $found = true;
-            } else {
-                //try dynamic path
-                $found = false;
-                $type = static::typeOf($part);
-                echo "~~~~~~~ $type ~~~~~~~~";
-                foreach ($p[static::PATH] as $key => $value) {
-                    if (isset($value[$httpMethod])) {
-                        $call = & $value[$httpMethod];
-                    }
-                    if (substr($key, -1, 1) == '}') {
-                        echo 'ends with }';
-                        //simple dynamic path found
-                        if (strpos($key, '{' . $type) === 0) {
-                            echo 'matching type ' . $type;
-                            $index = intval(substr($key, 2));
-                            $params[$call['metadata']['param'][$index]['name']] = $part;
-                            $p = & $p[static::PATH][$key];
-                            $found = true;
+        if (isset($p[$path][$httpMethod])) {
+            //static path
+            $call = (object)$p[$path][$httpMethod];
+            $call->params = $call->defaults;
+            return $call;
+        } else {
+            //dynamic path
+            foreach ($p as $key => $value) {
+                if (!isset($value[$httpMethod])) {
+                    continue;
+                }
+                $regex = str_replace(array('{', '}'),
+                    array('(?P<', '>[^/]+)'), $key);
+                if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
+                    $matches = $matches[0];
+                    $found = true;
+                    $defaults = $value[$httpMethod]['defaults'];
+                    foreach ($matches as $k => $v) {
+                        if (is_numeric($k)) {
+                            unset($matches[$k]);
+                            continue;
+                        }
+                        if (strpos($k, static::typeOf($v)) === 0) {
+                            $defaults[intval(substr($k, 1))] = $v;
+                        } else {
+                            $found = false;
                             break;
                         }
-                    } else {
-                        //try for complex dynamic path
-                        break 2;
                     }
-                }
-                continue;
-                //try dynamic path
-                $found = false;
-                foreach ($p[static::PATH] as $key => $value) {
-                    if (isset($value[$httpMethod])) {
-                        $call = & $value[$httpMethod];
-                    } else {
-                        continue;
+                    if ($found) {
+                        $call = (object)$value[$httpMethod];
+                        $call->params = $defaults;
+                        return $call;
                     }
-                    echo $key . ' ' . $part . PHP_EOL;
-                    $regex = str_replace(array('{', '}'),
-                        array('(?P<', '>[^/]+)'), $key);
-                    if (preg_match(":^$regex$:i", $part, $matches)) {
-                        foreach ($matches as $arg => $match) {
-                            echo " | ~~~~~~~$arg $match $type ~~~~~~~~ | ";
-                            if (isset($call['arguments'][$arg])) {
-                                $params[$arg] = $match;
-                            }
-                        }
-                        $p = & $value;
-                        $found = true;
-                        break;
-                    }
-                }
-                break;
-            }
-        }
-        if ($found) {
-            $call = (object)$p[$httpMethod];
-            var_dump($p);
-            $d = $call->defaults;
-            foreach ($call->arguments as $key => $value) {
-                if (isset($params[$key])) {
-                    $d[$value] = $params[$key];
                 }
             }
-            $call->arguments = $d;
-            return $call;
         }
     }
 
     /**
      * @access private
      */
-    public static function typeOf($var)
+    protected static function typeOf($var)
     {
         if (is_numeric($var)) {
             return 'n';
@@ -313,7 +269,7 @@ class Routes
     /**
      * @access private
      */
-    public static function typeChar($type = null)
+    protected static function typeChar($type = null)
     {
         if (!$type) {
             return 's';
