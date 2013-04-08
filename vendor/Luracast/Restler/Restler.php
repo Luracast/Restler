@@ -240,9 +240,9 @@ class Restler extends EventEmitter
     }
 
     /**
-     * @param int         $version         maximum version number supported
+     * @param int $version                 maximum version number supported
      *                                     by  the api
-     * @param int         $minimum         minimum version number supported
+     * @param int $minimum                 minimum version number supported
      * (optional)
      *
      * @throws \InvalidArgumentException
@@ -1069,6 +1069,7 @@ class Restler extends EventEmitter
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
             $currentUrl .= '/' . $this->url;
+        print_r(Routes::find($currentUrl, $this->requestMethod));
         foreach ($urls as $url => $call) {
             $this->trigger('onRoute', array('url' => $url, 'target' => $call));
             $call = (object)$call;
@@ -1113,6 +1114,9 @@ class Restler extends EventEmitter
             }
             $call->arguments = $p;
 
+            echo '=================='.PHP_EOL;
+            print_r($call);
+            echo '=================='.PHP_EOL;
             return $call;
         }
     }
@@ -1144,6 +1148,8 @@ class Restler extends EventEmitter
      */
     protected function generateMap($className, $resourcePath = '')
     {
+        Routes::addAPIClass($className, $resourcePath);
+
         /*
          * Mapping Rules - Optional parameters should not be mapped to URL - if
          * a required parameter is of primitive type - Map them to URL - Do not
