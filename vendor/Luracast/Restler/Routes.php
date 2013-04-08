@@ -219,11 +219,10 @@ class Routes
         $p =& static::$routes;
         if (isset($p[$path][$httpMethod])) {
             //static path
-            $call = (object)$p[$path][$httpMethod];
-            $call->params = $call->defaults;
-            return $call;
+            return static::populate($p[$path][$httpMethod], $data);
         } else {
             //dynamic path
+            ksort($p);
             foreach ($p as $key => $value) {
                 if (!isset($value[$httpMethod])) {
                     continue;
@@ -233,27 +232,38 @@ class Routes
                 if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
                     $matches = $matches[0];
                     $found = true;
-                    $defaults = $value[$httpMethod]['defaults'];
                     foreach ($matches as $k => $v) {
                         if (is_numeric($k)) {
                             unset($matches[$k]);
                             continue;
                         }
                         if (strpos($k, static::typeOf($v)) === 0) {
-                            $defaults[intval(substr($k, 1))] = $v;
+                            $index = intval(substr($k, 1));
+                            $details = $value[$httpMethod]['metadata']['param'][$index];
+                            $data[$details['name']] = $v;
                         } else {
                             $found = false;
                             break;
                         }
                     }
                     if ($found) {
-                        $call = (object)$value[$httpMethod];
-                        $call->params = $defaults;
-                        return $call;
+                        return static::populate($value[$httpMethod], $data);
                     }
                 }
             }
         }
+    }
+
+    protected static function populate($call, $data)
+    {
+        $call = (object)$call;
+        $call->params = $call->defaults;
+        foreach ($data as $key => $value) {
+            if (isset($call->arguments[$key])) {
+                $call->params[$call->arguments[$key]] = $value;
+            }
+        }
+        return $call;
     }
 
     /**
