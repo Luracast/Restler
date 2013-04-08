@@ -204,7 +204,8 @@ class Routes
                     if (!empty($url)) {
                         $url .= '/';
                     }
-
+                    $call['metadata']['url'] = "$httpMethod $url{"
+                        . $param->getName() . '}';
                     $url .= '{' .
                         $call['metadata']['param'][$position - 1]['type']{0} .
                         ($position - 1) . '}';
