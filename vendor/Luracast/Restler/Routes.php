@@ -197,8 +197,8 @@ class Routes
                     if (!empty($url)) {
                         $url .= '/';
                     }
-                    $call['metadata']['url'] = "$httpMethod $url{"
-                        . $param->getName() . '}';
+                    //$call['metadata']['url'] = "$httpMethod $url{"
+                        //. $param->getName() . '}';
                     $url .= '{' .
                         static::typeChar(isset($call['metadata']['param'][$position - 1]['type'])
                             ? $call['metadata']['param'][$position - 1]['type']
@@ -211,7 +211,7 @@ class Routes
                 }
             }
         }
-        Util::$restler->cache->set('new_routes', static::$routes);
+        //Util::$restler->cache->set('new_routes', static::$routes);
     }
 
     public static function find($path, $httpMethod, array $data = array())
@@ -283,7 +283,7 @@ class Routes
     /**
      * @access private
      */
-    protected static function typeChar($type = null)
+    public static function typeChar($type = null)
     {
         if (!$type) {
             return 's';
