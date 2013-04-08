@@ -1069,7 +1069,7 @@ class Restler extends EventEmitter
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
             $currentUrl .= '/' . $this->url;
-        print_r(Routes::find($currentUrl, $this->requestMethod));
+        print_r(Routes::find($currentUrl, $this->requestMethod, $params));
         foreach ($urls as $url => $call) {
             $this->trigger('onRoute', array('url' => $url, 'target' => $call));
             $call = (object)$call;
@@ -1114,9 +1114,9 @@ class Restler extends EventEmitter
             }
             $call->arguments = $p;
 
-            echo '=================='.PHP_EOL;
+            echo '==================' . PHP_EOL;
             print_r($call);
-            echo '=================='.PHP_EOL;
+            echo '==================' . PHP_EOL;
             return $call;
         }
     }
