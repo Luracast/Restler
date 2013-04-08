@@ -157,6 +157,14 @@ class Routes
                 foreach ($matches as $match) {
                     $httpMethod = $match[1];
                     $url = rtrim($resourcePath . $match[2], '/');
+                    $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
+                        function ($matches) use ($call) {
+                            $match = trim($matches[0], '{}:');
+                            $index = $call['arguments'][$match];
+                            return '{' .
+                                $call['metadata']['param'][$index]['type']{0} .
+                                $index . '}';
+                        }, $url);
                     static::addPath($url, $httpMethod, $call);
                 }
                 //if auto route enabled, do so
