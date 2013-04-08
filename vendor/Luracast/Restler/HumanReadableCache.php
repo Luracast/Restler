@@ -55,9 +55,20 @@ class HumanReadableCache implements iCache
                     foreach ($value as $ke => $va) {
                         $s .= PHP_EOL . PHP_EOL . "//==== $key $ke ===="
                             . PHP_EOL . PHP_EOL;
-                        $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'] = ' .
-                            str_replace('  ', '    ',
-                                var_export($va, true)) . ';';
+                        if(is_array($va)){
+                            $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'] = array();';
+                            foreach ($va as $k => $v) {
+                                $s .= PHP_EOL . PHP_EOL . "//==== $key $ke $k ===="
+                                    . PHP_EOL . PHP_EOL;
+                                $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'][\'' . $k . '\'] = ' .
+                                    str_replace('  ', '    ',
+                                        var_export($v, true)) . ';';
+                            }
+                        }else{
+                            $s .= '$o[\'' . $key . '\'][\'' . $ke . '\'] = ' .
+                                str_replace('  ', '    ',
+                                    var_export($va, true)) . ';';
+                        }
                     }
                 } else {
                     $s .= '$o[\'' . $key . '\'] = '
