@@ -196,7 +196,10 @@ class Routes
                     if (!empty($url)) {
                         $url .= '/';
                     }
-                    $url .= '{' . $param->getName() . '}';
+
+                    $url .= '{' .
+                        $call['metadata']['param'][$position - 1]['type']{0} .
+                        ($position - 1) . '}';
                     if ($allowAmbiguity || $position == $ignorePathTill) {
                         static::addPath($url, $httpMethod, $call);
                     }
@@ -220,6 +223,7 @@ class Routes
                 $found = true;
             } else {
                 //try dynamic path
+                $found = false;
                 foreach ($p[static::PATH] as $key => $value) {
                     if (isset($value[$httpMethod])) {
                         $call = & $value[$httpMethod];
