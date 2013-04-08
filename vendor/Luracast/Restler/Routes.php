@@ -162,8 +162,8 @@ class Routes
                             $match = trim($matches[0], '{}:');
                             $index = $call['arguments'][$match];
                             return '{' .
-                                $call['metadata']['param'][$index]['type']{0} .
-                                $index . '}';
+                                Routes::typeChar($call['metadata']['param'][$index]['type'])
+                                . $index . '}';
                         }, $url);
                     static::addPath($url, $httpMethod, $call);
                 }
@@ -207,8 +207,8 @@ class Routes
                     $call['metadata']['url'] = "$httpMethod $url{"
                         . $param->getName() . '}';
                     $url .= '{' .
-                        $call['metadata']['param'][$position - 1]['type']{0} .
-                        ($position - 1) . '}';
+                        static::typeChar($call['metadata']['param'][$position - 1]['type'])
+                        . ($position - 1) . '}';
                     if ($allowAmbiguity || $position == $ignorePathTill) {
                         static::addPath($url, $httpMethod, $call);
                     }
@@ -233,6 +233,31 @@ class Routes
             } else {
                 //try dynamic path
                 $found = false;
+                $type = static::typeOf($part);
+                echo "~~~~~~~ $type ~~~~~~~~";
+                foreach ($p[static::PATH] as $key => $value) {
+                    if (isset($value[$httpMethod])) {
+                        $call = & $value[$httpMethod];
+                    }
+                    if (substr($key, -1, 1) == '}') {
+                        echo 'ends with }';
+                        //simple dynamic path found
+                        if (strpos($key, '{' . $type) === 0) {
+                            echo 'matching type ' . $type;
+                            $index = intval(substr($key, 2));
+                            $params[$call['metadata']['param'][$index]['name']] = $part;
+                            $p = & $p[static::PATH][$key];
+                            $found = true;
+                            break;
+                        }
+                    } else {
+                        //try for complex dynamic path
+                        break 2;
+                    }
+                }
+                continue;
+                //try dynamic path
+                $found = false;
                 foreach ($p[static::PATH] as $key => $value) {
                     if (isset($value[$httpMethod])) {
                         $call = & $value[$httpMethod];
@@ -244,6 +269,7 @@ class Routes
                         array('(?P<', '>[^/]+)'), $key);
                     if (preg_match(":^$regex$:i", $part, $matches)) {
                         foreach ($matches as $arg => $match) {
+                            echo " | ~~~~~~~$arg $match $type ~~~~~~~~ | ";
                             if (isset($call['arguments'][$arg])) {
                                 $params[$arg] = $match;
                             }
@@ -258,6 +284,7 @@ class Routes
         }
         if ($found) {
             $call = (object)$p[$httpMethod];
+            var_dump($p);
             $d = $call->defaults;
             foreach ($call->arguments as $key => $value) {
                 if (isset($params[$key])) {
@@ -266,6 +293,37 @@ class Routes
             }
             $call->arguments = $d;
             return $call;
+        }
+    }
+
+    /**
+     * @access private
+     */
+    public static function typeOf($var)
+    {
+        if (is_numeric($var)) {
+            return 'n';
+        }
+        if ($var == 'true' || $var == 'false') {
+            return 'b';
+        }
+        return 's';
+    }
+
+    /**
+     * @access private
+     */
+    public static function typeChar($type = null)
+    {
+        if (!$type) {
+            return 's';
+        }
+        switch ($type{0}) {
+            case 'i':
+            case 'f':
+                return 'n';
+            default:
+                return $type{0};
         }
     }
 }
