@@ -19,7 +19,7 @@ class Routes
 {
     protected static $routes = array();
 
-    public static function addPath($path, $httpMethod = 'GET', array $call)
+    public static function addPath($path, array $call, $httpMethod = 'GET')
     {
         static::$routes[$path][$httpMethod] = $call;
     }
@@ -158,7 +158,7 @@ class Routes
                                     : null)
                                 . $index . '}';
                         }, $url);
-                    static::addPath($url, $httpMethod, $call);
+                    static::addPath($url, $call, $httpMethod);
                 }
                 //if auto route enabled, do so
             } elseif (Defaults::$autoRoutingEnabled) {
@@ -178,7 +178,7 @@ class Routes
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
                 if (!$ignorePathTill) {
-                    static::addPath($url, $httpMethod, $call);
+                    static::addPath($url, $call, $httpMethod);
                 }
                 $position = 1;
                 foreach ($params as $param) {
@@ -205,7 +205,7 @@ class Routes
                             : null)
                         . ($position - 1) . '}';
                     if ($allowAmbiguity || $position == $ignorePathTill) {
-                        static::addPath($url, $httpMethod, $call);
+                        static::addPath($url, $call, $httpMethod);
                     }
                     $position++;
                 }
