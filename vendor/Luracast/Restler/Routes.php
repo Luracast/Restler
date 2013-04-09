@@ -239,11 +239,13 @@ class Routes
                             unset($matches[$k]);
                             continue;
                         }
+                        $index = intval(substr($k, 1));
+                        $details = $value[$httpMethod]['metadata']['param'][$index];
                         if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
-                            $index = intval(substr($k, 1));
-                            $details = $value[$httpMethod]['metadata']['param'][$index];
                             $data[$details['name']] = $v;
                         } else {
+                            $status = 400;
+                            $message = 'invalid value specified for `' . $details['name'] . '`.';
                             $found = false;
                             break;
                         }
@@ -254,6 +256,7 @@ class Routes
                 }
             }
         }
+        throw new RestException($status, $message);
     }
 
     protected static function populate($call, $data)
@@ -294,8 +297,7 @@ class Routes
             case 'i':
             case 'f':
                 return 'n';
-            default:
-                return $type{0};
         }
+        return 's';
     }
 }
