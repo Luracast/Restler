@@ -219,6 +219,7 @@ class Routes
         $p =& static::$routes;
         $status = 404;
         $message = null;
+        $methods = array();
         if (isset($p[$path][$httpMethod])) {
             //static path
             return static::populate($p[$path][$httpMethod], $data);
@@ -255,6 +256,16 @@ class Routes
                     }
                 }
             }
+        }
+        if ($status == 404) {
+            //check if other methods are allowed
+            if (isset($p[$path])) {
+                $status = 405;
+                $methods = array_keys($p[$path]);
+            }
+        }
+        if ($status == 405) {
+            header('Allow: ' . implode(', ', $methods));
         }
         throw new RestException($status, $message);
     }
