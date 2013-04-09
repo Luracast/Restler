@@ -3,6 +3,7 @@ namespace Luracast\Restler;
 
 use ReflectionClass;
 use ReflectionMethod;
+use ___PHPSTORM_HELPERS\object;
 
 /**
  * Router class that routes the urls to api methods along with parameters
@@ -21,7 +22,13 @@ class Routes
 
     public static function addPath($path, array $call, $httpMethod = 'GET')
     {
-        static::$routes[$path][$httpMethod] = $call;
+        //check for wildcard routes
+        if (substr($path, -1, 1) == '*') {
+            $path = rtrim($path, '/*');
+            static::$routes['*'][$path][$httpMethod] = $call;
+        } else {
+            static::$routes[$path][$httpMethod] = $call;
+        }
     }
 
     public static function addAPIClass($className, $resourcePath = '')
@@ -211,7 +218,7 @@ class Routes
                 }
             }
         }
-        //Util::$restler->cache->set('new_routes', static::$routes);
+        Util::$restler->cache->set('new_routes', static::$routes);
     }
 
     public static function find($path, $httpMethod, array $data = array())
@@ -221,10 +228,25 @@ class Routes
         $message = null;
         $methods = array();
         if (isset($p[$path][$httpMethod])) {
-            //static path
+            //static route
             return static::populate($p[$path][$httpMethod], $data);
+        } elseif (isset($p['*'])) {
+            //wildcard routes
+            $p = & $p['*'];
+            uksort($p, function ($a, $b) {
+                return strlen($b) - strlen($a);
+            });
+            foreach ($p as $key => $value) {
+                if (strpos($path, $key) === 0 && isset($value[$httpMethod])) {
+                    //path found, convert rest of the path to params
+                    $path = substr($path, strlen($key) + 1);
+                    $call = (object)$value[$httpMethod];
+                    $call->params = explode('/', $path);
+                    return $call;
+                }
+            }
         } else {
-            //dynamic path
+            //dynamic route
             ksort($p);
             foreach ($p as $key => $value) {
                 if (!isset($value[$httpMethod])) {
