@@ -241,7 +241,7 @@ class Routes
                     //path found, convert rest of the path to params
                     $path = substr($path, strlen($key) + 1);
                     $call = (object)$value[$httpMethod];
-                    $call->params = explode('/', $path);
+                    $call->params = empty($path) ? array() : explode('/', $path);
                     return $call;
                 }
             }
