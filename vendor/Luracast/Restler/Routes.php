@@ -198,7 +198,7 @@ class Routes
                         $url .= '/';
                     }
                     //$call['metadata']['url'] = "$httpMethod $url{"
-                        //. $param->getName() . '}';
+                    //. $param->getName() . '}';
                     $url .= '{' .
                         static::typeChar(isset($call['metadata']['param'][$position - 1]['type'])
                             ? $call['metadata']['param'][$position - 1]['type']
@@ -217,6 +217,8 @@ class Routes
     public static function find($path, $httpMethod, array $data = array())
     {
         $p =& static::$routes;
+        $status = 404;
+        $message = null;
         if (isset($p[$path][$httpMethod])) {
             //static path
             return static::populate($p[$path][$httpMethod], $data);
@@ -237,7 +239,7 @@ class Routes
                             unset($matches[$k]);
                             continue;
                         }
-                        if (strpos($k, static::typeOf($v)) === 0) {
+                        if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
                             $index = intval(substr($k, 1));
                             $details = $value[$httpMethod]['metadata']['param'][$index];
                             $data[$details['name']] = $v;
