@@ -24,7 +24,7 @@ Content: > **Note:-** Take note of the php doc comments, they make sure the
 
 require_once '../../../vendor/restler.php';
 //smart auto loader helps loading a namespaced class with just the name part
-//use Luracast\Restler\Restler;
+use Luracast\Restler\Restler;
 
 $r = new Restler();
 $r->addAPIClass('Math');
