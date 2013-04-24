@@ -10,7 +10,7 @@ use ___PHPSTORM_HELPERS\object;
  *
  * @category   Framework
  * @package    Restler
- * @subpackage result
+ * @subpackage route
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
@@ -20,6 +20,12 @@ class Routes
 {
     protected static $routes = array();
 
+    /**
+     * Route the public and protected methods of an Api class
+     *
+     * @param        $className
+     * @param string $resourcePath
+     */
     public static function addAPIClass($className, $resourcePath = '')
     {
 
@@ -208,6 +214,26 @@ class Routes
             }
         }
         Util::$restler->cache->set('new_routes', static::$routes);
+    }
+
+    /**
+     * Import previously created routes from cache
+     *
+     * @param array $routes
+     */
+    public static function fromArray(array $routes)
+    {
+        static::$routes = $routes;
+    }
+
+    /**
+     * Export current routes for caching
+     *
+     * @return array
+     */
+    public static function toArray()
+    {
+        return static::$routes;
     }
 
     /**
