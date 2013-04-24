@@ -213,7 +213,6 @@ class Routes
                 }
             }
         }
-        Util::$restler->cache->set('new_routes', static::$routes);
     }
 
     /**
