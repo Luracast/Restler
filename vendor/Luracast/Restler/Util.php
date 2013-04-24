@@ -18,6 +18,28 @@ class Util
      */
     public static $restler;
 
+    public static $classAliases = array(
+
+        //Format classes
+        'AmfFormat' => 'Luracast\\Restler\\Format\\AmfFormat',
+        'JsFormat' => 'Luracast\\Restler\\Format\\JsFormat',
+        'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
+        'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
+        'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
+        'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
+        'XmlEncodedFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
+        'YamlEncodedFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
+
+        //Filter classes
+        'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
+
+        //API classes
+        'Resources' => 'Luracast\\Restler\\Resources',
+
+        //Cache classes
+        'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
+    );
+
     /**
      * verify if the given data type string is scalar or not
      *
@@ -162,6 +184,9 @@ class Util
                                          $instance = null)
     {
         if (!$instance) {
+            if (isset(self::$classAliases[$className])) {
+                $className = self::$classAliases[$className];
+            }
             if (!class_exists($className)) {
                 throw new RestException(500, "Class '$className' not found");
             }
@@ -191,7 +216,7 @@ class Util
 
         if ($instance instanceof iUseAuthentication) {
             $instance->__setAuthenticationStatus
-            (self::$restler->_authenticated);
+                (self::$restler->_authenticated);
         }
 
         return $instance;
