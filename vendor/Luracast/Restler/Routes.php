@@ -268,7 +268,7 @@ class Routes
                             $data[$details['name']] = $v;
                         } else {
                             $status = 400;
-                            $message = 'invalid value specified for `' . $details['name'] . '`.';
+                            $message = 'invalid value specified for `' . $details['name'] . '`';
                             $found = false;
                             break;
                         }
