@@ -173,24 +173,30 @@ class Util
      *
      * @static
      *
-     * @param string      $className name of the class to apply properties to
-     * @param array       $metadata  which contains the properties
-     * @param null|object $instance  new instance is crated if set to null
+     * @param string      $classNameOrInstance name or instance of the class
+     *                                         to apply properties to
+     * @param array       $metadata            properties as key value pairs
      *
      * @throws RestException
+     * @internal param null|object $instance new instance is crated if set to null
+     *
      * @return object instance of the specified class with properties applied
      */
-    public static function setProperties($className, array $metadata = null,
-                                         $instance = null)
+    public static function initialize($classNameOrInstance, array $metadata = null)
     {
-        if (!$instance) {
-            if (isset(self::$classAliases[$className])) {
-                $className = self::$classAliases[$className];
+        if (is_object($classNameOrInstance)) {
+            $instance = $classNameOrInstance;
+            $instance->restler = self::$restler;
+            $className = get_class($instance);
+        } else {
+            $className = $classNameOrInstance;
+            if (isset(self::$classAliases[$classNameOrInstance])) {
+                $classNameOrInstance = self::$classAliases[$classNameOrInstance];
             }
-            if (!class_exists($className)) {
-                throw new RestException(500, "Class '$className' not found");
+            if (!class_exists($classNameOrInstance)) {
+                throw new RestException(500, "Class '$classNameOrInstance' not found");
             }
-            $instance = new $className();
+            $instance = new $classNameOrInstance();
             $instance->restler = self::$restler;
         }
         if (
