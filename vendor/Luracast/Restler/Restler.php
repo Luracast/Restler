@@ -276,10 +276,8 @@ class Restler extends EventEmitter
         $args = func_get_args();
         $extensions = array();
         foreach ($args as $className) {
-            if (!is_string($className) || !class_exists($className))
-                throw new Exception("$className is not a valid Format Class.");
 
-            $obj = new $className ();
+            $obj = Util::initialize($className);
 
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
@@ -417,8 +415,7 @@ class Restler extends EventEmitter
         $handled = false;
         foreach ($this->errorClasses as $className) {
             if (method_exists($className, $method)) {
-                $obj = new $className ();
-                $obj->restler = $this;
+                $obj = Util::initialize($className);
                 $obj->$method ();
                 $handled = true;
             }
@@ -426,7 +423,7 @@ class Restler extends EventEmitter
         if ($handled)
             return null;
         if (!isset($this->responseFormat))
-            $this->responseFormat = new JsonFormat();
+            $this->responseFormat = Util::initialize('JsonFormat');
         $this->sendData(null, $statusCode, $errorMessage);
     }
 
@@ -517,8 +514,7 @@ class Restler extends EventEmitter
                 /**
                  * @var iFilter
                  */
-                $filterObj = new $filterClass;
-                $filterObj->restler = $this;
+                $filterObj = Util::initialize($filterClass);
                 if (!$filterObj instanceof iFilter) {
                     throw new RestException (
                         500, 'Filter Class ' .
@@ -534,10 +530,7 @@ class Restler extends EventEmitter
                     throw new RestException(403); //Forbidden
                 }
             }
-            Util::setProperties(
-                get_class($this->requestFormat),
-                null, $this->requestFormat
-            );
+            Util::initialize($this->requestFormat);
 
             $this->requestData = $this->getRequestData();
 
@@ -575,9 +568,8 @@ class Restler extends EventEmitter
                             throw new RestException(401);
                         }
                         foreach ($this->authClasses as $authClass) {
-                            $authObj = Util::setProperties(
-                                $authClass,
-                                $o->metadata
+                            $authObj = Util::initialize(
+                                $authClass, $o->metadata
                             );
                             if (!method_exists($authObj,
                                 Defaults::$authenticationMethod)
@@ -602,9 +594,7 @@ class Restler extends EventEmitter
                 }
                 try {
                     foreach ($this->filterObjects as $filterObj) {
-                        Util::setProperties(get_class($filterObj),
-                            $o->metadata,
-                            $filterObj);
+                        Util::initialize($filterObj, $o->metadata);
                     }
                     $preProcess = '_' . $this->requestFormat->getExtension() .
                         '_' . $o->methodName;
@@ -620,7 +610,7 @@ class Restler extends EventEmitter
                                 if (isset($info['method'])) {
                                     if (!isset($object)) {
                                         $object = $this->apiClassInstance
-                                            = Util::setProperties($o->className);
+                                            = Util::initialize($o->className);
                                     }
                                     $info ['apiClassInstance'] = $object;
                                 }
@@ -634,7 +624,7 @@ class Restler extends EventEmitter
                     }
                     if (!isset($object)) {
                         $object = $this->apiClassInstance
-                            = Util::setProperties($o->className);
+                            = Util::initialize($o->className);
                     }
                     if (method_exists($o->className, $preProcess)) {
                         call_user_func_array(array(
@@ -722,9 +712,8 @@ class Restler extends EventEmitter
          *
          * @var iRespond DefaultResponder
          */
-        $responder = Util::setProperties(
-            Defaults::$responderClass,
-            isset($this->apiMethodInfo->metadata)
+        $responder = Util::initialize(
+            Defaults::$responderClass, isset($this->apiMethodInfo->metadata)
                 ? $this->apiMethodInfo->metadata
                 : null
         );
@@ -885,15 +874,12 @@ class Restler extends EventEmitter
                 $mime = substr($mime, 0, $pos);
             }
             if ($mime == UrlEncodedFormat::MIME)
-                $format = new UrlEncodedFormat ();
+                $format = Util::initialize('UrlEncodedFormat');
             elseif (isset($this->formatMap[$mime])) {
-                $format = $this->formatMap[$mime];
-                if (is_string($format)) {
-                    $format = is_string($format) ? new $format () : $format;
-                }
+                $format = Util::initialize($this->formatMap[$mime]);
                 $format->setMIME($mime);
             } else {
-                $this->handleError(403, "Content type $mime is not supported.");
+                $this->handleError(403, "Content type `$mime` is not supported.");
                 return null;
             }
         }
@@ -924,8 +910,7 @@ class Restler extends EventEmitter
             $extension = explode('/', $extension);
             $extension = array_shift($extension);
             if ($extension && isset($this->formatMap[$extension])) {
-                $format = $this->formatMap[$extension];
-                $format = is_string($format) ? new $format () : $format;
+                $format = Util::initialize($this->formatMap[$extension]);
                 $format->setExtension($extension);
                 // echo "Extension $extension";
                 return $format;
@@ -936,8 +921,7 @@ class Restler extends EventEmitter
             $acceptList = Util::sortByPriority($_SERVER['HTTP_ACCEPT']);
             foreach ($acceptList as $accept => $quality) {
                 if (isset($this->formatMap[$accept])) {
-                    $format = $this->formatMap[$accept];
-                    $format = is_string($format) ? new $format : $format;
+                    $format = Util::initialize($this->formatMap[$accept]);
                     //TODO: check if the string verfication above is needed
                     $format->setMIME($accept);
                     //echo "MIME $accept";
@@ -959,10 +943,9 @@ class Restler extends EventEmitter
                                 18 + strlen(Defaults::$apiVendor)));
                             if ($version > 0 && $version <= $this->apiVersion) {
                                 $this->requestedApiVersion = $version;
-                                $format = $this->formatMap[$extension];
-                                $format = is_string($format)
-                                    ? new $format ()
-                                    : $format;
+                                $format = Util::initialize(
+                                    $this->formatMap[$extension]
+                                );
                                 $format->setExtension($extension);
                                 // echo "Extension $extension";
                                 Defaults::$useVendorMIMEVersioning = true;
@@ -983,12 +966,11 @@ class Restler extends EventEmitter
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== false) {
             if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== false) {
-                $format = new JsonFormat;
+                $format = Util::initialize('JsonFormat');
             } elseif (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
-                $format = new XmlFormat;
+                $format = Util::initialize('XmlFormat');
             } elseif (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
-                $format = $this->formatMap['default'];
-                $format = new $format;
+                $format = Util::initialize($this->formatMap['default']);
             }
         }
         if (empty($format)) {
@@ -996,8 +978,7 @@ class Restler extends EventEmitter
             // server cannot send a response which is acceptable according to
             // the combined Accept field value, then the server SHOULD send
             // a 406 (not acceptable) response.
-            $format = $this->formatMap['default'];
-            $format = new $format;
+            $format = Util::initialize($this->formatMap['default']);
             $this->responseFormat = $format;
             $this->handleError(406, 'Content negotiation failed. '
                 . 'Try \'' . $format->getMIME() . '\' instead.');
