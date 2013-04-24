@@ -85,13 +85,6 @@ class Restler extends EventEmitter
     public $apiMethodInfo;
 
     /**
-     * Associated array that maps urls to their respective class and method
-     *
-     * @var array
-     */
-    public $routes = array();
-
-    /**
      * Response data format.
      *
      * Instance of the current format class
@@ -219,7 +212,7 @@ class Restler extends EventEmitter
     public function __destruct()
     {
         if ($this->productionMode && !$this->cached) {
-            $this->cache->set('routes', $this->routes);
+            $this->cache->set('routes', Routes::toArray());
         }
     }
 
@@ -315,6 +308,9 @@ class Restler extends EventEmitter
     public function addAPIClass($className, $resourcePath = null)
     {
         $this->loadCache();
+        if (isset(Util::$classAliases[$className])) {
+            $className = Util::$classAliases[$className];
+        }
         if (!$this->cached) {
             $foundClass = array();
             if (class_exists($className)) {
@@ -617,8 +613,8 @@ class Restler extends EventEmitter
                                 //convert to instance of ValidationInfo
                                 $info = new ValidationInfo($param);
                                 $valid = Validator::validate(
-                                    $o->arguments[$index], $info);
-                                $o->arguments[$index] = $valid;
+                                    $o->params[$index], $info);
+                                $o->params[$index] = $valid;
                             }
                         }
                     }
@@ -630,7 +626,7 @@ class Restler extends EventEmitter
                         call_user_func_array(array(
                             $object,
                             $preProcess
-                        ), $o->arguments);
+                        ), $o->params);
                     }
                     switch ($accessLevel) {
                         case 3 : //protected method
@@ -641,14 +637,14 @@ class Restler extends EventEmitter
                             $reflectionMethod->setAccessible(true);
                             $result = $reflectionMethod->invokeArgs(
                                 $object,
-                                $o->arguments
+                                $o->params
                             );
                             break;
                         default :
                             $result = call_user_func_array(array(
                                 $object,
                                 $o->methodName
-                            ), $o->arguments);
+                            ), $o->params);
                     }
                 } catch (RestException $e) {
                     $this->handleError($e->getCode(), $e->getMessage());
@@ -1024,14 +1020,6 @@ class Restler extends EventEmitter
      */
     public function mapUrlToMethod()
     {
-        if (!isset($this->routes[$this->requestMethod])) {
-            return new stdClass ();
-        }
-        $urls = $this->routes[$this->requestMethod];
-        if (!$urls) {
-            return new stdClass ();
-        }
-        $found = false;
         if (!is_array($this->requestData)) {
             $this->requestData = array(
                 Defaults::$fullRequestDataName => $this->requestData
@@ -1046,60 +1034,10 @@ class Restler extends EventEmitter
             $params = $this->requestData + $params;
 
         }
-        $call = new stdClass;
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
             $currentUrl .= '/' . $this->url;
-        print_r(Routes::find($currentUrl, $this->requestMethod, $params));
-        foreach ($urls as $url => $call) {
-            $this->trigger('onRoute', array('url' => $url, 'target' => $call));
-            $call = (object)$call;
-            if (strstr($url, '{')) {
-                $regex = str_replace(array('{', '}'),
-                    array('(?P<', '>[^/]+)'), $url);
-                if (preg_match(":^$regex$:i", $currentUrl, $matches)) {
-                    foreach ($matches as $arg => $match) {
-                        if (isset($call->arguments[$arg])) {
-                            $params[$arg] = $match;
-                        }
-                    }
-                    $found = true;
-                    break;
-                }
-            } elseif (strstr($url, ':')) {
-                $regex = preg_replace(
-                    '/\\\:([^\/]+)/',
-                    '(?P<$1>[^/]+)',
-                    preg_quote($url)
-                );
-                if (preg_match(":^$regex$:i", $currentUrl, $matches)) {
-                    foreach ($matches as $arg => $match) {
-                        if (isset($call->arguments[$arg])) {
-                            $params[$arg] = $match;
-                        }
-                    }
-                    $found = true;
-                    break;
-                }
-            } elseif (0 === strcasecmp($url, $currentUrl)) {
-                $found = true;
-                break;
-            }
-        }
-        if ($found) {
-            $p = $call->defaults;
-            foreach ($call->arguments as $key => $value) {
-                if (isset($params[$key])) {
-                    $p[$value] = $params[$key];
-                }
-            }
-            $call->arguments = $p;
-
-            echo '==================' . PHP_EOL;
-            print_r($call);
-            echo '==================' . PHP_EOL;
-            return $call;
-        }
+        return Routes::find($currentUrl, $this->requestMethod, $params);
     }
 
     /**
@@ -1115,7 +1053,7 @@ class Restler extends EventEmitter
         if ($this->productionMode) {
             $routes = $this->cache->get('routes');
             if (isset($routes) && is_array($routes)) {
-                $this->routes = $routes;
+                Routes::fromArray($routes);
                 $this->cached = true;
             }
         }
@@ -1130,175 +1068,6 @@ class Restler extends EventEmitter
     protected function generateMap($className, $resourcePath = '')
     {
         Routes::addAPIClass($className, $resourcePath);
-
-        /*
-         * Mapping Rules - Optional parameters should not be mapped to URL - if
-         * a required parameter is of primitive type - Map them to URL - Do not
-         * create routes with out it - if a required parameter is not primitive
-         * type - Do not include it in URL
-         */
-        $reflection = new ReflectionClass($className);
-        $classMetadata = CommentParser::parse($reflection->getDocComment());
-        $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC +
-            ReflectionMethod::IS_PROTECTED);
-        foreach ($methods as $method) {
-            $methodUrl = strtolower($method->getName());
-            //method name should not begin with _
-            if ($methodUrl{0} == '_') {
-                continue;
-            }
-            $doc = $method->getDocComment();
-            $metadata = CommentParser::parse($doc) + $classMetadata;
-            //@access should not be private
-            if (isset($metadata['access'])
-                && $metadata['access'] == 'private'
-            ) {
-                continue;
-            }
-            $arguments = array();
-            $defaults = array();
-            $params = $method->getParameters();
-            $position = 0;
-            $ignorePathTill = false;
-            $allowAmbiguity
-                = (isset($metadata['smart-auto-routing'])
-                && $metadata['smart-auto-routing'] != 'true')
-                || !Defaults::$smartAutoRouting;
-            $metadata['resourcePath'] = $resourcePath;
-            if (isset($classMetadata['description'])) {
-                $metadata['classDescription'] = $classMetadata['description'];
-            }
-            if (isset($classMetadata['classLongDescription'])) {
-                $metadata['classLongDescription']
-                    = $classMetadata['longDescription'];
-            }
-            if (!isset($metadata['param'])) {
-                $metadata['param'] = array();
-            }
-            foreach ($params as $param) {
-                $type =
-                    $param->isArray() ? 'array' : $param->getClass();
-                if ($type instanceof ReflectionClass) {
-                    $type = $type->getName();
-                }
-                $arguments[$param->getName()] = $position;
-                $defaults[$position] = $param->isDefaultValueAvailable() ?
-                    $param->getDefaultValue() : null;
-                if (!isset($metadata['param'][$position])) {
-                    $metadata['param'][$position] = array();
-                }
-                $m = & $metadata ['param'] [$position];
-                if (isset($type)) {
-                    $m['type'] = $type;
-                }
-                $m ['name'] = trim($param->getName(), '$ ');
-                $m ['default'] = $defaults [$position];
-                $m ['required'] = !$param->isOptional();
-
-                if (isset($m[CommentParser::$embeddedDataName]['from'])) {
-                    $from = $m[CommentParser::$embeddedDataName]['from'];
-                } else {
-                    if ((isset($type) && Util::isObjectOrArray($type))
-                        || $param->getName() == Defaults::$fullRequestDataName
-                    ) {
-                        $from = 'body';
-                    } elseif ($m['required']) {
-                        $from = 'path';
-                    } else {
-                        $from = 'query';
-                    }
-                }
-                $m['from'] = $from;
-
-                if (!$allowAmbiguity && $from == 'path') {
-                    $ignorePathTill = $position + 1;
-                }
-                $position++;
-            }
-            $accessLevel = 0;
-            if ($method->isProtected()) {
-                $accessLevel = 3;
-            } elseif (isset($metadata['access'])) {
-                if ($metadata['access'] == 'protected') {
-                    $accessLevel = 2;
-                } elseif ($metadata['access'] == 'hybrid') {
-                    $accessLevel = 1;
-                }
-            } elseif (isset($metadata['protected'])) {
-                $accessLevel = 2;
-            }
-            /*
-            echo " access level $accessLevel for $className::"
-            .$method->getName().$method->isProtected().PHP_EOL;
-            */
-
-            // take note of the order
-            $call = array(
-                'className' => $className,
-                'path' => rtrim($resourcePath, '/'),
-                'methodName' => $method->getName(),
-                'arguments' => $arguments,
-                'defaults' => $defaults,
-                'metadata' => $metadata,
-                'accessLevel' => $accessLevel,
-            );
-            // if manual route
-            if (preg_match_all(
-                '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)'
-                    . '[ \t]*\/?(\S*)/s',
-                $doc, $matches, PREG_SET_ORDER
-            )
-            ) {
-                foreach ($matches as $match) {
-                    $httpMethod = $match[1];
-                    $url = rtrim($resourcePath . $match[2], '/');
-                    $this->routes[$httpMethod][$url] = $call;
-                }
-                //if auto route enabled, do so
-            } elseif (Defaults::$autoRoutingEnabled) {
-                // no configuration found so use convention
-                if (preg_match_all(
-                    '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i',
-                    $methodUrl, $matches)
-                ) {
-                    $httpMethod = strtoupper($matches[0][0]);
-                    $methodUrl = substr($methodUrl, strlen($httpMethod));
-                } else {
-                    $httpMethod = 'GET';
-                }
-                if ($methodUrl == 'index') {
-                    $methodUrl = '';
-                }
-                $url = empty($methodUrl) ? rtrim($resourcePath, '/')
-                    : $resourcePath . $methodUrl;
-                if (!$ignorePathTill) {
-                    $this->routes[$httpMethod][$url] = $call;
-                }
-                $position = 1;
-                foreach ($params as $param) {
-                    $from = $metadata ['param'] [$position - 1] ['from'];
-
-                    if ($from == 'body' && ($httpMethod == 'GET' ||
-                        $httpMethod == 'DELETE')
-                    ) {
-                        $from = $metadata ['param'] [$position - 1] ['from']
-                            = 'query';
-                    }
-
-                    if (!$allowAmbiguity && $from != 'path') {
-                        break;
-                    }
-                    if (!empty($url)) {
-                        $url .= '/';
-                    }
-                    $url .= '{' . $param->getName() . '}';
-                    if ($allowAmbiguity || $position == $ignorePathTill) {
-                        $this->routes[$httpMethod][$url] = $call;
-                    }
-                    $position++;
-                }
-            }
-        }
     }
 }
 
