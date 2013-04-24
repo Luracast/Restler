@@ -20,17 +20,6 @@ class Routes
 {
     protected static $routes = array();
 
-    public static function addPath($path, array $call, $httpMethod = 'GET')
-    {
-        //check for wildcard routes
-        if (substr($path, -1, 1) == '*') {
-            $path = rtrim($path, '/*');
-            static::$routes['*'][$path][$httpMethod] = $call;
-        } else {
-            static::$routes[$path][$httpMethod] = $call;
-        }
-    }
-
     public static function addAPIClass($className, $resourcePath = '')
     {
 
@@ -221,6 +210,33 @@ class Routes
         Util::$restler->cache->set('new_routes', static::$routes);
     }
 
+    /**
+     * @access private
+     */
+    public static function typeChar($type = null)
+    {
+        if (!$type) {
+            return 's';
+        }
+        switch ($type{0}) {
+            case 'i':
+            case 'f':
+                return 'n';
+        }
+        return 's';
+    }
+
+    protected static function addPath($path, array $call, $httpMethod = 'GET')
+    {
+        //check for wildcard routes
+        if (substr($path, -1, 1) == '*') {
+            $path = rtrim($path, '/*');
+            static::$routes['*'][$path][$httpMethod] = $call;
+        } else {
+            static::$routes[$path][$httpMethod] = $call;
+        }
+    }
+
     public static function find($path, $httpMethod, array $data = array())
     {
         $p =& static::$routes;
@@ -292,6 +308,9 @@ class Routes
         throw new RestException($status, $message);
     }
 
+    /**
+     * @access private
+     */
     protected static function populate($call, $data)
     {
         $call = (object)$call;
@@ -314,22 +333,6 @@ class Routes
         }
         if ($var == 'true' || $var == 'false') {
             return 'b';
-        }
-        return 's';
-    }
-
-    /**
-     * @access private
-     */
-    public static function typeChar($type = null)
-    {
-        if (!$type) {
-            return 's';
-        }
-        switch ($type{0}) {
-            case 'i':
-            case 'f':
-                return 'n';
         }
         return 's';
     }
