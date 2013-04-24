@@ -161,10 +161,10 @@ class Util
     public static function setProperties($className, array $metadata = null,
                                          $instance = null)
     {
-        if (!class_exists($className)) {
-            throw new RestException(500, "Class '$className' not found");
-        }
         if (!$instance) {
+            if (!class_exists($className)) {
+                throw new RestException(500, "Class '$className' not found");
+            }
             $instance = new $className();
             $instance->restler = self::$restler;
         }
