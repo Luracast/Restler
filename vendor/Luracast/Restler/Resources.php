@@ -131,11 +131,13 @@ class Resources implements iUseAuthentication
 
         $target = empty($id) ? "v$version" : "v$version/$id";
 
-        foreach ($this->restler->routes as $httpMethod => $value) {
-            if (in_array($httpMethod, static::$excludedHttpMethods)) {
-                continue;
-            }
-            foreach ($value as $fullPath => $route) {
+        $routes = Routes::toArray();
+        foreach ($routes as $fullPath => $value) {
+            foreach ($value as $httpMethod => $route) {
+                if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                    continue;
+                }
+                $fullPath = $route['url'];
                 if (0 !== strpos($fullPath, $target)) {
                     continue;
                 }
@@ -293,11 +295,12 @@ class Resources implements iUseAuthentication
     {
         $r = $this->_resourceListing();
         $map = array();
-        foreach ($this->restler->routes as $httpMethod => $routes) {
-            if (in_array($httpMethod, static::$excludedHttpMethods)) {
-                continue;
-            }
-            foreach ($routes as $fullPath => $route) {
+        $allRoutes = Routes::toArray();
+        foreach ($allRoutes as $fullPath => $routes) {
+            foreach ($routes as $route => $httpMethod) {
+                if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                    continue;
+                }
                 if (
                     self::$hideProtected
                     && !$this->_authenticated
@@ -448,8 +451,8 @@ class Resources implements iUseAuthentication
 
     private function _appendToBody($p)
     {
-        if($p->name === Defaults::$fullRequestDataName)
-        return;
+        if ($p->name === Defaults::$fullRequestDataName)
+            return;
         $this->_bodyParam['description'][$p->name]
             = "<mark>$p->name</mark>"
             . ($p->required ? ' <i>(required)</i>: ' : ': ')
