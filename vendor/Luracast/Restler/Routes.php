@@ -132,6 +132,7 @@ class Routes
 
             // take note of the order
             $call = array(
+                'url' => null,
                 'className' => $className,
                 'path' => rtrim($resourcePath, '/'),
                 'methodName' => $method->getName(),
@@ -253,6 +254,13 @@ class Routes
 
     protected static function addPath($path, array $call, $httpMethod = 'GET')
     {
+        $call['url'] = preg_replace_callback(
+            "/\{\S(\d+)\}/",
+            function ($matches) use ($call) {
+                return '{' . $call['metadata']['param'][$matches[1]]['name'] . '}';
+            },
+            $path
+        );
         //check for wildcard routes
         if (substr($path, -1, 1) == '*') {
             $path = rtrim($path, '/*');
