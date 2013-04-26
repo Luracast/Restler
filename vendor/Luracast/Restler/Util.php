@@ -27,8 +27,8 @@ class Util
         'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
         'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
         'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
-        'XmlEncodedFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
-        'YamlEncodedFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
+        'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
+        'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
 
         //Filter classes
         'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
