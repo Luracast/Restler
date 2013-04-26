@@ -34,8 +34,8 @@
     "php":">=5.3.0"
   },
   "require-dev":{
-    "guzzle/guzzle":"2.4.*",
     "luracast/explorer":"*",
+    "guzzle/guzzle":"~3.1.1",
     "behat/behat":"2.4.*@stable",
     "mustache/mustache": "dev-master",
     "rodneyrehm/plist":"dev-master",
