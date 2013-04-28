@@ -36,14 +36,14 @@ Happy Exploring! :)
 This API Server exposes the following URIs
 
     GET    authors                   ⇠ improved\Authors::index()
-    GET    authors/{id}              ⇠ improved\Authors::get()
-    GET    resources/{id}-v{version} ⇠ Resources::get()
-    GET    resources/v{version}      ⇠ Resources::get()
-    GET    resources                 ⇠ Resources::index()
     POST   authors                   ⇠ improved\Authors::post()
-    PUT    authors/{id}              ⇠ improved\Authors::put()
     PATCH  authors/{id}              ⇠ improved\Authors::patch()
     DELETE authors/{id}              ⇠ improved\Authors::delete()
+    GET    authors/{id}              ⇠ improved\Authors::get()
+    PUT    authors/{id}              ⇠ improved\Authors::put()
+    GET    resources                 ⇠ Resources::index()
+    GET    resources/v{version}      ⇠ Resources::get()
+    GET    resources/{id}-v{version} ⇠ Resources::get()
 
 
 

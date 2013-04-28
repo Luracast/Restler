@@ -53,10 +53,14 @@ class RestContext extends BehatContext
                     case 400:
                     case 401:
                     case 404:
+                    case 405:
                     case 406:
                         $event->stopPropagation();
                 }
             });
+        $timezone = ini_get('date.timezone');
+        if (empty($timezone))
+            date_default_timezone_set('UTC');
     }
 
     public function getParameter($name)
@@ -353,8 +357,14 @@ class RestContext extends BehatContext
      */
     public function theResponseExpiresHeaderShouldBeDatePlusGivenSeconds($seconds)
     {
-        $value = gmdate('D, d M Y H:i:s \G\M\T', time() + $seconds);
-        return $this->theResponseHeaderShouldBe('Expires', $value);
+        $server_time = strtotime($this->_response->getHeader('Date')) + $seconds;
+        $expires_time = strtotime($this->_response->getHeader('Expires'));
+        if ($expires_time === $server_time || $expires_time === $server_time + 1)
+            return;
+        return $this->theResponseHeaderShouldBe(
+            'Expires',
+            gmdate('D, d M Y H:i:s \G\M\T', $server_time)
+        );
     }
 
     /**

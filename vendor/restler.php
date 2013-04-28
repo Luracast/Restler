@@ -1,4 +1,9 @@
 <?php
+//set_include_path(get_include_path() . PATH_SEPARATOR . getcwd());
+$loader = require_once 'autoload.php';
+$loader->setUseIncludePath(true);
+class_alias('Luracast\\Restler\\Restler', 'Restler');
+/*
 require_once 'Luracast/Restler/AutoLoader.php';
 use Luracast\Restler\AutoLoader;
 
@@ -8,4 +13,5 @@ return call_user_func(function ()
     spl_autoload_register($loader);
     return $loader;
 });
+*/
 

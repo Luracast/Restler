@@ -18,7 +18,6 @@ Try it out yourself [here](explorer/index.html#!/v1)
 > 
 > * index.php      (gateway)
 > * Resources.php      (api)
-> * RateLimit.php      (filter)
 > * Access.php      (api)
 > * AccessControl.php      (auth)
 > * restler.php      (framework)
@@ -26,12 +25,12 @@ Try it out yourself [here](explorer/index.html#!/v1)
 
 This API Server exposes the following URIs
 
-    GET all                       ⇠ Access::all()
-    GET user                      ⇠ Access::user()
     GET admin                     ⇠ Access::admin()
-    GET resources/{id}-v{version} ⇠ Resources::get()
-    GET resources/v{version}      ⇠ Resources::get()
+    GET all                       ⇠ Access::all()
     GET resources                 ⇠ Resources::index()
+    GET resources/v{version}      ⇠ Resources::get()
+    GET resources/{id}-v{version} ⇠ Resources::get()
+    GET user                      ⇠ Access::user()
 
 
 
@@ -42,7 +41,6 @@ This API Server exposes the following URIs
 
 *[index.php]: _010_access_control/index.php
 *[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
-*[RateLimit.php]: ../../vendor/Luracast/Restler/Filter/RateLimit.php
 *[Access.php]: _010_access_control/Access.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
 *[restler.php]: ../../vendor/restler.php

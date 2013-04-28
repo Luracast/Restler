@@ -5,6 +5,9 @@ Restler is a simple and effective multi-format Web API Server written in PHP.
 
 Just deal with your business logic in php, restler will take care of the REST!
 
+> if you do not have PHP 5.3 on your server and wont be able to upgrade you may
+> use [Restler 2](https://github.com/Luracast/Restler/tree/v2) instead
+
 ### Restler 3 - *Better APIs by Design*
 
 * [Developer Home](http://luracast.com/products/restler/)
@@ -278,7 +281,7 @@ All tags except @url can also be defined at the class level.
         Syntax:
         <pre>@access private|public|protected|hybrid</pre>
         Example:
-        <pre>POST authors/{id}/books</pre>
+        <pre>@access protected</pre>
         Access control for api methods. PHPDoc only supports private and public,
         Restler adds <b>protected</b> for api that needs authentication,
         <b>hybrid</b> for api that enhances resulting data for authenticated users.
@@ -426,8 +429,8 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 Change Log
 ----------
-### Changes from Restler 3.0 RC3
-* Fixes to composer.json and publish stable release as composer package on packagist
+### Changes from Restler 3.0 RC3 (only available on the v3 branch)
+ * Fixes to composer.json and publish stable release as composer package on packagist
  * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
  * Removed required packages as they are not technically "required" perse, Restlec works out of the box.
  * Created supported packages as require-dev instead which will be installed via `composer intall --dev`
@@ -460,7 +463,7 @@ Change Log
 * Added support for JSONP via jsFormat extension of JsonFormat
 * Fixes a bug in unicode un-escaping for JsonFormat in PHP < 5.4
 * Fixes the order so that responseFormat->setCharset is called before encoding the response
-* Documentiation improvements and minor bug fixes
+* Documentation improvements and minor bug fixes
 
 ### Changes from Restler 3.0 RC1
 

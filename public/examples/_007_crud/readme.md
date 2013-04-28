@@ -28,7 +28,7 @@ For simplicity and making it work out of the box this example is using
  Alternatively you can use [cURL](http://en.wikipedia.org/wiki/CURL) on the command line.
 
 ```bash
-curl -X POST http://restler3.phpfogapp.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
+curl -X POST http://restler3.luracast.com/examples/_007_crud/index.php/authors -H "Content-Type: application/json" -d '{"name": "Another", "email": "another@email.com"}'
 
 {
   "name": "Another",
@@ -58,13 +58,13 @@ by un-commenting the respective line in Authors.php and commenting others.
 This API Server exposes the following URIs
 
     GET    authors      ⇠ Authors::index()
-    GET    authors/{id} ⇠ Authors::get()
     POST   authors      ⇠ Authors::post()
-    PUT    authors/{id} ⇠ Authors::put()
     DELETE authors/{id} ⇠ Authors::delete()
+    PUT    authors/{id} ⇠ Authors::put()
+    GET    authors/{id} ⇠ Authors::get()
 
 
-*[MySQL.php]: _007_crud//DB/PDO/MySQL.php
+*[MySQL.php]: _007_crud/DB/PDO/MySQL.php
 *[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
 *[SerializedFile.php]: _007_crud/DB/SerializedFile.php
 
