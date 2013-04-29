@@ -3,18 +3,17 @@ namespace Luracast\Restler;
 
 use ReflectionClass;
 use ReflectionMethod;
-use ___PHPSTORM_HELPERS\object;
 
 /**
  * Router class that routes the urls to api methods along with parameters
  *
  * @category   Framework
  * @package    Restler
- * @subpackage route
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc3
  */
 class Routes
 {
@@ -217,26 +216,6 @@ class Routes
     }
 
     /**
-     * Import previously created routes from cache
-     *
-     * @param array $routes
-     */
-    public static function fromArray(array $routes)
-    {
-        static::$routes = $routes;
-    }
-
-    /**
-     * Export current routes for caching
-     *
-     * @return array
-     */
-    public static function toArray()
-    {
-        return static::$routes;
-    }
-
-    /**
      * @access private
      */
     public static function typeChar($type = null)
@@ -268,6 +247,26 @@ class Routes
         } else {
             static::$routes[$path][$httpMethod] = $call;
         }
+    }
+
+    /**
+     * Import previously created routes from cache
+     *
+     * @param array $routes
+     */
+    public static function fromArray(array $routes)
+    {
+        static::$routes = $routes;
+    }
+
+    /**
+     * Export current routes for caching
+     *
+     * @return array
+     */
+    public static function toArray()
+    {
+        return static::$routes;
     }
 
     public static function find($path, $httpMethod, array $data = array())
