@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler;
 
+use Luracast\Restler\Data\ApiMethodInfo;
 use stdClass;
 use Reflection;
 use ReflectionClass;
@@ -613,8 +614,8 @@ class Restler extends EventEmitter
                                 //convert to instance of ValidationInfo
                                 $info = new ValidationInfo($param);
                                 $valid = Validator::validate(
-                                    $o->params[$index], $info);
-                                $o->params[$index] = $valid;
+                                    $o->parameters[$index], $info);
+                                $o->parameters[$index] = $valid;
                             }
                         }
                     }
@@ -626,7 +627,7 @@ class Restler extends EventEmitter
                         call_user_func_array(array(
                             $object,
                             $preProcess
-                        ), $o->params);
+                        ), $o->parameters);
                     }
                     switch ($accessLevel) {
                         case 3 : //protected method
@@ -637,14 +638,14 @@ class Restler extends EventEmitter
                             $reflectionMethod->setAccessible(true);
                             $result = $reflectionMethod->invokeArgs(
                                 $object,
-                                $o->params
+                                $o->parameters
                             );
                             break;
                         default :
                             $result = call_user_func_array(array(
                                 $object,
                                 $o->methodName
-                            ), $o->params);
+                            ), $o->parameters);
                     }
                 } catch (RestException $e) {
                     $this->handleError($e->getCode(), $e->getMessage());
@@ -1016,7 +1017,7 @@ class Restler extends EventEmitter
     /**
      * Find the api method to execute for the requested Url
      *
-     * @return \stdClass
+     * @return ApiMethodInfo
      */
     public function mapUrlToMethod()
     {

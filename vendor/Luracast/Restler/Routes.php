@@ -282,7 +282,7 @@ class Routes
             });
             foreach ($p as $key => $value) {
                 if (strpos($path, $key) === 0 && isset($value[$httpMethod])) {
-                    //path found, convert rest of the path to params
+                    //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
                     $call = (object)$value[$httpMethod];
                     $call->params = empty($path) ? array() : explode('/', $path);
@@ -348,10 +348,10 @@ class Routes
      */
     protected static function populate(array $call, $data)
     {
-        $call['params'] = $call['defaults'];
+        $call['parameters'] = $call['defaults'];
         foreach ($data as $key => $value) {
             if (isset($call['arguments'][$key])) {
-                $call['params'][$call['arguments'][$key]] = $value;
+                $call['parameters'][$call['arguments'][$key]] = $value;
             }
         }
         return ApiMethodInfo::__set_state($call);
