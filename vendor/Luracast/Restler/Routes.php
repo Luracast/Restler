@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler;
 
+use Luracast\Restler\Data\ApiMethodInfo;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -29,10 +30,15 @@ class Routes
     {
 
         /*
-         * Mapping Rules - Optional parameters should not be mapped to URL - if
-         * a required parameter is of primitive type - Map them to URL - Do not
-         * create routes with out it - if a required parameter is not primitive
-         * type - Do not include it in URL
+         * Mapping Rules
+         * =============
+         *
+         * - Optional parameters should not be mapped to URL
+         * - If a required parameter is of primitive type
+         *      - Map them to URL
+         *      - Do not create routes with out it
+         * - If a required parameter is not primitive type
+         *      - Do not include it in URL
          */
         $reflection = new ReflectionClass($className);
         $classMetadata = CommentParser::parse($reflection->getDocComment());
@@ -250,25 +256,15 @@ class Routes
     }
 
     /**
-     * Import previously created routes from cache
+     * Find the api method for the given url and http method
      *
-     * @param array $routes
-     */
-    public static function fromArray(array $routes)
-    {
-        static::$routes = $routes;
-    }
-
-    /**
-     * Export current routes for caching
+     * @param string  $path       Requested url path
+     * @param string  $httpMethod GET|POST|PUT|PATCH|DELETE etc
+     * @param array   $data       Data collected from the request
      *
-     * @return array
+     * @return ApiMethodInfo
+     * @throws RestException
      */
-    public static function toArray()
-    {
-        return static::$routes;
-    }
-
     public static function find($path, $httpMethod, array $data = array())
     {
         $p =& static::$routes;
@@ -341,18 +337,24 @@ class Routes
     }
 
     /**
+     * Populates the parameter values
+     *
+     * @param array $call
+     * @param       $data
+     *
+     * @return ApiMethodInfo
+     *
      * @access private
      */
-    protected static function populate($call, $data)
+    protected static function populate(array $call, $data)
     {
-        $call = (object)$call;
-        $call->params = $call->defaults;
+        $call['params'] = $call['defaults'];
         foreach ($data as $key => $value) {
-            if (isset($call->arguments[$key])) {
-                $call->params[$call->arguments[$key]] = $value;
+            if (isset($call['arguments'][$key])) {
+                $call['params'][$call['arguments'][$key]] = $value;
             }
         }
-        return $call;
+        return ApiMethodInfo::__set_state($call);
     }
 
     /**
@@ -367,5 +369,25 @@ class Routes
             return 'b';
         }
         return 's';
+    }
+
+    /**
+     * Import previously created routes from cache
+     *
+     * @param array $routes
+     */
+    public static function fromArray(array $routes)
+    {
+        static::$routes = $routes;
+    }
+
+    /**
+     * Export current routes for caching
+     *
+     * @return array
+     */
+    public static function toArray()
+    {
+        return static::$routes;
     }
 }
