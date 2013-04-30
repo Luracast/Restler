@@ -81,7 +81,7 @@ class Restler extends EventEmitter
     /**
      * method information including metadata
      *
-     * @var stdClass
+     * @var ApiMethodInfo
      */
     public $apiMethodInfo;
 
