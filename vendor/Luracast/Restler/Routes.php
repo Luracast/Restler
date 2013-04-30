@@ -284,8 +284,8 @@ class Routes
                 if (strpos($path, $key) === 0 && isset($value[$httpMethod])) {
                     //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
-                    $call = (object)$value[$httpMethod];
-                    $call->params = empty($path) ? array() : explode('/', $path);
+                    $call = ApiMethodInfo::__set_state($value[$httpMethod]);
+                    $call->parameters = empty($path) ? array() : explode('/', $path);
                     return $call;
                 }
             }
