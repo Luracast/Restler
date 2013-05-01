@@ -276,11 +276,10 @@ class Routes
             return static::populate($p[$path][$httpMethod], $data);
         } elseif (isset($p['*'])) {
             //wildcard routes
-            $p = & $p['*'];
-            uksort($p, function ($a, $b) {
+            uksort($p['*'], function ($a, $b) {
                 return strlen($b) - strlen($a);
             });
-            foreach ($p as $key => $value) {
+            foreach ($p['*'] as $key => $value) {
                 if (strpos($path, $key) === 0 && isset($value[$httpMethod])) {
                     //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
@@ -289,37 +288,36 @@ class Routes
                     return $call;
                 }
             }
-        } else {
-            //dynamic route
-            ksort($p);
-            foreach ($p as $key => $value) {
-                if (!isset($value[$httpMethod])) {
-                    continue;
+        }
+        //dynamic route
+        ksort($p);
+        foreach ($p as $key => $value) {
+            if (!isset($value[$httpMethod])) {
+                continue;
+            }
+            $regex = str_replace(array('{', '}'),
+                array('(?P<', '>[^/]+)'), $key);
+            if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
+                $matches = $matches[0];
+                $found = true;
+                foreach ($matches as $k => $v) {
+                    if (is_numeric($k)) {
+                        unset($matches[$k]);
+                        continue;
+                    }
+                    $index = intval(substr($k, 1));
+                    $details = $value[$httpMethod]['metadata']['param'][$index];
+                    if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
+                        $data[$details['name']] = $v;
+                    } else {
+                        $status = 400;
+                        $message = 'invalid value specified for `' . $details['name'] . '`';
+                        $found = false;
+                        break;
+                    }
                 }
-                $regex = str_replace(array('{', '}'),
-                    array('(?P<', '>[^/]+)'), $key);
-                if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
-                    $matches = $matches[0];
-                    $found = true;
-                    foreach ($matches as $k => $v) {
-                        if (is_numeric($k)) {
-                            unset($matches[$k]);
-                            continue;
-                        }
-                        $index = intval(substr($k, 1));
-                        $details = $value[$httpMethod]['metadata']['param'][$index];
-                        if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
-                            $data[$details['name']] = $v;
-                        } else {
-                            $status = 400;
-                            $message = 'invalid value specified for `' . $details['name'] . '`';
-                            $found = false;
-                            break;
-                        }
-                    }
-                    if ($found) {
-                        return static::populate($value[$httpMethod], $data);
-                    }
+                if ($found) {
+                    return static::populate($value[$httpMethod], $data);
                 }
             }
         }
