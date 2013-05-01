@@ -863,9 +863,9 @@ class Restler extends EventEmitter
                 $path = explode('/', $path, 2);
                 $path = $path[1];
             }
-        } elseif ($this->apiVersion)
-            $this->requestedApiVersion = $this->apiVersion;
-
+        } else {
+            $this->requestedApiVersion = $this->apiMinimumVersion;
+        }
         return $path;
     }
 
