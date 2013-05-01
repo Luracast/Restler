@@ -132,7 +132,7 @@ class Resources implements iUseAuthentication
         $target = empty($id) ? "v$version" : "v$version/$id";
 
         $routes = Routes::toArray();
-        foreach ($routes as $fullPath => $value) {
+        foreach ($routes as $value) {
             foreach ($value as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
@@ -297,7 +297,7 @@ class Resources implements iUseAuthentication
         $map = array();
         $allRoutes = Routes::toArray();
         foreach ($allRoutes as $fullPath => $routes) {
-            foreach ($routes as $route => $httpMethod) {
+            foreach ($routes as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
                 }
