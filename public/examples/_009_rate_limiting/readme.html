@@ -103,6 +103,7 @@
     <nav class="floating-menu">
 <ul>
 <li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a title="Getting Started with Restler" href="../.."><img src="../resources/quickstart.png" width="16" height="16"/> Start</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
 <li><a class="active" href="../index.html"><img src="../resources/examples.png" width="16" height="16"/> Examples</a></li>
 <li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="../resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
@@ -130,6 +131,8 @@
             <li><a href="../_008_documentation/readme.html" title="Commenting the classes can be more rewarding">Documentation</a></li>
             <li><a href="../_009_rate_limiting/readme.html" title="Abuse no more">Rate Limiting</a></li>
             <li><a href="../_010_access_control/readme.html" title="Who can do what">Access Control</a></li>
+            <li><a href="../_011_versioning/readme.html" title="using the URL">Versioning</a></li>
+            <li><a href="../_012_vendor_mime/readme.html" title="custom media type for versioning">Vendor MIME</a></li>
         </ul>
     </nav>
     <nav id="right">
@@ -147,6 +150,8 @@
 
 <li><tag title="Create Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">create</tag><badge>3</badge></li>
 
+<li><tag title="Custom Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">custom</tag></li>
+
 <li><tag title="Debug Example(s)" data-content="&lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">debug</tag></li>
 
 <li><tag title="Delete Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">delete</tag><badge>4</badge></li>
@@ -162,6 +167,10 @@
 <li><tag title="Http Status Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">http status</tag><badge>2</badge></li>
 
 <li><tag title="Json Example(s)" data-content="&lt;a href=&quot;../_003_multiformat/readme.html&quot;&gt;Multi-format&lt;/a&gt;">json</tag></li>
+
+<li><tag title="Mediatype Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mediatype</tag></li>
+
+<li><tag title="Mime Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mime</tag></li>
 
 <li><tag title="Patch Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt;">patch</tag></li>
 
@@ -187,12 +196,16 @@
 
 <li><tag title="Validation Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">validation</tag><badge>2</badge></li>
 
+<li><tag title="Vendor Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">vendor</tag></li>
+
+<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;../_011_versioning/readme.html&quot;&gt;Versioning&lt;/a&gt; &lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag><badge>2</badge></li>
+
 <li><tag title="Xml Example(s)" data-content="&lt;a href=&quot;../_003_multiformat/readme.html&quot;&gt;Multi-format&lt;/a&gt;">xml</tag></li>
 </ul>
     </nav>
     <article id="page">
 <div class="right"><small>9</small></div>
-<p><a id="rate-limiting-x-613xphp----5-3x-614x"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="rate-limiting-x-639xphp----5-3x-640x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>filter</tag> <tag>throttle</tag> <tag>rate-limiting</tag></p>
 
@@ -200,7 +213,7 @@
 <code>iFilter</code> interface.</p>
 
 <p>This example also shows how to use Defaults class to customize defaults, how to create your own
-iCache implementation, and how to make a hybrid filter class that behaves deferently
+iCache implementation, and how to make a hybrid filter class that behaves differently
 when the user is Authenticated</p>
 
 <p><a href="explorer/index.html#!/authors-v1" target="_blank"><img src="../resources/explorer1.png" alt="Restler API Explorer" /></a></p>
@@ -213,8 +226,13 @@ to show Best Practices and Restler 3 Features.</p>
 <p>Make sure you compare them to understand.</p>
 
 <blockquote>
-  <p><strong>Note:-</strong> Using session variables as DB and Cache is useless for real life and wrong. We are using it
-  Only for demo purpose. Since API Explorer is browser based it works well with that.</p>
+  <p><strong>Note:-</strong></p>
+  
+  <ol>
+  <li><p>Using session variables as DB and Cache is useless for real life and wrong. We are using it
+  Only for demo purpose. Since API Explorer is browser based it works well with that.</p></li>
+  <li><p>We are using <abbr title="_009_rate_limiting/Author.php">Author.php</abbr> to document return type of <code>GET authors/{id}</code> using <code>@return</code> comment</p></li>
+  </ol>
 </blockquote>
 
 <p>If you have hit the API Rate Limit or screwed up the Authors DB, you can easily reset by deleting
@@ -225,11 +243,12 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
   
   <ul>
   <li><abbr title="_009_rate_limiting/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Filter/RateLimit.php">RateLimit.php</abbr>      (filter)</li>
   <li><abbr title="_009_rate_limiting/SessionCache.php">SessionCache.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/ratelimited/Authors.php">Authors.php</abbr>      (api)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/KeyAuth.php">KeyAuth.php</abbr>      (auth)</li>
+  <li><abbr title="_009_rate_limiting/Author.php">Author.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -238,14 +257,33 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
 <p>This API Server exposes the following URIs</p>
 
 <pre><code>GET    authors                   ⇠ ratelimited\Authors::index()
-GET    authors/{id}              ⇠ ratelimited\Authors::get()
-GET    resources/{id}-v{version} ⇠ Resources::get()
-GET    resources/v{version}      ⇠ Resources::get()
-GET    resources                 ⇠ Resources::index()
 POST   authors                   ⇠ ratelimited\Authors::post()
-PUT    authors/{id}              ⇠ ratelimited\Authors::put()
-PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
 DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
+PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
+PUT    authors/{id}              ⇠ ratelimited\Authors::put()
+GET    authors/{id}              ⇠ ratelimited\Authors::get()
+GET    resources                 ⇠ Luracast\Restler\Resources::index()
+GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
+</code></pre>
+
+<p>We expect the following behaviour from this example.</p>
+
+<pre><code class="gherkin"><br />@example9 @crud
+Feature: Testing Rate Limiting Example
+
+  Scenario: Failing to delete missing Author with JSON
+    Given that I want to delete an "Author"
+    And his "id" is 2000
+    When I request "/examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    Then the response status code should be 404
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">bin/behat  features/examples/_009_rate_limiting.feature
 </code></pre>
 
 </article>

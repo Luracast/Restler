@@ -1,20 +1,20 @@
 <?php
 namespace Luracast\Restler;
 
+use Luracast\Restler\Data\ApiMethodInfo;
 use ReflectionClass;
 use ReflectionMethod;
-use ___PHPSTORM_HELPERS\object;
 
 /**
  * Router class that routes the urls to api methods along with parameters
  *
  * @category   Framework
  * @package    Restler
- * @subpackage route
  * @author     R.Arul Kumaran <arul@luracast.com>
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc4
  */
 class Routes
 {
@@ -30,10 +30,15 @@ class Routes
     {
 
         /*
-         * Mapping Rules - Optional parameters should not be mapped to URL - if
-         * a required parameter is of primitive type - Map them to URL - Do not
-         * create routes with out it - if a required parameter is not primitive
-         * type - Do not include it in URL
+         * Mapping Rules
+         * =============
+         *
+         * - Optional parameters should not be mapped to URL
+         * - If a required parameter is of primitive type
+         *      - Map them to URL
+         *      - Do not create routes with out it
+         * - If a required parameter is not primitive type
+         *      - Do not include it in URL
          */
         $reflection = new ReflectionClass($className);
         $classMetadata = CommentParser::parse($reflection->getDocComment());
@@ -217,26 +222,6 @@ class Routes
     }
 
     /**
-     * Import previously created routes from cache
-     *
-     * @param array $routes
-     */
-    public static function fromArray(array $routes)
-    {
-        static::$routes = $routes;
-    }
-
-    /**
-     * Export current routes for caching
-     *
-     * @return array
-     */
-    public static function toArray()
-    {
-        return static::$routes;
-    }
-
-    /**
      * @access private
      */
     public static function typeChar($type = null)
@@ -270,6 +255,16 @@ class Routes
         }
     }
 
+    /**
+     * Find the api method for the given url and http method
+     *
+     * @param string  $path       Requested url path
+     * @param string  $httpMethod GET|POST|PUT|PATCH|DELETE etc
+     * @param array   $data       Data collected from the request
+     *
+     * @return ApiMethodInfo
+     * @throws RestException
+     */
     public static function find($path, $httpMethod, array $data = array())
     {
         $p =& static::$routes;
@@ -281,50 +276,48 @@ class Routes
             return static::populate($p[$path][$httpMethod], $data);
         } elseif (isset($p['*'])) {
             //wildcard routes
-            $p = & $p['*'];
-            uksort($p, function ($a, $b) {
+            uksort($p['*'], function ($a, $b) {
                 return strlen($b) - strlen($a);
             });
-            foreach ($p as $key => $value) {
+            foreach ($p['*'] as $key => $value) {
                 if (strpos($path, $key) === 0 && isset($value[$httpMethod])) {
-                    //path found, convert rest of the path to params
+                    //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
-                    $call = (object)$value[$httpMethod];
-                    $call->params = empty($path) ? array() : explode('/', $path);
+                    $call = ApiMethodInfo::__set_state($value[$httpMethod]);
+                    $call->parameters = empty($path) ? array() : explode('/', $path);
                     return $call;
                 }
             }
-        } else {
-            //dynamic route
-            ksort($p);
-            foreach ($p as $key => $value) {
-                if (!isset($value[$httpMethod])) {
-                    continue;
+        }
+        //dynamic route
+        ksort($p);
+        foreach ($p as $key => $value) {
+            if (!isset($value[$httpMethod])) {
+                continue;
+            }
+            $regex = str_replace(array('{', '}'),
+                array('(?P<', '>[^/]+)'), $key);
+            if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
+                $matches = $matches[0];
+                $found = true;
+                foreach ($matches as $k => $v) {
+                    if (is_numeric($k)) {
+                        unset($matches[$k]);
+                        continue;
+                    }
+                    $index = intval(substr($k, 1));
+                    $details = $value[$httpMethod]['metadata']['param'][$index];
+                    if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
+                        $data[$details['name']] = $v;
+                    } else {
+                        $status = 400;
+                        $message = 'invalid value specified for `' . $details['name'] . '`';
+                        $found = false;
+                        break;
+                    }
                 }
-                $regex = str_replace(array('{', '}'),
-                    array('(?P<', '>[^/]+)'), $key);
-                if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
-                    $matches = $matches[0];
-                    $found = true;
-                    foreach ($matches as $k => $v) {
-                        if (is_numeric($k)) {
-                            unset($matches[$k]);
-                            continue;
-                        }
-                        $index = intval(substr($k, 1));
-                        $details = $value[$httpMethod]['metadata']['param'][$index];
-                        if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
-                            $data[$details['name']] = $v;
-                        } else {
-                            $status = 400;
-                            $message = 'invalid value specified for `' . $details['name'] . '`';
-                            $found = false;
-                            break;
-                        }
-                    }
-                    if ($found) {
-                        return static::populate($value[$httpMethod], $data);
-                    }
+                if ($found) {
+                    return static::populate($value[$httpMethod], $data);
                 }
             }
         }
@@ -342,18 +335,24 @@ class Routes
     }
 
     /**
+     * Populates the parameter values
+     *
+     * @param array $call
+     * @param       $data
+     *
+     * @return ApiMethodInfo
+     *
      * @access private
      */
-    protected static function populate($call, $data)
+    protected static function populate(array $call, $data)
     {
-        $call = (object)$call;
-        $call->params = $call->defaults;
+        $call['parameters'] = $call['defaults'];
         foreach ($data as $key => $value) {
-            if (isset($call->arguments[$key])) {
-                $call->params[$call->arguments[$key]] = $value;
+            if (isset($call['arguments'][$key])) {
+                $call['parameters'][$call['arguments'][$key]] = $value;
             }
         }
-        return $call;
+        return ApiMethodInfo::__set_state($call);
     }
 
     /**
@@ -368,5 +367,25 @@ class Routes
             return 'b';
         }
         return 's';
+    }
+
+    /**
+     * Import previously created routes from cache
+     *
+     * @param array $routes
+     */
+    public static function fromArray(array $routes)
+    {
+        static::$routes = $routes;
+    }
+
+    /**
+     * Export current routes for caching
+     *
+     * @return array
+     */
+    public static function toArray()
+    {
+        return static::$routes;
     }
 }

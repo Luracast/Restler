@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler;
 
+use Luracast\Restler\Data\ApiMethodInfo;
 use stdClass;
 use Reflection;
 use ReflectionClass;
@@ -25,7 +26,7 @@ use Luracast\Restler\Data\ValidationInfo;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class Restler extends EventEmitter
 {
@@ -36,7 +37,7 @@ class Restler extends EventEmitter
     //
     // ------------------------------------------------------------------
 
-    const VERSION = '3.0.0rc3';
+    const VERSION = '3.0.0rc4';
 
     /**
      * URL of the currently mapped service
@@ -80,7 +81,7 @@ class Restler extends EventEmitter
     /**
      * method information including metadata
      *
-     * @var stdClass
+     * @var ApiMethodInfo
      */
     public $apiMethodInfo;
 
@@ -613,8 +614,8 @@ class Restler extends EventEmitter
                                 //convert to instance of ValidationInfo
                                 $info = new ValidationInfo($param);
                                 $valid = Validator::validate(
-                                    $o->params[$index], $info);
-                                $o->params[$index] = $valid;
+                                    $o->parameters[$index], $info);
+                                $o->parameters[$index] = $valid;
                             }
                         }
                     }
@@ -626,7 +627,7 @@ class Restler extends EventEmitter
                         call_user_func_array(array(
                             $object,
                             $preProcess
-                        ), $o->params);
+                        ), $o->parameters);
                     }
                     switch ($accessLevel) {
                         case 3 : //protected method
@@ -637,14 +638,14 @@ class Restler extends EventEmitter
                             $reflectionMethod->setAccessible(true);
                             $result = $reflectionMethod->invokeArgs(
                                 $object,
-                                $o->params
+                                $o->parameters
                             );
                             break;
                         default :
                             $result = call_user_func_array(array(
                                 $object,
                                 $o->methodName
-                            ), $o->params);
+                            ), $o->parameters);
                     }
                 } catch (RestException $e) {
                     $this->handleError($e->getCode(), $e->getMessage());
@@ -848,9 +849,9 @@ class Restler extends EventEmitter
                 $path = explode('/', $path, 2);
                 $path = $path[1];
             }
-        } elseif ($this->apiVersion)
-            $this->requestedApiVersion = $this->apiVersion;
-
+        } else {
+            $this->requestedApiVersion = $this->apiMinimumVersion;
+        }
         return $path;
     }
 
@@ -1016,7 +1017,7 @@ class Restler extends EventEmitter
     /**
      * Find the api method to execute for the requested Url
      *
-     * @return \stdClass
+     * @return ApiMethodInfo
      */
     public function mapUrlToMethod()
     {

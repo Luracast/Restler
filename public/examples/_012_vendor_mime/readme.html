@@ -205,7 +205,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>12</small></div>
-<p><a id="vendor-mime-x-744xphp----5-3x-745x" class="anchor"></a><h2>Vendor MIME <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="vendor-mime-x-775xphp----5-3x-776x" class="anchor"></a><h2>Vendor MIME <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>versioning</tag> <tag>mime</tag> <tag>mediatype</tag> <tag>vendor</tag> <tag>custom</tag></p>
 
@@ -235,9 +235,9 @@ $r-&gt;setAPIVersion(2);
   
   <ul>
   <li><abbr title="_012_vendor_mime/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="_012_vendor_mime/SomeVendor/v1/BMI.php">v1\BMI.php</abbr>      (api)</li>
   <li><abbr title="_012_vendor_mime/SomeVendor/v2/BMI.php">v2\BMI.php</abbr>      (api)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -246,17 +246,17 @@ $r-&gt;setAPIVersion(2);
 <p>This API Server exposes the following URIs</p>
 
 <pre><code>GET bmi                          ⇠ SomeVendor\v1\BMI::index()
-GET resources                    ⇠ Resources::index()
-GET resources/v{version}         ⇠ Resources::get()
-GET resources/{id}-v{version}    ⇠ Resources::get()
+GET resources                    ⇠ Luracast\Restler\Resources::index()
+GET resources/v{version}         ⇠ Luracast\Restler\Resources::get()
+GET resources/{id}-v{version}    ⇠ Luracast\Restler\Resources::get()
 GET v1/bmi                       ⇠ SomeVendor\v1\BMI::index()
-GET v1/resources                 ⇠ Resources::index()
-GET v1/resources/v{version}      ⇠ Resources::get()
-GET v1/resources/{id}-v{version} ⇠ Resources::get()
+GET v1/resources                 ⇠ Luracast\Restler\Resources::index()
+GET v1/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+GET v1/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 GET v2/bmi                       ⇠ SomeVendor\v2\BMI::index()
-GET v2/resources                 ⇠ Resources::index()
-GET v2/resources/v{version}      ⇠ Resources::get()
-GET v2/resources/{id}-v{version} ⇠ Resources::get()
+GET v2/resources                 ⇠ Luracast\Restler\Resources::index()
+GET v2/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+GET v2/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 </code></pre>
 
 <p>Here is how you will consume different versions of the api using cURL.</p>

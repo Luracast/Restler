@@ -103,6 +103,7 @@
     <nav class="floating-menu">
 <ul>
 <li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a title="Getting Started with Restler" href="../.."><img src="../resources/quickstart.png" width="16" height="16"/> Start</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
 <li><a class="active" href="../index.html"><img src="../resources/examples.png" width="16" height="16"/> Examples</a></li>
 <li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="../resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
@@ -130,6 +131,8 @@
             <li><a href="../_008_documentation/readme.html" title="Commenting the classes can be more rewarding">Documentation</a></li>
             <li><a href="../_009_rate_limiting/readme.html" title="Abuse no more">Rate Limiting</a></li>
             <li><a href="../_010_access_control/readme.html" title="Who can do what">Access Control</a></li>
+            <li><a href="../_011_versioning/readme.html" title="using the URL">Versioning</a></li>
+            <li><a href="../_012_vendor_mime/readme.html" title="custom media type for versioning">Vendor MIME</a></li>
         </ul>
     </nav>
     <nav id="right">
@@ -147,6 +150,8 @@
 
 <li><tag title="Create Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">create</tag><badge>3</badge></li>
 
+<li><tag title="Custom Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">custom</tag></li>
+
 <li><tag title="Debug Example(s)" data-content="&lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">debug</tag></li>
 
 <li><tag title="Delete Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">delete</tag><badge>4</badge></li>
@@ -162,6 +167,10 @@
 <li><tag title="Http Status Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">http status</tag><badge>2</badge></li>
 
 <li><tag title="Json Example(s)" data-content="&lt;a href=&quot;../_003_multiformat/readme.html&quot;&gt;Multi-format&lt;/a&gt;">json</tag></li>
+
+<li><tag title="Mediatype Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mediatype</tag></li>
+
+<li><tag title="Mime Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mime</tag></li>
 
 <li><tag title="Patch Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt;">patch</tag></li>
 
@@ -187,12 +196,16 @@
 
 <li><tag title="Validation Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">validation</tag><badge>2</badge></li>
 
+<li><tag title="Vendor Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">vendor</tag></li>
+
+<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;../_011_versioning/readme.html&quot;&gt;Versioning&lt;/a&gt; &lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag><badge>2</badge></li>
+
 <li><tag title="Xml Example(s)" data-content="&lt;a href=&quot;../_003_multiformat/readme.html&quot;&gt;Multi-format&lt;/a&gt;">xml</tag></li>
 </ul>
     </nav>
     <article id="page">
 <div class="right"><small>2</small></div>
-<p><a id="minimal-example-x-265xphp----5-3x-266x"></a><h2>Minimal Example <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="minimal-example-x-276xphp----5-3x-277x" class="anchor"></a><h2>Minimal Example <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>basic</tag> <tag>validation</tag> <tag>http status</tag></p>
 
@@ -214,12 +227,19 @@
 
 <pre><code>GET math/add                ⇠ Math::add()
 GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
+GET math/sum/*              ⇠ Math::sum()
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> Take note of the php doc comments, they make sure the
-   data is sent in the right type and validated automatically before calling
-   the api method.</p>
+  <p><strong>Note:-</strong></p>
+  
+  <ol>
+  <li>Take note of the php doc comments, they make sure the data is sent in the
+  right type and validated automatically before calling the api method.</li>
+  <li>Sum method accepts variable number of parameters with the help of
+  wildcard manual route. Read the <a href="../_006_routing/readme.html" target="_blank">Routes</a>
+  example for better understanding</li>
+  </ol>
 </blockquote>
 
 <p>Try the following links in your browser</p>
@@ -254,6 +274,16 @@ GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
   }
 }
 </code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/math/sum/1/2/3/4/5" target="_blank">math/sum/1/2/3/4/5</a></dt>
+<dd>
+<p></p>
+
+<pre><code>15
+</code></pre>
+</dd>
+</dl>
 
 <p>We expect the following behaviour from this example.</p>
 

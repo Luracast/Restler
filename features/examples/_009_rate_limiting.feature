@@ -1,4 +1,4 @@
-@example7 @crud
+@example9 @crud
 Feature: Testing Rate Limiting Example
 
   Scenario: Failing to delete missing Author with JSON
