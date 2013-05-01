@@ -84,14 +84,14 @@
 <li>Flexible</li>
 <li>Highly Customizable</li>
 <li>Many Examples that can be tried on your localhost to get started</li>
-<li>Supports HTTP request methods  GET, POST, PUT, DELETE, and PATCH</li>
+<li>Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request paramater (method)</li>
 <li>Supports both RESTful and Pragmatic REST API Design</li>
-<li>Clients can use X-HTTP-Method-Override header</li>
-<li>Two way format(media type) conversion
+<li>Clients can use X-HTTP-Method-Override header, suuports Cross Origin Resource Sharing and JSONP</li>
+<li>Two way format(media type) conversion both send and receive
 
 <ul>
-<li>Pluggable Formatters</li>
-<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats</li>
+<li>Pluggable content Formatter framework and api</li>
+<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support</li>
 </ul></li>
 <li>Pluggable Authentication schemes
 
@@ -106,12 +106,12 @@
 <li>Routing
 
 <ul>
-<li>Manual Routing
+<li>Manual Routing (Annotation)
 
 <ul>
 <li>Using <code>@url GET my/custom/url/{param}</code> PHPDoc comments</li>
 </ul></li>
-<li>Auto Routing
+<li>Auto Routing (Reflection)
 
 <ul>
 <li>URL to Method mapping</li>
@@ -121,7 +121,7 @@
 <li><code>[planned]</code> Header to Method parameter mapping</li>
 </ul></li>
 </ul></li>
-<li>Cache
+<li>Cache built-in
 
 <ul>
 <li>Client Side Caching support</li>
@@ -140,7 +140,7 @@
 <li>Automatic parameter validation and type conversion</li>
 <li>API versioning support by URL and/or vendor specific MIME</li>
 <li>API documentation and discovery using <a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a></li>
-<li>Throttling</li>
+<li>Throttling and Performance tuning</li>
 </ul></li>
 <li>Management
 
