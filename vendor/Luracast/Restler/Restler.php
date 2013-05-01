@@ -983,9 +983,13 @@ class Restler extends EventEmitter
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== false) {
             if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== false) {
-                $format = new JsonFormat;
+                if (isset($this->formatMap["application/json"])) {
+                    $format = new JsonFormat;
+                }
             } elseif (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
-                $format = new XmlFormat;
+                if (isset($this->formatMap["application/xml"])) {
+                    $format = new Format\XmlFormat;
+                }
             } elseif (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
                 $format = $this->formatMap['default'];
                 $format = new $format;
