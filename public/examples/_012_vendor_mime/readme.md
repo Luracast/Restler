@@ -25,26 +25,26 @@ $r->setAPIVersion(2);
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)
-> * Resources.php      (api)
 > * v1\BMI.php      (api)
 > * v2\BMI.php      (api)
+> * Resources.php      (api)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
     GET bmi                          ⇠ SomeVendor\v1\BMI::index()
-    GET resources                    ⇠ Resources::index()
-    GET resources/v{version}         ⇠ Resources::get()
-    GET resources/{id}-v{version}    ⇠ Resources::get()
+    GET resources                    ⇠ Luracast\Restler\Resources::index()
+    GET resources/v{version}         ⇠ Luracast\Restler\Resources::get()
+    GET resources/{id}-v{version}    ⇠ Luracast\Restler\Resources::get()
     GET v1/bmi                       ⇠ SomeVendor\v1\BMI::index()
-    GET v1/resources                 ⇠ Resources::index()
-    GET v1/resources/v{version}      ⇠ Resources::get()
-    GET v1/resources/{id}-v{version} ⇠ Resources::get()
+    GET v1/resources                 ⇠ Luracast\Restler\Resources::index()
+    GET v1/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+    GET v1/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
     GET v2/bmi                       ⇠ SomeVendor\v2\BMI::index()
-    GET v2/resources                 ⇠ Resources::index()
-    GET v2/resources/v{version}      ⇠ Resources::get()
-    GET v2/resources/{id}-v{version} ⇠ Resources::get()
+    GET v2/resources                 ⇠ Luracast\Restler\Resources::index()
+    GET v2/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+    GET v2/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 
 
 Here is how you will consume different versions of the api using cURL.
@@ -141,9 +141,9 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 
 
 *[index.php]: _012_vendor_mime/index.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[v1\BMI.php]: _012_vendor_mime/SomeVendor/v1/BMI.php
 *[v2\BMI.php]: _012_vendor_mime/SomeVendor/v2/BMI.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

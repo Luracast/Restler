@@ -205,7 +205,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>9</small></div>
-<p><a id="rate-limiting-x-624xphp----5-3x-625x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="rate-limiting-x-649xphp----5-3x-650x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>filter</tag> <tag>throttle</tag> <tag>rate-limiting</tag></p>
 
@@ -243,10 +243,10 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
   
   <ul>
   <li><abbr title="_009_rate_limiting/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Filter/RateLimit.php">RateLimit.php</abbr>      (filter)</li>
   <li><abbr title="_009_rate_limiting/SessionCache.php">SessionCache.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/ratelimited/Authors.php">Authors.php</abbr>      (api)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/KeyAuth.php">KeyAuth.php</abbr>      (auth)</li>
   <li><abbr title="_009_rate_limiting/Author.php">Author.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
@@ -258,13 +258,32 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
 
 <pre><code>GET    authors                   ⇠ ratelimited\Authors::index()
 POST   authors                   ⇠ ratelimited\Authors::post()
-PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
 DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
-GET    authors/{id}              ⇠ ratelimited\Authors::get()
+PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
 PUT    authors/{id}              ⇠ ratelimited\Authors::put()
-GET    resources                 ⇠ Resources::index()
-GET    resources/v{version}      ⇠ Resources::get()
-GET    resources/{id}-v{version} ⇠ Resources::get()
+GET    authors/{id}              ⇠ ratelimited\Authors::get()
+GET    resources                 ⇠ Luracast\Restler\Resources::index()
+GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
+</code></pre>
+
+<p>We expect the following behaviour from this example.</p>
+
+<pre><code class="gherkin"><br />@example9 @crud
+Feature: Testing Rate Limiting Example
+
+  Scenario: Failing to delete missing Author with JSON
+    Given that I want to delete an "Author"
+    And his "id" is 2000
+    When I request "/examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    Then the response status code should be 404
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">bin/behat  features/examples/_009_rate_limiting.feature
 </code></pre>
 
 </article>

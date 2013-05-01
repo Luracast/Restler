@@ -31,10 +31,10 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)
-> * Resources.php      (api)
 > * RateLimit.php      (filter)
 > * SessionCache.php      (helper)
 > * Authors.php      (api)
+> * Resources.php      (api)
 > * KeyAuth.php      (auth)
 > * Author.php      (helper)
 > * restler.php      (framework)
@@ -44,26 +44,49 @@ This API Server exposes the following URIs
 
     GET    authors                   ⇠ ratelimited\Authors::index()
     POST   authors                   ⇠ ratelimited\Authors::post()
-    PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
     DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
-    GET    authors/{id}              ⇠ ratelimited\Authors::get()
+    PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
     PUT    authors/{id}              ⇠ ratelimited\Authors::put()
-    GET    resources                 ⇠ Resources::index()
-    GET    resources/v{version}      ⇠ Resources::get()
-    GET    resources/{id}-v{version} ⇠ Resources::get()
+    GET    authors/{id}              ⇠ ratelimited\Authors::get()
+    GET    resources                 ⇠ Luracast\Restler\Resources::index()
+    GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+    GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 
 
 
 
 
+
+
+We expect the following behaviour from this example.
+
+```gherkin
+
+@example9 @crud
+Feature: Testing Rate Limiting Example
+
+  Scenario: Failing to delete missing Author with JSON
+    Given that I want to delete an "Author"
+    And his "id" is 2000
+    When I request "/examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    Then the response status code should be 404
+```
+
+It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure `base_url`
+in `behat.yml` is updated according to your web server.
+
+```bash
+bin/behat  features/examples/_009_rate_limiting.feature
+```
 
 
 
 *[index.php]: _009_rate_limiting/index.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[RateLimit.php]: ../../vendor/Luracast/Restler/Filter/RateLimit.php
 *[SessionCache.php]: _009_rate_limiting/SessionCache.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[Author.php]: _009_rate_limiting/Author.php
 *[restler.php]: ../../vendor/restler.php

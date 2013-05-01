@@ -205,7 +205,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>2</small></div>
-<p><a id="minimal-example-x-273xphp----5-3x-274x" class="anchor"></a><h2>Minimal Example <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="minimal-example-x-276xphp----5-3x-277x" class="anchor"></a><h2>Minimal Example <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>basic</tag> <tag>validation</tag> <tag>http status</tag></p>
 
@@ -227,12 +227,19 @@
 
 <pre><code>GET math/add                ⇠ Math::add()
 GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
+GET math/sum/*              ⇠ Math::sum()
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> Take note of the php doc comments, they make sure the
-   data is sent in the right type and validated automatically before calling
-   the api method.</p>
+  <p><strong>Note:-</strong></p>
+  
+  <ol>
+  <li>Take note of the php doc comments, they make sure the data is sent in the
+  right type and validated automatically before calling the api method.</li>
+  <li>Sum method accepts variable number of parameters with the help of
+  wildcard manual route. Read the <a href="../_006_routing/readme.html" target="_blank">Routes</a>
+  example for better understanding</li>
+  </ol>
 </blockquote>
 
 <p>Try the following links in your browser</p>
@@ -267,6 +274,16 @@ GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
   }
 }
 </code></pre></dd>
+
+<dl>
+<dt>GET <a href="index.php/math/sum/1/2/3/4/5" target="_blank">math/sum/1/2/3/4/5</a></dt>
+<dd>
+<p></p>
+
+<pre><code>15
+</code></pre>
+</dd>
+</dl>
 
 <p>We expect the following behaviour from this example.</p>
 

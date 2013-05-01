@@ -31,8 +31,6 @@ class AccessControl implements iAuthenticate
             isset($m['class']['AccessControl']['properties']['requires'])
                 ? $m['class']['AccessControl']['properties']['requires']
                 : false;
-        //print_r($m);
-        //echo static::$role.' '.$requires.' : ';
         return $requires
             ? static::$role == 'admin' || static::$role == $requires
             : true;

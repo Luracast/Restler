@@ -18,6 +18,9 @@ the class level similar to *index*
 > 2. When we want the entire data that is sent to the API,
 >    we need to use `$request_data` as the name of the parameter any other name
 >    will only get partial data under the specified key
+> 3. This example favours simplicity over best practices.
+>    [Documentation](../_008_documentation/readme.html) and [Rate Limiting](../_009_rate_limiting/readme.html) examples continue improving from where
+>    we left off here. It is highly recommended to check them out.
 
 For simplicity and making it work out of the box this example is using
  a session based fake database, thus depending on a client that
