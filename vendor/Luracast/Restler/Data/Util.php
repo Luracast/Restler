@@ -19,7 +19,6 @@ class Util
      * @var bool|string|callable
      */
     public static $stringEncoderFunction = false;
-
     /**
      * @var bool|string|callable
      */
@@ -45,23 +44,25 @@ class Util
                                          $forceObjectTypeWhenEmpty = false)
     {
         //if ($object instanceof JsonSerializable) { //wont work on PHP < 5.4
-        if (is_callable(array($object, 'jsonSerialize'))) {
-            $object = $object->jsonSerialize();
-        } elseif (is_object($object) && method_exists($object, '__sleep')) {
-            $properties = $object->__sleep();
-            $array = array();
-            foreach ($properties as $key) {
-                $value = self::objectToArray($object->{$key},
-                    $forceObjectTypeWhenEmpty);
-                if (self::$stringEncoderFunction && is_string($value)) {
-                    $value = self::$stringEncoderFunction ($value);
-                } elseif (self::$numberEncoderFunction && is_numeric($value)) {
-                    $value = self::$numberEncoderFunction ($value);
+        if (is_object($object)) {
+            if (method_exists($object, 'jsonSerialize')) {
+                $object = $object->jsonSerialize();
+            } elseif (method_exists($object, '__sleep')) {
+                $properties = $object->__sleep();
+                $array = array();
+                foreach ($properties as $key) {
+                    $value = self::objectToArray($object->{$key},
+                        $forceObjectTypeWhenEmpty);
+                    if (self::$stringEncoderFunction && is_string($value)) {
+                        $value = self::$stringEncoderFunction ($value);
+                    } elseif (self::$numberEncoderFunction && is_numeric($value)) {
+                        $value = self::$numberEncoderFunction ($value);
+                    }
+                    $array [$key] = $value;
                 }
-                $array [$key] = $value;
-            }
-            return $array;
+                return $array;
 
+            }
         }
         if (is_array($object) || is_object($object)) {
             $count = 0;
