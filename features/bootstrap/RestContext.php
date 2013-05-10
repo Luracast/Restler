@@ -53,6 +53,7 @@ class RestContext extends BehatContext
                     case 400:
                     case 401:
                     case 404:
+                    case 405:
                     case 406:
                         $event->stopPropagation();
                 }

@@ -16,6 +16,9 @@ the class level similar to *index*
 > 2. When we want the entire data that is sent to the API,
 >    we need to use `$request_data` as the name of the parameter any other name
 >    will only get partial data under the specified key
+> 3. This example favours simplicity over best practices.
+>    [Documentation](../_008_documentation/readme.html) and [Rate Limiting](../_009_rate_limiting/readme.html) examples continue improving from where
+>    we left off here. It is highly recommended to check them out.
 
 For simplicity and making it work out of the box this example is using
  a session based fake database, thus depending on a client that
@@ -60,8 +63,8 @@ This API Server exposes the following URIs
     GET    authors      ⇠ Authors::index()
     POST   authors      ⇠ Authors::post()
     DELETE authors/{id} ⇠ Authors::delete()
-    PUT    authors/{id} ⇠ Authors::put()
     GET    authors/{id} ⇠ Authors::get()
+    PUT    authors/{id} ⇠ Authors::put()
 
 
 *[MySQL.php]: _007_crud/DB/PDO/MySQL.php
@@ -213,14 +216,14 @@ Feature: Testing CRUD Example
     And the response should be JSON
     And the response has a "id" property
 
-  Scenario: Failing to update Author with JSON
+  Scenario: Given url is valid for other http method(s)
     Given that I want to update "Author"
     And his "name" is "Jac"
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
     When I request "/examples/_007_crud/authors"
-    Then the response status code should be 404
+    Then the response status code should be 405
 
   Scenario: Deleting Author
     Given that I want to delete an "Author"

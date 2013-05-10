@@ -26,26 +26,26 @@ Features
 * Flexible
 * Highly Customizable
 * Many Examples that can be tried on your localhost to get started
-* Supports HTTP request methods  GET, POST, PUT, DELETE, and PATCH
+* Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request parameter (method)
 * Supports both RESTful and Pragmatic REST API Design
-* Clients can use X-HTTP-Method-Override header
-* Two way format(media type) conversion
-    * Pluggable Formatters
-    * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats
+* Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource Sharing and JSONP
+* Two way format(media type) conversion both send and receive
+    * Pluggable content Formatter framework and api
+    * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support
 * Pluggable Authentication schemes
     * `[planned]` OAuth 2
 * Pluggable Filters to effectively manage API usage
     * API Rate Limiting Filter
 * Routing
-    * Manual Routing
+    * Manual Routing (Annotation)
         * Using `@url GET my/custom/url/{param}` PHPDoc comments
-    * Auto Routing
+    * Auto Routing (Reflection)
         * URL to Method mapping
         * URL part to Method parameter mapping
         * Query parameters to Method parameter mapping
         * Request body to Method parameter mapping
         * `[planned]` Header to Method parameter mapping
-* Cache
+* Cache built-in
     * Client Side Caching support
     * Proxy Caching support
     * Server Side Caching
@@ -56,7 +56,7 @@ Features
     * Automatic parameter validation and type conversion
     * API versioning support by URL and/or vendor specific MIME
     * API documentation and discovery using [Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer)
-    * Throttling
+    * Throttling and Performance tuning
 * Management
     * `[planned]` Unit Testing using [PHPUnit](https://github.com/sebastianbergmann/phpunit/)
     * Behavior Driven API testing using [Behat](http://behat.org/) and [Guzzle](https://github.com/guzzle/guzzle)
@@ -99,6 +99,7 @@ This creates the following folder structure
 │       ├── _008_documentation
 │       ├── _009_rate_limiting
 │       ├── _010_access_control
+│       ├── _012_vendor_mime
 │       └── resources
 └── vendor
     └── Luracast
@@ -106,7 +107,7 @@ This creates the following folder structure
 ```
 
 ### 2.
-Download the dependencies using make at the Terminal/Commandline.
+Download other dependencies using make at the Terminal/Commandline.
 This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
 Otherwise you may safely skip this step.
 
@@ -431,9 +432,11 @@ Change Log
 ----------
 ### Changes from Restler 3.0 RC3 (only available on the v3 branch)
  * Fixes to composer.json and publish stable release as composer package on packagist
+ * New Routes class with improved routing including wild card routes
+ * Possibility to use any autoloader including composer's autoloader for maximum interoperability
  * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
- * Removed required packages as they are not technically "required" perse, Restlec works out of the box.
- * Created supported packages as require-dev instead which will be installed via `composer intall --dev`
+ * Removed required packages as they are not technically "required" per se, Restler works out of the box.
+ * Created supported packages as require-dev instead which will be installed via `composer install --dev`
  * Added suggested section for all the supported packages.
  * Added keywords to package descriptor
  * Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev

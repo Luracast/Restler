@@ -205,7 +205,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>7</small></div>
-<p><a id="crud-x-506xphp----5-3x-507x" class="anchor"></a><h2>CRUD <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="crud-x-530xphp----5-3x-531x" class="anchor"></a><h2>CRUD <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag></p>
 
@@ -224,6 +224,9 @@ the class level similar to <em>index</em></p>
   <li>When we want the entire data that is sent to the API,
   we need to use <code>$request_data</code> as the name of the parameter any other name
   will only get partial data under the specified key</li>
+  <li>This example favours simplicity over best practices.
+  <a href="../_008_documentation/readme.html" target="_blank">Documentation</a> and <a href="../_009_rate_limiting/readme.html" target="_blank">Rate Limiting</a> examples continue improving from where
+  we left off here. It is highly recommended to check them out.</li>
   </ol>
 </blockquote>
 
@@ -277,8 +280,8 @@ instead of <abbr title="_007_crud/DB/Session.php">Session.php</abbr> to get full
 <pre><code>GET    authors      ⇠ Authors::index()
 POST   authors      ⇠ Authors::post()
 DELETE authors/{id} ⇠ Authors::delete()
-PUT    authors/{id} ⇠ Authors::put()
 GET    authors/{id} ⇠ Authors::get()
+PUT    authors/{id} ⇠ Authors::put()
 </code></pre>
 
 <p>Try the following links in your browser</p>
@@ -419,14 +422,14 @@ Feature: Testing CRUD Example
     And the response should be JSON
     And the response has a "id" property
 
-  Scenario: Failing to update Author with JSON
+  Scenario: Given url is valid for other http method(s)
     Given that I want to update "Author"
     And his "name" is "Jac"
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
     When I request "/examples/_007_crud/authors"
-    Then the response status code should be 404
+    Then the response status code should be 405
 
   Scenario: Deleting Author
     Given that I want to delete an "Author"

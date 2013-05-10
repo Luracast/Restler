@@ -84,14 +84,14 @@
 <li>Flexible</li>
 <li>Highly Customizable</li>
 <li>Many Examples that can be tried on your localhost to get started</li>
-<li>Supports HTTP request methods  GET, POST, PUT, DELETE, and PATCH</li>
+<li>Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request parameter (method)</li>
 <li>Supports both RESTful and Pragmatic REST API Design</li>
-<li>Clients can use X-HTTP-Method-Override header</li>
-<li>Two way format(media type) conversion
+<li>Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource Sharing and JSONP</li>
+<li>Two way format(media type) conversion both send and receive
 
 <ul>
-<li>Pluggable Formatters</li>
-<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) formats</li>
+<li>Pluggable content Formatter framework and api</li>
+<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support</li>
 </ul></li>
 <li>Pluggable Authentication schemes
 
@@ -106,12 +106,12 @@
 <li>Routing
 
 <ul>
-<li>Manual Routing
+<li>Manual Routing (Annotation)
 
 <ul>
 <li>Using <code>@url GET my/custom/url/{param}</code> PHPDoc comments</li>
 </ul></li>
-<li>Auto Routing
+<li>Auto Routing (Reflection)
 
 <ul>
 <li>URL to Method mapping</li>
@@ -121,7 +121,7 @@
 <li><code>[planned]</code> Header to Method parameter mapping</li>
 </ul></li>
 </ul></li>
-<li>Cache
+<li>Cache built-in
 
 <ul>
 <li>Client Side Caching support</li>
@@ -140,7 +140,7 @@
 <li>Automatic parameter validation and type conversion</li>
 <li>API versioning support by URL and/or vendor specific MIME</li>
 <li>API documentation and discovery using <a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a></li>
-<li>Throttling</li>
+<li>Throttling and Performance tuning</li>
 </ul></li>
 <li>Management
 
@@ -187,6 +187,7 @@ or Checkout using Terminal/Commandline</p>
 │       ├── _008_documentation
 │       ├── _009_rate_limiting
 │       ├── _010_access_control
+│       ├── _012_vendor_mime
 │       └── resources
 └── vendor
     └── Luracast
@@ -195,7 +196,7 @@ or Checkout using Terminal/Commandline</p>
 
 <p><a id="2-" class="anchor"></a><h3>2.</h3></p>
 
-<p>Download the dependencies using make at the Terminal/Commandline.
+<p>Download other dependencies using make at the Terminal/Commandline.
 This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
 Otherwise you may safely skip this step.</p>
 
@@ -510,9 +511,11 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 <ul>
 <li>Fixes to composer.json and publish stable release as composer package on packagist</li>
+<li>New Routes class with improved routing including wild card routes</li>
+<li>Possibility to use any autoloader including composer's autoloader for maximum interoperability</li>
 <li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist" target="_blank">rodneyrehm/plist</a> package for CFPropertyList.</li>
-<li>Removed required packages as they are not technically "required" perse, Restlec works out of the box.</li>
-<li>Created supported packages as require-dev instead which will be installed via <code>composer intall --dev</code></li>
+<li>Removed required packages as they are not technically "required" per se, Restler works out of the box.</li>
+<li>Created supported packages as require-dev instead which will be installed via <code>composer install --dev</code></li>
 <li>Added suggested section for all the supported packages.</li>
 <li>Added keywords to package descriptor</li>
 <li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>

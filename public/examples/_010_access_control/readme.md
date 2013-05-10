@@ -17,8 +17,8 @@ Try it out yourself [here](explorer/index.html#!/v1)
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)
-> * Resources.php      (api)
 > * Access.php      (api)
+> * Resources.php      (api)
 > * AccessControl.php      (auth)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
@@ -27,9 +27,9 @@ This API Server exposes the following URIs
 
     GET admin                     ⇠ Access::admin()
     GET all                       ⇠ Access::all()
-    GET resources                 ⇠ Resources::index()
-    GET resources/v{version}      ⇠ Resources::get()
-    GET resources/{id}-v{version} ⇠ Resources::get()
+    GET resources                 ⇠ Luracast\Restler\Resources::index()
+    GET resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+    GET resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
     GET user                      ⇠ Access::user()
 
 
@@ -40,8 +40,8 @@ This API Server exposes the following URIs
 
 
 *[index.php]: _010_access_control/index.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[Access.php]: _010_access_control/Access.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php

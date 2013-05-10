@@ -9,7 +9,7 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class Util
 {
@@ -17,6 +17,28 @@ class Util
      * @var Restler instance injected at runtime
      */
     public static $restler;
+
+    public static $classAliases = array(
+
+        //Format classes
+        'AmfFormat' => 'Luracast\\Restler\\Format\\AmfFormat',
+        'JsFormat' => 'Luracast\\Restler\\Format\\JsFormat',
+        'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
+        'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
+        'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
+        'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
+        'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
+        'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
+
+        //Filter classes
+        'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
+
+        //API classes
+        'Resources' => 'Luracast\\Restler\\Resources',
+
+        //Cache classes
+        'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
+    );
 
     /**
      * verify if the given data type string is scalar or not
@@ -151,21 +173,30 @@ class Util
      *
      * @static
      *
-     * @param string      $className name of the class to apply properties to
-     * @param array       $metadata  which contains the properties
-     * @param null|object $instance  new instance is crated if set to null
+     * @param string      $classNameOrInstance name or instance of the class
+     *                                         to apply properties to
+     * @param array       $metadata            properties as key value pairs
      *
      * @throws RestException
+     * @internal param null|object $instance new instance is crated if set to null
+     *
      * @return object instance of the specified class with properties applied
      */
-    public static function setProperties($className, array $metadata = null,
-                                         $instance = null)
+    public static function initialize($classNameOrInstance, array $metadata = null)
     {
-        if (!class_exists($className)) {
-            throw new RestException(500, "Class '$className' not found");
-        }
-        if (!$instance) {
-            $instance = new $className();
+        if (is_object($classNameOrInstance)) {
+            $instance = $classNameOrInstance;
+            $instance->restler = self::$restler;
+            $className = get_class($instance);
+        } else {
+            $className = $classNameOrInstance;
+            if (isset(self::$classAliases[$classNameOrInstance])) {
+                $classNameOrInstance = self::$classAliases[$classNameOrInstance];
+            }
+            if (!class_exists($classNameOrInstance)) {
+                throw new RestException(500, "Class '$classNameOrInstance' not found");
+            }
+            $instance = new $classNameOrInstance();
             $instance->restler = self::$restler;
         }
         if (
@@ -191,7 +222,7 @@ class Util
 
         if ($instance instanceof iUseAuthentication) {
             $instance->__setAuthenticationStatus
-            (self::$restler->_authenticated);
+                (self::$restler->_authenticated);
         }
 
         return $instance;

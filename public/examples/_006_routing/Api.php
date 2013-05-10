@@ -19,6 +19,7 @@ class Api
     /**
      * Auto routed method that creates all possible routes.
      * This was the standard behavior for Restler 2
+     *
      * @smart-auto-routing false
      */
     public function soManyWays($p1, $p2, $p3 = 'optional')
@@ -36,6 +37,19 @@ class Api
     public function whatEver($anything)
     {
         return 'you have called Api::whatEver()';
+    }
+
+    /**
+     * Manually wildcard routed method. all paths that begin with `all` will be
+     * routed to this method
+     *
+     * @url GET all/*
+     */
+    public function allIsMine()
+    {
+        return 'you have called Api::allIsMine('
+            . implode(', ', func_get_args())
+            . ')';
     }
 }
 
