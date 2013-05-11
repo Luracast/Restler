@@ -2,31 +2,27 @@
 namespace Luracast\Restler\Format;
 
 use Luracast\Restler\Data\Util as DataUtil;
-use Luracast\Restler\Util;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
+use Luracast\Restler\Util;
 
 class HtmlFormat extends Format
 {
     const MIME = 'text/html';
     const EXTENSION = 'html';
-
     public static $view = 'debug';
     public static $format = 'php';
-
     /**
      * @var array global key value pair to be supplied to the templates. All
      * keys added here will be available as a variable inside the template
      */
     public static $data = array();
-
     /**
      * @var string set it to the location of your the view files. Defaults to
      * views folder which is same level as vendor directory.
      */
     public static $viewPath;
-
     /**
      * @var Restler;
      */
@@ -76,7 +72,7 @@ class HtmlFormat extends Format
         foreach ($params as $index => &$param) {
             $index = intval($index);
             if (is_numeric($index)) {
-                $param['value'] = $this->restler->apiMethodInfo->arguments[$index];
+                $param['value'] = $this->restler->apiMethodInfo->parameters[$index];
             }
         }
         $data['param'] = $params;
