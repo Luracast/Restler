@@ -28,7 +28,9 @@
         "behat/behat":"Behaviour driven development testing framework (see require-dev for details)",
         "rodneyrehm/plist":"Restler supports tho Apple plist xml format (see require-dev for details)",
         "zendframework/zendamf":"Support for the amf document format  (see require-dev for details)",
-        "symfony/yaml":"Restler can produce content in yaml format as well (see require-dev for details)"
+        "symfony/yaml":"Restler can produce content in yaml format as well (see require-dev for details)",
+        "twig/twig":"Restler can render HtmlView using twig templates (see require-dev for details)",
+        "mustache/mustache":"Restler can render HtmlView using mustache/handlebar templates (see require-dev for details)"
     },
     "require":{
         "php":">=5.3.0"
@@ -37,10 +39,11 @@
         "luracast/explorer":"*",
         "guzzle/guzzle":"~3.1.1",
         "behat/behat":"2.4.*@stable",
-        "mustache/mustache": "dev-master",
         "rodneyrehm/plist":"dev-master",
         "zendframework/zendamf":"dev-master",
-        "symfony/yaml":"*"
+        "symfony/yaml":"*",
+        "mustache/mustache": "dev-master",
+        "twig/twig": "v1.13.0"
     },
     "repositories":[
         {
