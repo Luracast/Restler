@@ -110,7 +110,10 @@ class HtmlFormat extends Format
                 return $template->render($data);
             case 'handlebar':
             case 'mustache':
-                break;
+                $view = self::$viewPath . DIRECTORY_SEPARATOR .
+                    self::$view;
+                $m = new \Mustache_Engine;
+                return $m->render(file_get_contents($view), $data);
             default:
                 throw new RestException(500, "Unsupported template system `$extension`");
         }
