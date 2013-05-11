@@ -831,12 +831,10 @@ class Restler extends EventEmitter
      */
     protected function getPath()
     {
-        $fullPath = $_SERVER['REQUEST_URI'];
-        $path = urldecode(
-            Util::removeCommonPath(
-                $fullPath,
-                $_SERVER['SCRIPT_NAME']
-            )
+        $fullPath = urldecode($_SERVER['REQUEST_URI']);
+        $path = Util::removeCommonPath(
+            $fullPath,
+            $_SERVER['SCRIPT_NAME']
         );
         $baseUrl = isset($_SERVER['HTTPS']) &&
             $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
