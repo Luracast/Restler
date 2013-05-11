@@ -47,7 +47,7 @@ function parse_backtrace($raw, $skip = 1)
 //print_r(get_defined_vars());
 //print_r($response);
 if (isset($info)) {
-    $arguments = implode(', ', $info->arguments);
+    $arguments = implode(', ', $info->parameters);
     $title = "{$info->className}::"
         . "{$info->methodName}({$arguments})";
 } else {
