@@ -539,21 +539,43 @@ class Resources implements iUseAuthentication
     private function _model($className, $instance = null)
     {
         $properties = array();
+        $reflectionClass = new \ReflectionClass($className);
+
         if (!$instance) {
             $instance = new $className();
         }
         $data = get_object_vars($instance);
-        //TODO: parse the comments of properties, use it for type, description
-        foreach ($data as $key => $value) {
 
-            $type = $this->getType($value, true);
+        foreach ($data as $key => $value) {
+            $propertyMetaData = null;
+
+            $property = $reflectionClass->getProperty($key);
+
+            if ($c = $property->getDocComment()) {
+                $propertyMetaData = CommentParser::parse($c);
+            }
+
+            if ($propertyMetaData !== null) {
+                $type = $propertyMetaData['var'];
+                $description = @$propertyMetaData['description'] ?: '';
+
+                if (class_exists($type)) {
+                    $this->_model($type);
+                }
+            } else {
+                $type = $this->getType($value, true);
+                $description = '';
+            }
+
             if (isset(static::$dataTypeAlias[$type])) {
                 $type = static::$dataTypeAlias[$type];
             }
+
             $properties[$key] = array(
                 'type' => $type,
-                /*'description' => '' */ //TODO: add description
+                'description' => $description
             );
+
             if ($type == 'Array') {
                 $itemType = count($value)
                     ? $this->getType($value[0], true)
@@ -564,6 +586,7 @@ class Resources implements iUseAuthentication
                 );
             }
         }
+
         if (!empty($properties)) {
             $id = $this->_noNamespace($className);
             $model = new stdClass();
