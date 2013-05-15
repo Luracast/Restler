@@ -608,7 +608,11 @@ class Resources implements iUseAuthentication
 
     private function _noNamespace($className)
     {
-        $className = explode('\\', $className);
+		if (strpos($className, '\\') === false and strpos($className, '_') !== false) {
+			$className = explode('_', $className);
+		} else {
+			$className = explode('\\', $className);
+		}
         return end($className);
     }
 }
