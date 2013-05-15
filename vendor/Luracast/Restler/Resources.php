@@ -549,14 +549,16 @@ class Resources implements iUseAuthentication
         foreach ($data as $key => $value) {
             $propertyMetaData = null;
 
-            $property = $reflectionClass->getProperty($key);
+			try {
+				$property = $reflectionClass->getProperty($key);
 
-            if ($c = $property->getDocComment()) {
-                $propertyMetaData = CommentParser::parse($c);
-            }
+				if ($c = $property->getDocComment()) {
+					$propertyMetaData = CommentParser::parse($c);
+				}
+			} catch (\ReflectionException $e) {}
 
             if ($propertyMetaData !== null) {
-                $type = $propertyMetaData['var'];
+                $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
                 $description = @$propertyMetaData['description'] ?: '';
 
                 if (class_exists($type)) {
@@ -584,7 +586,15 @@ class Resources implements iUseAuthentication
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
-            }
+            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+				$itemType = $matches[1];
+				$properties[$key]['type'] = 'Array';
+				$properties[$key]['item']['type'] = $itemType;
+
+				if (class_exists($itemType)) {
+					$this->_model($itemType);
+				}
+			}
         }
 
         if (!empty($properties)) {
