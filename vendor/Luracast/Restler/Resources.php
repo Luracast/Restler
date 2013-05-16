@@ -199,6 +199,7 @@ class Resources implements iUseAuthentication
 
 				$nickname = strtolower($httpMethod) . join('', array_map('ucfirst', $partsWithoutVariables));
 
+				// Add "List", "Set" or "Array" to the method, so the nick is "getUserList" for example
 				if (isset($m['return']['type']) and is_string($m['return']['type'])) {
 					if (preg_match('/^(set|list|array)/i', $m['return']['type'], $matches)) {
 						$nickname .= ucfirst($matches[1]);
