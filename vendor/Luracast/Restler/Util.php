@@ -38,6 +38,9 @@ class Util
 
         //Cache classes
         'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
+
+        //Utility classes
+        'Object' => 'Luracast\\Restler\\Data\\Object',
     );
 
     /**
