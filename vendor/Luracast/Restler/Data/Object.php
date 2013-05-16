@@ -13,7 +13,7 @@ namespace Luracast\Restler\Data;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-class Util
+class Object
 {
     /**
      * @var bool|string|callable
