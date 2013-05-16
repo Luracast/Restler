@@ -158,7 +158,7 @@ class AutoLoader
 
             $paths = array_filter(array_map(
                 function ($path) {
-                    if (false == $realPath = realpath($path))
+                    if (false == $realPath = @realpath($path))
                         return null;
                     return $realPath . DIRECTORY_SEPARATOR;
                 },
