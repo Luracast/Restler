@@ -14,7 +14,7 @@ namespace Luracast\Restler\Format;
  * @version    3.0.0rc4
  */
 use Symfony\Component\Yaml\Yaml;
-use Luracast\Restler\Data\Util;
+use Luracast\Restler\Data\Object;
 
 class YamlFormat extends Format
 {
@@ -24,7 +24,7 @@ class YamlFormat extends Format
     public function encode($data, $humanReadable = false)
     {
 //      require_once 'sfyaml.php';
-        return @Yaml::dump(Util::objectToArray($data));
+        return @Yaml::dump(Object::toArray($data));
     }
 
     public function decode($data)
