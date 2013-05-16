@@ -189,10 +189,30 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = preg_replace(
-                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
-                    array('_', '-'),
-                    implode('-', $parts));
+
+				$nicknameParts = $parts;
+				array_shift($nicknameParts);
+
+				$partsWithoutVariables = array_filter($nicknameParts, function($part) {
+					return substr($part, 0, 1) !== '{';
+				});
+
+				$nickname = strtolower($httpMethod) . join('', array_map('ucfirst', $partsWithoutVariables));
+
+				if (isset($m['return']['type']) and is_string($m['return']['type'])) {
+					if (preg_match('/^(set|list|array)/i', $m['return']['type'], $matches)) {
+						$nickname .= ucfirst($matches[1]);
+					}
+				}
+
+				$variables = array_diff($nicknameParts, $partsWithoutVariables);
+
+				if ($variables) {
+					$nickname .= "By" . join("And", array_map(function($part) {
+						return ucfirst(str_replace(array('{', '}'), '', $part));
+					}, $variables));
+				}
+
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
