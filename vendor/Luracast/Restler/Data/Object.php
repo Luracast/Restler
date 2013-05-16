@@ -40,7 +40,7 @@ class Object
      *
      * @return array
      */
-    public static function objectToArray($object,
+    public static function toArray($object,
                                          $forceObjectTypeWhenEmpty = false)
     {
         //if ($object instanceof JsonSerializable) { //wont work on PHP < 5.4
@@ -51,7 +51,7 @@ class Object
                 $properties = $object->__sleep();
                 $array = array();
                 foreach ($properties as $key) {
-                    $value = self::objectToArray($object->{$key},
+                    $value = self::toArray($object->{$key},
                         $forceObjectTypeWhenEmpty);
                     if (self::$stringEncoderFunction && is_string($value)) {
                         $value = self::$stringEncoderFunction ($value);
@@ -68,7 +68,7 @@ class Object
             $count = 0;
             $array = array();
             foreach ($object as $key => $value) {
-                $value = self::objectToArray($value, $forceObjectTypeWhenEmpty);
+                $value = self::toArray($value, $forceObjectTypeWhenEmpty);
                 if (self::$stringEncoderFunction && is_string($value)) {
                     $value = self::$encoderFunctionName ($value);
                 } elseif (self::$numberEncoderFunction && is_numeric($value)) {
