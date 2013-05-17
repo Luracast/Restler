@@ -1,8 +1,6 @@
 <?php
 namespace Luracast\Restler\Data;
 
-use Luracast\Restler\Util;
-
 /**
  * ValueObject for api method info. All needed information about a api method
  * is stored here
