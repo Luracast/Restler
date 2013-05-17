@@ -146,7 +146,7 @@ class Defaults
      */
     public static $crossOriginResourceSharing = false;
     public static $accessControlAllowOrigin = '*';
-    public static $allowStarAsOrigin = true;
+    public static $allowStarAsOrigin = false;
     public static $accessControlAllowMethods =
         'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
 
