@@ -702,13 +702,12 @@ class Restler extends EventEmitter
         @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
 
         if (Defaults::$crossOriginResourceSharing
-            && isset($_SERVER['HTTP_ORIGIN'])
+            && (isset($_SERVER['HTTP_ORIGIN']) || Defaults::$allowStarAsOrigin)
         ) {
-            header('Access-Control-Allow-Origin: ' .
-                    (Defaults::$accessControlAllowOrigin == '*'
-                        ? $_SERVER['HTTP_ORIGIN']
-                        : Defaults::$accessControlAllowOrigin)
-            );
+    		$origin = (Defaults::$accessControlAllowOrigin == '*' && !Defaults::$allowStarAsOrigin
+				? $_SERVER['HTTP_ORIGIN']
+				: Defaults::$accessControlAllowOrigin);
+			header('Access-Control-Allow-Origin: ' . $origin);
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Max-Age: 86400');
         }
