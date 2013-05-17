@@ -200,17 +200,17 @@ class Resources implements iUseAuthentication
                     $m['description'] = $this->restler->_productionMode
                         ? ''
                         : 'routes to <mark>'
-                            . $route['className']
-                            . '::'
-                            . $route['methodName'] . '();</mark>';
+                        . $route['className']
+                        . '::'
+                        . $route['methodName'] . '();</mark>';
                 }
                 if (empty($m['longDescription'])) {
                     $m['longDescription'] = $this->restler->_productionMode
                         ? ''
                         : 'Add PHPDoc long description to '
-                            . "<mark>$className::"
-                            . $route['methodName'] . '();</mark>'
-                            . '  (the api method) to write here';
+                        . "<mark>$className::"
+                        . $route['methodName'] . '();</mark>'
+                        . '  (the api method) to write here';
                 }
                 $operation = $this->_operation(
                     $nickname,
@@ -348,7 +348,7 @@ class Resources implements iUseAuthentication
             : ($this->restler->_productionMode
                 ? ''
                 : 'add <mark>@param {type} $' . $r->name
-                    . ' {comment}</mark> to describe here');
+                . ' {comment}</mark> to describe here');
         //paramType can be path or query or body or header
         $r->paramType = isset($param['from']) ? $param['from'] : 'query';
         $r->required = isset($param['required']) && $param['required'];
@@ -432,20 +432,42 @@ class Resources implements iUseAuthentication
     private function _model($className, $instance = null)
     {
         $properties = array();
+        $reflectionClass = new \ReflectionClass($className);
         if (!$instance) {
             $instance = new $className();
         }
         $data = get_object_vars($instance);
-        //TODO: parse the comments of properties, use it for type, description
         foreach ($data as $key => $value) {
 
-            $type = $this->getType($value, true);
+            $propertyMetaData = null;
+
+            try {
+                $property = $reflectionClass->getProperty($key);
+
+                if ($c = $property->getDocComment()) {
+                    $propertyMetaData = CommentParser::parse($c);
+                }
+            } catch (\ReflectionException $e) {
+            }
+
+            if ($propertyMetaData !== null) {
+                $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
+                $description = @$propertyMetaData['description'] ? : '';
+
+                if (class_exists($type)) {
+                    $this->_model($type);
+                }
+            } else {
+                $type = $this->getType($value, true);
+                $description = '';
+            }
+
             if (isset(static::$dataTypeAlias[$type])) {
                 $type = static::$dataTypeAlias[$type];
             }
             $properties[$key] = array(
                 'type' => $type,
-                /*'description' => '' */ //TODO: add description
+                'description' => $description
             );
             if ($type == 'Array') {
                 $itemType = count($value)
@@ -455,6 +477,14 @@ class Resources implements iUseAuthentication
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
+            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+                $itemType = $matches[1];
+                $properties[$key]['type'] = 'Array';
+                $properties[$key]['item']['type'] = $itemType;
+
+                if (class_exists($itemType)) {
+                    $this->_model($itemType);
+                }
             }
         }
         if (!empty($properties)) {
