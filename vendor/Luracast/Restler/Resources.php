@@ -64,6 +64,7 @@ class Resources implements iUseAuthentication
         'object' => 'Object',
         'stdClass' => 'Object',
         'mixed' => 'string',
+		'DateTime' => 'Date'
     );
 
     /**
@@ -189,10 +190,31 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = preg_replace(
-                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
-                    array('_', '-'),
-                    implode('-', $parts));
+
+				$nicknameParts = $parts;
+				array_shift($nicknameParts);
+
+				$partsWithoutVariables = array_filter($nicknameParts, function($part) {
+					return substr($part, 0, 1) !== '{';
+				});
+
+				$nickname = strtolower($httpMethod) . join('', array_map('ucfirst', $partsWithoutVariables));
+
+				// Add "List", "Set" or "Array" to the method, so the nick is "getUserList" for example
+				if (isset($m['return']['type']) and is_string($m['return']['type'])) {
+					if (preg_match('/^(set|list|array)/i', $m['return']['type'], $matches)) {
+						$nickname .= ucfirst($matches[1]);
+					}
+				}
+
+				$variables = array_diff($nicknameParts, $partsWithoutVariables);
+
+				if ($variables) {
+					$nickname .= "By" . join("And", array_map(function($part) {
+						return ucfirst(str_replace(array('{', '}'), '', $part));
+					}, $variables));
+				}
+
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
@@ -255,9 +277,16 @@ class Resources implements iUseAuthentication
                             $this->_model($responseClass);
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
-                        } elseif (strtolower($responseClass) == 'array') {
-                            $operation->responseClass = 'Array';
+                        } elseif (preg_match('/^(set|array|list)/i', $responseClass, $matches)) {
+                            $operation->responseClass = ucfirst($matches[1]);
                             $rt = $m['return'];
+
+							if (preg_match('/^(?:set|array|list)\[(.+)\]$/i', $responseClass, $matches)) {
+								$itemClass = $matches[1];
+								$this->_model($itemClass);
+								$operation->responseClass .= '[' . $this->_noNamespace($itemClass) . ']';
+							}
+
                             if (isset(
                             $rt[CommentParser::$embeddedDataName]['type'])
                             ) {
@@ -268,7 +297,6 @@ class Resources implements iUseAuthentication
                                     $operation->responseClass .= '[' .
                                         $this->_noNamespace($rt) . ']';
                                 }
-
                             }
                         }
                     }
@@ -561,9 +589,16 @@ class Resources implements iUseAuthentication
                 $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
                 $description = @$propertyMetaData['description'] ?: '';
 
+				$type = explode(" ", $type);
+				$type = array_shift($type);
+
                 if (class_exists($type)) {
                     $this->_model($type);
                 }
+
+				if (class_exists($type)) {
+					$type = $this->_noNamespace($type);
+				}
             } else {
                 $type = $this->getType($value, true);
                 $description = '';
@@ -582,14 +617,14 @@ class Resources implements iUseAuthentication
                 $itemType = count($value)
                     ? $this->getType($value[0], true)
                     : 'string';
-                $properties[$key]['item'] = array(
+                $properties[$key]['items'] = array(
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
-            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+            } else if (preg_match('/^(?:set|array|list)\[(.+)\]$/i', $type, $matches)) {
 				$itemType = $matches[1];
 				$properties[$key]['type'] = 'Array';
-				$properties[$key]['item']['type'] = $itemType;
+				$properties[$key]['items']['type'] = $itemType;
 
 				if (class_exists($itemType)) {
 					$this->_model($itemType);
@@ -608,7 +643,7 @@ class Resources implements iUseAuthentication
 
     private function _noNamespace($className)
     {
-		if (strpos($className, '\\') === false and strpos($className, '_') !== false) {
+		if ((strpos($className, '\\') === false or strpos($className, '\\', 0) === 0) and strpos($className, '_') !== false) {
 			$className = explode('_', $className);
 		} else {
 			$className = explode('\\', $className);

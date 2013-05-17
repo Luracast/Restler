@@ -408,6 +408,7 @@ class CommentParser
             'type' => count($data) == 1 ? $data[0] : $data
         );
         $r['description'] = implode(' ', $value);
+
         return $r;
     }
 
