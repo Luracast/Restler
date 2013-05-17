@@ -82,6 +82,32 @@ class Validator implements iValidate
                     return $r;
                 }
                 break;
+            case 'date' :
+                if (
+                    preg_match('#^(?P<year>\d{2}|\d{4})([- /.])(?P<month>\d{1,2})\2(?P<day>\d{1,2})$#', $input, $date)
+                    && checkdate($date['month'], $date['day'], $date['year'])
+                ) {
+                    return $input;
+                }
+                break;
+            case 'datetime' :
+                if (
+                    preg_match('/^(?<year>19\d\d|20\d\d)\-(?<month>0[1-9]|1[0-2])\-' .
+                        '(?<day>0\d|[1-2]\d|3[0-1]) (?<h>0\d|1\d|2[0-3]' .
+                        ')\:(?<i>[0-5][0-9])\:(?<s>[0-5][0-9])$/',
+                        $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
+                )
+                    return $input;
+                break;
+            case 'timestamp' :
+                if (
+                    (string)(int)$input === $input &&
+                    ($input <= PHP_INT_MAX) &&
+                    ($input >= ~PHP_INT_MAX)
+                ) {
+                    return (int) $input;
+                }
+                break;
             case 'int' :
             case 'float' :
             case 'number' :
