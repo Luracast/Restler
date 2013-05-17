@@ -36,18 +36,18 @@ Footer:
 *[Author.php]: _009_rate_limiting/Author.php
 */
 
+use Luracast\Restler\Defaults;
+use Luracast\Restler\Filter\RateLimit;
+use Luracast\Restler\Restler;
+
 require_once '../../../vendor/restler.php';
 //reuse the SessionDB from CRUD Example
 require_once '../_007_crud/DB/Session.php';
-use Luracast\Restler\Restler;
-use Luracast\Restler\Defaults;
-use Luracast\Restler\Filter\RateLimit;
 
 //used only for demo, comment the following line
 Defaults::$cacheClass = 'SessionCache';
 //set extreme value for quick testing
-RateLimit::$usagePerUnit = 10;
-RateLimit::setLimit('seconds',1);
+RateLimit::setLimit('hour', 10);
 
 $r = new Restler();
 
