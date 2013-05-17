@@ -539,21 +539,45 @@ class Resources implements iUseAuthentication
     private function _model($className, $instance = null)
     {
         $properties = array();
+        $reflectionClass = new \ReflectionClass($className);
+
         if (!$instance) {
             $instance = new $className();
         }
         $data = get_object_vars($instance);
-        //TODO: parse the comments of properties, use it for type, description
-        foreach ($data as $key => $value) {
 
-            $type = $this->getType($value, true);
+        foreach ($data as $key => $value) {
+            $propertyMetaData = null;
+
+			try {
+				$property = $reflectionClass->getProperty($key);
+
+				if ($c = $property->getDocComment()) {
+					$propertyMetaData = CommentParser::parse($c);
+				}
+			} catch (\ReflectionException $e) {}
+
+            if ($propertyMetaData !== null) {
+                $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
+                $description = @$propertyMetaData['description'] ?: '';
+
+                if (class_exists($type)) {
+                    $this->_model($type);
+                }
+            } else {
+                $type = $this->getType($value, true);
+                $description = '';
+            }
+
             if (isset(static::$dataTypeAlias[$type])) {
                 $type = static::$dataTypeAlias[$type];
             }
+
             $properties[$key] = array(
                 'type' => $type,
-                /*'description' => '' */ //TODO: add description
+                'description' => $description
             );
+
             if ($type == 'Array') {
                 $itemType = count($value)
                     ? $this->getType($value[0], true)
@@ -562,8 +586,17 @@ class Resources implements iUseAuthentication
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
-            }
+            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+				$itemType = $matches[1];
+				$properties[$key]['type'] = 'Array';
+				$properties[$key]['item']['type'] = $itemType;
+
+				if (class_exists($itemType)) {
+					$this->_model($itemType);
+				}
+			}
         }
+
         if (!empty($properties)) {
             $id = $this->_noNamespace($className);
             $model = new stdClass();
@@ -575,7 +608,11 @@ class Resources implements iUseAuthentication
 
     private function _noNamespace($className)
     {
-        $className = explode('\\', $className);
+		if (strpos($className, '\\') === false and strpos($className, '_') !== false) {
+			$className = explode('_', $className);
+		} else {
+			$className = explode('\\', $className);
+		}
         return end($className);
     }
 }

@@ -16,8 +16,8 @@ vendor/symfony
 vendor/mustache
 vendor/zendframework
 vendor/rodneyrehm
+vendor/twig
 .idea
 tag.sh
-bin/*
-build/*
+bin
 build
