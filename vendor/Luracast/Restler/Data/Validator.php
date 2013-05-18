@@ -21,16 +21,16 @@ class Validator implements iValidate
     public static function validate($input, ValidationInfo $info)
     {
         if (is_null($input)) {
-            if($info->required){
+            if ($info->required) {
                 throw new RestException (400,
-                    "$info->name is missing.");
+                    "`$info->name` is required but missing.");
             }
             return null;
         }
 
         $error = isset ($info->rules ['message'])
             ? $info->rules ['message']
-            : "invalid value specified for $info->name";
+            : "invalid value specified for `$info->name`";
 
         //if a validation method is specified
         if (!empty($info->method)) {
@@ -81,6 +81,7 @@ class Validator implements iValidate
                 if ($r) {
                     return $r;
                 }
+                $error .= ". Expecting email such as name@example.com";
                 break;
             case 'date' :
                 if (
@@ -89,6 +90,7 @@ class Validator implements iValidate
                 ) {
                     return $input;
                 }
+                $error .= ". Expecting date in YYYY-MM-DD format. Example " . date("Y-m-d");
                 break;
             case 'datetime' :
                 if (
@@ -98,6 +100,7 @@ class Validator implements iValidate
                         $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
                 )
                     return $input;
+                $error .= ". Expecting date and time in YYYY-MM-DD HH:MM:SS format. Example " . date("Y-m-d g:i:s");
                 break;
             case 'timestamp' :
                 if (
@@ -105,13 +108,15 @@ class Validator implements iValidate
                     ($input <= PHP_INT_MAX) &&
                     ($input >= ~PHP_INT_MAX)
                 ) {
-                    return (int) $input;
+                    return (int)$input;
                 }
+                $error .= ". Expecting unix timestamp. Example " . time();
                 break;
             case 'int' :
             case 'float' :
             case 'number' :
                 if (!is_numeric($input)) {
+                    $error .= ". Expecting numeric value";
                     break;
                 }
                 $r = $info->numericValue($input);
@@ -119,6 +124,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $r = $info->min;
                     } else {
+                        $error .= ". Value is too low";
                         break;
                     }
                 }
@@ -126,6 +132,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $r = $info->max;
                     } else {
+                        $error .= ". Value is too high";
                         break;
                     }
                 }
@@ -139,6 +146,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $input = str_pad($input, $info->min, $input);
                     } else {
+                        $error .= ". String is too short";
                         break;
                     }
                 }
@@ -146,6 +154,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $input = substr($input, 0, $info->max);
                     } else {
+                        $error .= ". String is too long";
                         break;
                     }
                 }
