@@ -1,7 +1,7 @@
 <?php
 namespace Luracast\Restler\Format;
 
-use Luracast\Restler\Data\Util as DataUtil;
+use Luracast\Restler\Data\Object;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
@@ -9,8 +9,8 @@ use Luracast\Restler\Util;
 
 class HtmlFormat extends Format
 {
-    const MIME = 'text/html';
-    const EXTENSION = 'html';
+    public static $mime = 'text/html';
+    public static $extension = 'html';
     public static $view = 'debug';
     public static $format = 'php';
     /**
@@ -36,7 +36,7 @@ class HtmlFormat extends Format
             if (!is_readable(static::$viewPath)) {
                 throw new \Exception(
                     'The views directory `'
-                        . self::$viewPath . '` should exist with read permission.'
+                    . self::$viewPath . '` should exist with read permission.'
                 );
             }
         }
@@ -47,21 +47,22 @@ class HtmlFormat extends Format
     /**
      * Encode the given data in the format
      *
-     * @param array   $data           resulting data that needs to
-     *                                be encoded in the given format
-     * @param boolean $humanReadable  set to TRUE when restler
-     *                                is not running in production mode.
-     *                                Formatter has to make the encoded output
-     *                                more human readable
+     * @param array   $data              resulting data that needs to
+     *                                   be encoded in the given format
+     * @param boolean $humanReadable     set to TRUE when restler
+     *                                   is not running in production mode.
+     *                                   Formatter has to make the encoded
+     *                                   output more human readable
      *
+     * @throws \Luracast\Restler\RestException
      * @return string encoded string
      */
     public function encode($data, $humanReadable = false)
     {
 
         $data = array(
-            'response' => DataUtil::objectToArray($data)
-        ) + static::$data;
+                'response' => Object::toArray($data)
+            ) + static::$data;
         $params = array();
         //print_r($this->restler);
         if (isset($this->restler->apiMethodInfo->metadata)) {
@@ -91,7 +92,10 @@ class HtmlFormat extends Format
                     self::$view;
 
                 if (!is_readable($view)) {
-                    throw new RestException(500, "view file `$view` is not readable. Check for file presence and file permissions ");
+                    throw new RestException(
+                        500,
+                        "view file `$view` is not readable. Check for file presence and file permissions"
+                    );
                 }
 
                 $template = function ($view) use ($data) {
@@ -133,5 +137,50 @@ class HtmlFormat extends Format
     public function decode($data)
     {
         throw new RestException(500, 'HtmlFormat is write only');
+    }
+
+    /**
+     * Get MIME type => Extension mappings as an associative array
+     *
+     * @return array list of mime strings for the format
+     * @example array('application/json'=>'json');
+     */
+    public function getMIMEMap()
+    {
+        return array(
+            static::$mime => static::$extension
+        );
+    }
+
+    /**
+     * Set the selected MIME type
+     *
+     * @param string $mime
+     *            MIME type
+     */
+    public function setMIME($mime)
+    {
+        static::$mime = $mime;
+    }
+
+    /**
+     * Get the selected file extension
+     *
+     * @return string file extension
+     */
+    public function getExtension()
+    {
+        return static::$extension;
+    }
+
+    /**
+     * Set the selected file extension
+     *
+     * @param string $extension
+     *            file extension
+     */
+    public function setExtension($extension)
+    {
+        static::$extension = $extension;
     }
 }
