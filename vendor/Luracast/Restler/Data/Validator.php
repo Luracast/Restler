@@ -81,7 +81,7 @@ class Validator implements iValidate
                 if ($r) {
                     return $r;
                 }
-                $error .= ". Expecting email such as name@example.com";
+                $error .= '. Expecting email in `name@example.com` format';
                 break;
             case 'date' :
                 if (
@@ -90,7 +90,8 @@ class Validator implements iValidate
                 ) {
                     return $input;
                 }
-                $error .= ". Expecting date in YYYY-MM-DD format. Example " . date("Y-m-d");
+                $error .= '. Expecting date in `YYYY-MM-DD` format, such as `'
+                    . date("Y-m-d") . '`';
                 break;
             case 'datetime' :
                 if (
@@ -100,7 +101,8 @@ class Validator implements iValidate
                         $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
                 )
                     return $input;
-                $error .= ". Expecting date and time in YYYY-MM-DD HH:MM:SS format. Example " . date("Y-m-d g:i:s");
+                $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as '
+                    . date("Y-m-d g:i:s") . '`';
                 break;
             case 'timestamp' :
                 if (
@@ -110,13 +112,13 @@ class Validator implements iValidate
                 ) {
                     return (int)$input;
                 }
-                $error .= ". Expecting unix timestamp. Example " . time();
+                $error .= '. Expecting unix timestamp, such as ' . time();
                 break;
             case 'int' :
             case 'float' :
             case 'number' :
                 if (!is_numeric($input)) {
-                    $error .= ". Expecting numeric value";
+                    $error .= '. Expecting numeric value';
                     break;
                 }
                 $r = $info->numericValue($input);
@@ -124,7 +126,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $r = $info->min;
                     } else {
-                        $error .= ". Value is too low";
+                        $error .= '. Given value is too low';
                         break;
                     }
                 }
@@ -132,7 +134,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $r = $info->max;
                     } else {
-                        $error .= ". Value is too high";
+                        $error .= '. Given value is too high';
                         break;
                     }
                 }
@@ -146,7 +148,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $input = str_pad($input, $info->min, $input);
                     } else {
-                        $error .= ". String is too short";
+                        $error .= '. Given string is too short';
                         break;
                     }
                 }
@@ -154,7 +156,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $input = substr($input, 0, $info->max);
                     } else {
-                        $error .= ". String is too long";
+                        $error .= '. Given string is too long';
                         break;
                     }
                 }
