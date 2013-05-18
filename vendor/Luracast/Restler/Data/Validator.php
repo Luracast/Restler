@@ -101,7 +101,7 @@ class Validator implements iValidate
                         $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
                 )
                     return $input;
-                $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as '
+                $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
                     . date("Y-m-d g:i:s") . '`';
                 break;
             case 'timestamp' :
