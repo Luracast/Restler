@@ -102,7 +102,7 @@ class Validator implements iValidate
                 )
                     return $input;
                 $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
-                    . date("Y-m-d g:i:s") . '`';
+                    . date("Y-m-d H:i:s") . '`';
                 break;
             case 'timestamp' :
                 if (
