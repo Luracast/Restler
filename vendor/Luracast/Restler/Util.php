@@ -17,7 +17,6 @@ class Util
      * @var Restler instance injected at runtime
      */
     public static $restler;
-
     public static $classAliases = array(
 
         //Format classes
@@ -176,9 +175,9 @@ class Util
      *
      * @static
      *
-     * @param string      $classNameOrInstance name or instance of the class
+     * @param string $classNameOrInstance      name or instance of the class
      *                                         to apply properties to
-     * @param array       $metadata            properties as key value pairs
+     * @param array  $metadata                 properties as key value pairs
      *
      * @throws RestException
      * @internal param null|object $instance new instance is crated if set to null
@@ -192,7 +191,7 @@ class Util
             $instance->restler = self::$restler;
             $className = get_class($instance);
         } else {
-            $className = $classNameOrInstance;
+            $className = ltrim($classNameOrInstance, '\\');
             if (isset(self::$classAliases[$classNameOrInstance])) {
                 $classNameOrInstance = self::$classAliases[$classNameOrInstance];
             }
@@ -202,12 +201,15 @@ class Util
             $instance = new $classNameOrInstance();
             $instance->restler = self::$restler;
         }
-        if (
-            isset($metadata['class'][$className]
-            [CommentParser::$embeddedDataName])
-        ) {
-            $properties = $metadata['class'][$className]
-            [CommentParser::$embeddedDataName];
+        $shortName = static::getShortName($className);
+        $properties = null;
+        if (isset($metadata['class'][$className][CommentParser::$embeddedDataName])) {
+            $properties = $metadata['class'][$className][CommentParser::$embeddedDataName];
+
+        } elseif (isset($metadata['class'][$shortName][CommentParser::$embeddedDataName])) {
+            $properties = $metadata['class'][$shortName][CommentParser::$embeddedDataName];
+        }
+        if (isset($properties)) {
 
             $objectVars = get_object_vars($instance);
 
@@ -222,13 +224,18 @@ class Util
                 }
             }
         }
-
         if ($instance instanceof iUseAuthentication) {
             $instance->__setAuthenticationStatus
                 (self::$restler->_authenticated);
         }
 
         return $instance;
+    }
+
+    public static function getShortName($className)
+    {
+        $className = explode('\\', $className);
+        return end($className);
     }
 }
 
