@@ -665,15 +665,10 @@ class Restler extends EventEmitter
     }
 
     /**
-     * Encodes the response in the preferred format and sends back.
-     *
-     * @param mixed       $data array or scalar value or iValueObject or null
-     * @param int         $statusCode
-     * @param string|null $statusMessage
+     * Set Response Headers
      */
-    public function sendData($data, $statusCode = 0, $statusMessage = null)
+    public function setHeaders()
     {
-        //$this->log []= ob_get_clean ();
         //only GET method should be cached if allowed by API developer
         $expires = $this->requestMethod == 'GET' ? Defaults::$headerExpires : 0;
         $cacheControl = Defaults::$headerCacheControl[0];
@@ -692,9 +687,9 @@ class Restler extends EventEmitter
             && isset($_SERVER['HTTP_ORIGIN'])
         ) {
             header('Access-Control-Allow-Origin: ' .
-                    (Defaults::$accessControlAllowOrigin == '*'
-                        ? $_SERVER['HTTP_ORIGIN']
-                        : Defaults::$accessControlAllowOrigin)
+                (Defaults::$accessControlAllowOrigin == '*'
+                    ? $_SERVER['HTTP_ORIGIN']
+                    : Defaults::$accessControlAllowOrigin)
             );
             header('Access-Control-Allow-Credentials: true');
             header('Access-Control-Max-Age: 86400');
@@ -704,6 +699,19 @@ class Restler extends EventEmitter
             foreach ($this->apiMethodInfo->metadata['header'] as $header)
                 @header($header, true);
         }
+    }
+
+    /**
+     * Encodes the response in the preferred format and sends back.
+     *
+     * @param mixed       $data array or scalar value or iValueObject or null
+     * @param int         $statusCode
+     * @param string|null $statusMessage
+     */
+    public function sendData($data, $statusCode = 0, $statusMessage = null)
+    {
+        //$this->log []= ob_get_clean ();
+        $this->setHeaders();
 
         /**
          *
