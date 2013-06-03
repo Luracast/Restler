@@ -249,8 +249,6 @@ class Resources implements iUseAuthentication
                     $operation->parameters[] = $this->_getBody();
                 }
                 if (isset($m['return']['type'])) {
-					\Debug_Logger::debug("Return: ", $m['return']);
-
                     $responseClass = $m['return']['type'];
                     if (is_string($responseClass)) {
                         if (class_exists($responseClass)) {
