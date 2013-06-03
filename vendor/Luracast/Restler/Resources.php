@@ -64,6 +64,7 @@ class Resources implements iUseAuthentication
         'object' => 'Object',
         'stdClass' => 'Object',
         'mixed' => 'string',
+		'DateTime' => 'Date'
     );
 
     /**
@@ -560,6 +561,9 @@ class Resources implements iUseAuthentication
             if ($propertyMetaData !== null) {
                 $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
                 $description = @$propertyMetaData['description'] ?: '';
+
+				$type = explode(" ", $type);
+				$type = array_shift($type);
 
                 if (class_exists($type)) {
                     $this->_model($type);
