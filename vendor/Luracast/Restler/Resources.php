@@ -190,10 +190,9 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = preg_replace(
-                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
-                    array('_', '-'),
-                    implode('-', $parts));
+
+				$nickname = $this->generateNickname((array) $route);
+
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
@@ -388,6 +387,11 @@ class Resources implements iUseAuthentication
         if (is_numeric($o)) return is_float($o) ? 'float' : 'int';
         return 'string';
     }
+
+	protected function generateNickname(array $route)
+	{
+		return $route['methodName'];
+	}
 
     private function _resourceListing()
     {
