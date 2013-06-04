@@ -2,6 +2,7 @@
 namespace Luracast\Restler;
 
 use stdClass;
+use Luracast\Restler\Util\TypeParser;
 
 /**
  * API Class to create Swagger Spec 1.1 compatible id and operation
@@ -256,21 +257,21 @@ class Resources implements iUseAuthentication
                             $this->_model($responseClass);
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
-                        } elseif (strtolower($responseClass) == 'array') {
-                            $operation->responseClass = 'Array';
-                            $rt = $m['return'];
-                            if (isset(
-                            $rt[CommentParser::$embeddedDataName]['type'])
-                            ) {
-                                $rt = $rt[CommentParser::$embeddedDataName]
-                                ['type'];
-                                if (class_exists($rt)) {
-                                    $this->_model($rt);
-                                    $operation->responseClass .= '[' .
-                                        $this->_noNamespace($rt) . ']';
-                                }
+						} elseif (isset($rt[CommentParser::$embeddedDataName]['type'])) {
+							$rt = $rt[CommentParser::$embeddedDataName]['type'];
 
-                            }
+							if (class_exists($rt)) {
+								$this->_model($rt);
+								$operation->responseClass .= '[' .
+									$this->_noNamespace($rt) . ']';
+							}
+                        } elseif ($typeData = TypeParser::parseCollectionType($responseClass)) {
+                            $operation->responseClass = "Array";
+                            $rt = $m['return'];
+							$itemType = $typeData['item']['type'];
+
+							$this->_model($itemType);
+							$operation->responseClass .= sprintf('[%s]', $this->_noNamespace($itemType));
                         }
                     }
                 }
@@ -568,6 +569,10 @@ class Resources implements iUseAuthentication
                 if (class_exists($type)) {
                     $this->_model($type);
                 }
+
+				if (class_exists($type)) {
+					$type = $this->_noNamespace($type);
+				}
             } else {
                 $type = $this->getType($value, true);
                 $description = '';
@@ -586,14 +591,14 @@ class Resources implements iUseAuthentication
                 $itemType = count($value)
                     ? $this->getType($value[0], true)
                     : 'string';
-                $properties[$key]['item'] = array(
+                $properties[$key]['items'] = array(
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
-            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
-				$itemType = $matches[1];
+            } else if ($typeData = TypeParser::parseCollectionType($type)) {
+				$itemType = $typeData['item']['type'];
 				$properties[$key]['type'] = 'Array';
-				$properties[$key]['item']['type'] = $itemType;
+				$properties[$key]['items']['type'] = $itemType;
 
 				if (class_exists($itemType)) {
 					$this->_model($itemType);
@@ -612,7 +617,7 @@ class Resources implements iUseAuthentication
 
     private function _noNamespace($className)
     {
-		if (strpos($className, '\\') === false and strpos($className, '_') !== false) {
+		if ((strpos($className, '\\') === false or strpos($className, '\\', 0) === 0) and strpos($className, '_') !== false) {
 			$className = explode('_', $className);
 		} else {
 			$className = explode('\\', $className);
