@@ -403,10 +403,11 @@ class Restler extends EventEmitter
      *
      * @param int    $statusCode   http error code
      * @param string $errorMessage optional custom error message
+     * @param array  $details      additional details about the error
      *
      * @return null
      */
-    public function handleError($statusCode, $errorMessage = null)
+    public function handleError($statusCode, $errorMessage = null, array $details = array())
     {
         $method = "handle$statusCode";
         $handled = false;
@@ -421,7 +422,7 @@ class Restler extends EventEmitter
             return null;
         if (!isset($this->responseFormat))
             $this->responseFormat = Util::initialize('JsonFormat');
-        $this->sendData(null, $statusCode, $errorMessage);
+        $this->sendData(null, $statusCode, $errorMessage, $details);
     }
 
     /**
@@ -707,15 +708,16 @@ class Restler extends EventEmitter
      * @param mixed       $data array or scalar value or iValueObject or null
      * @param int         $statusCode
      * @param string|null $statusMessage
+     * @param array       $details extra details about the response
      */
-    public function sendData($data, $statusCode = 0, $statusMessage = null)
+    public function sendData($data, $statusCode = 0, $statusMessage = null, array $details = array())
     {
         //$this->log []= ob_get_clean ();
         $this->setHeaders();
 
         /**
          *
-         * @var iRespond DefaultResponder
+         * @var iRespond Default Responder
          */
         $responder = Util::initialize(
             Defaults::$responderClass, isset($this->apiMethodInfo->metadata)
@@ -766,7 +768,7 @@ class Restler extends EventEmitter
             }
             $this->setStatus($statusCode);
             $data = $this->responseFormat->encode(
-                $responder->formatError($statusCode, $message),
+                $responder->formatError($statusCode, $message, $details),
                 !$this->productionMode);
         }
         //handle throttling
