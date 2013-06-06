@@ -71,9 +71,9 @@ class RestException extends Exception
      * @param string      $httpStatusCode http status code
      * @param string|null $errorMessage   error message
      * @param array       $details        any extra detail about the exception
-     * @param Exception   $previous       previous exception if any
+     * @param \Exception   $previous       previous exception if any
      */
-    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
+    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), \Exception $previous = null)
     {
         $this->details = $details;
         parent::__construct($errorMessage, $httpStatusCode, $previous);
