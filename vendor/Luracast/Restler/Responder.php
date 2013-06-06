@@ -28,14 +28,14 @@ class Responder implements iRespond
         return $result;
     }
 
-    public function formatError($statusCode, $message)
+    public function formatError($statusCode, $message, array $details = array())
     {
         //TODO: check Defaults::language and change result accordingly
         return array(
             'error' => array(
                 'code' => $statusCode,
                 'message' => $message
-            )
+            ) + $details
         );
     }
 }
