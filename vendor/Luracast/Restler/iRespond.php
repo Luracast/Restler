@@ -3,6 +3,7 @@ namespace Luracast\Restler;
 
 /**
  * Interface for creating response classes
+ *
  * @category   Framework
  * @package    Restler
  * @subpackage result
@@ -18,8 +19,7 @@ interface iRespond
      * Result of an api call is passed to this method
      * to create a standard structure for the data
      *
-     * @param unknown_type $result
-     *            can be a primitive or array or object
+     * @param mixed $result can be a primitive or array or object
      */
     public function formatResponse($result);
 
@@ -28,8 +28,11 @@ interface iRespond
      * will be called to return the error message
      *
      * @param int    $statusCode
-     * @param String $message
+     * @param string $message
+     * @param array  $details additional details about the error
+     *
+     * @return
      */
-    public function formatError($statusCode, $message);
+    public function formatError($statusCode, $message, array $details = array());
 }
 
