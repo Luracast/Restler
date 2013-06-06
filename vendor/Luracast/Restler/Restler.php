@@ -585,7 +585,7 @@ class Restler extends EventEmitter
                     }
                 } catch (RestException $e) {
                     if ($accessLevel > 1) { //when it is not a hybrid api
-                        $this->handleError($e->getCode(), $e->getMessage());
+                        $this->handleError($e->getCode(), $e->getMessage(), $e->getDetails());
                     } else {
                         $this->authenticated = false;
                     }
@@ -649,12 +649,12 @@ class Restler extends EventEmitter
                             ), $o->parameters);
                     }
                 } catch (RestException $e) {
-                    $this->handleError($e->getCode(), $e->getMessage());
+                    $this->handleError($e->getCode(), $e->getMessage(), $e->getDetails());
                 }
             }
             $this->sendData($result);
         } catch (RestException $e) {
-            $this->handleError($e->getCode(), $e->getMessage());
+            $this->handleError($e->getCode(), $e->getMessage(), $e->getDetails());
         } catch (\Exception $e) {
             $this->log[] = $e->getMessage();
             if ($this->productionMode) {
