@@ -4,6 +4,7 @@ namespace Luracast\Restler;
 /**
  * Special Exception for raising API errors
  * that can be used in API methods
+ *
  * @category   Framework
  * @package    Restler
  * @subpackage exception
@@ -64,10 +65,28 @@ class RestException extends Exception
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported'
     );
+    private $details;
 
-    public function __construct($httpStatusCode, $errorMessage = null)
+    /**
+     * @param string      $httpStatusCode http status code
+     * @param string|null $errorMessage   error message
+     * @param array       $details        any extra detail about the exception
+     * @param Exception   $previous       previous exception if any
+     */
+    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
     {
-        parent::__construct ( $errorMessage, $httpStatusCode );
+        $this->details = $details;
+        parent::__construct($errorMessage, $httpStatusCode, $previous);
+    }
+
+    /**
+     * Get extra details about the exception
+     *
+     * @return array details array
+     */
+    public function getDetails()
+    {
+        return $this->details;
     }
 }
 
