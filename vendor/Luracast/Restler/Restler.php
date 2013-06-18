@@ -558,30 +558,8 @@ class Restler extends EventEmitter
                 $this->handleError(404);
             } else {
                 try {
-                    $accessLevel = max(Defaults::$apiAccessLevel,
-                        $o->accessLevel);
-                    if ($accessLevel || count($this->filterObjects)) {
-                        if (!count($this->authClasses)) {
-                            throw new RestException(401);
-                        }
-                        foreach ($this->authClasses as $authClass) {
-                            $authObj = Util::initialize(
-                                $authClass, $o->metadata
-                            );
-                            if (!method_exists($authObj,
-                                Defaults::$authenticationMethod)
-                            ) {
-                                throw new RestException (
-                                    500, 'Authentication Class ' .
-                                    'should implement iAuthenticate');
-                            } elseif (
-                                !$authObj->{Defaults::$authenticationMethod}()
-                            ) {
-                                throw new RestException(401);
-                            }
-                        }
-                        $this->authenticated = true;
-                    }
+	                $accessLevel = max(Defaults::$apiAccessLevel, $o->accessLevel);
+	                $this->runAuthentication($o, $accessLevel);
                 } catch (RestException $e) {
                     if ($accessLevel > 1) { //when it is not a hybrid api
                         $this->handleError($e->getCode(), $e->getMessage());
@@ -590,63 +568,7 @@ class Restler extends EventEmitter
                     }
                 }
                 try {
-                    foreach ($this->filterObjects as $filterObj) {
-                        Util::initialize($filterObj, $o->metadata);
-                    }
-                    $preProcess = '_' . $this->requestFormat->getExtension() .
-                        '_' . $o->methodName;
-                    $this->apiMethod = $o->methodName;
-                    $object = $this->apiClassInstance = null;
-                    // TODO:check if the api version requested is allowed by class
-                    if (Defaults::$autoValidationEnabled) {
-                        foreach ($o->metadata['param'] as $index => $param) {
-                            $info = & $param [CommentParser::$embeddedDataName];
-                            if (!isset ($info['validate'])
-                                || $info['validate'] != false
-                            ) {
-                                if (isset($info['method'])) {
-                                    if (!isset($object)) {
-                                        $object = $this->apiClassInstance
-                                            = Util::initialize($o->className);
-                                    }
-                                    $info ['apiClassInstance'] = $object;
-                                }
-                                //convert to instance of ValidationInfo
-                                $info = new ValidationInfo($param);
-                                $valid = Validator::validate(
-                                    $o->parameters[$index], $info);
-                                $o->parameters[$index] = $valid;
-                            }
-                        }
-                    }
-                    if (!isset($object)) {
-                        $object = $this->apiClassInstance
-                            = Util::initialize($o->className);
-                    }
-                    if (method_exists($o->className, $preProcess)) {
-                        call_user_func_array(array(
-                            $object,
-                            $preProcess
-                        ), $o->parameters);
-                    }
-                    switch ($accessLevel) {
-                        case 3 : //protected method
-                            $reflectionMethod = new ReflectionMethod(
-                                $object,
-                                $o->methodName
-                            );
-                            $reflectionMethod->setAccessible(true);
-                            $result = $reflectionMethod->invokeArgs(
-                                $object,
-                                $o->parameters
-                            );
-                            break;
-                        default :
-                            $result = call_user_func_array(array(
-                                $object,
-                                $o->methodName
-                            ), $o->parameters);
-                    }
+                    $result = $this->runApiMethod($o, $accessLevel);
                 } catch (RestException $e) {
                     $this->handleError($e->getCode(), $e->getMessage());
                 }
@@ -663,6 +585,93 @@ class Restler extends EventEmitter
             }
         }
     }
+
+	protected function runAuthentication($o, $accessLevel) {
+		if ($accessLevel || count($this->filterObjects)) {
+			if (!count($this->authClasses)) {
+				throw new RestException(401);
+			}
+			foreach ($this->authClasses as $authClass) {
+				$authObj = Util::initialize(
+					$authClass, $o->metadata
+				);
+				if (!method_exists($authObj,
+					Defaults::$authenticationMethod)
+				) {
+					throw new RestException (
+						500, 'Authentication Class ' .
+						'should implement iAuthenticate');
+				} elseif (
+				!$authObj->{Defaults::$authenticationMethod}()
+				) {
+					throw new RestException(401);
+				}
+			}
+			$this->authenticated = true;
+		}
+	}
+
+	protected function runApiMethod($o, $accessLevel) {
+		foreach ($this->filterObjects as $filterObj) {
+			Util::initialize($filterObj, $o->metadata);
+		}
+		$preProcess = '_' . $this->requestFormat->getExtension() .
+			'_' . $o->methodName;
+		$this->apiMethod = $o->methodName;
+		$object = $this->apiClassInstance = null;
+		// TODO:check if the api version requested is allowed by class
+		if (Defaults::$autoValidationEnabled) {
+			foreach ($o->metadata['param'] as $index => $param) {
+				$info = & $param [CommentParser::$embeddedDataName];
+				if (!isset ($info['validate'])
+					|| $info['validate'] != false
+				) {
+					if (isset($info['method'])) {
+						if (!isset($object)) {
+							$object = $this->apiClassInstance
+								= Util::initialize($o->className);
+						}
+						$info ['apiClassInstance'] = $object;
+					}
+					//convert to instance of ValidationInfo
+					$info = new ValidationInfo($param);
+					$valid = Validator::validate(
+						$o->parameters[$index], $info);
+					$o->parameters[$index] = $valid;
+				}
+			}
+		}
+		if (!isset($object)) {
+			$object = $this->apiClassInstance
+				= Util::initialize($o->className);
+		}
+		if (method_exists($o->className, $preProcess)) {
+			call_user_func_array(array(
+				$object,
+				$preProcess
+			), $o->parameters);
+		}
+		switch ($accessLevel) {
+			case 3 : //protected method
+				$reflectionMethod = new ReflectionMethod(
+					$object,
+					$o->methodName
+				);
+				$reflectionMethod->setAccessible(true);
+				$result = $reflectionMethod->invokeArgs(
+					$object,
+					$o->parameters
+				);
+				break;
+			default :
+				$result = call_user_func_array(array(
+					$object,
+					$o->methodName
+				), $o->parameters);
+		}
+
+		return $result;
+	}
 
     /**
      * Encodes the response in the preferred format and sends back.
