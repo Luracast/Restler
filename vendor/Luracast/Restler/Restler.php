@@ -442,7 +442,7 @@ class Restler extends EventEmitter
     public function init()
     {
         if (Defaults::$crossOriginResourceSharing
-            && $this->requestMethod == 'OPTIONS'
+            && Util::getRequestMethod() == 'OPTIONS'
         ) {
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
                 header('Access-Control-Allow-Methods: '
@@ -451,6 +451,11 @@ class Restler extends EventEmitter
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
                 header('Access-Control-Allow-Headers: '
                     . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+					
+	        header('Access-Control-Allow-Origin: ' .
+	        	(Defaults::$accessControlAllowOrigin == '*' ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin) );
+	       	header('Access-Control-Allow-Credentials: true');
+
             exit(0);
         }
         if (empty($this->formatMap)) {
