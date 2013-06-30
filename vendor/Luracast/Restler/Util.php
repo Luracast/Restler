@@ -224,7 +224,7 @@ class Util
                 }
             }
         }
-        if ($instance instanceof iUseAuthentication) {
+        if ($instance instanceof iUseAuthentication && self::$restler->_authVerified) {
             $instance->__setAuthenticationStatus
                 (self::$restler->_authenticated);
         }
