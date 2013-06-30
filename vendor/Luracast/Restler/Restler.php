@@ -174,6 +174,7 @@ class Restler extends EventEmitter
     protected $log = array();
     protected $startTime;
     protected $authenticated = false;
+    protected $authVerified = false;
 
     // ==================================================================
     //
@@ -590,6 +591,7 @@ class Restler extends EventEmitter
                         $this->authenticated = false;
                     }
                 }
+                $this->authVerified = true;
                 try {
                     foreach ($this->filterObjects as $filterObj) {
                         Util::initialize($filterObj, $o->metadata);
