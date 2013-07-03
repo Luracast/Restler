@@ -10,7 +10,7 @@ Just deal with your business logic in php, restler will take care of the REST!
 
 ### Restler 3 - *Better APIs by Design*
 
-* [Developer Home](http://luracast.com/products/restler/)
+* [Developer Home](http://luracast.com/?page_id=40)
 * [Live Examples](http://bit.ly/Restler3LiveExamples)
 * Updates on [Facebook](https://www.facebook.com/Luracast) and [Twitter](http://twitter.com/Luracast)
 * [Features](#features)
