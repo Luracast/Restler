@@ -151,6 +151,7 @@ project-menu: .title
 	@echo "             tabs2spaces: Turns tabs into 4 spaces properly handling mixed tab/spaces"
 	@echo "          unix-line-ends: Fixes unix line endings"
 	@echo "         trailing_spaces: Removes trailing whitespace"
+	@echo "      single-blank-lines: Removes multiple blank lines adds blank line at end of file"
 	@echo "                        :   CODE CONTENT UTILITIES"
 	@echo "                cs-fixer: Run PHP Coding Standards Fixer to ensure your cs-style is correct"
 	@echo "               codesniff: Run PHP Code Sniffer to generate a report of code analysis"
@@ -176,7 +177,11 @@ package-menu: .title
 	@echo "                          ====================================================================="
 	@echo "       composer-validate: Validate composer.json for syntax and other problems"
 	@echo "        composer-install: Install this project with composer which will create vendor folder"
+	@echo "    composer-install-dev: Install this development project with composer using --dev"
 	@echo "         composer-update: Update an exiting composer instalation and refresh repositories"
+	@echo "                        :    COMPOSER & PACKAGES: use parameter package=vendor/package"
+	@echo " composer-create-project: Create a project from a package into its default directory"
+	@echo "        composer-require: Adds required packages to your composer.json and installs them"
 	@echo "                 install: Install this project and its dependencies in the local PEAR"
 	@echo "                info-php: Show information about your PHP"
 	@echo "              config-php: Locate your PHP configuration file aka. php.ini"
@@ -662,6 +667,20 @@ composer-validate: .check-foundation .check-composer
 composer-install: .check-foundation .check-composer
 	@echo "Running composer install, this will create a vendor folder and configure autoloader."
 	@/usr/bin/env PATH=$$PATH:./.foundation composer install -v
+
+composer-install-dev: .check-foundation .check-composer
+	@echo "Running composer install, this will create a vendor folder and configure autoloader."
+	@/usr/bin/env PATH=$$PATH:./.foundation composer install -v --dev
+
+composer-create-project: .check-foundation .check-composer
+	[[ -z "$(package)" ]] && echo -e "Usage: make composer-require package=vendor/package\n" && exit 11 || true
+	@echo "Running composer create project for package:"
+	@/usr/bin/env PATH=$$PATH:${FOUNDATION_HOME} composer -v create-project "$(package)"
+
+composer-require: .check-foundation .check-composer
+	[[ -z "$(package)" ]] && echo -e "Usage: make composer-require package=vendor/package\n" && exit 1 || true
+	@echo "Running composer require, adding and installing as required package:"
+	@/usr/bin/env PATH=$$PATH:${FOUNDATION_HOME} composer -v require "$(package)"
 
 composer-update: .check-foundation .check-composer
 	@echo "Running composer update, which updates your existing installation."

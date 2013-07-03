@@ -205,7 +205,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>6</small></div>
-<p><a id="routing-x-439xphp----5-3x-440x" class="anchor"></a><h2>Routing <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="routing-x-437xphp----5-3x-438x" class="anchor"></a><h2>Routing <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>routing</tag> <tag>get</tag> <tag>post</tag> <tag>put</tag> <tag>delete</tag> <tag>patch</tag></p>
 
@@ -293,16 +293,6 @@ single method. Comment structure is as shown below</p>
 <pre><code>@url POST custom/path/{var1}/{var2}
 </code></pre>
 
-<p><a id="wildcard-routes" class="anchor"></a><h3>Wildcard Routes</h3></p>
-
-<p>Wildcard routes allows our api methods to receive variable number of parameters
-they are manual routes that end with a star as the last path segment</p>
-
-<p>For example</p>
-
-<pre><code>@url GET custom/path/*
-</code></pre>
-
 <p>Take a look at the api class used here and compare it with the routes below to
 understand.</p>
 
@@ -369,19 +359,6 @@ GET  api/all/*                     ⇠ Api::allIsMine()
 <p></p>
 
 <pre><code>"you have called Api::whatEver()"
-</code></pre>
-</dd>
-
-<dt>GET <a href="index.php/api/all/1/2/3/4/5/6/7" target="_blank">api/all/1/2/3/4/5/6/7</a></dt>
-<dd><pre><code>"you have called Api::allIsMine(1, 2, 3, 4, 5, 6, 7)"
-</code></pre></dd>
-
-<dl>
-<dt>GET <a href="index.php/api/all" target="_blank">api/all</a></dt>
-<dd>
-<p></p>
-
-<pre><code>"you have called Api::allIsMine()"
 </code></pre>
 </dd>
 </dl>

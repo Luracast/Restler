@@ -76,16 +76,6 @@ For example
 
     @url POST custom/path/{var1}/{var2}
 
-### Wildcard Routes
-
-Wildcard routes allows our api methods to receive variable number of parameters
-they are manual routes that end with a star as the last path segment
-
-For example
-
-    @url GET custom/path/*
-
-
 Take a look at the api class used here and compare it with the routes below to
 understand.
 
@@ -148,18 +138,6 @@ GET [api/what/ever/you/want?anything=something](index.php/api/what/ever/you/want
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "you have called Api::whatEver()"
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-GET [api/all/1/2/3/4/5/6/7](index.php/api/all/1/2/3/4/5/6/7)
-:    
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"you have called Api::allIsMine(1, 2, 3, 4, 5, 6, 7)"
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-GET [api/all](index.php/api/all)
-:    
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"you have called Api::allIsMine()"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 

@@ -26,9 +26,9 @@ Features
 * Flexible
 * Highly Customizable
 * Many Examples that can be tried on your localhost to get started
-* Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request parameter (method)
+* Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request paramater (method)
 * Supports both RESTful and Pragmatic REST API Design
-* Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource Sharing and JSONP
+* Clients can use X-HTTP-Method-Override header, suuports Cross Origin Resource Sharing and JSONP
 * Two way format(media type) conversion both send and receive
     * Pluggable content Formatter framework and api
     * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support
@@ -99,7 +99,6 @@ This creates the following folder structure
 │       ├── _008_documentation
 │       ├── _009_rate_limiting
 │       ├── _010_access_control
-│       ├── _012_vendor_mime
 │       └── resources
 └── vendor
     └── Luracast
@@ -107,7 +106,7 @@ This creates the following folder structure
 ```
 
 ### 2.
-Download other dependencies using make at the Terminal/Commandline.
+Download the dependencies using make at the Terminal/Commandline.
 This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
 Otherwise you may safely skip this step.
 
@@ -432,11 +431,9 @@ Change Log
 ----------
 ### Changes from Restler 3.0 RC3 (only available on the v3 branch)
  * Fixes to composer.json and publish stable release as composer package on packagist
- * New Routes class with improved routing including wild card routes
- * Possibility to use any autoloader including composer's autoloader for maximum interoperability
  * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
- * Removed required packages as they are not technically "required" per se, Restler works out of the box.
- * Created supported packages as require-dev instead which will be installed via `composer install --dev`
+ * Removed required packages as they are not technically "required" perse, Restlec works out of the box.
+ * Created supported packages as require-dev instead which will be installed via `composer intall --dev`
  * Added suggested section for all the supported packages.
  * Added keywords to package descriptor
  * Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev
