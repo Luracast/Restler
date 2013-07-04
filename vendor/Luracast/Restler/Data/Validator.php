@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler\Data;
 
+use Luracast\Restler\CommentParser;
 use Luracast\Restler\RestException;
 
 /**
@@ -169,6 +170,12 @@ class Validator implements iValidate
             case 'array':
                 if (is_array($input)) {
                     return $input;
+                }
+                if (
+                    is_string($input) &&
+                    false !== strpos($input, CommentParser::$arrayDelimiter)
+                ) {
+                    return explode(CommentParser::$arrayDelimiter, $input);
                 }
                 return array($input);
                 break;
