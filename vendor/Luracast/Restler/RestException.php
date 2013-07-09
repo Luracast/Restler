@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler;
 
+use Exception;
 /**
  * Special Exception for raising API errors
  * that can be used in API methods
