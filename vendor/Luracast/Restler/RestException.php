@@ -2,6 +2,7 @@
 namespace Luracast\Restler;
 
 use Exception;
+
 /**
  * Special Exception for raising API errors
  * that can be used in API methods
@@ -72,9 +73,9 @@ class RestException extends Exception
      * @param string      $httpStatusCode http status code
      * @param string|null $errorMessage   error message
      * @param array       $details        any extra detail about the exception
-     * @param \Exception   $previous       previous exception if any
+     * @param Exception   $previous       previous exception if any
      */
-    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), \Exception $previous = null)
+    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
     {
         $this->details = $details;
         parent::__construct($errorMessage, $httpStatusCode, $previous);
@@ -88,6 +89,17 @@ class RestException extends Exception
     public function getDetails()
     {
         return $this->details;
+    }
+
+    public function getErrorMessage()
+    {
+        $statusCode = $this->getCode();
+        $message = $this->getMessage();
+        if (isset(RestException::$codes[$statusCode])) {
+            $message = RestException::$codes[$statusCode] .
+                (empty($message) ? '' : ': ' . $message);
+        }
+        return $message;
     }
 }
 
