@@ -25,6 +25,7 @@ class Util
         'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
         'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
         'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
+        'UploadFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
         'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
         'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
         'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
