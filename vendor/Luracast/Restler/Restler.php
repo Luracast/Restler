@@ -2,7 +2,7 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ApiMethodInfo;
-use stdClass;
+use Exception;
 use Reflection;
 use ReflectionClass;
 use ReflectionMethod;
@@ -402,15 +402,22 @@ class Restler extends EventEmitter
     /**
      * Convenience method to respond with an error message.
      *
-     * @param int    $statusCode   http error code
-     * @param string $errorMessage optional custom error message
-     * @param array  $details      additional details about the error
+     * @param Exception $exception
      *
      * @return null
      */
-    public function handleError($statusCode, $errorMessage = null, array $details = array())
+    public function handleException(Exception $exception)
     {
-        $method = "handle$statusCode";
+        if (!$exception instanceof RestException) {
+            $exception = new RestException(
+                500,
+                $this->productionMode ? null : $exception->getMessage(),
+                array(),
+                $exception
+            );
+        }
+
+        $method = 'handle'.$exception->getCode();
         $handled = false;
         foreach ($this->errorClasses as $className) {
             if (method_exists($className, $method)) {
@@ -419,11 +426,13 @@ class Restler extends EventEmitter
                 $handled = true;
             }
         }
-        if ($handled)
-            return null;
-        if (!isset($this->responseFormat))
+        if ($handled) {
+            return;
+        }
+        if (!isset($this->responseFormat)) {
             $this->responseFormat = Util::initialize('JsonFormat');
-        $this->sendData(null, $statusCode, $errorMessage, $details);
+        }
+        $this->sendData($exception);
     }
 
     /**
@@ -471,8 +480,11 @@ class Restler extends EventEmitter
                 if (strpos($_SERVER['HTTP_ACCEPT_CHARSET'], '*') !== false) {
                     //use default charset
                 } else {
-                    $this->handleError(406, 'Content negotiation failed. '
-                        . "Requested charset is not supported");
+                    throw new RestException(
+                        406,
+                        'Content negotiation failed. ' .
+                        'Requested charset is not supported'
+                    );
                 }
             }
         }
@@ -557,7 +569,7 @@ class Restler extends EventEmitter
 
             $result = null;
             if (!isset($o->className)) {
-                $this->handleError(404);
+                throw new RestException(404);
             } else {
                 try {
                     $accessLevel = max(Defaults::$apiAccessLevel,
@@ -586,7 +598,7 @@ class Restler extends EventEmitter
                     }
                 } catch (RestException $e) {
                     if ($accessLevel > 1) { //when it is not a hybrid api
-                        $this->handleError($e->getCode(), $e->getMessage(), $e->getDetails());
+                        $this->handleException($e);
                     } else {
                         $this->authenticated = false;
                     }
@@ -651,19 +663,15 @@ class Restler extends EventEmitter
                             ), $o->parameters);
                     }
                 } catch (RestException $e) {
-                    $this->handleError($e->getCode(), $e->getMessage(), $e->getDetails());
+                    $this->handleException($e);
                 }
             }
             $this->sendData($result);
         } catch (RestException $e) {
-            $this->handleError($e->getCode(), $e->getMessage(), $e->getDetails());
+            $this->handleException($e);
         } catch (\Exception $e) {
             $this->log[] = $e->getMessage();
-            if ($this->productionMode) {
-                $this->handleError(500);
-            } else {
-                $this->handleError(500, $e->getMessage());
-            }
+            $this->handleException($e);
         }
     }
 
@@ -707,12 +715,10 @@ class Restler extends EventEmitter
     /**
      * Encodes the response in the preferred format and sends back.
      *
-     * @param mixed       $data array or scalar value or iValueObject or null
-     * @param int         $statusCode
-     * @param string|null $statusMessage
-     * @param array       $details extra details about the response
+     * @param mixed $data array or scalar value or iValueObject or null or
+     *                    RestException in case of error response
      */
-    public function sendData($data, $statusCode = 0, $statusMessage = null, array $details = array())
+    public function sendData($data)
     {
         //$this->log []= ob_get_clean ();
         $this->setHeaders();
@@ -739,7 +745,13 @@ class Restler extends EventEmitter
                 . '; charset=' . $charset
         );
         @header('Content-Language: ' . Defaults::$language);
-        if ($statusCode == 0) {
+        if ($data instanceof RestException) {
+            $this->setStatus($data->getCode());
+            $data = $this->responseFormat->encode(
+                $responder->formatError($data),
+                !$this->productionMode
+            );
+        } else {
             if (isset($this->apiMethodInfo->metadata['status'])) {
                 $this->setStatus($this->apiMethodInfo->metadata['status']);
             }
@@ -759,19 +771,6 @@ class Restler extends EventEmitter
                     $postProcess
                 ), $data);
             }
-        } else {
-            if (isset(RestException::$codes[$statusCode])) {
-                $message = RestException::$codes[$statusCode] .
-                    (empty($statusMessage) ? '' : ': ' . $statusMessage);
-            } else {
-                trigger_error("Non standard http status codes [currently $statusCode] are discouraged", E_USER_WARNING);
-                $message = $statusMessage;
-
-            }
-            $this->setStatus($statusCode);
-            $data = $this->responseFormat->encode(
-                $responder->formatError($statusCode, $message, $details),
-                !$this->productionMode);
         }
         //handle throttling
         if (Defaults::$throttle) {
@@ -886,8 +885,10 @@ class Restler extends EventEmitter
                 $format = Util::initialize($this->formatMap[$mime]);
                 $format->setMIME($mime);
             } else {
-                $this->handleError(403, "Content type `$mime` is not supported.");
-                return null;
+                throw new RestException(
+                    403,
+                    "Content type `$mime` is not supported."
+                );
             }
         }
         return $format;
@@ -987,8 +988,11 @@ class Restler extends EventEmitter
             // a 406 (not acceptable) response.
             $format = Util::initialize($this->formatMap['default']);
             $this->responseFormat = $format;
-            $this->handleError(406, 'Content negotiation failed. '
-                . 'Try \'' . $format->getMIME() . '\' instead.');
+            throw new RestException(
+                406,
+                'Content negotiation failed. ' .
+                'Try `' . $format->getMIME() . '` instead.'
+            );
         } else {
             // Tell cache content is based at Accept header
             @header("Vary: Accept");
@@ -1018,7 +1022,7 @@ class Restler extends EventEmitter
                 $r = $this->requestFormat->decode($r);
                 return is_null($r) ? array() : $r;
             } catch (RestException $e) {
-                $this->handleError($e->getCode(), $e->getMessage());
+                $this->handleException($e);
             }
         }
         return array();
