@@ -28,14 +28,23 @@ class Responder implements iRespond
         return $result;
     }
 
-    public function formatError($statusCode, $message, array $details = array())
+
+    /**
+     * When the api call results in RestException this method
+     * will be called to return the error message
+     *
+     * @param RestException $exception exception that has reasons for failure
+     *
+     * @return array
+     */
+    public function formatError(RestException $exception)
     {
         //TODO: check Defaults::language and change result accordingly
         return array(
             'error' => array(
-                'code' => $statusCode,
-                'message' => $message
-            ) + $details
+                'code' => $exception->getCode(),
+                'message' => $exception->getErrorMessage()
+            ) + $exception->getDetails()
         );
     }
 }
