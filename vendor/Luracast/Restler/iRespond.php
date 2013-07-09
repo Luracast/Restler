@@ -1,6 +1,8 @@
 <?php
 namespace Luracast\Restler;
 
+use Exception;
+
 /**
  * Interface for creating response classes
  *
@@ -27,12 +29,10 @@ interface iRespond
      * When the api call results in RestException this method
      * will be called to return the error message
      *
-     * @param int    $statusCode
-     * @param string $message
-     * @param array  $details additional details about the error
+     * @param RestException $exception exception that has reasons for failure
      *
      * @return
      */
-    public function formatError($statusCode, $message, array $details = array());
+    public function formatError(RestException $exception);
 }
 
