@@ -214,18 +214,44 @@ If you are on Apache, you can use an .htaccess file such as
 ```apache
 DirectoryIndex index.php
 <IfModule mod_rewrite.c>
-	RewriteEngine On
-	RewriteRule ^$ index.php [QSA,L]
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)$ index.php [QSA,L]
+    RewriteEngine On
+    RewriteRule ^$ index.php [QSA,L]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
 <IfModule mod_php5.c>
-	php_flag display_errors On
+    php_flag display_errors On
 </IfModule>
 ```
 
-> **Note:-** This requires `AllowOverride` to be set to `All` instead of `None` in the `httpd.conf` file
+> **Note:-** This requires `AllowOverride` to be set to `All` instead of `None` in the `httpd.conf` file,
+> and might require some tweaking on some server configurations.
+> Refer to [mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html) documentation for more info.
+
+If you are on Nginx, you have to make sure you set the `server_name` and pass the
+PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000
+
+    server {
+            listen        80;
+            server_name   api.luracast.com; //change it to match your server name
+
+            //... other stuff
+
+            location ~ \.php$ {
+                root           /var/www/html;
+                fastcgi_pass   127.0.0.1:9000;
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME  /var/www/html/$fastcgi_script_name;
+                include        fastcgi_params;
+            }
+
+            //... other stuff
+
+    }
+
+> **Note:-** This requires PHP, PHP-FPM to be properly installed and configured.
+> Refer to [PHP FastCGI](http://wiki.nginx.org/PHPFcgiExample) example for more info.
 
 
 ### 4.
@@ -263,20 +289,20 @@ All tags except @url can also be defined at the class level.
 
 <table>
     <tr>
-		<th>Tag</th>
-		<th>Description</th>
-	</tr>
-	<tr>
-		<td>@url</td>
-		<td>
-		Syntax:
-		<pre>@url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route</pre>
-		Example:
-		<pre>@url POST authors/{id}/books</pre>
-		Overrides auto routes and creates manual routes. use as many as you need
-		</td>
-	</tr>
-	<tr>
+        <th>Tag</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td>@url</td>
+        <td>
+        Syntax:
+        <pre>@url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route</pre>
+        Example:
+        <pre>@url POST authors/{id}/books</pre>
+        Overrides auto routes and creates manual routes. use as many as you need
+        </td>
+    </tr>
+    <tr>
         <td>@access</td>
         <td>
         Syntax:
@@ -288,10 +314,10 @@ All tags except @url can also be defined at the class level.
         <b>hybrid</b> for api that enhances resulting data for authenticated users.
         </td>
     </tr>
-	<tr>
-		<td>@smart-auto-routing</td>
-		<td>
-		Syntax:
+    <tr>
+        <td>@smart-auto-routing</td>
+        <td>
+        Syntax:
         <pre>@smart-auto-routing true|false</pre>
         Example:
         <pre>@smart-auto-routing false</pre>
@@ -302,20 +328,20 @@ All tags except @url can also be defined at the class level.
         When a parameter is required and is  scalar, it will be mapped as
         part of the url `/resource/{id}`
         </td>
-	</tr>
-	<tr>
-		<td>@class</td>
-		<td>
+    </tr>
+    <tr>
+        <td>@class</td>
+        <td>
         Syntax:
         <pre>@class ClassName {@propertyName value}</pre>
         Example:
         <pre>@class AccessControl {@requires user} {@level 5}</pre>
         Inject property of the specified class with specified value
         </td>
-	</tr>
-	<tr>
-		<td>@cache</td>
-		<td>
+    </tr>
+    <tr>
+        <td>@cache</td>
+        <td>
         Syntax:
         <pre>@cache headerCacheControlValue</pre>
         Example:
@@ -323,10 +349,10 @@ All tags except @url can also be defined at the class level.
         Specify value to set CacheControl Header, it can use @expires value as
         shown in the example
         </td>
-	</tr>
-	<tr>
-		<td>@expires</td>
-		<td>
+    </tr>
+    <tr>
+        <td>@expires</td>
+        <td>
         Syntax:
         <pre>@expires numberOfSeconds</pre>
         Example:
@@ -334,10 +360,10 @@ All tags except @url can also be defined at the class level.
         Sets the content to expire immediately when set to zero alternatively
         you can specify the number of seconds the content will expire
         </td>
-	</tr>
-	<tr>
-		<td>@throttle</td>
-		<td>
+    </tr>
+    <tr>
+        <td>@throttle</td>
+        <td>
         Syntax:
         <pre>@throttle numberOfMilliSeconds</pre>
         Example:
@@ -345,58 +371,58 @@ All tags except @url can also be defined at the class level.
         Sets the time in milliseconds for bandwidth throttling, which will
         become the minimum response time for each API request.
         </td>
-	</tr>
-	<tr>
-		<td>@status</td>
-		<td>
-		Syntax:
+    </tr>
+    <tr>
+        <td>@status</td>
+        <td>
+        Syntax:
         <pre>@status httpStatusCode</pre>
         Example:
         <pre>@status 201</pre>
         Sets the HTTP Status code for the successful response.
-		</td>
-	</tr>
-	<tr>
-		<td>@header</td>
-		<td>
-		Syntax:
+        </td>
+    </tr>
+    <tr>
+        <td>@header</td>
+        <td>
+        Syntax:
         <pre>@header httpHeader</pre>
         Example:
         <pre>@header Link: &lt;meta.rdf>; rel=meta</pre>
         Sets or overrides the specific HTTP Header.
-		</td>
-	</tr>
-	<tr>
-		<td>@param</td>
-		<td>
-		Syntax:
+        </td>
+    </tr>
+    <tr>
+        <td>@param</td>
+        <td>
+        Syntax:
         <pre>@param [type] Name [Description] {@name value}</pre>
         Example:
         <pre>@param int $num1 increment value {@min 5} {@max 100}</pre>
         Sets the HTTP Status code for the successful response.
-		</td>
-	</tr>
-	<tr>
-		<td>@throws</td>
-		<td>
-		Syntax:
+        </td>
+    </tr>
+    <tr>
+        <td>@throws</td>
+        <td>
+        Syntax:
         <pre>@throws httpStatusCode [Reason]</pre>
         Example:
         <pre>@throws 404 No Author for specified id</pre>
         Documents possible error responses for the API call.
-		</td>
-	</tr>
-	<tr>
-		<td>@return</td>
-		<td>
-		Syntax:
+        </td>
+    </tr>
+    <tr>
+        <td>@return</td>
+        <td>
+        Syntax:
         <pre>@return type [Description]</pre>
         Example:
         <pre>@return Author an instance of iValueObject</pre>
         Documents the structure of success response, user defined classes must
         extend iValueObject.
-		</td>
-	</tr>
+        </td>
+    </tr>
 </table>
 
 ### 5.
@@ -430,9 +456,11 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 
 Change Log
 ----------
+
 ### Changes from Restler 3.0 RC3 (only available on the v3 branch)
- * Fixes to composer.json and publish stable release as composer package on packagist
- * New Routes class with improved routing including wild card routes
+
+ * Fixes to composer.json and publish stable release as composer package on packagist.
+ * New Routes class with improved routing, including wild card routes.
  * Possibility to use any autoloader including composer's autoloader for maximum interoperability
  * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
  * Removed required packages as they are not technically "required" per se, Restler works out of the box.
@@ -499,7 +527,7 @@ Change Log
 * uses namespaces, Late Static Bindings, and Closures and thus it is **PHP 5.3+** only
   (if you need **PHP 5.0+** support use [Restler 2](https://github.com/Luracast/Restler/tree/v2))
 * provides backward compatibility for Restler 1 and 2.
-    Use `$r->setCompatibilityMode($version);`
+  Use `$r->setCompatibilityMode($version);`
 * supports hybrid api which provides extended data to authenticated users
   Use `@access hybrid` PHPDoc comment
 * uses smart auto routing by default where API method parameters that
@@ -511,7 +539,7 @@ Change Log
 * has improved `CommentParser` which adds support for embedded data in multiple formats
     * inline doc comments `{@name value}`
     * query string params \`\`\` param1=value&param2=value2\`\`\`
-    * json \`\`\` {"parm1": value, "param2": value2}\`\`\` which can be placed in multi-lines
+    * json \`\`\` {"param1": value, "param2": value2}\`\`\` which can be placed in multi-lines
 * has `Defaults` class with static properties that can be changed to suit the needs
 * iAuthenticate is now using `__isAllowed` method instead of `__isAuthenticated` so that same
   class can be used for Authentication or Filtering
