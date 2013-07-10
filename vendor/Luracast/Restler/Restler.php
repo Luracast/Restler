@@ -867,6 +867,7 @@ class Restler extends EventEmitter
     /**
      * Parses the request to figure out format of the request data
      *
+     * @throws RestException
      * @return iFormat any class that implements iFormat
      * @example JsonFormat
      */
@@ -898,6 +899,7 @@ class Restler extends EventEmitter
      * Parses the request to figure out the best format for response.
      * Extension, if present, overrides the Accept header
      *
+     * @throws RestException
      * @return iFormat any class that implements iFormat
      * @example JsonFormat
      */
