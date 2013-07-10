@@ -64,6 +64,22 @@ Features
     * Dependency Management using [Composer](http://getcomposer.org/)
     * Source code distributed under LGPL
 
+
+Understanding our Git Repository and the Branches
+-------------------------------------------------
+
+1. Most stable and recent version is maintained at the `master` branch, previous versions
+   are kept in the branches such as `v1` and `v2`
+
+2. Version branch with the current version such as `v3` is used for building up the next release.
+   It's documentation may not be updated frequently and thus reserved for the daring ones.
+
+3. Feature branches such as `features/html` and `features/router` are purely
+   for experimentation purpose to try out a feature
+
+> **Note:-** You may have to tweak the installation urls below depending on the branch of choice.
+
+
 Installation
 ------------
 Installation is a two step process. Do the following in the folder where you want Restler to be setup.
