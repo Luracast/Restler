@@ -833,9 +833,9 @@ class Restler extends EventEmitter
             $fullPath,
             $_SERVER['SCRIPT_NAME']
         );
-        $baseUrl = isset($_SERVER['HTTPS']) &&
-            $_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://';
-        if ($_SERVER['SERVER_PORT'] != '80') {
+        $baseUrl = $_SERVER['SERVER_PORT'] == '443' ||
+        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
+        if ($_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') {
             $baseUrl .= $_SERVER['SERVER_NAME'] . ':'
                 . $_SERVER['SERVER_PORT'];
         } else {
