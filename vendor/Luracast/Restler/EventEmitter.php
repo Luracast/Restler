@@ -25,14 +25,18 @@ class EventEmitter
 
     public static function __callStatic($eventName, $params)
     {
-        return call_user_func_array(array(static::$self, $eventName), $params);
+        if (0 === strpos($eventName, 'on')) {
+            return call_user_func_array(array(static::$self, $eventName), $params);
+        }
     }
 
     public function __call($eventName, $params)
     {
-        if (!@is_array($this->listeners[$eventName]))
-            $this->listeners[$eventName] = array();
-        $this->listeners[$eventName][] = $params[0];
+        if (0 === strpos($eventName, 'on')) {
+            if (!@is_array($this->listeners[$eventName]))
+                $this->listeners[$eventName] = array();
+            $this->listeners[$eventName][] = $params[0];
+        }
         return $this;
     }
 
