@@ -50,6 +50,12 @@ class Defaults
      */
     public static $responderClass = 'Luracast\\Restler\\Responder';
 
+    /**
+     * @var string name of the class that implements \Luracast\Restler\iCompose
+     * the class to be used to compose the response
+     */
+    public static $composeClass = 'Luracast\\Restler\\Compose';
+
     // ==================================================================
     //
     // Routing
