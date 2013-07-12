@@ -65,8 +65,8 @@ Features
     * Source code distributed under LGPL
 
 
-Understanding our Git Repository and the Branches
--------------------------------------------------
+Git Repository and the Branches
+-------------------------------
 
 1. Most stable and recent version is maintained at the `master` branch, previous versions
    are kept in the branches such as `v1` and `v2`
