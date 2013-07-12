@@ -366,9 +366,7 @@ class CommentParser
 
     private function formatThrows(array $value)
     {
-        $r = array(
-            'exception' => array_shift($value)
-        );
+        $r = array();
         $r['code'] = count($value) && is_numeric($value[0])
             ? intval(array_shift($value)) : 500;
         $reason = implode(' ', $value);
