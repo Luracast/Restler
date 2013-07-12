@@ -446,15 +446,15 @@ class Restler extends EventEmitter
         ) {
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
                 header('Access-Control-Allow-Methods: '
-                    . Defaults::$accessControlAllowMethods);
+                . Defaults::$accessControlAllowMethods);
 
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
                 header('Access-Control-Allow-Headers: '
-                    . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
-					
-	        header('Access-Control-Allow-Origin: ' .
-	        	(Defaults::$accessControlAllowOrigin == '*' ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin) );
-	       	header('Access-Control-Allow-Credentials: true');
+                . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+
+            header('Access-Control-Allow-Origin: ' .
+            (Defaults::$accessControlAllowOrigin == '*' ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin));
+            header('Access-Control-Allow-Credentials: true');
 
             exit(0);
         }
@@ -633,8 +633,15 @@ class Restler extends EventEmitter
                                 }
                                 //convert to instance of ValidationInfo
                                 $info = new ValidationInfo($param);
-                                $valid = Validator::validate(
-                                    $o->parameters[$index], $info);
+                                $validator = Defaults::$validatorClass;
+                                if(!is_subclass_of($validator, 'Luracast\\Restler\\iValidate')){
+                                    throw new \UnexpectedValueException(
+                                        '`Defaults::$validatorClass` must implement `iValidate` interface'
+                                    );
+                                }
+                                $valid = $validator::validate(
+                                    $o->parameters[$index], $info
+                                );
                                 $o->parameters[$index] = $valid;
                             }
                         }
