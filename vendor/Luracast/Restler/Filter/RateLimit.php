@@ -3,6 +3,7 @@ namespace Luracast\Restler\Filter;
 
 use Luracast\Restler\iFilter;
 use Luracast\Restler\iUseAuthentication;
+use Luracast\Restler\iUser;
 use Luracast\Restler\User;
 use Luracast\Restler\RestException;
 
@@ -35,6 +36,10 @@ class RateLimit implements iFilter, iUseAuthentication
      * @var string
      */
     public static $unit = 'hour';
+    /**
+     * @var string name of the class that implements iUser interface
+     */
+    public static $userClass = 'Luracast\\Restler\\User';
 
     protected static $units = array(
         'second' => 1,
@@ -94,7 +99,11 @@ class RateLimit implements iFilter, iUseAuthentication
         $maxPerUnit = $isAuthenticated
             ? static::$authenticatedUsagePerUnit
             : static::$usagePerUnit;
-        $id = "RateLimit_" . User::getUniqueId();
+        $user = static::$userClass;
+        if(!is_subclass_of($user, 'Luracast\\Restler\\iUser')){
+           throw new \UnexpectedValueException('`Ratelimit::$userClass` must implement iUser interface');
+        }
+        $id = "RateLimit_" . $user::getUniqueId();
         $lastRequest = $this->restler->cache->get($id, true)
             ? : array('time' => 0, 'used' => 0);
         $diff = time() - $lastRequest['time']; # in seconds
