@@ -133,18 +133,17 @@ class RateLimit implements iFilter, iUseAuthentication
 
         $ret = array();
 
-        $added = false;
-        $unit = 'days';
+        //$unit = 'days';
         foreach ($units as $k => $v) {
             if ($v > 0) {
                 $ret[] = $v > 1 ? "$v {$k}s" : "$v $k";
-                $unit = $k;
+                //$unit = $k;
             }
         }
         $i = count($ret) - 1;
         if ($i) {
             $ret[$i] = 'and ' . $ret[$i];
         }
-        return join(' ', $ret); //." $unit.";
+        return implode(' ', $ret); //." $unit.";
     }
 }
