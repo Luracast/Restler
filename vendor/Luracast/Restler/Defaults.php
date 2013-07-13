@@ -45,12 +45,6 @@ class Defaults
     public static $validatorClass = 'Luracast\\Restler\\Data\\Validator';
 
     /**
-     * @var string name of the class that implements \Luracast\Restler\iRespond
-     * the responder class to be used
-     */
-    public static $responderClass = 'Luracast\\Restler\\Responder';
-
-    /**
      * @var string name of the class that implements \Luracast\Restler\iCompose
      * the class to be used to compose the response
      */
