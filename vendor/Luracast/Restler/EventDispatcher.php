@@ -13,7 +13,7 @@ namespace Luracast\Restler;
  */
 use Closure;
 
-class EventEmitter
+class EventDispatcher
 {
     private $listeners = array();
 
