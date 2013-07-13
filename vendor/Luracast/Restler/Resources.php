@@ -180,10 +180,7 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = preg_replace(
-                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
-                    array('_', '-'),
-                    implode('-', $parts));
+                $nickname = $this->generateNickname((array) $route);
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
@@ -195,7 +192,6 @@ class Resources implements iUseAuthentication
                 $m['classDescription'])
                     ? $m['classDescription']
                     : $className . ' API';
-                $api = $this->_api("/$fullPath", $description);
                 if (empty($m['description'])) {
                     $m['description'] = $this->restler->_productionMode
                         ? ''
@@ -263,8 +259,18 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
+                $api = false;
+                foreach ($r->apis as $a) {
+                    if ($a->path == "/$fullPath") {
+                        $api = $a;
+                        break;
+                    }
+                }
+                if (!$api) {
+                    $api = $this->_api("/$fullPath", $description);
+                    $r->apis[] = $api;
+                }
                 $api->operations[] = $operation;
-                $r->apis[] = $api;
             }
         }
         if (!$count) {
@@ -273,6 +279,11 @@ class Resources implements iUseAuthentication
         if (!is_null($r))
             $r->models = $this->_models;
         return $r;
+    }
+
+    protected function generateNickname(array $route)
+    {
+        return $route['methodName'];
     }
 
     private function _noNamespace($className)
