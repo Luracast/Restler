@@ -164,6 +164,14 @@ class HtmlFormat extends Format
     }
 
     /**
+     * Get selected MIME type
+     */
+    public function getMIME()
+    {
+        return static::$mime;
+    }
+
+    /**
      * Get the selected file extension
      *
      * @return string file extension
