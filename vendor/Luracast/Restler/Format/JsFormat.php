@@ -33,9 +33,9 @@ class JsFormat extends JsonFormat
             }
         }
         $r['data'] = $data;
-        if ($_GET[static::$callbackOverrideQueryString]) {
+        if (isset($_GET[static::$callbackOverrideQueryString])) {
             static::$callbackMethodName
-                = $_GET[static::$callbackOverrideQueryString];
+                = (string) $_GET[static::$callbackOverrideQueryString];
         }
         return static::$callbackMethodName . '('
             . parent::encode($r, $human_readable) . ');';
