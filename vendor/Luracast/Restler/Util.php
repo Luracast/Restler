@@ -41,6 +41,9 @@ class Util
 
         //Utility classes
         'Object' => 'Luracast\\Restler\\Data\\Object',
+
+        //Exception
+        'RestException' => 'Luracast\\Restler\\RestException'
     );
 
     /**
