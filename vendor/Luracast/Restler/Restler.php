@@ -111,6 +111,12 @@ class Restler extends EventDispatcher
      */
     protected $formatMap = array();
     /**
+     * Associated array that maps formats to their respective format class name
+     *
+     * @var array
+     */
+    protected $formatOverridesMap = array('extensions' => array());
+    /**
      * list of filter classes
      *
      * @var array
@@ -268,12 +274,11 @@ class Restler extends EventDispatcher
     }
 
     /**
-     * Call this method and pass all the formats that should be
-     * supported by the API.
-     * Accepts multiple parameters
+     * Call this method and pass all the formats that should be  supported by
+     * the API Server. Accepts multiple parameters
      *
-     * @param string ,... $formatName class name of the format class that
-     *               implements iFormat
+     * @param string ,... $formatName   class name of the format class that
+     *                                  implements iFormat
      *
      * @example $restler->setSupportedFormats('JsonFormat', 'XmlFormat'...);
      * @throws Exception
@@ -303,6 +308,39 @@ class Restler extends EventDispatcher
     }
 
     /**
+     * Call this method and pass all the formats that can be used to override
+     * the supported formats using `@format` comment. Accepts multiple parameters
+     *
+     * @param string ,... $formatName   class name of the format class that
+     *                                  implements iFormat
+     *
+     * @example $restler->setOverridingFormats('JsonFormat', 'XmlFormat'...);
+     * @throws Exception
+     */
+    public function setOverridingFormats($format = null /*[, $format2...$farmatN]*/)
+    {
+        $args = func_get_args();
+        $extensions = array();
+        foreach ($args as $className) {
+
+            $obj = Util::initialize($className);
+
+            if (!$obj instanceof iFormat)
+                throw new Exception('Invalid format class; must implement ' .
+                'iFormat interface');
+
+            foreach ($obj->getMIMEMap() as $mime => $extension) {
+                if (!isset($this->formatOverridesMap[$extension]))
+                    $this->formatOverridesMap[$extension] = $className;
+                if (!isset($this->formatOverridesMap[$mime]))
+                    $this->formatOverridesMap[$mime] = $className;
+                $extensions[".$extension"] = true;
+            }
+        }
+        $this->formatOverridesMap['extensions'] = array_keys($extensions);
+    }
+
+    /**
      * Parses the request url and get the api path
      *
      * @return string api path
@@ -329,7 +367,12 @@ class Restler extends EventDispatcher
             ), '/');
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
-        $path = str_replace($this->formatMap['extensions'], '', $path);
+        $path = str_replace(
+            $this->formatMap['extensions'] +
+            $this->formatOverridesMap['extensions'],
+            '',
+            $path
+        );
         if (Defaults::$useUrlBasedVersioning
             && strlen($path) && $path{0} == 'v'
         ) {
@@ -498,6 +541,15 @@ class Restler extends EventDispatcher
 
         if (isset($this->apiMethodInfo->metadata['format'])) {
             $formats = explode(',', (string)$this->apiMethodInfo->metadata['format']);
+            foreach ($formats as $i => $f) {
+                $f = trim($f);
+                if (!in_array($f, $this->formatOverridesMap))
+                    throw new RestException(
+                        500,
+                        "Given @format is not present in overriding formats. Please call `\$r->setOverridingFormats('$f');` first."
+                    );
+                $formats[$i] = $f;
+            }
             call_user_func_array(array($this, 'setSupportedFormats'), $formats);
         }
 
@@ -969,10 +1021,8 @@ class Restler extends EventDispatcher
      * protected methods will need at least one authentication class to be set
      * in order to allow that method to be executed
      *
-     * @param string $className
-     *            of the authentication class
-     * @param string $resourcePath
-     *            optional url prefix for mapping
+     * @param string $className     of the authentication class
+     * @param string $resourcePath  optional url prefix for mapping
      */
     public function addAuthenticationClass($className, $resourcePath = null)
     {
@@ -1061,8 +1111,7 @@ class Restler extends EventDispatcher
     /**
      * Add class for custom error handling
      *
-     * @param string $className
-     *            of the error handling class
+     * @param string $className   of the error handling class
      */
     public function addErrorClass($className)
     {
