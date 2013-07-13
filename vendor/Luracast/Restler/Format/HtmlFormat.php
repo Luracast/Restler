@@ -155,8 +155,7 @@ class HtmlFormat extends Format
     /**
      * Set the selected MIME type
      *
-     * @param string $mime
-     *            MIME type
+     * @param string $mime MIME type
      */
     public function setMIME($mime)
     {
@@ -184,8 +183,7 @@ class HtmlFormat extends Format
     /**
      * Set the selected file extension
      *
-     * @param string $extension
-     *            file extension
+     * @param string $extension file extension
      */
     public function setExtension($extension)
     {
