@@ -173,6 +173,11 @@ class Restler extends EventEmitter
     {
         $this->startTime = time();
         Util::$restler = $this;
+        foreach(Util::$classAliases as $alias => $original){
+            if(!class_exists($alias, false)){
+                class_alias($original, $alias);
+            }
+        }
         $this->productionMode = $productionMode;
         if (is_null(Defaults::$cacheDirectory)) {
             Defaults::$cacheDirectory = dirname($_SERVER['SCRIPT_FILENAME']) .
