@@ -196,7 +196,6 @@ class Resources implements iUseAuthentication
                 $m['classDescription'])
                     ? $m['classDescription']
                     : $className . ' API';
-                $api = $this->_api("/$fullPath", $description);
                 if (empty($m['description'])) {
                     $m['description'] = $this->restler->_productionMode
                         ? ''
@@ -264,8 +263,18 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
+                $api = false;
+                foreach ($r->apis as $a) {
+                    if ($a->path == "/$fullPath") {
+                        $api = $a;
+                        break;
+                    }
+                }
+                if (!$api) {
+                    $api = $this->_api("/$fullPath", $description);
+                    $r->apis[] = $api;
+                }
                 $api->operations[] = $operation;
-                $r->apis[] = $api;
             }
         }
         if (!$count) {
