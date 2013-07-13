@@ -368,8 +368,10 @@ class Restler extends EventDispatcher
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace(
-            $this->formatMap['extensions'] +
-            $this->formatOverridesMap['extensions'],
+            array_merge(
+                $this->formatMap['extensions'],
+                $this->formatOverridesMap['extensions']
+            ),
             '',
             $path
         );
