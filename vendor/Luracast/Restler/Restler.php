@@ -494,6 +494,13 @@ class Restler extends EventDispatcher
      */
     protected function negotiateResponseFormat()
     {
+        //check if the api method insists on response format using @format comment
+
+        if (isset($this->apiMethodInfo->metadata['format'])) {
+            $formats = explode(',', (string)$this->apiMethodInfo->metadata['format']);
+            call_user_func_array(array($this, 'setSupportedFormats'), $formats);
+        }
+
         // check if client has specified an extension
         /**
          *
