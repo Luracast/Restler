@@ -14,6 +14,11 @@ namespace Luracast\Restler;
  */
 class Compose implements iCompose
 {
+    /**
+     * @var bool When restler is not running in production mode, this value will
+     * be checked to include the debug information on error response
+     */
+    public static $includeDebugInfo = true;
 
     /**
      * Current Restler instance
@@ -48,11 +53,20 @@ class Compose implements iCompose
     public function message(RestException $exception)
     {
         //TODO: check Defaults::language and change result accordingly
-        return array(
+        $r =  array(
             'error' => array(
                 'code' => $exception->getCode(),
-                'message' => $exception->getErrorMessage()
+                'message' => $exception->getErrorMessage(),
             ) + $exception->getDetails()
         );
+        if(!Util::$restler->_productionMode && self::$includeDebugInfo){
+            $r += array(
+                'debug' => array(
+                    'source' => basename($exception->getFile()) . ':' . $exception->getLine(),
+                    'stages' => Util::$restler->_events,
+                )
+            );
+        }
+        return $r;
     }
 }
