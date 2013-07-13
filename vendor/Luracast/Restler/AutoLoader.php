@@ -259,7 +259,6 @@ class AutoLoader
      * @return bool false unless className now exists
      */
     private function loadLastResort($className, $loader = null) {
-        return false;
         $loaders = array_unique(static::$rogueLoaders);
         if (isset($loader)) {
             if (false === array_search($loader, $loaders))
