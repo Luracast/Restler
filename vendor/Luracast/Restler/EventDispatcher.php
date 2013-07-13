@@ -41,7 +41,7 @@ class EventDispatcher
         return $this;
     }
 
-    public static function listen($eventName, Closure $callback)
+    public static function addListener($eventName, Closure $callback)
     {
         return static::$eventName($callback);
     }
@@ -74,7 +74,7 @@ class EventDispatcher
      * @param string $eventName name of the event
      * @param array  $params    event related data
      */
-    protected function trigger($eventName, array $params = array())
+    protected function dispatch($eventName, array $params = array())
     {
         $this->events[] = $eventName;
         $params = func_get_args();

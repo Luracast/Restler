@@ -200,34 +200,34 @@ class Restler extends EventDispatcher
     public function handle()
     {
         try {
-            $this->trigger('get');
+            $this->dispatch('get');
             $this->get();
-            $this->trigger('route');
+            $this->dispatch('route');
             $this->route();
-            $this->trigger('negotiate');
+            $this->dispatch('negotiate');
             $this->negotiate();
-            $this->trigger('preFilter');
+            $this->dispatch('preFilter');
             $this->preFilter();
-            $this->trigger('authenticate');
+            $this->dispatch('authenticate');
             $this->authenticate();
-            $this->trigger('postFilter');
+            $this->dispatch('postFilter');
             $this->postFilter();
             if (Defaults::$autoValidationEnabled) {
-                $this->trigger('validate');
+                $this->dispatch('validate');
                 $this->validate();
             }
             if(!$this->apiClassInstance) {
                 $this->apiClassInstance
                     = Util::initialize($this->apiMethodInfo->className);
             }
-            $this->trigger('call');
+            $this->dispatch('call');
             $this->call();
-            $this->trigger('compose');
+            $this->dispatch('compose');
             $this->compose();
-            $this->trigger('respond');
+            $this->dispatch('respond');
             $this->respond();
         } catch (Exception $e) {
-            $this->trigger('message');
+            $this->dispatch('message');
             $this->message($e);
         }
     }
