@@ -993,14 +993,13 @@ class Restler extends EventEmitter
      */
     public function addAPIClass($className, $resourcePath = null)
     {
-        if ($this->cached !== null)
-            return null;
-        $this->cached = false;
-        if ($this->productionMode) {
+        if ($this->productionMode && is_null($this->cached)) {
             $routes = $this->cache->get('routes');
             if (isset($routes) && is_array($routes)) {
                 Routes::fromArray($routes);
                 $this->cached = true;
+            } else {
+                $this->cached = false;
             }
         }
         if (isset(Util::$classAliases[$className])) {
