@@ -18,6 +18,7 @@ class EventEmitter
     private $listeners = array();
 
     public static $self;
+    protected $events = array();
 
     public function __construct() {
         static::$self = $this;
@@ -67,9 +68,15 @@ class EventEmitter
         );
     }
 
-    /** The attributes are just place holders we need a $sevenName and 0..N parameters */
-    protected function trigger($eventName, $params = null)
+    /**
+     * Fire an event to notify all listeners
+     *
+     * @param string $eventName name of the event
+     * @param array  $params    event related data
+     */
+    protected function trigger($eventName, array $params = array())
     {
+        $this->events[] = $eventName;
         $params = func_get_args();
         $eventName = array_shift($params);
         if (isset($this->listeners[$eventName]))
