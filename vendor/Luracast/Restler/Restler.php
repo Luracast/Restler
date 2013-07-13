@@ -22,7 +22,7 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-class Restler extends EventEmitter
+class Restler extends EventDispatcher
 {
     const VERSION = '3.0.0rc4';
     /**
