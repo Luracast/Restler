@@ -1,0 +1,12 @@
+{% extends "oauth2/client/base.twig" %}
+
+{% block content %}
+    <h3>Authorization Error</h3>
+    <p>
+        {{ response.error.error_description }}
+        {% if response.error.error_uri is defined %}
+            (<a href="{{response.error.error_uri}}">more information</a>)
+        {% endif %}
+    </p>
+    <a href="{{ basePath }}">back</a>
+{% endblock %}
