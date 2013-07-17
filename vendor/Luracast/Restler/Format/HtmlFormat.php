@@ -59,10 +59,10 @@ class HtmlFormat extends Format
      */
     public function encode($data, $humanReadable = false)
     {
-
-        $data = array(
-                'response' => Object::toArray($data)
-            ) + static::$data;
+        $data = array_merge(
+            Object::toArray($data),
+            static::$data
+        );
         $params = array();
         //print_r($this->restler);
         if (isset($this->restler->apiMethodInfo->metadata)) {
@@ -76,7 +76,7 @@ class HtmlFormat extends Format
                 $param['value'] = $this->restler->apiMethodInfo->parameters[$index];
             }
         }
-        $data['param'] = $params;
+        $data['meta']['param'] = $params;
         if (isset($metadata['view'])) {
             self::$view = $metadata['view'];
         }
@@ -188,5 +188,13 @@ class HtmlFormat extends Format
     public function setExtension($extension)
     {
         static::$extension = $extension;
+    }
+
+    private function reset()
+    {
+        static::$mime = 'text/html';
+        static::$extension = 'html';
+        static::$view = 'debug';
+        static::$format = 'php';
     }
 }
