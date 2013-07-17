@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="{{ basePath }}/css/demo.css">
+        <link rel="stylesheet" href="{{ basePath }}/css/shared.css">
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <![endif]-->
+
+        {% include 'oauth2/analytics.twig' %}
+        {% include 'oauth2/github.twig' %}
+
+        <div id="container">
+            <header role="banner">
+              {% block header %}
+              <hgroup>
+                  <h1>Restler 3</h1>
+                  <h2>OAuth 2 Demo App</h2>
+              </hgroup>
+                  <nav class="primary">
+                      <ul class="menu">
+                          <li class="current">
+                              <a href="http://luracast.com">Home</a>
+                          </li>
+                          <li>
+                              <a href="../">More</a>
+                          </li>
+                          <li>
+                              <a href="http://github.com/Luracast">Source</a>
+                          </li>
+                          <li>
+                              <a href="http://twitter.com/Luracast">Twitter</a>
+                          </li>
+                          <li>
+                              <a href="http://github.com/bshaffer">OAuth2</a>
+                          </li>
+                      </ul>
+                  </nav>
+              {% endblock %}
+            </header>
+
+            <article class="home" role="main">
+                <div  role="main">
+                  {% block content %}
+                  {% endblock %}
+                </div>
+            </article>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,21 @@
+{% extends "oauth2/client/base.twig" %}
+
+{% block content %}
+    <h3>Authorization Failed!</h3>
+    <p>
+        It seems authorization has been denied for the following reasons:
+    </p>
+    <ul>
+        <li>
+            {% if response.error.error_description %}
+                {{ response.error.error_description }}
+                {# optional "error_uri" param #}
+                {% if response.error_uri %}
+                    (<a href="{{ response.error.error_uri }}">more information</a>)
+                {% endif %}
+            {% else %}
+                <em>authorization server did not supply an error message</em>
+            {% endif %}
+        </li>
+    </ul>
+{% endblock %}
