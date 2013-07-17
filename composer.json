@@ -30,7 +30,8 @@
         "zendframework/zendamf":"Support for the amf document format  (see require-dev for details)",
         "symfony/yaml":"Restler can produce content in yaml format as well (see require-dev for details)",
         "twig/twig":"Restler can render HtmlView using twig templates (see require-dev for details)",
-        "mustache/mustache":"Restler can render HtmlView using mustache/handlebar templates (see require-dev for details)"
+        "mustache/mustache":"Restler can render HtmlView using mustache/handlebar templates (see require-dev for details)",
+        "bshaffer/oauth2-server-php":"Restler can provide OAuth2 authentication using this library (see require-dev for details)"
     },
     "require":{
         "php":">=5.3.0"
@@ -43,7 +44,8 @@
         "zendframework/zendamf":"dev-master",
         "symfony/yaml":"*",
         "mustache/mustache": "dev-master",
-        "twig/twig": "v1.13.0"
+        "twig/twig": "v1.13.0",
+        "bshaffer/oauth2-server-php":"v0.3"
     },
     "repositories":[
         {
