@@ -238,8 +238,13 @@ class Restler extends EventDispatcher
             $this->dispatch('respond');
             $this->respond();
         } catch (Exception $e) {
-            $this->dispatch('message');
-            $this->message($e);
+            try{
+                $this->dispatch('message');
+                $this->message($e);
+            } catch (Exception $e2) {
+                $this->dispatch('message');
+                $this->message($e2);
+            }
         }
     }
 
