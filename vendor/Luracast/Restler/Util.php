@@ -60,6 +60,35 @@ class Util
         return !(boolean)strpos('|bool|boolean|int|float|string|', $type);
     }
 
+    /**
+     * Get the value deeply nested inside an array
+     *
+     * Using isset() to test the presence of nested value can give false positive
+     *
+     * This method serves that need
+     *
+     * When the deeply nested property is found its value is returned, otherwise
+     * false is returned.
+     *
+     * @param array  $from   array to extract the value from
+     * @param string $key... pass more to go deeply inside the array
+     *
+     * @return bool|mixed false when not found, value otherwise
+     */
+    public static function arrayValue($from, $key /**, $key2 ... $key`n` */)
+    {
+        $keys = func_get_args();
+        array_shift($keys);
+        foreach ($keys as $key) {
+            if (isset($from[$key]) && is_array($from)) {
+                $from = $from[$key];
+                continue;
+            }
+            return false;
+        }
+        return $from;
+    }
+
     public static function getResourcePath($className,
                                            $resourcePath = null,
                                            $prefix = '')
