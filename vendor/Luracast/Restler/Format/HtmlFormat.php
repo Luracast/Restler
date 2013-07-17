@@ -49,14 +49,14 @@ class HtmlFormat extends Format
     /**
      * Encode the given data in the format
      *
-     * @param array   $data              resulting data that needs to
-     *                                   be encoded in the given format
-     * @param boolean $humanReadable     set to TRUE when restler
-     *                                   is not running in production mode.
-     *                                   Formatter has to make the encoded
-     *                                   output more human readable
+     * @param array   $data                resulting data that needs to
+     *                                     be encoded in the given format
+     * @param boolean $humanReadable       set to TRUE when restler
+     *                                     is not running in production mode.
+     *                                     Formatter has to make the encoded
+     *                                     output more human readable
      *
-     * @throws \Luracast\Restler\RestException
+     * @throws \Exception
      * @return string encoded string
      */
     public function encode($data, $humanReadable = false)
