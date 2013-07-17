@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler\Format;
 
+use Exception;
 use Luracast\Restler\Data\Object;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
@@ -13,6 +14,7 @@ class HtmlFormat extends Format
     public static $extension = 'html';
     public static $view = 'debug';
     public static $format = 'php';
+    protected static $parseViewMetadata = true;
     /**
      * @var array global key value pair to be supplied to the templates. All
      * keys added here will be available as a variable inside the template
@@ -59,67 +61,73 @@ class HtmlFormat extends Format
      */
     public function encode($data, $humanReadable = false)
     {
-        $data = array_merge(
-            Object::toArray($data),
-            static::$data
-        );
-        $params = array();
-        //print_r($this->restler);
-        if (isset($this->restler->apiMethodInfo->metadata)) {
-            $info = $data['info'] = $this->restler->apiMethodInfo;
-            $metadata = $info->metadata;
-            $params = $metadata['param'];
-        }
-        foreach ($params as $index => &$param) {
-            $index = intval($index);
-            if (is_numeric($index)) {
-                $param['value'] = $this->restler->apiMethodInfo->parameters[$index];
+        try {
+            $data = array_merge(
+                Object::toArray($data),
+                static::$data
+            );
+            $params = array();
+            //print_r($this->restler);
+            if (isset($this->restler->apiMethodInfo->metadata)) {
+                $info = $data['info'] = $this->restler->apiMethodInfo;
+                $metadata = $info->metadata;
+                $params = $metadata['param'];
             }
-        }
-        $data['meta']['param'] = $params;
-        if (isset($metadata['view'])) {
-            self::$view = $metadata['view'];
-        }
-        if (false === ($i = strpos(self::$view, '.'))) {
-            $extension = self::$format;
-            self::$view .= '.' . $extension;
-        } else {
-            $extension = substr(self::$view, $i + 1);
-        }
-        switch ($extension) {
-            case 'php':
-                $view = self::$viewPath . DIRECTORY_SEPARATOR .
-                    self::$view;
-
-                if (!is_readable($view)) {
-                    throw new RestException(
-                        500,
-                        "view file `$view` is not readable. Check for file presence and file permissions"
-                    );
+            foreach ($params as $index => &$param) {
+                $index = intval($index);
+                if (is_numeric($index)) {
+                    $param['value'] = $this->restler->apiMethodInfo->parameters[$index];
                 }
+            }
+            $data['meta']['param'] = $params;
+            if (static::$parseViewMetadata && isset($metadata['view'])) {
+                self::$view = $metadata['view'];
+            }
+            if (false === ($i = strpos(self::$view, '.'))) {
+                $extension = self::$format;
+                self::$view .= '.' . $extension;
+            } else {
+                $extension = substr(self::$view, $i + 1);
+            }
+            switch ($extension) {
+                case 'php':
+                    $view = self::$viewPath . DIRECTORY_SEPARATOR .
+                        self::$view;
 
-                $template = function ($view) use ($data) {
-                    extract($data);
-                    include $view;
-                };
-                $template($view);
-                break;
-            case 'twig':
-                $loader = new \Twig_Loader_Filesystem(static::$viewPath);
-                $twig = new \Twig_Environment($loader, array(
-                    'cache' => Defaults::$cacheDirectory,
-                    'debug' => true,
-                ));
-                $template = $twig->loadTemplate(self::$view);
-                return $template->render($data);
-            case 'handlebar':
-            case 'mustache':
-                $view = self::$viewPath . DIRECTORY_SEPARATOR .
-                    self::$view;
-                $m = new \Mustache_Engine;
-                return $m->render(file_get_contents($view), $data);
-            default:
-                throw new RestException(500, "Unsupported template system `$extension`");
+                    if (!is_readable($view)) {
+                        throw new RestException(
+                            500,
+                            "view file `$view` is not readable. Check for file presence and file permissions"
+                        );
+                    }
+
+                    $template = function ($view) use ($data) {
+                        extract($data);
+                        include $view;
+                    };
+                    $template($view);
+                    break;
+                case 'twig':
+                    $loader = new \Twig_Loader_Filesystem(static::$viewPath);
+                    $twig = new \Twig_Environment($loader, array(
+                        'cache' => Defaults::$cacheDirectory,
+                        'debug' => true,
+                    ));
+                    $template = $twig->loadTemplate(self::$view);
+                    return $template->render($data);
+                case 'handlebar':
+                case 'mustache':
+                    $view = self::$viewPath . DIRECTORY_SEPARATOR .
+                        self::$view;
+                    $m = new \Mustache_Engine;
+                    return $m->render(file_get_contents($view), $data);
+                default:
+                    throw new RestException(500, "Unsupported template system `$extension`");
+            }
+        } catch (Exception $e) {
+            static::$parseViewMetadata = false;
+            $this->reset();
+            throw $e;
         }
     }
 
