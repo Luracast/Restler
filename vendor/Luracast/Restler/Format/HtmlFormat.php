@@ -62,14 +62,19 @@ class HtmlFormat extends Format
     public function encode($data, $humanReadable = false)
     {
         try {
+            $events = $this->restler->_events;
             $data = array_merge(
-                Object::toArray($data),
+                array(
+                    'response' => Object::toArray($data),
+                    'stages' => $events,
+                    'success' => end($events) != 'message',
+                ),
                 static::$data
             );
             $params = array();
             //print_r($this->restler);
             if (isset($this->restler->apiMethodInfo->metadata)) {
-                $info = $data['info'] = $this->restler->apiMethodInfo;
+                $info = $data['api'] = $this->restler->apiMethodInfo;
                 $metadata = $info->metadata;
                 $params = $metadata['param'];
             }
@@ -79,7 +84,7 @@ class HtmlFormat extends Format
                     $param['value'] = $this->restler->apiMethodInfo->parameters[$index];
                 }
             }
-            $data['meta']['param'] = $params;
+            $data['request']['parameters'] = $params;
             if (static::$parseViewMetadata && isset($metadata['view'])) {
                 self::$view = $metadata['view'];
             }
