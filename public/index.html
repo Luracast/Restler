@@ -64,7 +64,7 @@
   use <a href="https://github.com/Luracast/Restler/tree/v2" target="_blank">Restler 2</a> instead</p>
 </blockquote>
 
-<p><a id="restler-3---x-18x" class="anchor"></a><h3>Restler 3 - <em>Better APIs by Design</em></h3></p>
+<p><a id="restler-3---x-19x" class="anchor"></a><h3>Restler 3 - <em>Better APIs by Design</em></h3></p>
 
 <ul>
 <li><a href="http://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
@@ -152,6 +152,21 @@
 <li>Source code distributed under LGPL</li>
 </ul></li>
 </ul>
+
+<p><a id="git-repository-and-the-branches" class="anchor"></a><h2>Git Repository and the Branches</h2></p>
+
+<ol>
+<li><p>Most stable and recent version is maintained at the <code>master</code> branch, previous versions
+are kept in the branches such as <code>v1</code> and <code>v2</code></p></li>
+<li><p>Version branch with the current version such as <code>v3</code> is used for building up the next release.
+It's documentation may not be updated frequently and thus reserved for the daring ones.</p></li>
+<li><p>Feature branches such as <code>features/html</code> and <code>features/router</code> are purely
+for experimentation purpose to try out a feature</p></li>
+</ol>
+
+<blockquote>
+  <p><strong>Note:-</strong> You may have to tweak the installation urls below depending on the branch of choice.</p>
+</blockquote>
 
 <p><a id="installation" class="anchor"></a><h2>Installation</h2></p>
 
@@ -307,7 +322,36 @@ $r-&gt;handle(); //serve the response
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file</p>
+  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code> in the <code>httpd.conf</code> file,
+  and might require some tweaking on some server configurations.
+  Refer to <a href="http://httpd.apache.org/docs/current/mod/mod_rewrite.html" target="_blank">mod_rewrite</a> documentation for more info.</p>
+</blockquote>
+
+<p>If you are on Nginx, you have to make sure you set the <code>server_name</code> and pass the
+PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000</p>
+
+<pre><code>server {
+        listen        80;
+        server_name   api.luracast.com; //change it to match your server name
+
+        //... other stuff
+
+        location ~ \.php$ {
+            root           /var/www/html;
+            fastcgi_pass   127.0.0.1:9000;
+            fastcgi_index  index.php;
+            fastcgi_param  SCRIPT_FILENAME  /var/www/html/$fastcgi_script_name;
+            include        fastcgi_params;
+        }
+
+        //... other stuff
+
+}
+</code></pre>
+
+<blockquote>
+  <p><strong>Note:-</strong> This requires PHP, PHP-FPM to be properly installed and configured.
+  Refer to <a href="http://wiki.nginx.org/PHPFcgiExample" target="_blank">PHP FastCGI</a> example for more info.</p>
 </blockquote>
 
 <p><a id="4-" class="anchor"></a><h3>4.</h3></p>
@@ -510,8 +554,8 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 <p><a id="changes-from-restler-3-0-rc3--only-available-on-the-v3-branch-" class="anchor"></a><h3>Changes from Restler 3.0 RC3 (only available on the v3 branch)</h3></p>
 
 <ul>
-<li>Fixes to composer.json and publish stable release as composer package on packagist</li>
-<li>New Routes class with improved routing including wild card routes</li>
+<li>Fixes to composer.json and publish stable release as composer package on packagist.</li>
+<li>New Routes class with improved routing, including wild card routes.</li>
 <li>Possibility to use any autoloader including composer's autoloader for maximum interoperability</li>
 <li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist" target="_blank">rodneyrehm/plist</a> package for CFPropertyList.</li>
 <li>Removed required packages as they are not technically "required" per se, Restler works out of the box.</li>
@@ -607,7 +651,7 @@ body to accommodate mobile and less privileged clients.</li>
 <ul>
 <li>inline doc comments <code>{@name value}</code></li>
 <li>query string params &#96;&#96;&#96; param1=value&amp;param2=value2&#96;&#96;&#96;</li>
-<li>json &#96;&#96;&#96; {"parm1": value, "param2": value2}&#96;&#96;&#96; which can be placed in multi-lines</li>
+<li>json &#96;&#96;&#96; {"param1": value, "param2": value2}&#96;&#96;&#96; which can be placed in multi-lines</li>
 </ul></li>
 <li>has <code>Defaults</code> class with static properties that can be changed to suit the needs</li>
 <li>iAuthenticate is now using <code>__isAllowed</code> method instead of <code>__isAuthenticated</code> so that same
