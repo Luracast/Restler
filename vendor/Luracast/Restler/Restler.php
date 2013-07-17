@@ -70,6 +70,11 @@ class Restler extends EventDispatcher
      */
     public $responseFormat;
     /**
+     * @var bool Used for waiting till verifying @format
+     *           before throwing content negotiation failed
+     */
+    protected $requestFormatDiffered = false;
+    /**
      * method information including metadata
      *
      * @var ApiMethodInfo
@@ -287,6 +292,7 @@ class Restler extends EventDispatcher
     {
         $args = func_get_args();
         $extensions = array();
+        $throwException = $this->requestFormatDiffered;
         foreach ($args as $className) {
 
             $obj = Util::initialize($className);
@@ -294,6 +300,9 @@ class Restler extends EventDispatcher
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
                 'iFormat interface');
+            if ($throwException && get_class($obj) == get_class($this->requestFormat)) {
+                $throwException = false;
+            }
 
             foreach ($obj->getMIMEMap() as $mime => $extension) {
                 if (!isset($this->formatMap[$extension]))
@@ -302,6 +311,12 @@ class Restler extends EventDispatcher
                     $this->formatMap[$mime] = $className;
                 $extensions[".$extension"] = true;
             }
+        }
+        if ($throwException) {
+            throw new RestException(
+                403,
+                'Content type `' . $this->requestFormat->getMIME() . '` is not supported.'
+            );
         }
         $this->formatMap['default'] = $args[0];
         $this->formatMap['extensions'] = array_keys($extensions);
@@ -411,6 +426,13 @@ class Restler extends EventDispatcher
             elseif (isset($this->formatMap[$mime])) {
                 $format = Util::initialize($this->formatMap[$mime]);
                 $format->setMIME($mime);
+            } elseif (!$this->requestFormatDiffered && isset($this->formatOverridesMap[$mime])) {
+                //if our api method is not using an @format comment
+                //to point to this $mime, we need to throw 403 as in below
+                //but since we don't know that yet, we need to defer that here
+                $format = Util::initialize($this->formatOverridesMap[$mime]);
+                $format->setMIME($mime);
+                $this->requestFormatDiffered = true;
             } else {
                 throw new RestException(
                     403,
