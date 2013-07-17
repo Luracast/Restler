@@ -46,13 +46,13 @@ function parse_backtrace($raw, $skip = 1)
 
 //print_r(get_defined_vars());
 //print_r($response);
-if (isset($info)) {
-    $arguments = implode(', ', $info->parameters);
-    $title = "{$info->className}::"
-        . "{$info->methodName}({$arguments})";
+if ($success && isset($api)) {
+    $arguments = implode(', ', $api->parameters);
+    $title = "{$api->className}::"
+        . "{$api->methodName}({$arguments})";
 } else {
     if (isset($response['error']['message'])) {
-        $title = 'Error: ' . $response['error']['message'];
+        $title = end(explode(':',$response['error']['message']));
     } else {
         $title = 'No Matching Resource';
     }
@@ -113,8 +113,9 @@ $responseHeaders = implode(PHP_EOL, headers_list());
 <head>
     <title>Restler v<?php echo Restler::VERSION?> - <?php echo $title?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link type="text/css" rel="stylesheet" media="all"
-          href="<?php echo $baseUrl ?>/debug/debug.css">
+    <style>
+        <?php include __DIR__.'/debug.css'; ?>
+    </style>
 </head>
 <body>
 {$notices}
