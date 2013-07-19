@@ -68,6 +68,7 @@ class RestException extends Exception
         505 => 'HTTP Version Not Supported'
     );
     private $details;
+    private $stage;
 
     /**
      * @param string      $httpStatusCode http status code
@@ -77,6 +78,8 @@ class RestException extends Exception
      */
     public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
     {
+        $events = Util::$restler->_events;
+        $this->stage = end($events);
         $this->details = $details;
         parent::__construct($errorMessage, $httpStatusCode, $previous);
     }
@@ -89,6 +92,21 @@ class RestException extends Exception
     public function getDetails()
     {
         return $this->details;
+    }
+
+    public function getStage()
+    {
+        return $this->stage;
+    }
+
+    public function getStages()
+    {
+        $e = Util::$restler->_events;
+        $i = in_array($this->stage, $e);
+        return array(
+            'success' => array_slice($e, 0, $i),
+            'failure' => array_slice($e, $i),
+        );
     }
 
     public function getErrorMessage()
