@@ -211,10 +211,16 @@ class Restler extends EventDispatcher
     public function handle()
     {
         try {
-            $this->dispatch('get');
-            $this->get();
-            $this->dispatch('route');
-            $this->route();
+            try {
+                $this->dispatch('get');
+                $this->get();
+                $this->dispatch('route');
+                $this->route();
+            } catch (Exception $e) {
+                $this->dispatch('negotiate');
+                $this->negotiate();
+                throw $e;
+            }
             $this->dispatch('negotiate');
             $this->negotiate();
             $this->dispatch('preFilter');
