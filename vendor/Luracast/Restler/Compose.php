@@ -62,9 +62,7 @@ class Compose implements iCompose
         if(!Util::$restler->_productionMode && self::$includeDebugInfo){
             $r += array(
                 'debug' => array(
-                    'source' => basename($exception->getFile()) . ':'
-                    . $exception->getLine() . ' at '
-                    . $exception->getStage() . ' stage',
+                    'source' => $exception->getSource(),
                     'stages' =>$exception->getStages(),
                 )
             );
