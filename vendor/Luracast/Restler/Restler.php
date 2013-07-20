@@ -26,6 +26,11 @@ class Restler extends EventDispatcher
 {
     const VERSION = '3.0.0rc4';
     /**
+     * Reference to the last exception thrown
+     * @var RestException
+     */
+    public $exception = null;
+    /**
      * Used in production mode to store the routes and more
      *
      * @var iCache
@@ -977,6 +982,8 @@ class Restler extends EventDispatcher
                 $exception
             );
         }
+
+        $this->exception = $exception;
 
         $method = 'handle' . $exception->getCode();
         $handled = false;
