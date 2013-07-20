@@ -219,6 +219,14 @@ class Restler extends EventDispatcher
             } catch (Exception $e) {
                 $this->dispatch('negotiate');
                 $this->negotiate();
+                if (!$e instanceof RestException) {
+                    $e = new RestException(
+                        500,
+                        $this->productionMode ? null : $e->getMessage(),
+                        array(),
+                        $e
+                    );
+                }
                 throw $e;
             }
             $this->dispatch('negotiate');
