@@ -75,6 +75,12 @@ class Restler extends EventDispatcher
      */
     public $responseFormat;
     /**
+     * Http status code
+     *
+     * @var int
+     */
+    public $responseCode=200;
+    /**
      * @var bool Used for waiting till verifying @format
      *           before throwing content negotiation failed
      */
@@ -953,6 +959,7 @@ class Restler extends EventDispatcher
                 $code = $this->apiMethodInfo->metadata['status'];
             }
         }
+        $this->responseCode = $code;
         @header(
             "{$_SERVER['SERVER_PROTOCOL']} $code " .
             (isset(RestException::$codes[$code]) ? RestException::$codes[$code] : '')
