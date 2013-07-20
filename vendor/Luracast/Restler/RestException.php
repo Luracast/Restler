@@ -102,7 +102,7 @@ class RestException extends Exception
     public function getStages()
     {
         $e = Util::$restler->_events;
-        $i = in_array($this->stage, $e);
+        $i = array_search($this->stage, $e);
         return array(
             'success' => array_slice($e, 0, $i),
             'failure' => array_slice($e, $i),
