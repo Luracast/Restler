@@ -1,23 +1,23 @@
 <?php
 /*
-Title: oAuth 2.0 server
-Tagline: Gaining access to Restler resouces 
+Title: OAuth2 Server
+Tagline: serving OAuth protected API
 Tags: access-control, acl, secure, authentication, authorization
-Requires: PHP >= 5.3.9
+Requires:  PHP >= 5.3.9
 Description:
 This example is part 2 in a 2 part example that shows how Restler can 
-be integrated with the popular [oAuth 2.0 Server PHP](http://bshaffer.github.io/oauth2-server-php-docs/)
+be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)
 library. This section -- the "server" -- focuses on enabling a Restler server to play the role of an 
-oAuth authorization and authentication server.
+OAuth authorization and authentication server.
 
-If you're not familiar with oAuth, it's worth familiarizing yourself with the 
-basics and in particular understanding the various workflows that oAuth 2.0 offers. 
+If you're not familiar with OAuth, it's worth familiarizing yourself with the 
+basics and in particular understanding the various workflows that OAuth 2.0 offers. 
 The following two links may help:
 
 - [Official OAuth Specification](http://tools.ietf.org/html/draft-ietf-oauth-v2): 
 a bit dry but if you want the "facts" they're there.
 - [OAuth2 Simplified](http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified): 
-a nicely summarized overview of how to think through the key aspects of oAuth 2.0
+a nicely summarized overview of how to think through the key aspects of OAuth 2.0
 
 The role of the `server application` in OAuth is:
 
@@ -27,7 +27,7 @@ button to allow the user to grant the client application these permissions.
 entitlements granted onto the Restler iAuthenticate system
 
 It's important to understand that the *workflow* of asking for access varies by "grant type" in OAuth.
-The standard grant-types that oAuth 2.0 Server PHP supports out-of-the-box are:
+The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:
 
 - **Implicit**: typically for browser based or mobile apps
 - **Authorization Code**: typically for apps running on a server
@@ -54,15 +54,17 @@ Once your storage object is ready to go just include it in the Server.php's cons
 Grant types are configured in the Server.php file as well. In 99% of cases you'll use the built-in grant types. In these cases it's just a matter of adding one (or more) 
 grant types in the constructor:
 
-        static::$server->addGrantType(
-            new OAuth2_GrantType_AuthorizationCode(static::$storage)
-        );
+```php
+static::$server->addGrantType(
+    new OAuth2_GrantType_AuthorizationCode(static::$storage)
+);
+```
 
 Creating your own grant types is an advanced topic and will not be covered here but if you feel this is required for your project then 
-reference the *Extension Grants* section in the [oAuth2 Server PHP's documentation](http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/).
+reference the *Extension Grants* section in the [OAuth2 Server 's documentation](http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/).
 
 ### Scope / Permissions ###
-The term "scope" in oAuth refers to the *amount* of *things* your authorization will allow a client application to do. Some API's simply have a 
+The term "scope" in OAuth refers to the *amount* of *things* your authorization will allow a client application to do. Some API's simply have a 
 single scope for all client application but even in this case it's important to clearly clarify to the user what things the requesting client 
 application will be able to do once the "approve button" has been pressed. In more complicated situations *scope* can be broken down into different *roles*. 
 This granularity in terms of modifying "the ask" is great way to dramatically increase client's willingness to grant permissions. 
@@ -71,35 +73,34 @@ To configure scope you will need to implement the `OAuth2\Storage\ScopeInterface
 [scope](http://bshaffer.github.io/oauth2-server-php-docs/overview/scope/). 
 
 ## Workflow ##
-Now that your `oAuth server` is setup, it will now manage both `authorization` requests as well as validate `authentication` credentials. 
+Now that your `OAuth server` is setup, it will now manage both `authorization` requests as well as validate `authentication` credentials. 
 The two flows are illustrated below:
 
-![Authorization Code Flow](../resources/auth-code-workflow.png)
+[![Authorization Code Flow](../resources/auth-code-workflow-thumb.png)](../resources/auth-code-workflow.png)
 
 ###Authorization###
-The server is intiali
 
 The client apps role in authentication is two-fold. First it must direct the user to the server to start 
-the process. And second, when the authorization has completed the client app's *callback* function will be executed 
+the process. And second, when the authorization has completed the client application's *callback* function will be executed
 and it will be responsible for saving the authorization information. 
 
 ###Authentication###
 Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's 
 authorization status in each RESTful API request. This is achieved by the client application adding a *query parameter* of 
-'code' set to the access token that the oAuth Server provided to the application in the authorization step. 
+'code' set to the access token that the OAuth Server provided to the application in the authorization step. 
 
-Note: 
+> **Note:-**
 *there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a 
 query parameter.*
 
 ## In Conclusion ##
-Many people are experientially familiar with oAuth clients either as a user who has granted apps permissions or 
-as a developer who has downloaded one of many oAuth clients to get at social data from sources like Twitter, Facebook, Foursquare, etc.
+Many people are experientially familiar with OAuth clients either as a user who has granted apps permissions or 
+as a developer who has downloaded one of many OAuth clients to get at social data from sources like Twitter, Facebook, Foursquare, etc.
 The server side of the interaction is less familiar yet it needs to be the primary focus for any RESTful API that imagines itself
 as having data of which other applications would benefit from having access to your data. Brett Shaffers's 
-[oAuth2 Server PHP](http://bshaffer.github.io/oauth2-server-php-docs/) solution focuses on the server side of the intereaction 
+[OAuth2 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) solution focuses on the server side of the interaction
 but provides both client and server components and both are now readily available to Restler customers who want to offer or connect-into 
-the world of oAuth2. 
+the world of OAuth2. 
 */
 require_once "../../../vendor/restler.php";
 require_once "OAuth2/Server.php";
