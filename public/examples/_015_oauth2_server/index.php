@@ -86,18 +86,13 @@ The two flows are illustrated below:
 
 The specific flow for authorization will be dependant on the grant-type but in this documentation we will stick to describing 
 the "authorization code" grant-type as this what the example app uses. The first step in this process is serving up authorization
-page to the user. This takes advantage of Restler's built-in support for Twig templating and only requires that you point the API
+page to the user. This takes advantage of Restler's built-in support for custom views which includes twig templating and only requires that you point the API
 to a Twig template file. For example:
 
-```php
-/**
-* @view oauth2/server/authorize.twig
-* @format HtmlFormat
-*/
-public function authorize() { ... }
-```
+    @format HtmlFormat
+    @view oauth2/server/authorize.twig
 
-The @view and @format instructions in the `authorize` method will serve the right template file out to the user. Following a user 
+The @view and @format comments above the `authorize` method will serve the date through right template(view) file out to the user. Following a user
 granting authorization, the server will use the client application's *callback* function to pass back an access token. 
 
 ###Authentication###
