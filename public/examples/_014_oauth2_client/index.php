@@ -1,6 +1,6 @@
 <?php
 /*
-Title: oAuth 2.0 client
+Title: oAuth 2.0 Client
 Tagline: Gaining access to Restler resouces 
 Tags: access-control, acl, secure, authentication, authorization
 Requires: PHP >= 5.3.9
