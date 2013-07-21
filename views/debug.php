@@ -46,34 +46,38 @@ function parse_backtrace($raw, $skip = 1)
 
 //print_r(get_defined_vars());
 //print_r($response);
+$icon;
 if ($success && isset($api)) {
     $arguments = implode(', ', $api->parameters);
+    $icon = "<icon class=\"success\"></icon>";
     $title = "{$api->className}::"
         . "{$api->methodName}({$arguments})";
 } else {
     if (isset($response['error']['message'])) {
+        $icon = '<icon class="denied"></icon>';
         $title = end(explode(':',$response['error']['message']));
     } else {
+        $icon = '<icon class="warning"></icon>';
         $title = 'No Matching Resource';
     }
 }
-function render($data)
+function render($data, $shadow=true)
 {
     $r = '';
     if (empty($data))
         return $r;
-    $r .= "<ul>\n";
+    $r .= $shadow ? "<ul class=\"shadow\">\n": "<ul>\n";
     if (is_array($data)) {
         // field name
         foreach ($data as $key => $value) {
             $r .= '<li>';
             $r .= is_numeric($key)
-                ? "[<strong>$key</strong>]"
+                ? "[<strong>$key</strong>] "
                 : "<strong>$key: </strong>";
             $r .= '<span>';
             if (is_array($value)) {
                 // recursive
-                $r .= render($value);
+                $r .= render($value,false);
             } else {
                 // value, with hyperlinked hyperlinks
                 if (is_bool($value)) {
@@ -105,34 +109,50 @@ foreach ($reqHeadersArr as $key => $value) {
 }
 // $requestHeaders = $this->encode(apache_request_headers(), FALSE,
 // FALSE);
-$responseHeaders = implode(PHP_EOL, headers_list());
+$responseHeaders = implode(PHP_EOL, headers_list()).PHP_EOL.'Status: HTTP/1.1 ';
+$responseHeaders .= Util::$restler->responseCode.' '.\Luracast\Restler\RestException::$codes[Util::$restler->responseCode];
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Restler v<?php echo Restler::VERSION?> - <?php echo $title?></title>
+    <title><?php echo $title?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style>
         <?php include __DIR__.'/debug.css'; ?>
     </style>
 </head>
 <body>
-{$notices}
-<h1><?php echo $title?></h1>
+<div id="breadcrumbs-one">
+    <?php
+    if(Util::$restler->exception){
+        $stages =  Util::$restler->exception->getStages();
+        $curStage = Util::$restler->exception->getStage();
+        foreach($stages['success'] as $stage){
+            echo "<a href=\"#\">$stage</a>";
+        }
+        foreach($stages['failure'] as $stage){
+            echo '<a href="#" class="failure">'
+                . $stage
+                . ($stage==$curStage ? ' <span class="state"/> ' : '')
+                . '</a>';
+        }
+    } else {
+        foreach(Util::$restler->_events as $stage){
+            echo "<a href=\"#\">$stage</a>";
+        }
+    }
+    ?>
+</div>
+<header>
+    <h1><?php echo $title ?></h1>
+</header>
+<article>
 
-<h2>Response:</h2>
-<?php echo render($response);?>
-<h2>Log:</h2>
-<pre>
-<?php echo $call_trace; ?>
-<?php echo implode(PHP_EOL, Util::$restler->_log); ?>
-{$all_traces}
-{$all_trace_infos}
-</pre>
-<h2>Request Headers:</h2>
-<pre><?php echo $requestHeaders ?></pre>
-<h2>Response Headers:</h2>
-<pre><?php echo $responseHeaders ?></pre>
+    <h2>Response:<right><?php echo $icon;?></right></h2>
+    <pre class="header"><?php echo $responseHeaders ?></pre>
+    <?php echo render($response); ?>
+    <p>Restler v<?php echo Restler::VERSION?></p>
+</article>
 </body>
 </html>
