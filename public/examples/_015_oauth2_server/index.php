@@ -1,10 +1,21 @@
 <?php
 /*
-Title: OAuth2 Server
-Tagline: serving OAuth protected API
+Title: Serve OAuth2
+Tagline: protected API
 Tags: access-control, acl, secure, authentication, authorization
 Requires:  PHP >= 5.3.9
 Description:
+
+### Setting up the server example
+
+In order to run this example on your localhost do the following
+
+1. run composer update to make sure you have
+    - twig template library
+    - bshaffer's oauth2 libaray
+2. make sure `public/examples/_015_oauth2_server/cache` has write permissions to create the compiled template files
+3. make sure `public/examples/_015_oauth2_server/OAuth2/db` has write permission, this is where `oauth.sqlite` file be created at run time
+
 This example is part 2 in a 2 part example that shows how Restler can 
 be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)
 library. This section -- the "server" -- focuses on enabling a Restler server to play the role of an 
@@ -31,16 +42,10 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:
 
 - **Implicit**: typically for browser based or mobile apps
 - **Authorization Code**: typically for apps running on a server
-- **Password Credientials**: typically used for apps that are owned by the same organisation as the OAuth service provider (aka, the Twitter client, etc.)
+- **Password Credentials**: typically used for apps that are owned by the same organisation as the OAuth service provider (aka, the Twitter client, etc.)
 - **Client Credentials**: used by client's who want to update meta information about their site (URL's, logo's, etc.)
 - **JWT Auth Grant**: the client submits a *JSON Web Token* in a request to the token endpoint. An access token (without a refresh token) is then returned directly.
-- **Refresh Token**: client can submit refresh token and recieve a new access token
-
-## Server Setup ##
-The server is configured in `Server.php` and then inialized in `index.php`:
-
-> * Server.php (oauth configuration)
-> * index.php (initialization/configuration)
+- **Refresh Token**: client can submit refresh token and receive a new access token
 
 ### Storage ###
 The first thing you will need to consider when setting up the server is what database technology you'd like to use to manage state. In this example the storage is 
@@ -90,8 +95,8 @@ authorization status in each RESTful API request. This is achieved by the client
 'code' set to the access token that the OAuth Server provided to the application in the authorization step. 
 
 > **Note:-**
-*there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a 
-query parameter.*
+> there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a
+> query parameter.
 
 ## In Conclusion ##
 Many people are experientially familiar with OAuth clients either as a user who has granted apps permissions or 

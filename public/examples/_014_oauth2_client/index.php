@@ -1,10 +1,20 @@
 <?php
 /*
-Title: OAuth2 Client
-Tagline: Lets consume an OAuth Service
+Title: Consume OAuth2
+Tagline: with a OAuth 2.0 Client
 Tags: access-control, acl, secure, authentication, authorization
 Requires:  PHP >= 5.3.9
 Description:
+
+### Setting up the client example
+
+In order to run this example on your localhost do the following
+
+1. run composer update to make sure you have
+    - twig template library
+    - bshaffer's oauth2 libaray
+2. make sure `public/examples/_014_oauth2_client/cache` has write permissions to create the compiled template files
+
 This example is part 1 in a 2 part example that shows how Restler can 
 be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)
 library. This section -- the "client" -- is about asking for access rights and keeping a record of the
