@@ -45,9 +45,8 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:
 
 ### Storage ###
 The first thing you will need to consider when setting up the server is what database technology you'd like to use to manage state. In this example the storage is 
-managed in a local SQLite database but examples are given mySQL, Mongo DB, Doctrine, and several other storage technologies. If there isn't an example template available 
-then simply find the one that most closely resembles your technology (e.g., couchbase is similar to mongo, etc.) and spend the time to understand a API that is 
-being implemented. Creating your own storage object is relatively easy so don't use the lack of a pre-existing template as an excuse not move forward.
+managed in a local SQLite database but examples are given for mySQL, Mongo DB, Doctrine, and several other storage technologies. If there isn't an example template available 
+then simply find the one that most closely resembles your technology (e.g., couchbase is similar to mongo, etc.) and spend the time to understand the required interfaces for a storage class. Creating your own storage object is relatively easy so don't use the lack of a pre-existing template as an excuse not move forward.
 
 Once your storage object is ready to go just include it in the Server.php's constructor.
 
@@ -62,7 +61,7 @@ static::$server->addGrantType(
 ```
 
 Creating your own grant types is an advanced topic and will not be covered here but if you feel this is required for your project then 
-reference the *Extension Grants* section in the [OAuth2 Server 's documentation](http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/).
+reference the *Extension Grants* section in the [OAuth2 Server's documentation](http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/).
 
 ### Scope / Permissions ###
 The term "scope" in OAuth refers to the *amount* of *things* your authorization will allow a client application to do. Some API's simply have a 
@@ -81,14 +80,20 @@ The two flows are illustrated below:
 
 ###Authorization###
 
-The client apps role in authentication is two-fold. First it must direct the user to the server to start 
-the process. And second, when the authorization has completed the client application's *callback* function will be executed
-and it will be responsible for saving the authorization information. 
+The specific flow for authorization will be dependant on the grant-type but in this documentation we will stick to describing 
+the "authorization code" grant-type as this what the example app uses. The first step in this process is serving up authorization
+page to the user. This takes advantage of Restler's built-in support for custom views which includes twig templating and only requires that you point the API
+to a Twig template file. For example:
+
+    @format HtmlFormat
+    @view oauth2/server/authorize.twig
+
+The @view and @format instructions in the `authorize` method will serve the right template file out to the user. Following a user 
+granting authorization, the server will use the client application's *callback* function to pass back an access token. 
 
 ###Authentication###
-Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's 
-authorization status in each RESTful API request. This is achieved by the client application adding a *query parameter* of 
-'code' set to the access token that the OAuth Server provided to the application in the authorization step. 
+For any Restler resources which require authentication, the OAuth server will use the 'code' *query parameter* and compare that to 
+it's internal records to validate that the user has the appropriate permissions. 
 
 > **Note:-**
 > there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a

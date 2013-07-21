@@ -271,9 +271,8 @@ The standard grant-types that OAuth 2.0 <abbr>Server</abbr>  supports out-of-the
 <p><a id="storage" class="anchor"></a><h3>Storage</h3></p>
 
 <p>The first thing you will need to consider when setting up the server is what database technology you'd like to use to manage state. In this example the storage is 
-managed in a local SQLite database but examples are given mySQL, Mongo DB, Doctrine, and several other storage technologies. If there isn't an example template available 
-then simply find the one that most closely resembles your technology (e.g., couchbase is similar to mongo, etc.) and spend the time to understand a API that is 
-being implemented. Creating your own storage object is relatively easy so don't use the lack of a pre-existing template as an excuse not move forward.</p>
+managed in a local SQLite database but examples are given for mySQL, Mongo DB, Doctrine, and several other storage technologies. If there isn't an example template available 
+then simply find the one that most closely resembles your technology (e.g., couchbase is similar to mongo, etc.) and spend the time to understand the required interfaces for a storage class. Creating your own storage object is relatively easy so don't use the lack of a pre-existing template as an excuse not move forward.</p>
 
 <p>Once your storage object is ready to go just include it in the <abbr>Server</abbr>.php's constructor.</p>
 
@@ -288,7 +287,7 @@ grant types in the constructor:</p>
 </code></pre>
 
 <p>Creating your own grant types is an advanced topic and will not be covered here but if you feel this is required for your project then 
-reference the <em>Extension Grants</em> section in the <a href="http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/" target="_blank">OAuth2 <abbr>Server</abbr> 's documentation</a>.</p>
+reference the <em>Extension Grants</em> section in the <a href="http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/" target="_blank">OAuth2 <abbr>Server</abbr>'s documentation</a>.</p>
 
 <p><a id="scope---permissions" class="anchor"></a><h3>Scope / Permissions</h3></p>
 
@@ -309,15 +308,22 @@ The two flows are illustrated below:</p>
 
 <p><a id="authorization" class="anchor"></a><h3>Authorization</h3></p>
 
-<p>The client apps role in authentication is two-fold. First it must direct the user to the server to start 
-the process. And second, when the authorization has completed the client application's <em>callback</em> function will be executed
-and it will be responsible for saving the authorization information.</p>
+<p>The specific flow for authorization will be dependant on the grant-type but in this documentation we will stick to describing 
+the "authorization code" grant-type as this what the example app uses. The first step in this process is serving up authorization
+page to the user. This takes advantage of Restler's built-in support for custom views which includes twig templating and only requires that you point the API
+to a Twig template file. For example:</p>
+
+<pre><code>@format HtmlFormat
+@view oauth2/server/authorize.twig
+</code></pre>
+
+<p>The @view and @format instructions in the <code>authorize</code> method will serve the right template file out to the user. Following a user 
+granting authorization, the server will use the client application's <em>callback</em> function to pass back an access token.</p>
 
 <p><a id="authentication" class="anchor"></a><h3>Authentication</h3></p>
 
-<p>Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's 
-authorization status in each RESTful API request. This is achieved by the client application adding a <em>query parameter</em> of 
-'code' set to the access token that the OAuth <abbr>Server</abbr> provided to the application in the authorization step.</p>
+<p>For any Restler resources which require authentication, the OAuth server will use the 'code' <em>query parameter</em> and compare that to 
+it's internal records to validate that the user has the appropriate permissions.</p>
 
 <blockquote>
   <p><strong>Note:-</strong>
