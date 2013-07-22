@@ -1,6 +1,10 @@
 Minimal Example <requires>PHP >= 5.3</requires>
 ---------------
-<tag>basic</tag> <tag>validation</tag> <tag>http status</tag> 
+
+ <tag>basic</tag>
+ <tag>validation</tag>
+ <tag>http status</tag>
+
 
 Shows the bare minimum code needed to get your RESTful api server
  up and running

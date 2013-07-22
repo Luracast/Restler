@@ -1,6 +1,16 @@
 CRUD <requires>PHP >= 5.3</requires>
 ----
-<tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag> 
+
+ <tag>create</tag>
+ <tag>retrieve</tag>
+ <tag>read</tag>
+ <tag>update</tag>
+ <tag>delete</tag>
+ <tag>post</tag>
+ <tag>get</tag>
+ <tag>put</tag>
+ <tag>routing</tag>
+
 
 Create, Retrieve, Update and Delete using
  HTTP methods POST, GET, PUT and DELETE respectively.

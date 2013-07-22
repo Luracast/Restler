@@ -1,6 +1,12 @@
 Access Control <requires>PHP >= 5.3</requires>
 --------------
-<tag>access-control</tag> <tag>acl</tag> <tag>secure</tag> <tag>authentication</tag> <tag>authorization</tag> 
+
+ <tag>access-control</tag>
+ <tag>acl</tag>
+ <tag>secure</tag>
+ <tag>authentication</tag>
+ <tag>authorization</tag>
+
 
 This example shows how you can extend the authentication system to create
 a robust access control system. As a added bonus we also restrict api
@@ -17,20 +23,21 @@ Try it out yourself [here](explorer/index.html#!/v1)
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)
-> * Access.php      (api)
 > * Resources.php      (api)
+> * Access.php      (api)
 > * AccessControl.php      (auth)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
-    GET admin                     ⇠ Access::admin()
-    GET all                       ⇠ Access::all()
-    GET resources                 ⇠ Luracast\Restler\Resources::index()
-    GET resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-    GET user                      ⇠ Access::user()
+    GET admin                      ⇠ Access::admin()
+    GET all                        ⇠ Access::all()
+    GET resources                  ⇠ Luracast\Restler\Resources::index()
+    GET resources/generatenickname ⇠ Luracast\Restler\Resources::generateNickname()
+    GET resources/v{version}       ⇠ Luracast\Restler\Resources::get()
+    GET resources/{id}-v{version}  ⇠ Luracast\Restler\Resources::get()
+    GET user                       ⇠ Access::user()
 
 
 
@@ -40,8 +47,8 @@ This API Server exposes the following URIs
 
 
 *[index.php]: _010_access_control/index.php
-*[Access.php]: _010_access_control/Access.php
 *[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Access.php]: _010_access_control/Access.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php

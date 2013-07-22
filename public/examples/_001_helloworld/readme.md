@@ -1,6 +1,8 @@
 Hello World Example <requires>PHP >= 5.3</requires>
 -------------------
-<tag>basic</tag> 
+
+<tag>basic</tag>
+
 
 Basic hello world example to get started with Restler 3.
 

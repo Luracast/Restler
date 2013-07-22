@@ -5,7 +5,8 @@ Tagline: rendering custom views
 Tags: view,html
 Requires: PHP >= 5.3
 Description:
-This example shows how to use vendor specific media types for versioning
+
+Add a custom view to your data using view templates in various formats
 */
 require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;

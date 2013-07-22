@@ -1,6 +1,13 @@
 Routing <requires>PHP >= 5.3</requires>
 -------
-<tag>routing</tag> <tag>get</tag> <tag>post</tag> <tag>put</tag> <tag>delete</tag> <tag>patch</tag> 
+
+ <tag>routing</tag>
+ <tag>get</tag>
+ <tag>post</tag>
+ <tag>put</tag>
+ <tag>delete</tag>
+ <tag>patch</tag>
+
 
 ### Two ways of Routing
 
