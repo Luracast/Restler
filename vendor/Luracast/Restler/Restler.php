@@ -254,10 +254,12 @@ class Restler extends EventDispatcher
                 $this->apiClassInstance
                     = Util::initialize($this->apiMethodInfo->className);
             }
+            $this->preCall();
             $this->dispatch('call');
             $this->call();
             $this->dispatch('compose');
             $this->compose();
+            $this->postCall();
             $this->dispatch('respond');
             $this->respond();
         } catch (Exception $e) {
@@ -1214,8 +1216,8 @@ class Restler extends EventDispatcher
         $o = & $this->apiMethodInfo;
         $preCall = '_' . $this->requestFormat->getExtension() .
             '_' . $o->methodName;
-
         if (method_exists($o->className, $preCall)) {
+            $this->dispatch('preCall');
             call_user_func_array(array(
                 $this->apiClassInstance,
                 $preCall
@@ -1223,11 +1225,18 @@ class Restler extends EventDispatcher
         }
     }
 
+    /**
+     * call _{methodName}_{extension} if exists with the composed and
+     * serialized (applying the repose format) response data
+     *
+     * @example _get_json
+     */
     protected function postCall()
     {
         $postCall = '_' . $this->apiMethod . '_' .
             $this->responseFormat->getExtension();
         if (method_exists($this->apiClassInstance, $postCall)) {
+            $this->dispatch('postCall');
             $this->responseData = call_user_func(array(
                 $this->apiClassInstance,
                 $postCall
