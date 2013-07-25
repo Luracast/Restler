@@ -218,12 +218,9 @@ class Restler extends EventDispatcher
     {
         try {
             try {
-                $this->dispatch('get');
                 $this->get();
-                $this->dispatch('route');
                 $this->route();
             } catch (Exception $e) {
-                $this->dispatch('negotiate');
                 $this->negotiate();
                 if (!$e instanceof RestException) {
                     $e = new RestException(
@@ -235,39 +232,24 @@ class Restler extends EventDispatcher
                 }
                 throw $e;
             }
-            $this->dispatch('negotiate');
             $this->negotiate();
-            if (!empty($this->filterClasses)) {
-                $this->dispatch('preFilter');
-                $this->preFilter();
-            }
+            $this->preFilter();
             $this->authenticate();
-            if(!empty($this->filterObjects)) {
-                $this->dispatch('postFilter');
-                $this->postFilter();
-            }
-            if (Defaults::$autoValidationEnabled) {
-                $this->dispatch('validate');
-                $this->validate();
-            }
+            $this->postFilter();
+            $this->validate();
             if(!$this->apiClassInstance) {
                 $this->apiClassInstance
                     = Util::initialize($this->apiMethodInfo->className);
             }
             $this->preCall();
-            $this->dispatch('call');
             $this->call();
-            $this->dispatch('compose');
             $this->compose();
             $this->postCall();
-            $this->dispatch('respond');
             $this->respond();
         } catch (Exception $e) {
             try{
-                $this->dispatch('message');
                 $this->message($e);
             } catch (Exception $e2) {
-                $this->dispatch('message');
                 $this->message($e2);
             }
         }
@@ -287,6 +269,7 @@ class Restler extends EventDispatcher
      */
     protected function get()
     {
+        $this->dispatch('get');
         if (empty($this->formatMap)) {
             $this->setSupportedFormats('JsonFormat');
         }
@@ -506,6 +489,7 @@ class Restler extends EventDispatcher
      */
     protected function route()
     {
+        $this->dispatch('route');
         if (!is_array($this->requestData)) {
             $this->requestData = array(
                 Defaults::$fullRequestDataName => $this->requestData
@@ -547,6 +531,7 @@ class Restler extends EventDispatcher
      */
     protected function negotiate()
     {
+        $this->dispatch('negotiate');
         $this->negotiateCORS();
         $this->responseFormat = $this->negotiateResponseFormat();
         $this->negotiateCharset();
@@ -758,6 +743,10 @@ class Restler extends EventDispatcher
      */
     protected function preFilter()
     {
+        if (empty($this->filterClasses)) {
+            return;
+        }
+        $this->dispatch('preFilter');
         foreach ($this->filterClasses as $filterClass) {
             /**
              * @var iFilter
@@ -825,6 +814,10 @@ class Restler extends EventDispatcher
      */
     protected function postFilter()
     {
+        if(empty($this->filterObjects)) {
+            return;
+        }
+        $this->dispatch('postFilter');
         foreach ($this->filterObjects as $filterObj) {
             Util::initialize($filterObj, $this->apiMethodInfo->metadata);
         }
@@ -832,6 +825,11 @@ class Restler extends EventDispatcher
 
     protected function validate()
     {
+        if (!Defaults::$autoValidationEnabled) {
+            return;
+        }
+        $this->dispatch('validate');
+
         $o = & $this->apiMethodInfo;
         foreach ($o->metadata['param'] as $index => $param) {
             $info = & $param [CommentParser::$embeddedDataName];
@@ -861,6 +859,7 @@ class Restler extends EventDispatcher
 
     protected function call()
     {
+        $this->dispatch('call');
         $o = & $this->apiMethodInfo;
         $accessLevel = max(Defaults::$apiAccessLevel,
             $o->accessLevel);
@@ -888,6 +887,7 @@ class Restler extends EventDispatcher
 
     protected function compose()
     {
+        $this->dispatch('compose');
         $this->composeHeaders();
         /**
          * @var iCompose Default Composer
@@ -970,6 +970,7 @@ class Restler extends EventDispatcher
 
     protected function respond()
     {
+        $this->dispatch('respond');
         //handle throttling
         if (Defaults::$throttle) {
             $elapsed = time() - $this->startTime;
@@ -982,6 +983,8 @@ class Restler extends EventDispatcher
 
     protected function message(Exception $exception)
     {
+        $this->dispatch('message');
+
         if (!$exception instanceof RestException) {
             $exception = new RestException(
                 500,
