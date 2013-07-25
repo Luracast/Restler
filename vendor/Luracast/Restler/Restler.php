@@ -241,7 +241,6 @@ class Restler extends EventDispatcher
                 $this->dispatch('preFilter');
                 $this->preFilter();
             }
-            $this->dispatch('authenticate');
             $this->authenticate();
             if(!empty($this->filterObjects)) {
                 $this->dispatch('postFilter');
@@ -786,6 +785,7 @@ class Restler extends EventDispatcher
             $o->accessLevel);
         try {
             if ($accessLevel || count($this->filterObjects)) {
+                $this->dispatch('authenticate');
                 if (!count($this->authClasses)) {
                     throw new RestException(401);
                 }
