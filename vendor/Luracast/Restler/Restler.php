@@ -237,12 +237,16 @@ class Restler extends EventDispatcher
             }
             $this->dispatch('negotiate');
             $this->negotiate();
-            $this->dispatch('preFilter');
-            $this->preFilter();
+            if (!empty($this->filterClasses)) {
+                $this->dispatch('preFilter');
+                $this->preFilter();
+            }
             $this->dispatch('authenticate');
             $this->authenticate();
-            $this->dispatch('postFilter');
-            $this->postFilter();
+            if(!empty($this->filterObjects)) {
+                $this->dispatch('postFilter');
+                $this->postFilter();
+            }
             if (Defaults::$autoValidationEnabled) {
                 $this->dispatch('validate');
                 $this->validate();
