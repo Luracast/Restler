@@ -70,15 +70,20 @@ class Util
      * When the deeply nested property is found its value is returned, otherwise
      * false is returned.
      *
-     * @param array  $from   array to extract the value from
-     * @param string $key... pass more to go deeply inside the array
+     * @param array         $from   array to extract the value from
+     * @param string|array  $key... pass more to go deeply inside the array
+     *                              alternatively you can pass a single array
      *
      * @return bool|mixed false when not found, value otherwise
      */
     public static function arrayValue($from, $key /**, $key2 ... $key`n` */)
     {
-        $keys = func_get_args();
-        array_shift($keys);
+        if(is_array($key)){
+            $keys =  $key;
+        } else {
+            $keys = func_get_args();
+            array_shift($keys);
+        }
         foreach ($keys as $key) {
             if (isset($from[$key]) && is_array($from)) {
                 $from = $from[$key];
