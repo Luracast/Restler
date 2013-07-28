@@ -85,7 +85,7 @@ function render($data, $shadow=true)
                 }
                 $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
                 if (strpos($value, 'http://') === 0) {
-                    $r .= '<a href=\"' . $value . '\">' . $value . '</a>';
+                    $r .= '<a href="' . $value . '">' . $value . '</a>';
                 } else {
                     $r .= $value;
                 }
