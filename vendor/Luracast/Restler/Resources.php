@@ -563,11 +563,13 @@ class Resources implements iUseAuthentication
         }
         $this->_mapResources($allRoutes, $map);
         foreach ($map as $path => $description) {
-            //add id
-            $r->apis[] = array(
-                'path' => "/resources/{$path}$this->formatString",
-                'description' => $description
-            );
+            if(false === strpos($path,'{')){
+                //add id
+                $r->apis[] = array(
+                    'path' => "/resources/{$path}$this->formatString",
+                    'description' => $description
+                );
+            }
         }
         return $r;
     }
