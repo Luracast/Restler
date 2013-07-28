@@ -322,7 +322,18 @@ versioning (next example)...">
 <span>Vendor MIME
 <small><i>custom media type for versioning</i></small>
 </span> <span class="right">&nbsp;12</span></a></li>
- <li><a href="_013_html/readme.html" title="Add a custom view to your data using view templates in various formats">
+ <li><a href="_013_html/readme.html" title="Add a custom view to your data using view templates in various formats.
+It currently supports
+
+ - php (default)
+ - twig (requires `"twig/twig"`)
+ - mustache / handlebar (requires `"mustache/mustache"`)
+
+> **Note:-** if you want your favourite template library to be supported
+> submit a pull request, just follow the style of existing ones as a guide
+
+When HtmlFormat is used with out defining a view it uses debug view to present
+data and more information">
 <span>Html Format
 <small><i>rendering custom views</i></small>
 </span> <span class="right">&nbsp;13</span></a></li>

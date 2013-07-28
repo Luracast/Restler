@@ -217,24 +217,49 @@
 <p><tag>view</tag>
  <tag>html</tag></p>
 
-<p>Add a custom view to your data using view templates in various formats</p>
+<p>Add a custom view to your data using view templates in various formats.
+It currently supports</p>
+
+<ul>
+<li>php (default)</li>
+<li>twig (requires <code>"twig/twig"</code>)</li>
+<li>mustache / handlebar (requires <code>"mustache/mustache"</code>)</li>
+</ul>
+
+<blockquote>
+  <p><strong>Note:-</strong> if you want your favourite template library to be supported
+  submit a pull request, just follow the style of existing ones as a guide</p>
+</blockquote>
+
+<p>When HtmlFormat is used with out defining a view it uses debug view to present
+data and more information</p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
   
   <ul>
   <li><abbr title="_013_html/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="_013_html/RichContent.php">RichContent.php</abbr>      (api)</li>
+  <li><abbr title="_013_html/Tasks.php">Tasks.php</abbr>      (api)</li>
+  <li><abbr title="_013_html/DB/iTasks.php">iTasks.php</abbr>      (helper)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Format/HtmlFormat.php">HtmlFormat.php</abbr>      (format)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Format/HtmlFormat.php">HtmlFormat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET richcontent      ⇠ RichContent::index()
-GET richcontent/view ⇠ RichContent::view()
+<pre><code>GET    resources                  ⇠ Luracast\Restler\Resources::index()
+GET    resources/generatenickname ⇠ Luracast\Restler\Resources::generateNickname()
+GET    resources/v{version}       ⇠ Luracast\Restler\Resources::get()
+GET    resources/{id}-v{version}  ⇠ Luracast\Restler\Resources::get()
+POST   tasks                      ⇠ Tasks::post()
+GET    tasks                      ⇠ Tasks::index()
+GET    tasks/setdb                ⇠ Tasks::setDB()
+PATCH  tasks/{id}                 ⇠ Tasks::patch()
+GET    tasks/{id}                 ⇠ Tasks::get()
+DELETE tasks/{id}                 ⇠ Tasks::delete()
 </code></pre>
 
 </article>
