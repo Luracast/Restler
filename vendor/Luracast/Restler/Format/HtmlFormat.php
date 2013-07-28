@@ -85,8 +85,16 @@ class HtmlFormat extends Format
                 }
             }
             $data['request']['parameters'] = $params;
+            $inner =  null;
             if (static::$parseViewMetadata && isset($metadata['view'])) {
-                self::$view = $metadata['view'];
+                if(is_array($metadata['view'])){
+                    self::$view = $metadata['view']['description'];
+                    if (($value = Util::arrayValue($metadata['view'], 'properties', 'value'))) {
+                       $inner = explode('.',$value);
+                    }
+                }else{
+                    self::$view = $metadata['view'];
+                }
             }
             if (false === ($i = strpos(self::$view, '.'))) {
                 $extension = self::$format;
@@ -106,11 +114,47 @@ class HtmlFormat extends Format
                         );
                     }
 
-                    $template = function ($view) use ($data) {
+                    $data = $inner ? Util::arrayValue($data,$inner): $data;
+
+                        $template = function ($view) use ($data) {
+                        $_ = function () use ($data){
+                            extract($data);
+                            $args = func_get_args();
+                            $task = array_shift($args);
+                            switch ($task) {
+                                case 'require':
+                                case 'include':
+                                    $file = HtmlFormat::$viewPath.DIRECTORY_SEPARATOR.$args[0];
+                                    if(is_readable($file)){
+                                        if(isset($args[1]) && ($arrays  = Util::arrayValue($data,$args[1]))){
+                                            $str = '';
+                                            foreach($arrays as $arr){
+                                                extract($arr);
+                                                $str.= include $file;
+                                            }
+                                            return $str;
+                                        } else {
+                                            return include $file;
+                                        }
+                                    }
+                                    break;
+                                case 'if':
+                                    if (count($args) < 2)
+                                        $args[1] = '';
+                                    if (count($args) < 3)
+                                        $args[2] = '';
+                                    return $args[0] ? $args[1] : $args[2];
+                                    break;
+                                default:
+                                    return call_user_func_array($task, $args);
+                            }
+                        };
                         extract($data);
-                        include $view;
+                        return @include $view;
                     };
-                    $template($view);
+                    $value = $template($view);
+                    if(is_string($value))
+                        echo $value;
                     break;
                 case 'twig':
                     $loader = new \Twig_Loader_Filesystem(static::$viewPath);
