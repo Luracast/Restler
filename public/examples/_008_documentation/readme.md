@@ -41,23 +41,22 @@ Happy Exploring! :)
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)
-> * Resources.php      (api)
 > * Authors.php      (api)
+> * Resources.php      (api)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
-    GET    authors                    ⇠ improved\Authors::index()
-    POST   authors                    ⇠ improved\Authors::post()
-    DELETE authors/{id}               ⇠ improved\Authors::delete()
-    PATCH  authors/{id}               ⇠ improved\Authors::patch()
-    GET    authors/{id}               ⇠ improved\Authors::get()
-    PUT    authors/{id}               ⇠ improved\Authors::put()
-    GET    resources                  ⇠ Luracast\Restler\Resources::index()
-    GET    resources/generatenickname ⇠ Luracast\Restler\Resources::generateNickname()
-    GET    resources/v{version}       ⇠ Luracast\Restler\Resources::get()
-    GET    resources/{id}-v{version}  ⇠ Luracast\Restler\Resources::get()
+    GET    authors                   ⇠ improved\Authors::index()
+    POST   authors                   ⇠ improved\Authors::post()
+    DELETE authors/{id}              ⇠ improved\Authors::delete()
+    PATCH  authors/{id}              ⇠ improved\Authors::patch()
+    PUT    authors/{id}              ⇠ improved\Authors::put()
+    GET    authors/{id}              ⇠ improved\Authors::get()
+    GET    resources                 ⇠ Luracast\Restler\Resources::index()
+    GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+    GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 
 
 
@@ -67,8 +66,8 @@ This API Server exposes the following URIs
 
 
 *[index.php]: _008_documentation/index.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[Authors.php]: _008_documentation/improved/Authors.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

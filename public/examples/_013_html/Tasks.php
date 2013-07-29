@@ -16,7 +16,7 @@ class Tasks
         if (!$this->db) {
             $this->setDB(new TasksInSession());
         }
-        HtmlFormat::$data['title'] = 'Restler 3 Task List';
+        HtmlFormat::$data['title'] = 'What\'s Next on Restler 3?';
         HtmlFormat::$data['description'] = 'What should we focus on as the next?';
     }
 

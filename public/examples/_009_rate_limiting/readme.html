@@ -167,6 +167,8 @@
 
 <li><tag title="Get Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">get</tag><badge>4</badge></li>
 
+<li><tag title="Handlebar Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">handlebar</tag></li>
+
 <li><tag title="Html Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">html</tag></li>
 
 <li><tag title="Http Status Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">http status</tag><badge>2</badge></li>
@@ -177,7 +179,11 @@
 
 <li><tag title="Mime Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mime</tag></li>
 
+<li><tag title="Mustache Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">mustache</tag></li>
+
 <li><tag title="Patch Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt;">patch</tag></li>
+
+<li><tag title="Php Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">php</tag></li>
 
 <li><tag title="Post Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">post</tag><badge>4</badge></li>
 
@@ -195,7 +201,11 @@
 
 <li><tag title="Secure Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt; &lt;a href=&quot;../_014_oauth2_client/readme.html&quot;&gt;OAuth2 Client&lt;/a&gt; &lt;a href=&quot;../_015_oauth2_server/readme.html&quot;&gt;OAuth2 Server&lt;/a&gt;">secure</tag><badge>3</badge></li>
 
+<li><tag title="Template Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">template</tag></li>
+
 <li><tag title="Throttle Example(s)" data-content="&lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">throttle</tag></li>
+
+<li><tag title="Twig Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">twig</tag></li>
 
 <li><tag title="Update Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">update</tag><badge>3</badge></li>
 
@@ -261,9 +271,9 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
   <ul>
   <li><abbr title="_009_rate_limiting/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Filter/RateLimit.php">RateLimit.php</abbr>      (filter)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/SessionCache.php">SessionCache.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/ratelimited/Authors.php">Authors.php</abbr>      (api)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/KeyAuth.php">KeyAuth.php</abbr>      (auth)</li>
   <li><abbr title="_009_rate_limiting/Author.php">Author.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
@@ -273,16 +283,15 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    authors                    ⇠ ratelimited\Authors::index()
-POST   authors                    ⇠ ratelimited\Authors::post()
-DELETE authors/{id}               ⇠ ratelimited\Authors::delete()
-PATCH  authors/{id}               ⇠ ratelimited\Authors::patch()
-GET    authors/{id}               ⇠ ratelimited\Authors::get()
-PUT    authors/{id}               ⇠ ratelimited\Authors::put()
-GET    resources                  ⇠ Luracast\Restler\Resources::index()
-GET    resources/generatenickname ⇠ Luracast\Restler\Resources::generateNickname()
-GET    resources/v{version}       ⇠ Luracast\Restler\Resources::get()
-GET    resources/{id}-v{version}  ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET    authors                   ⇠ ratelimited\Authors::index()
+POST   authors                   ⇠ ratelimited\Authors::post()
+DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
+PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
+PUT    authors/{id}              ⇠ ratelimited\Authors::put()
+GET    authors/{id}              ⇠ ratelimited\Authors::get()
+GET    resources                 ⇠ Luracast\Restler\Resources::index()
+GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 </code></pre>
 
 <p>We expect the following behaviour from this example.</p>

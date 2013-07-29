@@ -44,9 +44,9 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 > 
 > * index.php      (gateway)
 > * RateLimit.php      (filter)
-> * Resources.php      (api)
 > * SessionCache.php      (helper)
 > * Authors.php      (api)
+> * Resources.php      (api)
 > * KeyAuth.php      (auth)
 > * Author.php      (helper)
 > * restler.php      (framework)
@@ -54,16 +54,15 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 
 This API Server exposes the following URIs
 
-    GET    authors                    ⇠ ratelimited\Authors::index()
-    POST   authors                    ⇠ ratelimited\Authors::post()
-    DELETE authors/{id}               ⇠ ratelimited\Authors::delete()
-    PATCH  authors/{id}               ⇠ ratelimited\Authors::patch()
-    GET    authors/{id}               ⇠ ratelimited\Authors::get()
-    PUT    authors/{id}               ⇠ ratelimited\Authors::put()
-    GET    resources                  ⇠ Luracast\Restler\Resources::index()
-    GET    resources/generatenickname ⇠ Luracast\Restler\Resources::generateNickname()
-    GET    resources/v{version}       ⇠ Luracast\Restler\Resources::get()
-    GET    resources/{id}-v{version}  ⇠ Luracast\Restler\Resources::get()
+    GET    authors                   ⇠ ratelimited\Authors::index()
+    POST   authors                   ⇠ ratelimited\Authors::post()
+    DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
+    PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
+    PUT    authors/{id}              ⇠ ratelimited\Authors::put()
+    GET    authors/{id}              ⇠ ratelimited\Authors::get()
+    GET    resources                 ⇠ Luracast\Restler\Resources::index()
+    GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
+    GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
 
 
 
@@ -97,9 +96,9 @@ bin/behat  features/examples/_009_rate_limiting.feature
 
 *[index.php]: _009_rate_limiting/index.php
 *[RateLimit.php]: ../../vendor/Luracast/Restler/Filter/RateLimit.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[SessionCache.php]: _009_rate_limiting/SessionCache.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[Author.php]: _009_rate_limiting/Author.php
 *[restler.php]: ../../vendor/restler.php

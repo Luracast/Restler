@@ -26,9 +26,10 @@ class TasksInSession implements iTasks
     {
         $_SESSION['id_gen'] = 1;
         $_SESSION['tasks'] = array();
-        $this->insert(array('text' => 'One'));
-        $this->insert(array('text' => 'Two'));
-        $this->insert(array('text' => 'Three'));
+        $this->insert(array('text' => 'OAuth 2'));
+        $this->insert(array('text' => 'If-Modified-Since'));
+        $this->insert(array('text' => 'E-Tag'));
+        $this->insert(array('text' => 'ORM Examples'));
     }
 
     /**
