@@ -13,6 +13,7 @@ class HtmlFormat extends Format
     public static $mime = 'text/html';
     public static $extension = 'html';
     public static $view = 'debug';
+    public static $errorView = 'debug.php';
     public static $format = 'php';
     protected static $parseViewMetadata = true;
     /**
@@ -86,13 +87,15 @@ class HtmlFormat extends Format
             }
             $data['request']['parameters'] = $params;
             $inner =  null;
-            if (static::$parseViewMetadata && isset($metadata['view'])) {
-                if(is_array($metadata['view'])){
+            if(!$data['success'] && !is_null(static::$errorView)) {
+                self::$view = static::$errorView;
+            }elseif (static::$parseViewMetadata && isset($metadata['view'])) {
+                if (is_array($metadata['view'])) {
                     self::$view = $metadata['view']['description'];
                     if (($value = Util::arrayValue($metadata['view'], 'properties', 'value'))) {
-                       $inner = explode('.',$value);
+                        $inner = explode('.', $value);
                     }
-                }else{
+                } else {
                     self::$view = $metadata['view'];
                 }
             }
