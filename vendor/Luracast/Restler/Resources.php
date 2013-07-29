@@ -40,12 +40,19 @@ class Resources implements iUseAuthentication
      */
     public static $placeFormatExtensionBeforeDynamicParts = true;
     /**
+     * @var bool should we group all the operations with the same url or not
+     */
+    public static $groupOperations = false;
+    /**
      * @var null|callable if the api methods are under access control mechanism
      * you can attach a function here that returns true or false to determine
      * visibility of a protected api method. this function will receive method
      * info as the only parameter.
      */
     public static $accessControlFunction = null;
+    /**
+     * @var array type mapping for converting data types to javascript / swagger
+     */
     public static $dataTypeAlias = array(
         'string' => 'string',
         'int' => 'int',
@@ -69,8 +76,21 @@ class Resources implements iUseAuthentication
     public $formatString = '';
     private $_models;
     private $_bodyParam;
-    private $crud = array('POST' => 'create', 'GET' => 'retrieve',
-        'PUT' => 'update', 'DELETE' => 'delete', 'PATCH' => 'partial update');
+    private $crud = array(
+        'POST' => 'create',
+        'GET' => 'retrieve',
+        'PUT' => 'update',
+        'DELETE' => 'delete',
+        'PATCH' => 'partial update'
+    );
+    private static $prefixes = array(
+        'get' => 'retrieve',
+        'index' => 'list',
+        'post' => 'create',
+        'put' => 'update',
+        'patch' => 'modify',
+        'delete' => 'remove',
+    );
     private $_authenticated = false;
 
     public function __construct()
@@ -181,7 +201,7 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = $this->generateNickname((array) $route);
+                $nickname = $this->_nickname($route);
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
@@ -261,16 +281,21 @@ class Resources implements iUseAuthentication
                     }
                 }
                 $api = false;
-                foreach ($r->apis as $a) {
-                    if ($a->path == "/$fullPath") {
-                        $api = $a;
-                        break;
+
+                if(static::$groupOperations){
+                    foreach ($r->apis as $a) {
+                        if ($a->path == "/$fullPath") {
+                            $api = $a;
+                            break;
+                        }
                     }
                 }
+
                 if (!$api) {
                     $api = $this->_api("/$fullPath", $description);
                     $r->apis[] = $api;
                 }
+
                 $api->operations[] = $operation;
             }
         }
@@ -279,12 +304,39 @@ class Resources implements iUseAuthentication
         }
         if (!is_null($r))
             $r->models = $this->_models;
+        usort(
+           $r->apis,
+            function($a, $b){
+                $order = array(
+                    'GET' => 1,
+                    'POST' => 2,
+                    'PUT' => 3,
+                    'PATCH' => 4,
+                    'DELETE' => 5
+                );
+                return
+                    $order[$a->operations[0]->httpMethod]
+                    >
+                    $order[$b->operations[0]->httpMethod];
+
+            }
+        );
         return $r;
     }
 
-    protected function generateNickname(array $route)
+    protected function _nickname(array $route)
     {
-        return $route['methodName'];
+        $method = $route['methodName'];
+        if(isset(self::$prefixes[$method])){
+            $method = self::$prefixes[$method];
+        } else {
+            $method = str_replace(
+                array_keys(self::$prefixes),
+                array_values(self::$prefixes),
+                $method
+            );
+        }
+        return $method;
     }
 
     private function _noNamespace($className)
