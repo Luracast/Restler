@@ -20,7 +20,7 @@ class Tasks
         HtmlFormat::$data['description'] = 'What should we focus on as the next?';
     }
 
-    protected function setDB(iTasks $db)
+    private function setDB(iTasks $db)
     {
         $this->db = $db;
     }
