@@ -63,7 +63,7 @@ class HtmlFormat extends Format
     public function encode($data, $humanReadable = false)
     {
         try {
-            $events = $this->restler->_events;
+            $events = $this->restler->getEvents();
             $data = array_merge(
                 array(
                     'response' => Object::toArray($data),
