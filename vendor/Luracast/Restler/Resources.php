@@ -131,7 +131,7 @@ class Resources implements iUseAuthentication
     public function get($version, $id = '')
     {
         if (!Defaults::$useUrlBasedVersioning
-            && $version != $this->restler->_requestedApiVersion
+            && $version != $this->restler->getRequestedApiVersion()
         ) {
             throw new RestException(404);
         }
@@ -214,7 +214,7 @@ class Resources implements iUseAuthentication
                     ? $m['classDescription']
                     : $className . ' API';
                 if (empty($m['description'])) {
-                    $m['description'] = $this->restler->_productionMode
+                    $m['description'] = $this->restler->getProductionMode()
                         ? ''
                         : 'routes to <mark>'
                         . $route['className']
@@ -222,7 +222,7 @@ class Resources implements iUseAuthentication
                         . $route['methodName'] . '();</mark>';
                 }
                 if (empty($m['longDescription'])) {
-                    $m['longDescription'] = $this->restler->_productionMode
+                    $m['longDescription'] = $this->restler->getProductionMode()
                         ? ''
                         : 'Add PHPDoc long description to '
                         . "<mark>$className::"
@@ -356,9 +356,9 @@ class Resources implements iUseAuthentication
     private function _resourceListing()
     {
         $r = new stdClass();
-        $r->apiVersion = (string)$this->restler->_apiVersion;
+        $r->apiVersion = (string)$this->restler->getApiVersion();
         $r->swaggerVersion = "1.1";
-        $r->basePath = $this->restler->_baseUrl;
+        $r->basePath = $this->restler->getBaseUrl();
         $r->apis = array();
         return $r;
     }
@@ -368,7 +368,7 @@ class Resources implements iUseAuthentication
         $r = new stdClass();
         $r->path = $path;
         $r->description =
-            empty($description) && $this->restler->_productionMode
+            empty($description) && $this->restler->getProductionMode()
                 ? 'Use PHPDoc comment to describe here'
                 : $description;
         $r->operations = array();
@@ -409,7 +409,7 @@ class Resources implements iUseAuthentication
         $r->name = $param['name'];
         $r->description = !empty($param['description'])
             ? $param['description'] . '.'
-            : ($this->restler->_productionMode
+            : ($this->restler->getProductionMode()
                 ? ''
                 : 'add <mark>@param {type} $' . $r->name
                 . ' {comment}</mark> to describe here');
@@ -648,7 +648,7 @@ class Resources implements iUseAuthentication
 
                 if ($resource == 'resources'
                     || (!Defaults::$useUrlBasedVersioning
-                        && $version != $this->restler->_requestedApiVersion)
+                        && $version != $this->restler->getRequestedApiVersion())
                 ) {
                     continue;
                 }
