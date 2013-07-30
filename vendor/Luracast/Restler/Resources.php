@@ -232,7 +232,8 @@ class Resources implements iUseAuthentication
                 $operation = $this->_operation(
                     $nickname,
                     $httpMethod,
-                    $m['description'],
+                    $m['description']. ($route['accessLevel'] > 1
+                        ? ' <strong>&#1138;</strong>' : ' &nbsp;'),
                     $m['longDescription']
                 );
                 if (isset($m['throws'])) {
