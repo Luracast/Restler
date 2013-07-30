@@ -300,6 +300,9 @@ Explore the api and try it out by openings `explorer/index.html` from the web ro
 
 Happy Exploring! :)
 
+> **Note:-** Using eAccelerator can make restler to fail as it removes the comments.
+> More info can be found [here](http://wildlyinaccurate.com/eaccelerator-and-doctrine-2)
+
 You may use the following php doc comments to annotate your methods.
 All tags except @url can also be defined at the class level.
 
