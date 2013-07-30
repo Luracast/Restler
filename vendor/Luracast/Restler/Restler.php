@@ -81,6 +81,10 @@ class Restler extends EventDispatcher
      */
     public $responseCode=200;
     /**
+     * @var string base url of the api service
+     */
+    protected $baseUrl;
+    /**
      * @var bool Used for waiting till verifying @format
      *           before throwing content negotiation failed
      */
@@ -1180,6 +1184,69 @@ class Restler extends EventDispatcher
     }
 
     /**
+     * Associated array that maps formats to their respective format class name
+     *
+     * @return array
+     */
+    public function getFormatMap()
+    {
+        return $this->formatMap;
+    }
+
+    /**
+     * API version requested by the client
+     * @return int
+     */
+    public function getRequestedApiVersion()
+    {
+        return $this->requestedApiVersion;
+    }
+
+    /**
+     * When false, restler will run in debug mode and parse the class files
+     * every time to map it to the URL
+     *
+     * @return bool
+     */
+    public function getProductionMode()
+    {
+        return $this->productionMode;
+    }
+
+    /**
+     * Chosen API version
+     *
+     * @return int
+     */
+    public function getApiVersion()
+    {
+        return $this->apiVersion;
+    }
+
+    /**
+     * Base Url of the API Service
+     *
+     * @return string
+     *
+     * @example http://localhost/restler3
+     * @example http://restler3.com
+     */
+    public function getBaseUrl()
+    {
+        return $this->baseUrl;
+    }
+
+    /**
+     * List of events that fired already
+     *
+     * @return array
+     */
+    public function getEvents()
+    {
+        return $this->events;
+    }
+
+    /**
      * Magic method to expose some protected variables
      *
      * @param string $name name of the hidden property
@@ -1246,5 +1313,4 @@ class Restler extends EventDispatcher
             ), $this->responseData);
         }
     }
-
 }
