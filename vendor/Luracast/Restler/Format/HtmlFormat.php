@@ -13,7 +13,6 @@ class HtmlFormat extends Format
     public static $mime = 'text/html';
     public static $extension = 'html';
     public static $view = 'debug';
-    public static $errorView = 'debug.php';
     public static $format = 'php';
     protected static $parseViewMetadata = true;
     /**
@@ -63,7 +62,7 @@ class HtmlFormat extends Format
     public function encode($data, $humanReadable = false)
     {
         try {
-            $events = $this->restler->getEvents();
+            $events = $this->restler->_events;
             $data = array_merge(
                 array(
                     'response' => Object::toArray($data),
@@ -86,18 +85,8 @@ class HtmlFormat extends Format
                 }
             }
             $data['request']['parameters'] = $params;
-            $inner =  null;
-            if(!$data['success'] && !is_null(static::$errorView)) {
-                self::$view = static::$errorView;
-            }elseif (static::$parseViewMetadata && isset($metadata['view'])) {
-                if (is_array($metadata['view'])) {
-                    self::$view = $metadata['view']['description'];
-                    if (($value = Util::nestedValue($metadata['view'], 'properties', 'value'))) {
-                        $inner = explode('.', $value);
-                    }
-                } else {
-                    self::$view = $metadata['view'];
-                }
+            if (static::$parseViewMetadata && isset($metadata['view'])) {
+                self::$view = $metadata['view'];
             }
             if (false === ($i = strpos(self::$view, '.'))) {
                 $extension = self::$format;
@@ -117,47 +106,11 @@ class HtmlFormat extends Format
                         );
                     }
 
-                    $data = $inner ? Util::nestedValue($data,$inner): $data;
-
-                        $template = function ($view) use ($data) {
-                        $_ = function () use ($data){
-                            extract($data);
-                            $args = func_get_args();
-                            $task = array_shift($args);
-                            switch ($task) {
-                                case 'require':
-                                case 'include':
-                                    $file = HtmlFormat::$viewPath.DIRECTORY_SEPARATOR.$args[0];
-                                    if(is_readable($file)){
-                                        if(isset($args[1]) && ($arrays  = Util::nestedValue($data,$args[1]))){
-                                            $str = '';
-                                            foreach($arrays as $arr){
-                                                extract($arr);
-                                                $str.= include $file;
-                                            }
-                                            return $str;
-                                        } else {
-                                            return include $file;
-                                        }
-                                    }
-                                    break;
-                                case 'if':
-                                    if (count($args) < 2)
-                                        $args[1] = '';
-                                    if (count($args) < 3)
-                                        $args[2] = '';
-                                    return $args[0] ? $args[1] : $args[2];
-                                    break;
-                                default:
-                                    return call_user_func_array($task, $args);
-                            }
-                        };
+                    $template = function ($view) use ($data) {
                         extract($data);
-                        return @include $view;
+                        include $view;
                     };
-                    $value = $template($view);
-                    if(is_string($value))
-                        echo $value;
+                    $template($view);
                     break;
                 case 'twig':
                     $loader = new \Twig_Loader_Filesystem(static::$viewPath);

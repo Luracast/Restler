@@ -1,7 +1,7 @@
 <?php
 /*
-Title: OAuth2 Server
-Tagline: offering protected API
+Title: Serve OAuth2
+Tagline: protected API
 Tags: access-control, acl, secure, authentication, authorization
 Requires:  PHP >= 5.3.9
 Description:
@@ -15,10 +15,6 @@ In order to run this example on your localhost do the following
     - bshaffer's oauth2 libaray
 2. make sure `public/examples/_015_oauth2_server/cache` has write permissions to create the compiled template files
 3. make sure `public/examples/_015_oauth2_server/OAuth2/db` has write permission, this is where `oauth.sqlite` file be created at run time
-
-Now that you are ready, lets look at the example
-
-Content:
 
 This example is part 2 in a 2 part example that shows how Restler can 
 be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)

@@ -78,7 +78,7 @@ class RestException extends Exception
      */
     public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
     {
-        $events = Util::$restler->getEvents();
+        $events = Util::$restler->_events;
         $this->stage = $previous ? $events[count($events)-2] : end($events);
         $this->details = $details;
         parent::__construct($errorMessage, $httpStatusCode, $previous);

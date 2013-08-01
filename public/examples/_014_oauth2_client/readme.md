@@ -1,12 +1,6 @@
-OAuth2 Client <requires>PHP >= 5.3.9</requires>
--------------
-
- <tag>access-control</tag>
- <tag>acl</tag>
- <tag>secure</tag>
- <tag>authentication</tag>
- <tag>authorization</tag>
-
+Consume OAuth2 <requires>PHP >= 5.3.9</requires>
+--------------
+<tag>access-control</tag> <tag>acl</tag> <tag>secure</tag> <tag>authentication</tag> <tag>authorization</tag> 
 
 ### Setting up the client example
 
@@ -14,25 +8,10 @@ In order to run this example on your localhost do the following
 
 1. run composer update to make sure you have
     - twig template library
-    - bshaffer's oauth2 library
+    - bshaffer's oauth2 libaray
 2. make sure `public/examples/_014_oauth2_client/cache` has write permissions to create the compiled template files
 
-Now that you are ready, lets look at the example
-
-> This API Server is made using the following php files/folders
-> 
-> * index.php      (gateway)
-> * Client.php      (api)
-> * restler.php      (framework)
-> * JsonFormat.php      (format)
-
-This API Server exposes the following URIs
-
-    GET authorized ⇠ OAuth2\Client::authorized()
-    GET v1         ⇠ OAuth2\Client::index()
-
-
-This example is part 1 in a 2 part example that shows how Restler can
+This example is part 1 in a 2 part example that shows how Restler can 
 be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)
 library. This section -- the "client" -- is about asking for access rights and keeping a record of the
 important state mechanisms required to communicate with Restler once access has been granted. 
@@ -90,12 +69,27 @@ the [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) modul
 
 For more information on how to start using this functionality with Restler be sure to look at the [OAuth Server example](../_015_oauth2_server/index.php).
 
+> This API Server is made using the following php files/folders
+> 
+> * index      ()
+> * Client      ()
+> * restler      ()
+> * JsonFormat      ()
+
+This API Server exposes the following URIs
+
+    GET authorized ⇠ OAuth2\Client::authorized()
+    GET v1         ⇠ OAuth2\Client::index()
 
 
 
 
-*[index.php]: _014_oauth2_client/index.php
-*[Client.php]: _014_oauth2_client/OAuth2/Client.php
-*[restler.php]: ../../vendor/restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+
+
+
+
+*[index]: 
+*[Client]: 
+*[restler]: 
+*[JsonFormat]: 
 

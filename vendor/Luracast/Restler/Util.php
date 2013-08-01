@@ -61,35 +61,27 @@ class Util
     }
 
     /**
-     * Get the value deeply nested inside an array / object
+     * Get the value deeply nested inside an array
      *
-     * Using isset() to test the presence of nested value can give a false positive
+     * Using isset() to test the presence of nested value can give false positive
      *
      * This method serves that need
      *
      * When the deeply nested property is found its value is returned, otherwise
      * false is returned.
      *
-     * @param array         $from   array to extract the value from
-     * @param string|array  $key... pass more to go deeply inside the array
-     *                              alternatively you can pass a single array
+     * @param array  $from   array to extract the value from
+     * @param string $key... pass more to go deeply inside the array
      *
      * @return bool|mixed false when not found, value otherwise
      */
-    public static function nestedValue($from, $key /**, $key2 ... $key`n` */)
+    public static function arrayValue($from, $key /**, $key2 ... $key`n` */)
     {
-        if(is_array($key)){
-            $keys =  $key;
-        } else {
-            $keys = func_get_args();
-            array_shift($keys);
-        }
+        $keys = func_get_args();
+        array_shift($keys);
         foreach ($keys as $key) {
-            if (is_array($from) && isset($from[$key])) {
+            if (isset($from[$key]) && is_array($from)) {
                 $from = $from[$key];
-                continue;
-            } elseif (is_object($from) && isset($from->{$key})) {
-                $from = $from->{$key};
                 continue;
             }
             return false;

@@ -1,12 +1,6 @@
-OAuth2 Server <requires>PHP >= 5.3.9</requires>
--------------
-
- <tag>access-control</tag>
- <tag>acl</tag>
- <tag>secure</tag>
- <tag>authentication</tag>
- <tag>authorization</tag>
-
+Serve OAuth2 <requires>PHP >= 5.3.9</requires>
+------------
+<tag>access-control</tag> <tag>acl</tag> <tag>secure</tag> <tag>authentication</tag> <tag>authorization</tag> 
 
 ### Setting up the server example
 
@@ -17,23 +11,6 @@ In order to run this example on your localhost do the following
     - bshaffer's oauth2 libaray
 2. make sure `public/examples/_015_oauth2_server/cache` has write permissions to create the compiled template files
 3. make sure `public/examples/_015_oauth2_server/OAuth2/db` has write permission, this is where `oauth.sqlite` file be created at run time
-
-Now that you are ready, lets look at the example
-
-> This API Server is made using the following php files/folders
-> 
-> * index.php      (gateway)
-> * Server.php      (auth)
-> * restler.php      (framework)
-> * JsonFormat.php      (format)
-
-This API Server exposes the following URIs
-
-    GET  access    ⇠ OAuth2\Server::access()
-    POST authorize ⇠ OAuth2\Server::postAuthorize()
-    GET  authorize ⇠ OAuth2\Server::authorize()
-    POST grant     ⇠ OAuth2\Server::postGrant()
-
 
 This example is part 2 in a 2 part example that shows how Restler can 
 be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)
@@ -111,7 +88,7 @@ to a Twig template file. For example:
     @format HtmlFormat
     @view oauth2/server/authorize.twig
 
-The @view and @format comments above the `authorize` method will serve the date through right template(view) file out to the user. Following a user
+The @view and @format instructions in the `authorize` method will serve the right template file out to the user. Following a user 
 granting authorization, the server will use the client application's *callback* function to pass back an access token. 
 
 ###Authentication###
@@ -131,12 +108,29 @@ as having data of which other applications would benefit from having access to y
 but provides both client and server components and both are now readily available to Restler customers who want to offer or connect-into 
 the world of OAuth2.
 
+> This API Server is made using the following php files/folders
+> 
+> * index      ()
+> * Server      ()
+> * restler      ()
+> * JsonFormat      ()
+
+This API Server exposes the following URIs
+
+    GET  access    ⇠ OAuth2\Server::access()
+    POST authorize ⇠ OAuth2\Server::postAuthorize()
+    GET  authorize ⇠ OAuth2\Server::authorize()
+    POST grant     ⇠ OAuth2\Server::postGrant()
 
 
 
 
-*[index.php]: _015_oauth2_server/index.php
-*[Server.php]: _015_oauth2_server/OAuth2/Server.php
-*[restler.php]: ../../vendor/restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+
+
+
+
+*[index]: 
+*[Server]: 
+*[restler]: 
+*[JsonFormat]: 
 
