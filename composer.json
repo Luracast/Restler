@@ -45,7 +45,7 @@
         "symfony/yaml":"*",
         "mustache/mustache": "dev-master",
         "twig/twig": "v1.13.0",
-        "bshaffer/oauth2-server-php":"v0.3"
+        "bshaffer/oauth2-server-php":"v0.9"
     },
     "repositories":[
         {
