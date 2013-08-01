@@ -222,7 +222,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>9</small></div>
-<p><a id="rate-limiting-x-679xphp----5-3x-680x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="rate-limiting-x-683xphp----5-3x-684x" class="anchor"></a><h2>Rate Limiting <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>create</tag>
  <tag>retrieve</tag>
@@ -283,15 +283,14 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    authors                   ⇠ ratelimited\Authors::index()
-POST   authors                   ⇠ ratelimited\Authors::post()
-DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
-PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
-PUT    authors/{id}              ⇠ ratelimited\Authors::put()
-GET    authors/{id}              ⇠ ratelimited\Authors::get()
-GET    resources                 ⇠ Luracast\Restler\Resources::index()
-GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET    authors        ⇠ ratelimited\Authors::index()
+POST   authors        ⇠ ratelimited\Authors::post()
+PATCH  authors/{id}   ⇠ ratelimited\Authors::patch()
+DELETE authors/{id}   ⇠ ratelimited\Authors::delete()
+PUT    authors/{id}   ⇠ ratelimited\Authors::put()
+GET    authors/{id}   ⇠ ratelimited\Authors::get()
+GET    resources      ⇠ Luracast\Restler\Resources::index()
+GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
 </code></pre>
 
 <p>We expect the following behaviour from this example.</p>

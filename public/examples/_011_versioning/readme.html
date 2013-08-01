@@ -222,7 +222,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>11</small></div>
-<p><a id="versioning-x-780xphp----5-3x-781x" class="anchor"></a><h2>Versioning <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="versioning-x-784xphp----5-3x-785x" class="anchor"></a><h2>Versioning <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>versioning</tag></p>
 
@@ -274,18 +274,15 @@ You need to namespace it as <code>{vendor}\{product}\v{version}</code></p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET bmi                          ⇠ v1\BMI::index()
-GET resources                    ⇠ Luracast\Restler\Resources::index()
-GET resources/v{version}         ⇠ Luracast\Restler\Resources::get()
-GET resources/{id}-v{version}    ⇠ Luracast\Restler\Resources::get()
-GET v1/bmi                       ⇠ v1\BMI::index()
-GET v1/resources                 ⇠ Luracast\Restler\Resources::index()
-GET v1/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-GET v1/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-GET v2/bmi                       ⇠ v2\BMI::index()
-GET v2/resources                 ⇠ Luracast\Restler\Resources::index()
-GET v2/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-GET v2/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET bmi               ⇠ v1\BMI::index()
+GET resources         ⇠ Luracast\Restler\Resources::index()
+GET resources/{id}    ⇠ Luracast\Restler\Resources::get()
+GET v1/bmi            ⇠ v1\BMI::index()
+GET v1/resources      ⇠ Luracast\Restler\Resources::index()
+GET v1/resources/{id} ⇠ Luracast\Restler\Resources::get()
+GET v2/bmi            ⇠ v2\BMI::index()
+GET v2/resources      ⇠ Luracast\Restler\Resources::index()
+GET v2/resources/{id} ⇠ Luracast\Restler\Resources::get()
 </code></pre>
 
 <p>Try the following links in your browser</p>

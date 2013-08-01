@@ -39,18 +39,15 @@ $r->setAPIVersion(2);
 
 This API Server exposes the following URIs
 
-    GET bmi                          ⇠ SomeVendor\v1\BMI::index()
-    GET resources                    ⇠ Luracast\Restler\Resources::index()
-    GET resources/v{version}         ⇠ Luracast\Restler\Resources::get()
-    GET resources/{id}-v{version}    ⇠ Luracast\Restler\Resources::get()
-    GET v1/bmi                       ⇠ SomeVendor\v1\BMI::index()
-    GET v1/resources                 ⇠ Luracast\Restler\Resources::index()
-    GET v1/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET v1/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-    GET v2/bmi                       ⇠ SomeVendor\v2\BMI::index()
-    GET v2/resources                 ⇠ Luracast\Restler\Resources::index()
-    GET v2/resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET v2/resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
+    GET bmi               ⇠ SomeVendor\v1\BMI::index()
+    GET resources         ⇠ Luracast\Restler\Resources::index()
+    GET resources/{id}    ⇠ Luracast\Restler\Resources::get()
+    GET v1/bmi            ⇠ SomeVendor\v1\BMI::index()
+    GET v1/resources      ⇠ Luracast\Restler\Resources::index()
+    GET v1/resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET v2/bmi            ⇠ SomeVendor\v2\BMI::index()
+    GET v2/resources      ⇠ Luracast\Restler\Resources::index()
+    GET v2/resources/{id} ⇠ Luracast\Restler\Resources::get()
 
 
 Here is how you will consume different versions of the api using cURL.

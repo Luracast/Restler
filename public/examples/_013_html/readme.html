@@ -222,7 +222,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>13</small></div>
-<p><a id="html-format-x-854xphp----5-3x-855x" class="anchor"></a><h2>Html Format <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="html-format-x-858xphp----5-3x-859x" class="anchor"></a><h2>Html Format <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>view</tag>
  <tag>html</tag>
@@ -273,7 +273,6 @@ full path of a folder</p>
   <ul>
   <li><abbr title="_013_html/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_013_html/Tasks.php">Tasks.php</abbr>      (api)</li>
-  <li><abbr title="_013_html/DB/iTasks.php">iTasks.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
@@ -283,15 +282,13 @@ full path of a folder</p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    resources                 ⇠ Luracast\Restler\Resources::index()
-GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-POST   tasks                     ⇠ Tasks::post()
-GET    tasks                     ⇠ Tasks::index()
-GET    tasks/setdb               ⇠ Tasks::setDB()
-PATCH  tasks/{id}                ⇠ Tasks::patch()
-GET    tasks/{id}                ⇠ Tasks::get()
-DELETE tasks/{id}                ⇠ Tasks::delete()
+<pre><code>GET    resources      ⇠ Luracast\Restler\Resources::index()
+GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
+GET    tasks          ⇠ Tasks::index()
+POST   tasks          ⇠ Tasks::post()
+PATCH  tasks/{id}     ⇠ Tasks::patch()
+GET    tasks/{id}     ⇠ Tasks::get()
+DELETE tasks/{id}     ⇠ Tasks::delete()
 </code></pre>
 
 <p>In this example, we are building tasks api and also a single page application

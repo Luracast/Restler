@@ -222,7 +222,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>10</small></div>
-<p><a id="access-control-x-741xphp----5-3x-742x" class="anchor"></a><h2>Access Control <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="access-control-x-745xphp----5-3x-746x" class="anchor"></a><h2>Access Control <requires>PHP >= 5.3</requires></h2></p>
 
 <p><tag>access-control</tag>
  <tag>acl</tag>
@@ -259,12 +259,11 @@ documentation based on the same.</p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET admin                     ⇠ Access::admin()
-GET all                       ⇠ Access::all()
-GET resources                 ⇠ Luracast\Restler\Resources::index()
-GET resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-GET resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-GET user                      ⇠ Access::user()
+<pre><code>GET admin          ⇠ Access::admin()
+GET all            ⇠ Access::all()
+GET resources      ⇠ Luracast\Restler\Resources::index()
+GET resources/{id} ⇠ Luracast\Restler\Resources::get()
+GET user           ⇠ Access::user()
 </code></pre>
 
 </article>

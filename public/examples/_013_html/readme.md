@@ -46,7 +46,6 @@ full path of a folder
 > 
 > * index.php      (gateway)
 > * Tasks.php      (api)
-> * iTasks.php      (helper)
 > * Resources.php      (api)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
@@ -54,15 +53,13 @@ full path of a folder
 
 This API Server exposes the following URIs
 
-    GET    resources                 ⇠ Luracast\Restler\Resources::index()
-    GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-    POST   tasks                     ⇠ Tasks::post()
-    GET    tasks                     ⇠ Tasks::index()
-    GET    tasks/setdb               ⇠ Tasks::setDB()
-    PATCH  tasks/{id}                ⇠ Tasks::patch()
-    GET    tasks/{id}                ⇠ Tasks::get()
-    DELETE tasks/{id}                ⇠ Tasks::delete()
+    GET    resources      ⇠ Luracast\Restler\Resources::index()
+    GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET    tasks          ⇠ Tasks::index()
+    POST   tasks          ⇠ Tasks::post()
+    PATCH  tasks/{id}     ⇠ Tasks::patch()
+    GET    tasks/{id}     ⇠ Tasks::get()
+    DELETE tasks/{id}     ⇠ Tasks::delete()
 
 
 In this example, we are building tasks api and also a single page application
@@ -97,7 +94,6 @@ API Explorer [here](explorer/index.html)
 
 *[index.php]: _013_html/index.php
 *[Tasks.php]: _013_html/Tasks.php
-*[iTasks.php]: _013_html/DB/iTasks.php
 *[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php

@@ -31,12 +31,11 @@ Try it out yourself [here](explorer/index.html#!/v1)
 
 This API Server exposes the following URIs
 
-    GET admin                     ⇠ Access::admin()
-    GET all                       ⇠ Access::all()
-    GET resources                 ⇠ Luracast\Restler\Resources::index()
-    GET resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-    GET user                      ⇠ Access::user()
+    GET admin          ⇠ Access::admin()
+    GET all            ⇠ Access::all()
+    GET resources      ⇠ Luracast\Restler\Resources::index()
+    GET resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET user           ⇠ Access::user()
 
 
 
