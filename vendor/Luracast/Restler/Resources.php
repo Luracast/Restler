@@ -65,14 +65,28 @@ class Resources implements iUseAuthentication
         'object' => 'Object',
         'stdClass' => 'Object',
         'mixed' => 'string',
-		'DateTime' => 'Date'
+        'DateTime' => 'Date'
     );
+    /**
+     * @var array configurable symbols to differentiate public, hybrid and
+     * protected api
+     */
+    public static $apiDescriptionSuffixSymbols = array(
+        0 => ' &nbsp;', //public api
+        1 => ' <strong>&#926;</strong>', //hybrid api
+        2 => ' <strong>&#1138;</strong>', //protected api
+    );
+
     /**
      * Injected at runtime
      *
      * @var Restler instance of restler
      */
     public $restler;
+    /**
+     * @var string when format is not used as the extension this property is
+     * used to set the extension manually
+     */
     public $formatString = '';
     private $_models;
     private $_bodyParam;
@@ -232,8 +246,11 @@ class Resources implements iUseAuthentication
                 $operation = $this->_operation(
                     $nickname,
                     $httpMethod,
-                    $m['description']. ($route['accessLevel'] > 1
-                        ? ' <strong>&#1138;</strong>' : ' &nbsp;'),
+                    $m['description'] .
+                    ($route['accessLevel'] > 2
+                        ? static::$apiDescriptionSuffixSymbols[2]
+                        : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
+                    ),
                     $m['longDescription']
                 );
                 if (isset($m['throws'])) {
@@ -519,8 +536,8 @@ class Resources implements iUseAuthentication
                 $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
                 $description = @$propertyMetaData['description'] ? : '';
 
-				$type = explode(" ", $type);
-				$type = array_shift($type);
+                $type = explode(" ", $type);
+                $type = array_shift($type);
 
                 if (class_exists($type)) {
                     $this->_model($type);
