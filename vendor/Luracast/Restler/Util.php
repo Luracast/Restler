@@ -76,7 +76,7 @@ class Util
      *
      * @return bool|mixed false when not found, value otherwise
      */
-    public static function arrayValue($from, $key /**, $key2 ... $key`n` */)
+    public static function nestedValue($from, $key /**, $key2 ... $key`n` */)
     {
         if(is_array($key)){
             $keys =  $key;

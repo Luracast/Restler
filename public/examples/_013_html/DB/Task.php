@@ -29,9 +29,9 @@ class Task implements iValueObject
     public static function __set_state(array $properties)
     {
         $task = new Task();
-        $task->id = Util::arrayValue($properties, 'id');
-        $task->position = Util::arrayValue($properties, 'position');
-        $task->text = Util::arrayValue($properties, 'text');
+        $task->id = Util::nestedValue($properties, 'id');
+        $task->position = Util::nestedValue($properties, 'position');
+        $task->text = Util::nestedValue($properties, 'text');
         return $task;
     }
 

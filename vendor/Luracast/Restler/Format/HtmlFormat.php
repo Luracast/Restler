@@ -92,7 +92,7 @@ class HtmlFormat extends Format
             }elseif (static::$parseViewMetadata && isset($metadata['view'])) {
                 if (is_array($metadata['view'])) {
                     self::$view = $metadata['view']['description'];
-                    if (($value = Util::arrayValue($metadata['view'], 'properties', 'value'))) {
+                    if (($value = Util::nestedValue($metadata['view'], 'properties', 'value'))) {
                         $inner = explode('.', $value);
                     }
                 } else {
@@ -117,7 +117,7 @@ class HtmlFormat extends Format
                         );
                     }
 
-                    $data = $inner ? Util::arrayValue($data,$inner): $data;
+                    $data = $inner ? Util::nestedValue($data,$inner): $data;
 
                         $template = function ($view) use ($data) {
                         $_ = function () use ($data){
@@ -129,7 +129,7 @@ class HtmlFormat extends Format
                                 case 'include':
                                     $file = HtmlFormat::$viewPath.DIRECTORY_SEPARATOR.$args[0];
                                     if(is_readable($file)){
-                                        if(isset($args[1]) && ($arrays  = Util::arrayValue($data,$args[1]))){
+                                        if(isset($args[1]) && ($arrays  = Util::nestedValue($data,$args[1]))){
                                             $str = '';
                                             foreach($arrays as $arr){
                                                 extract($arr);

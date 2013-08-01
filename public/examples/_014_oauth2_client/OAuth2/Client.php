@@ -110,27 +110,27 @@ class Client
         // render error if applicable
         ($error['error_description'] =
             //OAuth error
-            Util::arrayValue($response, 'error_description')) ||
+            Util::nestedValue($response, 'error_description')) ||
         ($error['error_description'] =
             //Rester exception
-            Util::arrayValue($response, 'error', 'message')) ||
+            Util::nestedValue($response, 'error', 'message')) ||
         ($error['error_description'] =
             //cURL error
-            Util::arrayValue($response, 'errorMessage')) ||
+            Util::nestedValue($response, 'errorMessage')) ||
         ($error['error_description'] =
             //cURL error with out message
-            Util::arrayValue($response, 'errorNumber')) ||
+            Util::nestedValue($response, 'errorNumber')) ||
         ($error['error_description'] =
             'Unknown Error');
 
-        $error_uri = Util::arrayValue($response, 'error_uri');
+        $error_uri = Util::nestedValue($response, 'error_uri');
 
         if($error_uri){
             $error['error_uri'] = $error_uri;
         }
 
         // if it is successful, call the API with the retrieved token
-        if (($token = Util::arrayValue($response,'access_token'))) {
+        if (($token = Util::nestedValue($response,'access_token'))) {
             // make request to the API for awesome data
             $endpoint = self::$serverUrl . '/access?access_token=' . $token;
             $response = $curl->request($endpoint);
