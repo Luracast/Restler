@@ -133,17 +133,20 @@ class Resources implements iUseAuthentication
     /**
      * @access hybrid
      *
-     * @param int    $version
      * @param string $id
      *
      * @throws RestException
      * @return null|stdClass
      *
-     * @url    GET {id}-v{version}
-     * @url    GET v{version}
+     * @url    GET {id}
      */
-    public function get($version, $id = '')
+    public function get($id = '')
     {
+        $version = 1;
+        if(false !== ($pos = strpos($id, '-'))){
+            $version =  intval(substr($id,$pos+2));
+            $id = substr($id,0,$pos);
+        }
         if (!Defaults::$useUrlBasedVersioning
             && $version != $this->restler->getRequestedApiVersion()
         ) {
@@ -685,7 +688,9 @@ class Resources implements iUseAuthentication
                     continue;
                 }
 
-                $resource = $resource ? $resource . "-v$version" : "v$version";
+                $resource = $resource
+                    ? ($version == 1 ? $resource : $resource . "-v$version")
+                    : "v$version";
 
                 if (empty($map[$resource])) {
                     $map[$resource] = isset(
