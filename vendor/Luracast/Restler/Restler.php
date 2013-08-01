@@ -580,10 +580,11 @@ class Restler extends EventDispatcher
      */
     protected function negotiateResponseFormat()
     {
+        $metadata = Util::nestedValue($this, 'apiMethodInfo', 'metadata') ? : null;
         //check if the api method insists on response format using @format comment
 
-        if (isset($this->apiMethodInfo->metadata['format'])) {
-            $formats = explode(',', (string)$this->apiMethodInfo->metadata['format']);
+        if ($metadata && isset($metadata['format'])) {
+            $formats = explode(',', (string)$metadata['format']);
             foreach ($formats as $i => $f) {
                 $f = trim($f);
                 if (!in_array($f, $this->formatOverridesMap))
@@ -611,7 +612,10 @@ class Restler extends EventDispatcher
             $extension = explode('/', $extension);
             $extension = array_shift($extension);
             if ($extension && isset($this->formatMap[$extension])) {
-                $format = Util::initialize($this->formatMap[$extension]);
+                $format = Util::initialize(
+                    $this->formatMap[$extension],
+                    $metadata
+                );
                 $format->setExtension($extension);
                 // echo "Extension $extension";
                return $format;
@@ -622,7 +626,10 @@ class Restler extends EventDispatcher
             $acceptList = Util::sortByPriority($_SERVER['HTTP_ACCEPT']);
             foreach ($acceptList as $accept => $quality) {
                 if (isset($this->formatMap[$accept])) {
-                    $format = Util::initialize($this->formatMap[$accept]);
+                    $format = Util::initialize(
+                        $this->formatMap[$accept],
+                        $metadata
+                    );
                     $format->setMIME($accept);
                     //echo "MIME $accept";
                     // Tell cache content is based on Accept header
@@ -639,12 +646,13 @@ class Restler extends EventDispatcher
                         $extension = substr($accept, $index + 1);
                         if (isset($this->formatMap[$extension])) {
                             //check the MIME and extract version
-                            $version = intVal(substr($mime,
+                            $version = intval(substr($mime,
                                 18 + strlen(Defaults::$apiVendor)));
                             if ($version > 0 && $version <= $this->apiVersion) {
                                 $this->requestedApiVersion = $version;
                                 $format = Util::initialize(
-                                    $this->formatMap[$extension]
+                                    $this->formatMap[$extension],
+                                    $metadata
                                 );
                                 $format->setExtension($extension);
                                 // echo "Extension $extension";
@@ -665,12 +673,15 @@ class Restler extends EventDispatcher
             $_SERVER['HTTP_ACCEPT'] = '*/*';
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== false) {
-            if (strpos($_SERVER['HTTP_ACCEPT'], 'application/*') !== false) {
-                $format = Util::initialize('JsonFormat');
-            } elseif (strpos($_SERVER['HTTP_ACCEPT'], 'text/*') !== false) {
-                $format = Util::initialize('XmlFormat');
-            } elseif (strpos($_SERVER['HTTP_ACCEPT'], '*/*') !== false) {
-                $format = Util::initialize($this->formatMap['default']);
+            if (false !== strpos($_SERVER['HTTP_ACCEPT'], 'application/*')) {
+                $format = Util::initialize('JsonFormat', $metadata);
+            } elseif (false !== strpos($_SERVER['HTTP_ACCEPT'], 'text/*')) {
+                $format = Util::initialize('XmlFormat', $metadata);
+            } elseif (false !== strpos($_SERVER['HTTP_ACCEPT'], '*/*')) {
+                $format = Util::initialize(
+                    $this->formatMap['default'],
+                    $metadata
+                );
             }
         }
         if (empty($format)) {
@@ -678,7 +689,10 @@ class Restler extends EventDispatcher
             // server cannot send a response which is acceptable according to
             // the combined Accept field value, then the server SHOULD send
             // a 406 (not acceptable) response.
-            $format = Util::initialize($this->formatMap['default']);
+            $format = Util::initialize(
+                $this->formatMap['default'],
+                $metadata
+            );
             $this->responseFormat = $format;
             throw new RestException(
                 406,
