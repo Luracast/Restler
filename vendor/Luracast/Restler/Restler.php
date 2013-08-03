@@ -626,9 +626,20 @@ class Restler extends EventEmitter
                                 }
                                 //convert to instance of ValidationInfo
                                 $info = new ValidationInfo($param);
-                                $valid = Validator::validate(
-                                    $o->arguments[$index], $info);
-                                $o->arguments[$index] = $valid;
+                                $validate = $o->arguments[$index];
+                                if (is_array($validate)&&($info->type!="array"))
+                                    {
+                                    if (count($validate)>1) throw new RestException (501, 'Hmm');
+                                    $key = array_pop(array_keys($validate));
+                                    $value = $validate[$key];
+                                    $valid = Validator::validate($value, $info);
+                                    $o->arguments[$index] = array($key => $valid);
+                                    }
+                                else
+                                    {
+                                    $valid = Validator::validate($validate, $info);
+                                    $o->arguments[$index] = $valid;
+                                    }
                             }
                         }
                     }
