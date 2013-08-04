@@ -105,6 +105,9 @@ class Routes
                         || $param->getName() == Defaults::$fullRequestDataName
                     ) {
                         $from = 'body';
+                        if(!isset($type)){
+                            $type = $m['type'] = 'array';
+                        }
                     } elseif ($m['required']) {
                         $from = 'path';
                     } else {
