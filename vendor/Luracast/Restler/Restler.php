@@ -867,10 +867,20 @@ class Restler extends EventDispatcher
                         '`Defaults::$validatorClass` must implement `iValidate` interface'
                     );
                 }
-                $valid = $validator::validate(
-                    $o->parameters[$index], $info
-                );
-                $o->parameters[$index] = $valid;
+                $validate = $o->parameters[$index];
+                if (is_array($validate)&&($info->type!="array"))
+                    {
+                    if (count($validate)>1) throw new RestException (501, 'Hmm');
+                    $key = array_pop(array_keys($validate));
+                    $value = $validate[$key];
+                    $valid = $validator::validate($value, $info);
+                    $o->parameters[$index] = array($key => $valid);
+                    }
+                else
+                    {
+                    $valid = $validator::validate($validate, $info);
+                    $o->parameters[$index] = $valid;
+                    }
             }
         }
     }
