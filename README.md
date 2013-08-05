@@ -1,4 +1,4 @@
-Luracast Restler v3.0.0
+Luracast Restler v3 RC4
 ========================
 
 Restler is a simple and effective multi-format Web API Server written in PHP.
@@ -303,6 +303,9 @@ Happy Exploring! :)
 > **Note:-** Using eAccelerator can make restler to fail as it removes the comments.
 > More info can be found [here](http://wildlyinaccurate.com/eaccelerator-and-doctrine-2)
 
+Supported Annotations
+---------------------
+
 You may use the following php doc comments to annotate your methods.
 All tags except @url can also be defined at the class level.
 
@@ -418,7 +421,8 @@ All tags except @url can also be defined at the class level.
         <pre>@param [type] Name [Description] {@name value}</pre>
         Example:
         <pre>@param int $num1 increment value {@min 5} {@max 100}</pre>
-        Sets the HTTP Status code for the successful response.
+        Standard @param comment that sets the type and description of a parameter.
+        Supported child attributes are documented in [PARAM.md](PARAM.md)
         </td>
     </tr>
     <tr>
