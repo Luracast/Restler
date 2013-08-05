@@ -422,7 +422,7 @@ All tags except @url can also be defined at the class level.
         Example:
         <pre>@param int $num1 increment value {@min 5} {@max 100}</pre>
         Standard @param comment that sets the type and description of a parameter.
-        Supported child attributes are documented in [PARAM.md](PARAM.md)
+        Supported child attributes are documented in <a href="PARAM.md">PARAM.md</a>
         </td>
     </tr>
     <tr>
