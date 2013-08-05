@@ -174,6 +174,7 @@ class Validator implements iValidate
                 break;
             case 'mixed':
             case 'unknown_type':
+            case 'unknown':
                 return $input;
             default :
                 if (!is_array($input)) {
