@@ -1129,61 +1129,66 @@ class Restler extends EventDispatcher
      */
     public function addAPIClass($className, $resourcePath = null)
     {
-        if ($this->productionMode && is_null($this->cached)) {
-            $routes = $this->cache->get('routes');
-            if (isset($routes) && is_array($routes)) {
-                Routes::fromArray($routes);
-                $this->cached = true;
-            } else {
-                $this->cached = false;
-            }
-        }
-        if (isset(Util::$classAliases[$className])) {
-            $className = Util::$classAliases[$className];
-        }
-        if (!$this->cached) {
-            $foundClass = array();
-            if (class_exists($className)) {
-                $foundClass[$className] = $className;
-            }
-
-            //versioned api
-            if (false !== ($index = strrpos($className, '\\'))) {
-                $name = substr($className, 0, $index)
-                    . '\\v{$version}' . substr($className, $index);
-            } else if (false !== ($index = strrpos($className, '_'))) {
-                $name = substr($className, 0, $index)
-                    . '_v{$version}' . substr($className, $index);
-            } else {
-                $name = 'v{$version}\\' . $className;
-            }
-
-            for ($version = $this->apiMinimumVersion;
-                 $version <= $this->apiVersion;
-                 $version++) {
-
-                $versionedClassName = str_replace('{$version}', $version,
-                    $name);
-                if (class_exists($versionedClassName)) {
-                    Routes::addAPIClass($versionedClassName,
-                        Util::getResourcePath(
-                            $className,
-                            $resourcePath,
-                            "v{$version}/"
-                        )
-                    );
-                    $foundClass[$className] = $versionedClassName;
-                } elseif (isset($foundClass[$className])) {
-                    Routes::addAPIClass($foundClass[$className],
-                        Util::getResourcePath(
-                            $className,
-                            $resourcePath,
-                            "v{$version}/"
-                        )
-                    );
+        try{
+            if ($this->productionMode && is_null($this->cached)) {
+                $routes = $this->cache->get('routes');
+                if (isset($routes) && is_array($routes)) {
+                    Routes::fromArray($routes);
+                    $this->cached = true;
+                } else {
+                    $this->cached = false;
                 }
             }
+            if (isset(Util::$classAliases[$className])) {
+                $className = Util::$classAliases[$className];
+            }
+            if (!$this->cached) {
+                $foundClass = array();
+                if (class_exists($className)) {
+                    $foundClass[$className] = $className;
+                }
 
+                //versioned api
+                if (false !== ($index = strrpos($className, '\\'))) {
+                    $name = substr($className, 0, $index)
+                        . '\\v{$version}' . substr($className, $index);
+                } else if (false !== ($index = strrpos($className, '_'))) {
+                    $name = substr($className, 0, $index)
+                        . '_v{$version}' . substr($className, $index);
+                } else {
+                    $name = 'v{$version}\\' . $className;
+                }
+
+                for ($version = $this->apiMinimumVersion;
+                     $version <= $this->apiVersion;
+                     $version++) {
+
+                    $versionedClassName = str_replace('{$version}', $version,
+                        $name);
+                    if (class_exists($versionedClassName)) {
+                        Routes::addAPIClass($versionedClassName,
+                            Util::getResourcePath(
+                                $className,
+                                $resourcePath,
+                                "v{$version}/"
+                            )
+                        );
+                        $foundClass[$className] = $versionedClassName;
+                    } elseif (isset($foundClass[$className])) {
+                        Routes::addAPIClass($foundClass[$className],
+                            Util::getResourcePath(
+                                $className,
+                                $resourcePath,
+                                "v{$version}/"
+                            )
+                        );
+                    }
+                }
+
+            }
+        } catch (Exception $e) {
+            $this->setSupportedFormats('JsonFormat');
+            $this->message($e);
         }
     }
 
