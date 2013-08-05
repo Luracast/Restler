@@ -90,6 +90,10 @@ class Resources implements iUseAuthentication
     public $formatString = '';
     private $_models;
     private $_bodyParam;
+    /**
+     * @var bool|stdClass
+     */
+    private $_fullDataRequested = false;
     private $crud = array(
         'POST' => 'create',
         'GET' => 'retrieve',
@@ -274,7 +278,10 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                if (count($this->_bodyParam['description'])) {
+                if (
+                    count($this->_bodyParam['description']) ||
+                    $this->_fullDataRequested
+                ) {
                     $operation->parameters[] = $this->_getBody();
                 }
                 if (isset($m['return']['type'])) {
@@ -475,8 +482,11 @@ class Resources implements iUseAuthentication
 
     private function _appendToBody($p)
     {
-        if ($p->name === Defaults::$fullRequestDataName)
+        if ($p->name === Defaults::$fullRequestDataName) {
+            $this->_fullDataRequested = $p;
+            unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
             return;
+        }
         $this->_bodyParam['description'][$p->name]
             = "<mark>$p->name</mark>"
             . ($p->required ? ' <i>(required)</i>: ' : ': ')
@@ -492,25 +502,22 @@ class Resources implements iUseAuthentication
         $r->name = 'REQUEST_BODY';
         $p = array_values($this->_bodyParam['description']);
         $r->description = "Paste JSON data here";
-        if (count($p) == 1
-            && isset(
-            $this->_bodyParam['description'][Defaults::$fullRequestDataName])
-        ) {
-
+        if (count($p)==0 && $this->_fullDataRequested) {
+            $r->required = $this->_fullDataRequested->required;
+            $r->defaultValue = "{\n    \"property\" : \"\"\n}";
         } else {
             $r->description .= " with the following"
                 . (count($p) > 1 ? ' properties.' : ' property.')
                 . '<hr/>'
                 . implode("<hr/>", $p);
+            $r->required = $this->_bodyParam['required'];
+            $r->defaultValue = "{\n    \""
+                . implode("\": \"\",\n    \"", array_keys($this->_bodyParam['names']))
+                . "\": \"\"\n}";
         }
         $r->paramType = 'body';
-        $r->required = $this->_bodyParam['required'];
         $r->allowMultiple = false;
         $r->dataType = 'Object';
-        unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
-        $r->defaultValue = "{\n    \""
-            . implode("\": \"\",\n    \"", array_keys($this->_bodyParam['names']))
-            . "\": \"\"\n}";
         return $r;
     }
 
