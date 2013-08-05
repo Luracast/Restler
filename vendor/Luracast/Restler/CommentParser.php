@@ -216,6 +216,9 @@ class CommentParser
                 $value = $this->formatParam($value);
                 $allowMultiple = true;
                 break;
+            case 'var' :
+                $value = $this->formatParam($value);
+                break;
             case 'return' :
                 $value = $this->formatReturn($value);
                 break;
