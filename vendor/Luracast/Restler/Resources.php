@@ -524,37 +524,42 @@ class Resources implements iUseAuthentication
     private function _model($className, $instance = null)
     {
         $properties = array();
-        $reflectionClass = new \ReflectionClass($className);
         if (!$instance) {
             $instance = new $className();
         }
         $data = get_object_vars($instance);
+        $reflectionClass = new \ReflectionClass($className);
         foreach ($data as $key => $value) {
 
             $propertyMetaData = null;
 
             try {
                 $property = $reflectionClass->getProperty($key);
-
                 if ($c = $property->getDocComment()) {
-                    $propertyMetaData = CommentParser::parse($c);
+                    $propertyMetaData = Util::nestedValue(
+                        CommentParser::parse($c),
+                        'var'
+                    );
                 }
             } catch (\ReflectionException $e) {
             }
 
-            if ($propertyMetaData !== null) {
-                $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
-                $description = @$propertyMetaData['description'] ? : '';
-
-                $type = explode(" ", $type);
-                $type = array_shift($type);
+            if (is_null($propertyMetaData)) {
+                $type = $this->getType($value, true);
+                $description = '';
+            } else {
+                $type = Util::nestedValue(
+                    $propertyMetaData,
+                    'type'
+                ) ? : $this->getType($value, true);
+                $description = Util::nestedValue(
+                    $propertyMetaData,
+                    'description'
+                ) ? : '';
 
                 if (class_exists($type)) {
                     $this->_model($type);
                 }
-            } else {
-                $type = $this->getType($value, true);
-                $description = '';
             }
 
             if (isset(static::$dataTypeAlias[$type])) {
@@ -566,7 +571,7 @@ class Resources implements iUseAuthentication
             );
             if ($type == 'Array') {
                 $itemType = count($value)
-                    ? $this->getType($value[0], true)
+                    ? $this->getType(end($value), true)
                     : 'string';
                 $properties[$key]['item'] = array(
                     'type' => $itemType,
