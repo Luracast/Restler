@@ -217,7 +217,7 @@ class CommentParser
                 $allowMultiple = true;
                 break;
             case 'var' :
-                $value = $this->formatParam($value);
+                $value = $this->formatVar($value);
                 break;
             case 'return' :
                 $value = $this->formatReturn($value);
@@ -432,6 +432,25 @@ class CommentParser
             if (!empty($data) && $data{0} == '$') {
                 $r['name'] = substr($data, 1);
             }
+        }
+        if ($value) {
+            $r['description'] = implode(' ', $value);
+        }
+        return $r;
+    }
+
+    private function formatVar(array $value)
+    {
+        $r = array();
+        $data = array_shift($value);
+        if (empty($data)) {
+            $r['type'] = 'mixed';
+        } elseif ($data{0} == '$') {
+            $r['name'] = substr($data, 1);
+            $r['type'] = 'mixed';
+        } else {
+            $data = explode('|', $data);
+            $r['type'] = count($data) == 1 ? $data[0] : $data;
         }
         if ($value) {
             $r['description'] = implode(' ', $value);
