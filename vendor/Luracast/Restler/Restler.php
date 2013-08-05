@@ -1187,7 +1187,11 @@ class Restler extends EventDispatcher
 
             }
         } catch (Exception $e) {
-            $e = new Exception("addAPIClass('$className') failed. ".$e->getMessage(), $e->getCode());
+            $e = new Exception(
+                "addAPIClass('$className') failed. ".$e->getMessage(),
+                $e->getCode(),
+                $e
+            );
             $this->setSupportedFormats('JsonFormat');
             $this->message($e);
         }
