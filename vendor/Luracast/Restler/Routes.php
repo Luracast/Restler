@@ -4,6 +4,7 @@ namespace Luracast\Restler;
 use Luracast\Restler\Data\ApiMethodInfo;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * Router class that routes the urls to api methods along with parameters
@@ -78,11 +79,26 @@ class Routes
             if (!isset($metadata['param'])) {
                 $metadata['param'] = array();
             }
+            $children = array();
             foreach ($params as $param) {
                 $type =
                     $param->isArray() ? 'array' : $param->getClass();
                 if ($type instanceof ReflectionClass) {
+                    $props = $type->getProperties(ReflectionProperty::IS_PUBLIC);
+                    foreach($props as $prop){
+                        if ($c = $prop->getDocComment()) {
+                            $children[$prop->getName()] = array_merge(
+                                array('name' => $prop->getName()),
+                                Util::nestedValue(
+                                    CommentParser::parse($c),
+                                    'var'
+                                ),
+                                array('type' => 'string')
+                            );
+                        }
+                    }
                     $type = $type->getName();
+
                 }
                 $arguments[$param->getName()] = $position;
                 $defaults[$position] = $param->isDefaultValueAvailable() ?
@@ -97,6 +113,7 @@ class Routes
                 $m ['name'] = trim($param->getName(), '$ ');
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
+                $m ['children'] = $children;
 
                 if (isset($m[CommentParser::$embeddedDataName]['from'])) {
                     $from = $m[CommentParser::$embeddedDataName]['from'];
