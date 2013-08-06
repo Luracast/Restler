@@ -2,6 +2,8 @@
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\CommentParser;
+use Luracast\Restler\Defaults;
+use Luracast\Restler\Util;
 
 /**
  * ValueObject for validation information. An instance is created and
@@ -40,10 +42,19 @@ class ValidationInfo implements iValueObject
      * Data type of the variable being validated.
      * It will be mostly string
      *
-     * @var string array multiple types are specified it will be of
+     * @var string|array multiple types are specified it will be of
      *      type array otherwise it will be a string
      */
     public $type;
+
+    /**
+     * When the type is array, this field is used to define the type of the
+     * contents of the array
+     *
+     * @var string|null when all the items in an array are of certain type, we
+     * can set this property. It will be null if the items can be of any type
+     */
+    public $contentType;
 
     /**
      * Should we attempt to fix the value?
@@ -55,6 +66,11 @@ class ValidationInfo implements iValueObject
      * @var boolean true or false
      */
     public $fix = false;
+
+    /**
+     * @var array of children to be validated
+     */
+    public $children = null;
 
     // ==================================================================
     //
@@ -164,19 +180,46 @@ class ValidationInfo implements iValueObject
         return ' new ValidationInfo() ';
     }
 
+    private function getProperty(array &$from, $property)
+    {
+        $p = Util::nestedValue($from, $property);
+        if ($p) {
+            unset($from[$property]);
+        }
+        $p2 = Util::nestedValue($from, 'properties', $property);
+        if ($p2) {
+            unset($from['properties'][$property]);
+        }
+        if ($property == 'type' && $p == 'array' && $p2) {
+            $this->contentType = $p2;
+            return $p;
+        }
+        $r = $p2 ? : $p ? : null;
+        if($property == 'choice' && $r && !is_array($r)){
+            return array($r);
+        }
+        return $r;
+    }
     public function __construct(array $info)
     {
-        $this->name = isset($info ['name']) ? $info ['name'] :
-            'Unknown';
-        $this->required = isset($info['required'])
-            ? (bool)$info['required']
-            : false;
-        $this->from = isset($info['from'])
-            ? $info['from']
-            : 'query';
-        $this->rules = $rules = isset($info [CommentParser::$embeddedDataName])
-            ? $info [CommentParser::$embeddedDataName] : $info;
-        $this->type = isset($info['type']) ? $info ['type'] : 'mixed';
+        $properties = get_object_vars($this);
+        foreach($properties as $property => $value) {
+            $this->{$property} = $this->getProperty($info, $property);
+        }
+        $this->rules = Util::nestedValue($info,'properties') ?: $info;
+        unset($this->rules['properties']);
+        return;
+        $this->name = Util::nestedValue($info, 'name') ? : 'Unknown';
+        $this->required = (bool) Util::nestedValue($info, 'required');
+        $this->from = Util::nestedValue($info, 'from') ? : 'query';
+        $this->children = Util::nestedValue($info, 'children') ?: null;
+        if($this->children)
+            unset($info['children']);
+        $this->rules =
+            Util::nestedValue($info, CommentParser::$embeddedDataName) ? : $info;
+        $rules = &$this->rules;
+        unset($rules[CommentParser::$embeddedDataName]);
+        $this->type = Util::nestedValue($info, 'type') ? : 'mixed';
         $this->rules ['fix'] = $this->fix
             = isset ($rules ['fix']) && $rules ['fix'] == 'true';
         unset ($rules ['fix']);
@@ -201,7 +244,7 @@ class ValidationInfo implements iValueObject
             $this->rules ['choice'] = $this->choice
                 = is_array($rules ['choice'])
                 ? $rules ['choice'] : array($rules ['choice']);
-            unset ($rules ['pattern']);
+            unset ($rules ['choice']);
         }
         foreach ($rules as $key => $value) {
             if (property_exists($this, $key)) {

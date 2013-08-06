@@ -2,6 +2,7 @@
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\RestException;
+use Luracast\Restler\Util;
 
 /**
  * Default Validator class used by Restler. It can be replaced by any
@@ -183,13 +184,25 @@ class Validator implements iValidate
                 //do type conversion
                 if (class_exists($info->type)) {
                     $implements = class_implements($info->type);
-                    if (is_array($implements)
-                        && in_array('Luracast\\Restler\\Data\\iValueObject',
-                            $implements)
-                    )
+                    if (
+                        is_array($implements) &&
+                        in_array('Luracast\\Restler\\Data\\iValueObject', $implements)
+                    ) {
                         return call_user_func(
                             "{$info->type}::__set_state", $input
                         );
+                    }
+                    $class = $info->type;
+                    $instance =  new $class();
+                    if (is_array($info->children)) {
+                        foreach ($info->children as $key => $value) {
+                            $instance->{$key} = static::validate(
+                                Util::nestedValue($input, $key) ? : null,
+                                new ValidationInfo($value)
+                            );
+                        }
+                    }
+                    return $instance;
                 }
         }
         throw new RestException (400, $error);
