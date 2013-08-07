@@ -2,7 +2,6 @@
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\CommentParser;
-use Luracast\Restler\Defaults;
 use Luracast\Restler\Util;
 
 /**
@@ -26,18 +25,15 @@ class ValidationInfo implements iValueObject
      * @var string variable name
      */
     public $name;
-
     /**
      * @var bool is it required or not
      */
     public $required;
-
     /**
      * @var string body or header or query where this parameter is coming from
      * in the http request
      */
     public $from;
-
     /**
      * Data type of the variable being validated.
      * It will be mostly string
@@ -46,7 +42,6 @@ class ValidationInfo implements iValueObject
      *      type array otherwise it will be a string
      */
     public $type;
-
     /**
      * When the type is array, this field is used to define the type of the
      * contents of the array
@@ -55,7 +50,6 @@ class ValidationInfo implements iValueObject
      * can set this property. It will be null if the items can be of any type
      */
     public $contentType;
-
     /**
      * Should we attempt to fix the value?
      * When set to false validation class should throw
@@ -66,7 +60,6 @@ class ValidationInfo implements iValueObject
      * @var boolean true or false
      */
     public $fix = false;
-
     /**
      * @var array of children to be validated
      */
@@ -122,7 +115,6 @@ class ValidationInfo implements iValueObject
      * @var array custom rule set
      */
     public $rules;
-
     /**
      * Specifying a custom error message will override the standard error
      * message return by the validator class
@@ -136,7 +128,6 @@ class ValidationInfo implements iValueObject
     // METHODS
     //
     // ------------------------------------------------------------------
-
     /**
      * Name of the method to be used for validation.
      * It will be receiving two parameters $input, $rules (array)
@@ -144,7 +135,6 @@ class ValidationInfo implements iValueObject
      * @var string validation method name
      */
     public $method;
-
     /**
      * Instance of the API class currently being called. It will be null most of
      * the time. Only when method is defined it will contain an instance.
@@ -153,6 +143,44 @@ class ValidationInfo implements iValueObject
      * @var null|object will be null or api class instance
      */
     public $apiClassInstance = null;
+
+    public function __construct(array $info)
+    {
+        $properties = get_object_vars($this);
+        unset($properties['contentType']);
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $this->getProperty($info, $property);
+        }
+        $this->rules = Util::nestedValue($info, 'properties') ? : $info;
+        unset($this->rules['properties']);
+        if (is_string($this->type) && $this->type == 'integer') {
+            $this->type = 'int';
+        }
+    }
+
+    private function getProperty(array &$from, $property)
+    {
+        $p = Util::nestedValue($from, $property);
+        if ($p) {
+            unset($from[$property]);
+        }
+        $p2 = Util::nestedValue($from, 'properties', $property);
+        if ($p2) {
+            unset($from['properties'][$property]);
+        }
+        if ($property == 'type' && $p == 'array' && $p2) {
+            $this->contentType = $p2;
+            return $p;
+        }
+        $r = $p2 ? : $p ? : null;
+        if ($property == 'choice' && $r && !is_array($r)) {
+            return array($r);
+        }
+        if ($property == 'pattern' && $r && is_array($r)) {
+            return implode(',', $r);
+        }
+        return $r;
+    }
 
     public static function numericValue($value)
     {
@@ -175,88 +203,6 @@ class ValidationInfo implements iValueObject
             : ( string )$value;
     }
 
-    public function __toString()
-    {
-        return ' new ValidationInfo() ';
-    }
-
-    private function getProperty(array &$from, $property)
-    {
-        $p = Util::nestedValue($from, $property);
-        if ($p) {
-            unset($from[$property]);
-        }
-        $p2 = Util::nestedValue($from, 'properties', $property);
-        if ($p2) {
-            unset($from['properties'][$property]);
-        }
-        if ($property == 'type' && $p == 'array' && $p2) {
-            $this->contentType = $p2;
-            return $p;
-        }
-        $r = $p2 ? : $p ? : null;
-        if($property == 'choice' && $r && !is_array($r)){
-            return array($r);
-        }
-        return $r;
-    }
-    public function __construct(array $info)
-    {
-        $properties = get_object_vars($this);
-        unset($properties['contentType']);
-        foreach($properties as $property => $value) {
-            $this->{$property} = $this->getProperty($info, $property);
-        }
-        $this->rules = Util::nestedValue($info,'properties') ?: $info;
-        unset($this->rules['properties']);
-        return;
-        $this->name = Util::nestedValue($info, 'name') ? : 'Unknown';
-        $this->required = (bool) Util::nestedValue($info, 'required');
-        $this->from = Util::nestedValue($info, 'from') ? : 'query';
-        $this->children = Util::nestedValue($info, 'children');
-        if($this->children)
-            unset($info['children']);
-        $this->rules =
-            Util::nestedValue($info, CommentParser::$embeddedDataName) ? : $info;
-        $rules = &$this->rules;
-        unset($rules[CommentParser::$embeddedDataName]);
-        $this->type = Util::nestedValue($info, 'type') ? : 'mixed';
-        $this->rules ['fix'] = $this->fix
-            = isset ($rules ['fix']) && $rules ['fix'] == 'true';
-        unset ($rules ['fix']);
-        if (isset ($rules ['min'])) {
-            $this->rules ['min'] = $this->min
-                = self::numericValue($rules ['min']);
-            unset ($rules ['min']);
-        }
-        if (isset ($rules ['max'])) {
-            $this->rules ['max'] = $this->max
-                = self::numericValue($rules ['max']);
-            unset ($rules ['max']);
-        }
-        if (isset ($rules ['pattern'])) {
-            $this->rules ['pattern'] = $this->pattern
-                = is_array($rules ['pattern'])
-                ? implode(',', $rules ['pattern'])
-                : ( string )$rules ['pattern'];
-            unset ($rules ['pattern']);
-        }
-        if (isset ($rules ['choice'])) {
-            $this->rules ['choice'] = $this->choice
-                = is_array($rules ['choice'])
-                ? $rules ['choice'] : array($rules ['choice']);
-            unset ($rules ['choice']);
-        }
-        foreach ($rules as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
-            }
-        }
-        if (is_string($this->type) && $this->type == 'integer') {
-            $this->type = 'int';
-        }
-    }
-
     /**
      * Magic Method used for creating instance at run time
      */
@@ -264,6 +210,11 @@ class ValidationInfo implements iValueObject
     {
         $o = new self ($info);
         return $o;
+    }
+
+    public function __toString()
+    {
+        return ' new ValidationInfo() ';
     }
 }
 
