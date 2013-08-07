@@ -197,8 +197,15 @@ class Validator implements iValidate
                     $class = $info->type;
                     $instance =  new $class();
                     if (is_array($info->children)) {
-                        if(is_null($input)){
+                        if (is_null($input)) {
                             $input = Util::$restler->getRequestData();
+                        } elseif (
+                            !is_array($input) ||
+                            empty($input) ||
+                            $input === array_values($input)
+                        ) {
+                            $error .= ". Expecting an object of type `$info->type`";
+                            break;
                         }
                         foreach ($info->children as $key => $value) {
                             $instance->{$key} = static::validate(
