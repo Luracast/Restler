@@ -21,7 +21,6 @@ class Validator implements iValidate
 
     public static function validate($input, ValidationInfo $info, $full=null)
     {
-        //print_r(func_get_args());
         if (is_null($input) && !$info->children) {
             if ($info->required) {
                 throw new RestException (400,
@@ -29,7 +28,6 @@ class Validator implements iValidate
             }
             return null;
         }
-
         $error = isset ($info->rules ['message'])
             ? $info->rules ['message']
             : "invalid value specified for `$info->name`";
@@ -169,12 +167,22 @@ class Validator implements iValidate
                 if (is_numeric($input)) return $input > 0;
                 return false;
             case 'array':
+                if(is_null($input) && $info->contentType) {
+                    $data = Util::$restler->getRequestData();
+                    if(isset($data[0])){
+                        $input = $data;
+                    }
+                }
                 if (is_array($input)) {
                     if ($info->contentType) {
                         $name = $info->name;
                         $info->type = $info->contentType;
                         unset($info->contentType);
                         foreach ($input as $key => $chinput) {
+                            if(is_string($key)){
+                                unset($input[$key]);
+                                continue;
+                            }
                             $info->name = "{$name}[$key]";
                             $input[$key] = static::validate($chinput, $info);
                         }
@@ -221,7 +229,7 @@ class Validator implements iValidate
                         }
                         foreach ($info->children as $key => $value) {
                             $instance->{$key} = static::validate(
-                                Util::nestedValue($input, $key) ? : null,
+                                Util::nestedValue($input, $key),
                                 new ValidationInfo($value)
                             );
                         }
