@@ -457,7 +457,19 @@ class Resources implements iUseAuthentication
             if (is_array($type)) {
                 $type = array_shift($type);
             }
-            if ($type != 'array' && Util::isObjectOrArray($type)) {
+            if($type == 'array') {
+                $contentType = Util::nestedValue(
+                    $param,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                );
+                if($contentType){
+                    $type = "Array[$contentType]";
+                    if(Util::isObjectOrArray($contentType)){
+                        $this->_model($contentType);
+                    }
+                }
+            } elseif (Util::isObjectOrArray($type)) {
                 $this->_model($type);
             } elseif (isset(static::$dataTypeAlias[$type])) {
                 $type = static::$dataTypeAlias[$type];
@@ -503,26 +515,50 @@ class Resources implements iUseAuthentication
     {
         $r = new stdClass();
         $n = array_values($this->_bodyParam['names']);
-        if (count($n) == 1 && isset($this->_models->{$n[0]->dataType})) {
-            $r = $n[0];
-            $c = $this->_models->{$r->dataType};
-            $a = $c->properties;
-            $r->description = "Paste JSON data here";
-            if(count($a)){
-                $r->description .= " with the following"
-                    . (count($a) > 1 ? ' properties.' : ' property.');
-                foreach($a as $k => $v){
-                    $r->description .= "<hr/>$k : <tag>"
-                        . $v['type'] . '</tag> '
-                        . (isset($v['required']) ? '(required)' : '')
-                        . ' - '.$v['description'];
+        if(count($n)==1){
+            if (isset($this->_models->{$n[0]->dataType})) {
+                $r = $n[0];
+                $c = $this->_models->{$r->dataType};
+                $a = $c->properties;
+                $r->description = "Paste JSON data here";
+                if (count($a)) {
+                    $r->description .= " with the following"
+                        . (count($a) > 1 ? ' properties.' : ' property.');
+                    foreach ($a as $k => $v) {
+                        $r->description .= "<hr/>$k : <tag>"
+                            . $v['type'] . '</tag> '
+                            . (isset($v['required']) ? '(required)' : '')
+                            . ' - ' . $v['description'];
+                    }
                 }
+                $r->defaultValue = "{\n    \""
+                    . implode("\": \"\",\n    \"",
+                        array_keys($c->properties))
+                    . "\": \"\"\n}";
+                return $r;
+            } elseif (false !== ($p = strpos($n[0]->dataType, '['))) {
+                $r = $n[0];
+                $t = substr($r->dataType, $p + 1, -1);
+                $c = $this->_models->{$t};
+                $a = $c->properties;
+                $r->description = "Paste JSON data here";
+                if (count($a)) {
+                    $r->description .= " with an array of objects with the following"
+                        . (count($a) > 1 ? ' properties.' : ' property.');
+                    foreach ($a as $k => $v) {
+                        $r->description .= "<hr/>$k : <tag>"
+                            . $v['type'] . '</tag> '
+                            . (isset($v['required']) ? '(required)' : '')
+                            . ' - ' . $v['description'];
+                    }
+                }
+                $r->defaultValue = "[\n    {\n        \""
+                    . implode("\": \"\",\n        \"",
+                        array_keys($c->properties))
+                    . "\": \"\"\n    }\n]";
+                return $r;
+
             }
-            $r->defaultValue = "{\n    \""
-                . implode("\": \"\",\n    \"",
-                    array_keys($c->properties))
-                . "\": \"\"\n}";
-            return $r;
         }
         $p = array_values($this->_bodyParam['description']);
         $r->name = 'REQUEST_BODY';
