@@ -203,6 +203,7 @@ class ValidationInfo implements iValueObject
     public function __construct(array $info)
     {
         $properties = get_object_vars($this);
+        unset($properties['contentType']);
         foreach($properties as $property => $value) {
             $this->{$property} = $this->getProperty($info, $property);
         }
