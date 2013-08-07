@@ -25,15 +25,18 @@ class ValidationInfo implements iValueObject
      * @var string variable name
      */
     public $name;
+
     /**
      * @var bool is it required or not
      */
     public $required;
+
     /**
      * @var string body or header or query where this parameter is coming from
      * in the http request
      */
     public $from;
+
     /**
      * Data type of the variable being validated.
      * It will be mostly string
@@ -42,6 +45,7 @@ class ValidationInfo implements iValueObject
      *      type array otherwise it will be a string
      */
     public $type;
+
     /**
      * When the type is array, this field is used to define the type of the
      * contents of the array
@@ -50,6 +54,7 @@ class ValidationInfo implements iValueObject
      * can set this property. It will be null if the items can be of any type
      */
     public $contentType;
+
     /**
      * Should we attempt to fix the value?
      * When set to false validation class should throw
@@ -60,6 +65,7 @@ class ValidationInfo implements iValueObject
      * @var boolean true or false
      */
     public $fix = false;
+
     /**
      * @var array of children to be validated
      */
@@ -115,6 +121,7 @@ class ValidationInfo implements iValueObject
      * @var array custom rule set
      */
     public $rules;
+
     /**
      * Specifying a custom error message will override the standard error
      * message return by the validator class
@@ -128,6 +135,7 @@ class ValidationInfo implements iValueObject
     // METHODS
     //
     // ------------------------------------------------------------------
+
     /**
      * Name of the method to be used for validation.
      * It will be receiving two parameters $input, $rules (array)
@@ -135,6 +143,7 @@ class ValidationInfo implements iValueObject
      * @var string validation method name
      */
     public $method;
+
     /**
      * Instance of the API class currently being called. It will be null most of
      * the time. Only when method is defined it will contain an instance.
@@ -144,18 +153,30 @@ class ValidationInfo implements iValueObject
      */
     public $apiClassInstance = null;
 
-    public function __construct(array $info)
+    public static function numericValue($value)
     {
-        $properties = get_object_vars($this);
-        unset($properties['contentType']);
-        foreach ($properties as $property => $value) {
-            $this->{$property} = $this->getProperty($info, $property);
-        }
-        $this->rules = Util::nestedValue($info, 'properties') ? : $info;
-        unset($this->rules['properties']);
-        if (is_string($this->type) && $this->type == 'integer') {
-            $this->type = 'int';
-        }
+        return ( int )$value == $value
+            ? ( int )$value
+            : floatval($value);
+    }
+
+    public static function arrayValue($value)
+    {
+        return is_array($value) ? $value : array(
+            $value
+        );
+    }
+
+    public static function stringValue($value)
+    {
+        return is_array($value)
+            ? implode(',', $value)
+            : ( string )$value;
+    }
+
+    public function __toString()
+    {
+        return ' new ValidationInfo() ';
     }
 
     private function getProperty(array &$from, $property)
@@ -182,25 +203,18 @@ class ValidationInfo implements iValueObject
         return $r;
     }
 
-    public static function numericValue($value)
+    public function __construct(array $info)
     {
-        return ( int )$value == $value
-            ? ( int )$value
-            : floatval($value);
-    }
-
-    public static function arrayValue($value)
-    {
-        return is_array($value) ? $value : array(
-            $value
-        );
-    }
-
-    public static function stringValue($value)
-    {
-        return is_array($value)
-            ? implode(',', $value)
-            : ( string )$value;
+        $properties = get_object_vars($this);
+        unset($properties['contentType']);
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $this->getProperty($info, $property);
+        }
+        $this->rules = Util::nestedValue($info, 'properties') ? : $info;
+        unset($this->rules['properties']);
+        if (is_string($this->type) && $this->type == 'integer') {
+            $this->type = 'int';
+        }
     }
 
     /**
@@ -210,11 +224,6 @@ class ValidationInfo implements iValueObject
     {
         $o = new self ($info);
         return $o;
-    }
-
-    public function __toString()
-    {
-        return ' new ValidationInfo() ';
     }
 }
 
