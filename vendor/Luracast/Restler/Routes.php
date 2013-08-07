@@ -95,16 +95,16 @@ class Routes
                 $m ['required'] = !$param->isOptional();
                 if(is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
-                    $contentType = Util::nestedValue(
-                        $m,
-                        CommentParser::$embeddedDataName,
-                        'type'
+                }
+                $contentType = Util::nestedValue(
+                    $m,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                );
+                if($contentType && class_exists($contentType)){
+                    list($contentType,$children) = static::getTypeAndModel(
+                        new ReflectionClass($contentType)
                     );
-                    if($contentType && class_exists($contentType)){
-                        list($contentType,$children) = static::getTypeAndModel(
-                            new ReflectionClass($contentType)
-                        );
-                    }
                 }
                 if ($type instanceof ReflectionClass) {
                     list($type, $children) = static::getTypeAndModel($type);
