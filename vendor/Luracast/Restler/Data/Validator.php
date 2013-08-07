@@ -19,9 +19,10 @@ use Luracast\Restler\Util;
 class Validator implements iValidate
 {
 
-    public static function validate($input, ValidationInfo $info)
+    public static function validate($input, ValidationInfo $info, $full=null)
     {
-        if (is_null($input)) {
+        //print_r(func_get_args());
+        if (is_null($input) && !$info->children) {
             if ($info->required) {
                 throw new RestException (400,
                     "`$info->name` is required but missing.");
@@ -176,9 +177,10 @@ class Validator implements iValidate
             case 'mixed':
             case 'unknown_type':
             case 'unknown':
+            case null: //treat as unknown
                 return $input;
             default :
-                if (!is_array($input)) {
+                if (!is_array($input) && !$info->children) {
                     break;
                 }
                 //do type conversion
@@ -195,6 +197,9 @@ class Validator implements iValidate
                     $class = $info->type;
                     $instance =  new $class();
                     if (is_array($info->children)) {
+                        if(is_null($input)){
+                            $input = Util::$restler->getRequestData();
+                        }
                         foreach ($info->children as $key => $value) {
                             $instance->{$key} = static::validate(
                                 Util::nestedValue($input, $key) ? : null,
