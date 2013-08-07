@@ -457,9 +457,11 @@ class Resources implements iUseAuthentication
             if (is_array($type)) {
                 $type = array_shift($type);
             }
-            $type = isset(static::$dataTypeAlias[$type])
-                ? static::$dataTypeAlias[$type]
-                : $type;
+            if ($type != 'array' && Util::isObjectOrArray($type)) {
+                $this->_model($type);
+            } elseif (isset(static::$dataTypeAlias[$type])) {
+                $type = static::$dataTypeAlias[$type];
+            }
         }
         $r->dataType = $type;
         if (isset($param[CommentParser::$embeddedDataName])) {
@@ -488,19 +490,42 @@ class Resources implements iUseAuthentication
             return;
         }
         $this->_bodyParam['description'][$p->name]
-            = "<mark>$p->name</mark>"
-            . ($p->required ? ' <i>(required)</i>: ' : ': ')
+            = "$p->name"
+            . ' : <tag>' . $p->dataType. '</tag> '
+            . ($p->required ? ' <i>(required)</i> - ' : ' - ')
             . $p->description;
         $this->_bodyParam['required'] = $p->required
             || $this->_bodyParam['required'];
-        $this->_bodyParam['names'][$p->name] = true;
+        $this->_bodyParam['names'][$p->name] = $p;
     }
 
     private function _getBody()
     {
         $r = new stdClass();
-        $r->name = 'REQUEST_BODY';
+        $n = array_values($this->_bodyParam['names']);
+        if (count($n) == 1 && isset($this->_models->{$n[0]->dataType})) {
+            $r = $n[0];
+            $c = $this->_models->{$r->dataType};
+            $a = $c->properties;
+            $r->description = "Paste JSON data here";
+            if(count($a)){
+                $r->description .= " with the following"
+                    . (count($a) > 1 ? ' properties.' : ' property.');
+                foreach($a as $k => $v){
+                    $r->description .= "<hr/>$k : <tag>"
+                        . $v['type'] . '</tag> '
+                        . (isset($v['required']) ? '(required)' : '')
+                        . ' - '.$v['description'];
+                }
+            }
+            $r->defaultValue = "{\n    \""
+                . implode("\": \"\",\n    \"",
+                    array_keys($c->properties))
+                . "\": \"\"\n}";
+            return $r;
+        }
         $p = array_values($this->_bodyParam['description']);
+        $r->name = 'REQUEST_BODY';
         $r->description = "Paste JSON data here";
         if (count($p)==0 && $this->_fullDataRequested) {
             $r->required = $this->_fullDataRequested->required;
@@ -512,7 +537,8 @@ class Resources implements iUseAuthentication
                 . implode("<hr/>", $p);
             $r->required = $this->_bodyParam['required'];
             $r->defaultValue = "{\n    \""
-                . implode("\": \"\",\n    \"", array_keys($this->_bodyParam['names']))
+                . implode("\": \"\",\n    \"",
+                    array_keys($this->_bodyParam['names']))
                 . "\": \"\"\n}";
         }
         $r->paramType = 'body';
@@ -523,6 +549,10 @@ class Resources implements iUseAuthentication
 
     private function _model($className, $instance = null)
     {
+        $id = $this->_noNamespace($className);
+        if(isset($this->_models->{$id})){
+            return;
+        }
         $properties = array();
         if (!$instance) {
             $instance = new $className();
@@ -569,6 +599,13 @@ class Resources implements iUseAuthentication
                 'type' => $type,
                 'description' => $description
             );
+            if(Util::nestedValue(
+                $propertyMetaData,
+                CommentParser::$embeddedDataName,
+                'required'
+            )){
+                $properties[$key]['required'] = true;
+            }
             if ($type == 'Array') {
                 $itemType = count($value)
                     ? $this->getType(end($value), true)
@@ -588,7 +625,6 @@ class Resources implements iUseAuthentication
             }
         }
         if (!empty($properties)) {
-            $id = $this->_noNamespace($className);
             $model = new stdClass();
             $model->id = $id;
             $model->properties = $properties;
