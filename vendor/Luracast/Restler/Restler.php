@@ -468,7 +468,7 @@ class Restler extends EventDispatcher
      *
      * @return array php data
      */
-    protected function getRequestData()
+    public function getRequestData()
     {
         if ($this->requestMethod == 'PUT'
             || $this->requestMethod == 'PATCH'
