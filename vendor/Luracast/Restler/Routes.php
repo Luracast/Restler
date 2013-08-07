@@ -83,23 +83,6 @@ class Routes
             foreach ($params as $param) {
                 $type =
                     $param->isArray() ? 'array' : $param->getClass();
-                if ($type instanceof ReflectionClass) {
-                    $props = $type->getProperties(ReflectionProperty::IS_PUBLIC);
-                    foreach($props as $prop){
-                        if ($c = $prop->getDocComment()) {
-                            $children[$prop->getName()] = array_merge(
-                                array('name' => $prop->getName()),
-                                Util::nestedValue(
-                                    CommentParser::parse($c),
-                                    'var'
-                                ),
-                                array('type' => 'string')
-                            );
-                        }
-                    }
-                    $type = $type->getName();
-
-                }
                 $arguments[$param->getName()] = $position;
                 $defaults[$position] = $param->isDefaultValueAvailable() ?
                     $param->getDefaultValue() : null;
@@ -107,12 +90,28 @@ class Routes
                     $metadata['param'][$position] = array();
                 }
                 $m = & $metadata ['param'] [$position];
-                if (isset($type)) {
-                    $m['type'] = $type;
-                }
                 $m ['name'] = trim($param->getName(), '$ ');
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
+                if(is_null($type) && isset($m['type'])) {
+                    $type = $m['type'];
+                    $contentType = Util::nestedValue(
+                        $m,
+                        CommentParser::$embeddedDataName,
+                        'type'
+                    );
+                    if($contentType && class_exists($contentType)){
+                        list($contentType,$children) = static::getTypeAndModel(
+                            new ReflectionClass($contentType)
+                        );
+                    }
+                }
+                if ($type instanceof ReflectionClass) {
+                    list($type, $children) = static::getTypeAndModel($type);
+                }
+                if (isset($type)) {
+                    $m['type'] = $type;
+                }
                 $m ['children'] = $children;
 
                 if (isset($m[CommentParser::$embeddedDataName]['from'])) {
@@ -387,6 +386,32 @@ class Routes
             return 'b';
         }
         return 's';
+    }
+
+    /**
+     * @param ReflectionClass $class
+     *
+     * @return array
+     *
+     * @access protected
+     */
+    protected static function getTypeAndModel(ReflectionClass $class)
+    {
+        $children = array();
+        $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+        foreach ($props as $prop) {
+            if ($c = $prop->getDocComment()) {
+                $children[$prop->getName()] = array_merge(
+                    array('name' => $prop->getName()),
+                    Util::nestedValue(
+                        CommentParser::parse($c),
+                        'var'
+                    ),
+                    array('type' => 'string')
+                );
+            }
+        }
+        return array($class->getName(), $children);
     }
 
     /**
