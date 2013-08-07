@@ -213,7 +213,7 @@ class ValidationInfo implements iValueObject
         $this->name = Util::nestedValue($info, 'name') ? : 'Unknown';
         $this->required = (bool) Util::nestedValue($info, 'required');
         $this->from = Util::nestedValue($info, 'from') ? : 'query';
-        $this->children = Util::nestedValue($info, 'children') ?: null;
+        $this->children = Util::nestedValue($info, 'children');
         if($this->children)
             unset($info['children']);
         $this->rules =

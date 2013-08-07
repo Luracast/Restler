@@ -580,7 +580,7 @@ class Restler extends EventDispatcher
      */
     protected function negotiateResponseFormat()
     {
-        $metadata = Util::nestedValue($this, 'apiMethodInfo', 'metadata') ? : null;
+        $metadata = Util::nestedValue($this, 'apiMethodInfo', 'metadata');
         //check if the api method insists on response format using @format comment
 
         if ($metadata && isset($metadata['format'])) {
