@@ -74,7 +74,7 @@ class Util
      * @param string|array  $key... pass more to go deeply inside the array
      *                              alternatively you can pass a single array
      *
-     * @return bool|mixed false when not found, value otherwise
+     * @return null|mixed null when not found, value otherwise
      */
     public static function nestedValue($from, $key /**, $key2 ... $key`n` */)
     {
@@ -92,7 +92,7 @@ class Util
                 $from = $from->{$key};
                 continue;
             }
-            return false;
+            return null;
         }
         return $from;
     }
