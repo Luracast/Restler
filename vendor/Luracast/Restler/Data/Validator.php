@@ -170,7 +170,19 @@ class Validator implements iValidate
                 return false;
             case 'array':
                 if (is_array($input)) {
+                    if ($info->contentType) {
+                        $name = $info->name;
+                        $info->type = $info->contentType;
+                        unset($info->contentType);
+                        foreach ($input as $key => $chinput) {
+                            $info->name = "{$name}[$key]";
+                            $input[$key] = static::validate($chinput, $info);
+                        }
+                    }
                     return $input;
+                } elseif ($info->contentType) {
+                    $error .= ". Expecting an array with contents of type `$info->contentType`";
+                    break;
                 }
                 return array($input);
                 break;
