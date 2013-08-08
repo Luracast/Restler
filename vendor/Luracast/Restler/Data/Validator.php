@@ -21,7 +21,6 @@ class Validator implements iValidate
 
     public static function validate($input, ValidationInfo $info, $full=null)
     {
-        print_r(func_get_args());
         if (is_null($input)) {
             if ($info->required) {
                 throw new RestException (400,
@@ -181,22 +180,12 @@ class Validator implements iValidate
                         break;
                     }
                 }
-                if(is_null($input) && $info->contentType) {
-                    $data = Util::$restler->getRequestData();
-                    if(isset($data[0])){
-                        $input = $data;
-                    }
-                }
                 if (is_array($input)) {
                     if ($info->contentType) {
                         $name = $info->name;
                         $info->type = $info->contentType;
                         unset($info->contentType);
                         foreach ($input as $key => $chinput) {
-                            if(is_string($key)){
-                                unset($input[$key]);
-                                continue;
-                            }
                             $info->name = "{$name}[$key]";
                             $input[$key] = static::validate($chinput, $info);
                         }
@@ -231,11 +220,9 @@ class Validator implements iValidate
                     $class = $info->type;
                     $instance =  new $class();
                     if (is_array($info->children)) {
-                        if (is_null($input)) {
-                            $input = Util::$restler->getRequestData();
-                        } elseif (
-                            !is_array($input) ||
+                        if (
                             empty($input) ||
+                            !is_array($input) ||
                             $input === array_values($input)
                         ) {
                             $error .= ". Expecting an object of type `$info->type`";
