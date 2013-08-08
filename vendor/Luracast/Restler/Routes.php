@@ -377,9 +377,9 @@ class Routes
             ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
             !array_key_exists($m['name'], $data)
         ) {
-            if($m['type'] == 'array' && isset($m['properties']['type'])) {
+            if ($m['type'] == 'array') {
                 $p[0] = static::filterArray($data, true);
-            } elseif( class_exists($m['type'])) {
+            } elseif (class_exists($m['type'])) {
                 $p[0] = static::filterArray($data, false);
             }
         }
