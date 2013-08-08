@@ -539,24 +539,29 @@ class Resources implements iUseAuthentication
             } elseif (false !== ($p = strpos($n[0]->dataType, '['))) {
                 $r = $n[0];
                 $t = substr($r->dataType, $p + 1, -1);
-                $c = $this->_models->{$t};
-                $a = $c->properties;
-                $r->description = "Paste JSON data here";
-                if (count($a)) {
-                    $r->description .= " with an array of objects with the following"
-                        . (count($a) > 1 ? ' properties.' : ' property.');
-                    foreach ($a as $k => $v) {
-                        $r->description .= "<hr/>$k : <tag>"
-                            . $v['type'] . '</tag> '
-                            . (isset($v['required']) ? '(required)' : '')
-                            . ' - ' . $v['description'];
+                if($c = Util::nestedValue($this->_models,$t)){
+                    $a = $c->properties;
+                    $r->description = "Paste JSON data here";
+                    if (count($a)) {
+                        $r->description .= " with an array of objects with the following"
+                            . (count($a) > 1 ? ' properties.' : ' property.');
+                        foreach ($a as $k => $v) {
+                            $r->description .= "<hr/>$k : <tag>"
+                                . $v['type'] . '</tag> '
+                                . (isset($v['required']) ? '(required)' : '')
+                                . ' - ' . $v['description'];
+                        }
                     }
+                    $r->defaultValue = "[\n    {\n        \""
+                        . implode("\": \"\",\n        \"",
+                            array_keys($c->properties))
+                        . "\": \"\"\n    }\n]";
+                    return $r;
+                } else {
+                    $r->description = "Paste JSON data here with an array of $t values.";
+                    $r->defaultValue = "[ ]";
+                    return $r;
                 }
-                $r->defaultValue = "[\n    {\n        \""
-                    . implode("\": \"\",\n        \"",
-                        array_keys($c->properties))
-                    . "\": \"\"\n    }\n]";
-                return $r;
 
             }
         }
