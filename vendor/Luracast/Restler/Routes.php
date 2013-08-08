@@ -375,6 +375,7 @@ class Routes
         if (
             count($p) == 1 &&
             ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
+            isset($m['type']) &&
             !array_key_exists($m['name'], $data)
         ) {
             if ($m['type'] == 'array') {
