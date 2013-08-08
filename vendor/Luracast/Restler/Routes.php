@@ -366,10 +366,19 @@ class Routes
     protected static function populate(array $call, $data)
     {
         $call['parameters'] = $call['defaults'];
+        $p = &$call['parameters'];
         foreach ($data as $key => $value) {
             if (isset($call['arguments'][$key])) {
-                $call['parameters'][$call['arguments'][$key]] = $value;
+                $p[$call['arguments'][$key]] = $value;
             }
+        }
+        if (
+            count($p) == 1 &&
+            ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
+            !array_key_exists($m['name'], $data) &&
+            ($m['type'] == 'array' || class_exists($m['type']))
+        ) {
+            $p[0] = $data;
         }
         return ApiMethodInfo::__set_state($call);
     }
