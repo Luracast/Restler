@@ -375,12 +375,30 @@ class Routes
         if (
             count($p) == 1 &&
             ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
-            !array_key_exists($m['name'], $data) &&
-            ($m['type'] == 'array' || class_exists($m['type']))
+            !array_key_exists($m['name'], $data)
         ) {
-            $p[0] = $data;
+            if($m['type'] == 'array' && isset($m['properties']['type'])) {
+                $p[0] = static::filterArray($data, true);
+            } elseif( class_exists($m['type'])) {
+                $p[0] = static::filterArray($data, false);
+            }
         }
         return ApiMethodInfo::__set_state($call);
+    }
+
+    private static function filterArray(array $data, $keepNumericKeys)
+    {
+        $r = array();
+        foreach ($data as $key => $value) {
+            if (is_numeric($key)) {
+                if ($keepNumericKeys) {
+                    $r[$key] = $value;
+                }
+            } elseif (!$keepNumericKeys) {
+                $r[$key] = $value;
+            }
+        }
+        return $r;
     }
 
     /**
