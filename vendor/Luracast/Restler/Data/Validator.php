@@ -21,7 +21,8 @@ class Validator implements iValidate
 
     public static function validate($input, ValidationInfo $info, $full=null)
     {
-        if (is_null($input) && !$info->children) {
+        print_r(func_get_args());
+        if (is_null($input)) {
             if ($info->required) {
                 throw new RestException (400,
                     "`$info->name` is required but missing.");
@@ -167,6 +168,19 @@ class Validator implements iValidate
                 if (is_numeric($input)) return $input > 0;
                 return false;
             case 'array':
+                $r = count($input);
+                if (isset ($info->min) && $r < $info->min) {
+                    $error .= '. Given array is too small';
+                    break;
+                }
+                if (isset ($info->max) && $r > $info->max) {
+                    if ($info->fix) {
+                        $input = array_slice($input, $info->max);
+                    } else {
+                        $error .= '. Given array is too big';
+                        break;
+                    }
+                }
                 if(is_null($input) && $info->contentType) {
                     $data = Util::$restler->getRequestData();
                     if(isset($data[0])){
