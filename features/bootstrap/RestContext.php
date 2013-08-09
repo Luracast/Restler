@@ -1,6 +1,6 @@
 <?php
 use Behat\Behat\Context\BehatContext;
-use Symfony\Component\Yaml\Yaml;
+use Behat\Gherkin\Node\PyStringNode;
 
 /**
  * Rest context.
@@ -76,6 +76,62 @@ class RestContext extends BehatContext
         }
     }
 
+    /**
+     * ============ json array ===================
+     * @Given /^that I send (\[[^]]*\])$/
+     *
+     * ============ json object ==================
+     * @Given /^that I send (\{[^\}]*\})$/
+     *
+     * ============ json string ==================
+     * @Given /^that I send ("[^"]*")$/
+     *
+     * ============ json int =====================
+     * @Given /^that I send (\d+)$/
+     */
+    public function thatISend($data)
+    {
+        $this->_restObject = json_decode($data);
+        $this->_restObjectMethod = 'post';
+    }
+
+    /**
+     * @Given /^that I send:/
+     * @param PyStringNode $data
+     */
+    public function thatISendPyString(PyStringNode $data) {
+        $this->thatISend($data);
+    }
+
+    /**
+     * ============ json array ===================
+     * @Given /^the response equals (\[[^]]*\])$/
+     *
+     * ============ json object ==================
+     * @Given /^the response equals (\{[^\}]*\})$/
+     *
+     * ============ json string ==================
+     * @Given /^the response equals ("[^"]*")$/
+     *
+     * ============ json int =====================
+     * @Given /^the response equals (\d+)$/
+     */
+    public function theResponseEquals($response)
+    {
+        $data = json_encode($this->_data);
+        if ($data !== $response)
+            throw new Exception("Response value does not match '$response'\n\n"
+            . $this->echoLastResponse());
+    }
+
+    /**
+     * @Given /^the response equals:/
+     * @param PyStringNode $data
+     */
+    public function theResponseEqualsPyString(PyStringNode $response)
+    {
+        $this->theResponseEquals($response);
+    }
     /**
      * @Given /^that I want to make a new "([^"]*)"$/
      */
@@ -176,6 +232,7 @@ class RestContext extends BehatContext
 
     /**
      * @Given /^the request is sent as JSON$/
+     * @Given /^the request is sent as Json$/
      */
     public function theRequestIsSentAsJson()
     {
