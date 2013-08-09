@@ -237,9 +237,9 @@ class Restler extends EventDispatcher
                 throw $e;
             }
             $this->negotiate();
-            $this->preFilter();
+            $this->preAuthFilter();
             $this->authenticate();
-            $this->postFilter();
+            $this->postAuthFilter();
             $this->validate();
             if(!$this->apiClassInstance) {
                 $this->apiClassInstance
@@ -759,12 +759,12 @@ class Restler extends EventDispatcher
     /**
      * Filer api calls before authentication
      */
-    protected function preFilter()
+    protected function preAuthFilter()
     {
         if (empty($this->filterClasses)) {
             return;
         }
-        $this->dispatch('preFilter');
+        $this->dispatch('preAuthFilter');
         foreach ($this->filterClasses as $filterClass) {
             /**
              * @var iFilter
@@ -830,12 +830,12 @@ class Restler extends EventDispatcher
     /**
      * Filer api calls after authentication
      */
-    protected function postFilter()
+    protected function postAuthFilter()
     {
         if(empty($this->filterObjects)) {
             return;
         }
-        $this->dispatch('postFilter');
+        $this->dispatch('postAuthFilter');
         foreach ($this->filterObjects as $filterObj) {
             Util::initialize($filterObj, $this->apiMethodInfo->metadata);
         }
