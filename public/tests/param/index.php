@@ -10,4 +10,5 @@ require_once "../../../vendor/restler.php";
 $r = new Restler();
 $r->addAPIClass('MinMax');
 $r->addAPIClass('MinMaxFix');
+$r->addAPIClass('Type');
 $r->handle();
