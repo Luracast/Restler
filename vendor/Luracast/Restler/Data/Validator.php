@@ -174,7 +174,7 @@ class Validator implements iValidate
                 }
                 if (isset ($info->max) && $r > $info->max) {
                     if ($info->fix) {
-                        $input = array_slice($input, $info->max);
+                        $input = array_slice($input, 0, $info->max);
                     } else {
                         $error .= '. Given array is too big';
                         break;
