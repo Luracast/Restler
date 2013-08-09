@@ -36,14 +36,13 @@ Feature: Type Attribute
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
-    And the response equals <expected>
+    And the response equals <date>
 
   Examples:
-    | date         | expected     |
-    | "2013-08-10" | "2013-08-10" |
-    | "1974-03-30" | "1974-03-30" |
-    | "1600-12-17" | "1600-12-17" |
-    | "2013/08/10" | "2013-08-10" |
+    | date         |
+    | "2013-08-10" |
+    | "1974-03-30" |
+    | "1600-12-17" |
 
   Scenario Outline: Bad Date
     Given that I send {"date":<date>}
@@ -58,3 +57,30 @@ Feature: Type Attribute
     | "10-08-2013" |
     | "2013-13-10" |
     | "2013-02-30" |
+    | "2013/08/10" |
+
+  Scenario Outline: Date and Time
+    Given that I send {"datetime":<datetime>}
+    And the request is sent as JSON
+    When I request "/tests/param/type/datetime"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals <datetime>
+
+  Examples:
+    | datetime              |
+    | "2013-08-10 00:34:18" |
+
+  Scenario Outline: Bad Date and Time
+    Given that I send {"datetime":<datetime>}
+    And the request is sent as JSON
+    When I request "/tests/param/type/datetime"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | datetime              |
+    | "2013-08-10"          |
+    | "2013-08-10 25:70:11" |
+    | "2013/08/10 00:34:18" |
