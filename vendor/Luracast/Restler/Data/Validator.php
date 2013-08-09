@@ -85,10 +85,10 @@ class Validator implements iValidate
                 break;
             case 'date' :
                 if (
-                    preg_match('#^(?P<year>\d{2}|\d{4})([- /.])(?P<month>\d{1,2})\2(?P<day>\d{1,2})$#', $input, $date)
+                    preg_match('#^(?P<year>\d{2}|\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})$#', $input, $date)
                     && checkdate($date['month'], $date['day'], $date['year'])
                 ) {
-                    return date("Y-m-d", strtotime($input));
+                    return $input;
                 }
                 $error .= '. Expecting date in `YYYY-MM-DD` format, such as `'
                     . date("Y-m-d") . '`';
@@ -100,7 +100,7 @@ class Validator implements iValidate
                         ')\:(?<i>[0-5][0-9])\:(?<s>[0-5][0-9])$/',
                         $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
                 )
-                    return date("Y-m-d H:i:s", strtotime($input));
+                    return $input;
                 $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
                     . date("Y-m-d H:i:s") . '`';
                 break;
