@@ -862,7 +862,10 @@ class Restler extends EventDispatcher
                 //convert to instance of ValidationInfo
                 $info = new ValidationInfo($param);
                 $validator = Defaults::$validatorClass;
-                if(!is_subclass_of($validator, 'Luracast\\Restler\\Data\\iValidate')){
+                //if(!is_subclass_of($validator, 'Luracast\\Restler\\Data\\iValidate')) {
+                //changed the above test to below for addressing this php bug
+                //https://bugs.php.net/bug.php?id=53727
+                if (function_exists("$validator::validate")) {
                     throw new \UnexpectedValueException(
                         '`Defaults::$validatorClass` must implement `iValidate` interface'
                     );
