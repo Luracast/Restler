@@ -81,13 +81,16 @@ class RestContext extends BehatContext
      * @Given /^that I send (\[[^]]*\])$/
      *
      * ============ json object ==================
-     * @Given /^that I send (\{[^\}]*\})$/
+     * @Given /^that I send (\{(?>[^\{\}]+|(?1))*\})$/
      *
      * ============ json string ==================
      * @Given /^that I send ("[^"]*")$/
      *
      * ============ json int =====================
-     * @Given /^that I send (\d+)$/
+     * @Given /^that I send ([-+]?[0-9]*\.?[0-9]+)$/
+     *
+     * ============ json null or boolean =========
+     * @Given /^that I send (null|true|false)$/
      */
     public function thatISend($data)
     {
@@ -108,13 +111,16 @@ class RestContext extends BehatContext
      * @Given /^the response equals (\[[^]]*\])$/
      *
      * ============ json object ==================
-     * @Given /^the response equals (\{[^\}]*\})$/
+     * @Given /^the response equals (\{(?>[^\{\}]+|(?1))*\})$/
      *
      * ============ json string ==================
      * @Given /^the response equals ("[^"]*")$/
      *
      * ============ json int =====================
-     * @Given /^the response equals (\d+)$/
+     * @Given /^the response equals ([-+]?[0-9]*\.?[0-9]+)$/
+     *
+     * ============ json null or boolean =========
+     * @Given /^the response equals (null|true|false)$/
      */
     public function theResponseEquals($response)
     {
@@ -237,7 +243,11 @@ class RestContext extends BehatContext
     public function theRequestIsSentAsJson()
     {
         $this->_headers['Content-Type'] = 'application/json; charset=utf-8';
-        $this->_requestBody = json_encode((array)$this->_restObject);
+        $this->_requestBody = json_encode(
+            is_object($this->_restObject)
+            ? (array)$this->_restObject
+            : $this->_restObject
+        );
     }
 
     /**
@@ -265,7 +275,9 @@ class RestContext extends BehatContext
                 $this->_response = $this->_request->send();
                 break;
             case 'POST':
-                $postFields = (array)$this->_restObject;
+                $postFields = is_object($this->_restObject)
+                    ? (array)$this->_restObject
+                    : $this->_restObject;
                 $this->_request = $this->_client
                     ->post($url, $this->_headers,
                     (empty($this->_requestBody) ? $postFields :
@@ -273,7 +285,9 @@ class RestContext extends BehatContext
                 $this->_response = $this->_request->send();
                 break;
             case 'PUT' :
-                $putFields = (array)$this->_restObject;
+                $putFields = is_object($this->_restObject)
+                    ? (array)$this->_restObject
+                    : $this->_restObject;
                 $this->_request = $this->_client
                     ->put($url, $this->_headers,
                     (empty($this->_requestBody) ? $putFields :
@@ -281,7 +295,9 @@ class RestContext extends BehatContext
                 $this->_response = $this->_request->send();
                 break;
             case 'PATCH' :
-                $putFields = (array)$this->_restObject;
+                $putFields = is_object($this->_restObject)
+                    ? (array)$this->_restObject
+                    : $this->_restObject;
                 $this->_request = $this->_client
                     ->patch($url, $this->_headers,
                     (empty($this->_requestBody) ? $putFields :
