@@ -118,7 +118,13 @@ class Validator implements iValidate
             case 'float' :
             case 'number' :
                 if (!is_numeric($input)) {
-                    $error .= '. Expecting numeric value';
+                    $error .= '. Expecting '
+                        . ($info->type == 'int' ? 'integer' : 'numeric')
+                        . ' value';
+                    break;
+                }
+                if ($info->type == 'int' && (int)$input != $input) {
+                    $error .= '. Expecting integer value';
                     break;
                 }
                 $r = $info->numericValue($input);
