@@ -480,12 +480,14 @@ class Restler extends EventDispatcher
 
             $r = file_get_contents('php://input');
             if (is_null($r)) {
-                return array();
+                return array(); //no body
             }
             $r = $this->requestFormat->decode($r);
-            return is_null($r) ? array() : $r;
+            return is_array($r)
+                ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
+                : array(Defaults::$fullRequestDataName => $r);
         }
-        return array();
+        return array(); //no body
     }
 
     /**
@@ -494,20 +496,9 @@ class Restler extends EventDispatcher
     protected function route()
     {
         $this->dispatch('route');
-        if (!is_array($this->requestData)) {
-            $this->requestData = array(
-                Defaults::$fullRequestDataName => $this->requestData
-            );
-            $this->requestData += $_GET;
-            $params = $this->requestData;
-        } else {
-            $this->requestData += $_GET;
-            $params = array(
-                Defaults::$fullRequestDataName => $this->requestData
-            );
-            $params = $this->requestData + $params;
 
-        }
+        $params = array_merge($this->requestData, $_GET);
+
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
             $currentUrl .= '/' . $this->url;
