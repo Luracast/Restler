@@ -167,11 +167,18 @@ class ValidationInfo implements iValueObject
         );
     }
 
-    public static function stringValue($value)
+    public static function stringValue($value, $glue=',')
     {
         return is_array($value)
-            ? implode(',', $value)
+            ? implode($glue, $value)
             : ( string )$value;
+    }
+
+    public static function booleanValue($value)
+    {
+        return is_bool($value)
+            ? $value
+            : $value !== 'false';
     }
 
     public function __toString()
@@ -194,11 +201,16 @@ class ValidationInfo implements iValueObject
             return $p;
         }
         $r = $p2 ? : $p ? : null;
-        if ($property == 'choice' && $r && !is_array($r)) {
-            return array($r);
-        }
-        if ($property == 'pattern' && $r && is_array($r)) {
-            return implode(',', $r);
+        if (!is_null($r)) {
+            if ($property == 'min' || $property == 'max') {
+                return static::numericValue($r);
+            } elseif ($property == 'required' || $property == 'fix') {
+                return static::booleanValue($r);
+            } elseif ($property == 'choice') {
+                return static::arrayValue($r);
+            } elseif ($property == 'pattern') {
+                return static::stringValue($r);
+            }
         }
         return $r;
     }
