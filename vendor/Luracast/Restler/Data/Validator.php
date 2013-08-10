@@ -124,10 +124,15 @@ class Validator implements iValidate
                     break;
                 }
                 if ($info->type == 'int' && (int)$input != $input) {
-                    $error .= '. Expecting integer value';
-                    break;
+                    if ($info->fix) {
+                        $r = (int)$input;
+                    } else {
+                        $error .= '. Expecting integer value';
+                        break;
+                    }
+                } else {
+                    $r = $info->numericValue($input);
                 }
-                $r = $info->numericValue($input);
                 if (isset ($info->min) && $r < $info->min) {
                     if ($info->fix) {
                         $r = $info->min;
@@ -144,9 +149,7 @@ class Validator implements iValidate
                         break;
                     }
                 }
-                return $info->type == 'int'
-                    ? (int)$r
-                    : ($info->type == 'float' ? floatval($r) : $r);
+                return $r;
 
             case 'string' :
                 $r = strlen($input);
