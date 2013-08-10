@@ -265,3 +265,48 @@ Feature: Type Attribute
     | [null]          |
     | [1.34]          |
     | {"key":"value"} |
+
+  Scenario Outline: An Array of Floating Points
+    Given that I send {"numbers":<numbers>}
+    And the request is sent as JSON
+    When I request "/tests/param/type/numbers"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals <expected>
+
+  Examples:
+    | numbers            | expected           |
+    | []                 | []                 |
+    | {}                 | []                 |
+    | [1,329.8473984,23] | [1,329.8473984,23] |
+    | [0.00001]          | [1.0e-5]           |
+
+  Scenario Outline: An Array of Floating Points as the only body
+    Given that I send <numbers>
+    And the request is sent as JSON
+    When I request "/tests/param/type/numbers"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals <expected>
+
+  Examples:
+    | numbers            | expected           |
+    | []                 | []                 |
+    | {}                 | []                 |
+    | [1,329.8473984,23] | [1,329.8473984,23] |
+    | [0.00001]          | [1.0e-5]           |
+    | [0.10e-4]          | [1.0e-5]           |
+
+  Scenario Outline: Invalid Array of Floats as the only body
+    Given that I send <numbers>
+    And the request is sent as JSON
+    When I request "/tests/param/type/numbers"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | numbers         |
+    | ""              |
+    | [true,false]    |
+    | [null]          |
+    | {"key":"value"} |
