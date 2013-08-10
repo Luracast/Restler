@@ -393,21 +393,6 @@ class Routes
         return ApiMethodInfo::__set_state($call);
     }
 
-    private static function filterArray(array $data, $keepNumericKeys)
-    {
-        $r = array();
-        foreach ($data as $key => $value) {
-            if (is_numeric($key)) {
-                if ($keepNumericKeys) {
-                    $r[$key] = $value;
-                }
-            } elseif (!$keepNumericKeys) {
-                $r[$key] = $value;
-            }
-        }
-        return $r;
-    }
-
     /**
      * @access private
      */

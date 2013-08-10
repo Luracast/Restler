@@ -181,6 +181,21 @@ class ValidationInfo implements iValueObject
             : $value !== 'false';
     }
 
+    public static function filterArray(array $data, $keepNumericKeys)
+    {
+        $r = array();
+        foreach ($data as $key => $value) {
+            if (is_numeric($key)) {
+                if ($keepNumericKeys) {
+                    $r[$key] = $value;
+                }
+            } elseif (!$keepNumericKeys) {
+                $r[$key] = $value;
+            }
+        }
+        return $r;
+    }
+
     public function __toString()
     {
         return ' new ValidationInfo() ';
