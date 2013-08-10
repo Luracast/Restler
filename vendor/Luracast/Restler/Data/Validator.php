@@ -106,7 +106,7 @@ class Validator implements iValidate
                 break;
             case 'timestamp' :
                 if (
-                    (string)(int)$input === $input &&
+                    (string)(int)$input == $input &&
                     ($input <= PHP_INT_MAX) &&
                     ($input >= ~PHP_INT_MAX)
                 ) {
