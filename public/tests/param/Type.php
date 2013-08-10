@@ -46,6 +46,38 @@ class Type
      */
     function postNumbers(array $numbers)
     {
-
+        return $numbers;
     }
+
+    /**
+     * @param Author $author
+     *
+     * @return Author
+     */
+    function postAuthor(Author $author)
+    {
+        return $author;
+    }
+
+    /**
+     * @param array $authors {@type array}
+     *
+     * @return mixed
+     */
+    function postAuthors(array $authors)
+    {
+        return $authors;
+    }
+}
+
+class Author
+{
+    /**
+     * @var string {@from body} {@min 3}{@max 100} name of the Author {@required true}
+     */
+    public $name='Name';
+    /**
+     * @var string {@type email} {@from body} email id of the Author
+     */
+    public $email='name@domain.com';
 }
