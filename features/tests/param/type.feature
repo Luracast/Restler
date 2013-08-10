@@ -84,3 +84,35 @@ Feature: Type Attribute
     | "2013-08-10"          |
     | "2013-08-10 25:70:11" |
     | "2013/08/10 00:34:18" |
+
+  Scenario Outline: Time Stamp
+    Given that I send {"timestamp":<timestamp>}
+    And the request is sent as JSON
+    When I request "/tests/param/type/timestamp"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals <expected>
+
+  Examples:
+    | timestamp    | expected   |
+    | "1376094488" | 1376094488 |
+    | 1376094488   | 1376094488 |
+    | "0123"       | 123        |
+    | 123.0        | 123        |
+    | 1            | 1          |
+    | 0            | 0          |
+
+  Scenario Outline: Bad Time Stamp
+    Given that I send {"timestamp":<timestamp>}
+    And the request is sent as JSON
+    When I request "/tests/param/type/timestamp"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | timestamp             |
+    | "2013-08-10"          |
+    | "2013-08-10 00:34:18" |
+    | "0xFF"                |
+    | 1.1                   |
