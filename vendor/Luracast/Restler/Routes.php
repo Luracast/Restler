@@ -118,7 +118,6 @@ class Routes
                     $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
                     if ((isset($type) && Util::isObjectOrArray($type))
-                        || $param->getName() == Defaults::$fullRequestDataName
                     ) {
                         $from = 'body';
                         if(!isset($type)){
@@ -375,20 +374,11 @@ class Routes
         if (
             count($p) == 1 &&
             ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
-            //isset($m['type']) &&
             !array_key_exists($m['name'], $data) &&
-            array_key_exists(Defaults::$fullRequestDataName, $data)
+            array_key_exists(Defaults::$fullRequestDataName, $data) &&
+            !is_null($d = $data[Defaults::$fullRequestDataName])
         ) {
-            /*
-            if ($m['type'] == 'array') {
-                $p[0] = static::filterArray($data, true);
-            } elseif (class_exists($m['type'])) {
-                $p[0] = static::filterArray($data, false);
-            }
-            */
-            if (!is_null($d = $data[Defaults::$fullRequestDataName])) {
-                $p[0] = $d;
-            }
+            $p[0] = $d;
         }
         return ApiMethodInfo::__set_state($call);
     }
