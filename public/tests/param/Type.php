@@ -60,7 +60,7 @@ class Type
     }
 
     /**
-     * @param array $authors {@type array}
+     * @param array $authors {@type Author}
      *
      * @return mixed
      */
