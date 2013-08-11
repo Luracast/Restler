@@ -1,7 +1,16 @@
-Child Anotations for `@param`
------------------------------
+Attributes for `@param` comments
+--------------------------------
 
-Following child annotations can be used with `@param`
+Following attributes can be used with `@param`, they apply for `@var` comment
+that is added to model class properties. Just replace 
+
+    @param [type] $name ...
+
+with 
+
+    @var [type] ...
+
+in the examples below
 
 <table>
      <tr>
@@ -36,7 +45,10 @@ Following child annotations can be used with `@param`
         email will validate the given string as email.
         date, datetime, and timestamp will be validated as standard mysql date formats respectively
         <pre>@param array $author array of Authors {@type Author}</pre>
-        states that the given array of Author instances
+        States that the given array of Author instances.
+        <br/><br/>
+        Take a look at <a href="public/tests/param/Type.php">Type API Class</a> and tests in        
+        <a href="features/tests/param/type.feature">type.feature</a>
         </td>
     </tr>
     <tr>
@@ -47,6 +59,36 @@ Following child annotations can be used with `@param`
         Example:
         <pre>@param string $gender {@choice male,female,third}</pre>
         Value for the parameter should match one of the choices, used for validation
+        </td>
+    </tr>
+    <tr>
+        <td>@min @max</td>
+        <td>
+        Syntax:
+        <pre>@param string|int|float|array $name [Description] {@min value}{@max value}</pre>
+        Example:
+        <pre>@param string $name 3 to 10 characters in length {@min 3}{@max 10}</pre>
+        <pre>@param array $items at least one item is needed  {@min 1}</pre>
+        <pre>@param int $age valid age should be 18 or above  {@min 18}</pre>
+        Minimum and maximum values for a parameter. For string and array parameters it is applied
+        to the length. For number parameters it sets the range for the value.
+        <br/><br/>
+        Take a look at <a href="public/tests/param/MinMax.php">MinMax API Class</a> and tests in        
+        <a href="features/tests/param/minmax.feature">minmax.feature</a>
+        </td>
+    </tr>
+    <tr>
+        <td>@fix</td>
+        <td>
+        Syntax:
+        <pre>@param string|int|float|array $name [Description] {@fix true}</pre>
+        Example:
+        <pre>@param string $name 3 to 10 characters in length {@max 10}{@fix true}</pre>
+        suggests the validator to attempt fixing the validation problem. In the above example
+        Validator will trim off the excess characters instead of throwing an exception
+        <br/><br/>
+        Take a look at <a href="public/tests/param/MinMaxFix.php">MinMaxFix API Class</a> and tests in 
+        <a href="features/tests/param/minmaxfix.feature">minmaxfix.feature</a>
         </td>
     </tr>
 </table>

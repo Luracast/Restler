@@ -77,94 +77,53 @@ Git Repository and the Branches
 3. Feature branches such as `features/html` and `features/router` are purely
    for experimentation purpose to try out a feature
 
-> **Note:-** You may have to tweak the installation urls below depending on the branch of choice.
-
 
 Installation
 ------------
-Installation is a two step process. Do the following in the folder where you want Restler to be setup.
+### 1. Install Composer
 
-Before proceeding make sure your server has **PHP 5.3** or higher.
+Restler uses [Composer](http://getcomposer.org/) to manage its dependencies. First, download a copy of
+`composer.phar`. It can be kept in your project folder or ideally in `usr/local/bin` to use it globally 
+for all your projects. If you are on Windows, you can use the composer 
+[windows installer](https://getcomposer.org/Composer-Setup.exe) instead.
 
-### 1.
-[Download](https://github.com/Luracast/Restler/zipball/v3) and unpack Restler 3,
-or Checkout using Terminal/Commandline
+### 2. Install Restler
 
-```console
+#### Option 1. Using composer create-project
 
-git clone git://github.com/Luracast/Restler.git -b v3 ./
-
-```
-This creates the following folder structure
-
-```
-.
-├── features
-│   ├── bootstrap
-│   ├── examples
-│   └── restler
-├── public
-│   └── examples
-│       ├── _001_helloworld
-│       ├── _002_minimal
-│       ├── _003_multiformat
-│       ├── _004_error_response
-│       ├── _005_protected_api
-│       ├── _006_routing
-│       ├── _007_crud
-│       ├── _008_documentation
-│       ├── _009_rate_limiting
-│       ├── _010_access_control
-│       ├── _012_vendor_mime
-│       └── resources
-└── vendor
-    └── Luracast
-        └── Restler
-```
-
-### 2.
-Download other dependencies using make at the Terminal/Commandline.
-This step is only needed if you want to use Restler API Explorer or complex formats such as Plist, Yaml, and AMF as they depend on some third party libraries.
-Otherwise you may safely skip this step.
+You may install Restler by running the create project command in your terminal. Replace {projectName} with
+your actual project name. It will create a folder with that name and install Restler.
 
 ```console
-
-make composer-install
-
+php composer.phar create-project luracast/restler {projectName}
 ```
-This expands the vendor folder as shown below
+> **Note:-**
+>
+> * If you do not want the additional formats and BDD tools you can include `--no-dev` to enforce
+>   exclusion of dev packages.
+>
+> * If you want to try the bleading edge v3 branch or any of the feature branches include `3.x-dev` or `dev-features/html` in the above command
 
-```
-.
-│
-│
-└── vendor
-    ├── ChiperSoft
-    │   └── CFPropertyList
-    ├── Luracast
-    │   ├── Restler
-    │   └── explorer
-    ├── behat
-    │   ├── behat
-    │   └── gherkin
-    ├── composer
-    ├── guzzle
-    │   └── guzzle
-    ├── symfony
-    │   └── yaml
-    └── zendframework
-        └── zendamf
-```
+#### Option 2. Downloading from github
 
-Now the vendor folder will have all dependencies.
+Once Composer is installed, download the [latest version]() of the Restler framework and extract its contents into a directory on your server. Next, in the root of your Restler project, run the `php composer.phar install` (or `composer install`) command to install all of the framework's dependencies. This process requires Git to be installed on the server to successfully complete the installation.
 
-### 3.
-Ideally public folder should be mapped as your web root (optional, but recommended)
+If you want to update the Restler framework, you may issue the `php composer.phar update` command.
 
-### 4.
-Try the examples in your localhost
+> **Note:-** If are not allowed to install composer and git on your server, you can install and run them on 
+> your development machine. The resulting files and folders can be uploaded and used on the server.
 
-### 5.
+
+### 3. Configure
+
+Ideally public folder should be mapped as your web root, It is optional, but recommended to avoid exposing
+
+### 4. Try it out
+
+Try the live examples in your localhost
+
+### 5. Run some test
+
 Update the base_url specified in `behat.yml` and then try the following command
 
 ```console
@@ -197,13 +156,13 @@ Quick Start Guide
 
 Once you have got restler installed with the above steps, you can quickly create your application by following these steps
 
-### 1.
+### 1. API classes
 
 Create your **API classes** with all needed public and protected methods
 
 
 
-### 2.
+### 2. Gateway
 
 Create the **gateway (index.php)** as follows
 
@@ -217,7 +176,7 @@ $r->addAPIClass('YourApiClassNameHere'); // repeat for more
 $r->handle(); //serve the response
 ```
 
-### 3.
+### 3. Pretty URLs
 
 **Enable URL Rewriting**
 
@@ -303,150 +262,9 @@ Happy Exploring! :)
 > **Note:-** Using eAccelerator can make restler to fail as it removes the comments.
 > More info can be found [here](http://wildlyinaccurate.com/eaccelerator-and-doctrine-2)
 
-Supported Annotations
----------------------
+Restler uses annotations in the form of PHPDoc comments for API fine tuning
 
-You may use the following php doc comments to annotate your methods.
-All tags except @url can also be defined at the class level.
-
-<table>
-    <tr>
-        <th>Tag</th>
-        <th>Description</th>
-    </tr>
-    <tr>
-        <td>@url</td>
-        <td>
-        Syntax:
-        <pre>@url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route</pre>
-        Example:
-        <pre>@url POST authors/{id}/books</pre>
-        Overrides auto routes and creates manual routes. use as many as you need
-        </td>
-    </tr>
-    <tr>
-        <td>@access</td>
-        <td>
-        Syntax:
-        <pre>@access private|public|protected|hybrid</pre>
-        Example:
-        <pre>@access protected</pre>
-        Access control for api methods. PHPDoc only supports private and public,
-        Restler adds <b>protected</b> for api that needs authentication,
-        <b>hybrid</b> for api that enhances resulting data for authenticated users.
-        </td>
-    </tr>
-    <tr>
-        <td>@smart-auto-routing</td>
-        <td>
-        Syntax:
-        <pre>@smart-auto-routing true|false</pre>
-        Example:
-        <pre>@smart-auto-routing false</pre>
-        Smart auto routing is enabled by default. Avoids creating multiple
-        routes that can increase the ambiguity when set to true. when a method
-        parameter is optional it is not mapped to the url and should only be
-        used in request body or as query string `/resource?id=value`.
-        When a parameter is required and is  scalar, it will be mapped as
-        part of the url `/resource/{id}`
-        </td>
-    </tr>
-    <tr>
-        <td>@class</td>
-        <td>
-        Syntax:
-        <pre>@class ClassName {@propertyName value}</pre>
-        Example:
-        <pre>@class AccessControl {@requires user} {@level 5}</pre>
-        Inject property of the specified class with specified value
-        </td>
-    </tr>
-    <tr>
-        <td>@cache</td>
-        <td>
-        Syntax:
-        <pre>@cache headerCacheControlValue</pre>
-        Example:
-        <pre>@cache max-age={expires}, must-revalidate</pre>
-        Specify value to set CacheControl Header, it can use @expires value as
-        shown in the example
-        </td>
-    </tr>
-    <tr>
-        <td>@expires</td>
-        <td>
-        Syntax:
-        <pre>@expires numberOfSeconds</pre>
-        Example:
-        <pre>@expires 30</pre>
-        Sets the content to expire immediately when set to zero alternatively
-        you can specify the number of seconds the content will expire
-        </td>
-    </tr>
-    <tr>
-        <td>@throttle</td>
-        <td>
-        Syntax:
-        <pre>@throttle numberOfMilliSeconds</pre>
-        Example:
-        <pre>@throttle 3000</pre>
-        Sets the time in milliseconds for bandwidth throttling, which will
-        become the minimum response time for each API request.
-        </td>
-    </tr>
-    <tr>
-        <td>@status</td>
-        <td>
-        Syntax:
-        <pre>@status httpStatusCode</pre>
-        Example:
-        <pre>@status 201</pre>
-        Sets the HTTP Status code for the successful response.
-        </td>
-    </tr>
-    <tr>
-        <td>@header</td>
-        <td>
-        Syntax:
-        <pre>@header httpHeader</pre>
-        Example:
-        <pre>@header Link: &lt;meta.rdf>; rel=meta</pre>
-        Sets or overrides the specific HTTP Header.
-        </td>
-    </tr>
-    <tr>
-        <td>@param</td>
-        <td>
-        Syntax:
-        <pre>@param [type] Name [Description] {@name value}</pre>
-        Example:
-        <pre>@param int $num1 increment value {@min 5} {@max 100}</pre>
-        Standard @param comment that sets the type and description of a parameter.
-        Supported child attributes are documented in <a href="PARAM.md">PARAM.md</a>
-        </td>
-    </tr>
-    <tr>
-        <td>@throws</td>
-        <td>
-        Syntax:
-        <pre>@throws httpStatusCode [Reason]</pre>
-        Example:
-        <pre>@throws 404 No Author for specified id</pre>
-        Documents possible error responses for the API call.
-        </td>
-    </tr>
-    <tr>
-        <td>@return</td>
-        <td>
-        Syntax:
-        <pre>@return type [Description]</pre>
-        Example:
-        <pre>@return Author an instance of iValueObject</pre>
-        Documents the structure of success response, user defined classes must
-        extend iValueObject.
-        </td>
-    </tr>
-</table>
+They are documented in detail under [Annotations](ANNOTATIONS.md)
 
 ### 5.
 
