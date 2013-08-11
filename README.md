@@ -116,7 +116,7 @@ If you want to update the Restler framework, you may issue the `php composer.pha
 
 ### 3. Configure
 
-Ideally public folder should be mapped as your web root, It is optional, but recommended to avoid exposing
+Ideally public folder should be mapped as your web root, It is optional, but recommended to avoid exposing unneeded files and folders.
 
 ### 4. Try it out
 
@@ -156,13 +156,12 @@ Quick Start Guide
 
 Once you have got restler installed with the above steps, you can quickly create your application by following these steps
 
-### 1. API classes
+### 1. Write API
 
 Create your **API classes** with all needed public and protected methods
 
 
-
-### 2. Gateway
+### 2. Open the Gateway
 
 Create the **gateway (index.php)** as follows
 
@@ -176,7 +175,7 @@ $r->addAPIClass('YourApiClassNameHere'); // repeat for more
 $r->handle(); //serve the response
 ```
 
-### 3. Pretty URLs
+### 3. Prettify URLs
 
 **Enable URL Rewriting**
 
@@ -229,7 +228,7 @@ PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000
 > Refer to [PHP FastCGI](http://wiki.nginx.org/PHPFcgiExample) example for more info.
 
 
-### 4.
+### 4. Customise
 
 **Fine tune to suit your needs**
 
@@ -262,13 +261,15 @@ Happy Exploring! :)
 > **Note:-** Using eAccelerator can make restler to fail as it removes the comments.
 > More info can be found [here](http://wildlyinaccurate.com/eaccelerator-and-doctrine-2)
 
-Restler uses annotations in the form of PHPDoc comments for API fine tuning
+### 5. Annotate
+
+Restler supports annotations in the form of PHPDoc comments for API fine tuning
 
 They are documented in detail under [Annotations](ANNOTATIONS.md)
 
-### 5.
+### 6. Authorize
 
-Protect your api, authenticate and allow valid users
+In order to protect your api, authenticate and allow valid users
 
 ```php
 <?php
@@ -280,9 +281,12 @@ $r->addAuthenticationClass('CustomAuth'); //Add Authentication classes as needed
 $r->handle(); //serve the response
 ```
 
-### 6.
+### 7. Start Production
 
-Turn on production mode
+By default Restler runs in debug more more fine tuned for API developer, by showing detailed error messages and
+prettifying the api result to human readbale form
+
+By turning on production mode you will gain some performance boost as it will cache the routes and avoid giving out debug information
 
 ```php
 <?php
@@ -300,6 +304,8 @@ Change Log
 
 ### Changes from Restler 3.0 RC3 (only available on the v3 branch)
 
+ * Support for custom class parameters and array of custom class parameters
+ * Ability to pass the parameter directly as the body of the request when it is the only parameter
  * Fixes to composer.json and publish stable release as composer package on packagist.
  * New Routes class with improved routing, including wild card routes.
  * Possibility to use any autoloader including composer's autoloader for maximum interoperability
