@@ -909,10 +909,13 @@ class Restler extends EventDispatcher
                 ? $this->apiMethodInfo->metadata
                 : null
         );
-        $this->responseData = $this->responseFormat->encode(
-            $compose->response($this->responseData),
-            !$this->productionMode
-        );
+        $this->responseData = is_null($this->responseData) &&
+        Defaults::$emptyBodyForNullResponse
+            ? ''
+            : $this->responseFormat->encode(
+                $compose->response($this->responseData),
+                !$this->productionMode
+            );
     }
 
     protected function composeHeaders(RestException $e = null)
