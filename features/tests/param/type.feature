@@ -310,3 +310,65 @@ Feature: Type Attribute
     | [true,false]    |
     | [null]          |
     | {"key":"value"} |
+
+  Scenario Outline: Custom Class
+    Given that I send <author>
+    And the request is sent as JSON
+    When I request "/tests/param/type/author"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals <expected>
+
+  Examples:
+    | author                                      | expected                                    |
+    | {"name":"Arul"}                             | {"name":"Arul","email":null}                |
+    | {"name":"Arul","email":"arul@luracast.com"} | {"name":"Arul","email":"arul@luracast.com"} |
+    | {"name":"name","email":"a@b.c"}             | {"name":"name","email":"a@b.c"}             |
+
+  Scenario Outline: Invalid data for Custom Class
+    Given that I send <author>
+    And the request is sent as JSON
+    When I request "/tests/param/type/author"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | author                         |
+    | ""                             |
+    | [true,false]                   |
+    | [null]                         |
+    | {"key":"value"}                |
+    | {"name":"12","email":"a@b.c"}  |
+    | {"email":"a@b.c"}              |
+    | {"email":"ab.c","name":"1234"} |
+
+  Scenario Outline: Array of Custom Class objects
+    Given that I send <authors>
+    And the request is sent as JSON
+    When I request "/tests/param/type/authors"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals <expected>
+
+  Examples:
+    | authors                                       | expected                                      |
+    | [{"name":"Arul"}]                             | [{"name":"Arul","email":null}]                |
+    | [{"name":"Arul","email":"arul@luracast.com"}] | [{"name":"Arul","email":"arul@luracast.com"}] |
+    | [{"name":"name","email":"a@b.c"}]             | [{"name":"name","email":"a@b.c"}]             |
+
+  Scenario Outline: Invalid data for array of Custom Class objects
+    Given that I send <authors>
+    And the request is sent as JSON
+    When I request "/tests/param/type/authors"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | authors                        |
+    | ""                             |
+    | [true,false]                   |
+    | [null]                         |
+    | {"key":"value"}                |
+    | {"name":"12","email":"a@b.c"}  |
+    | {"email":"a@b.c"}              |
+    | {"email":"ab.c","name":"1234"} |
