@@ -170,27 +170,35 @@ class Validator implements iValidate
                     }
                 }
                 return $input;
+
             case 'bool':
             case 'boolean':
                 if ($input == 'true') return true;
                 if (is_numeric($input)) return $input > 0;
                 return false;
+
             case 'array':
-                $r = count($input);
-                if (isset ($info->min) && $r < $info->min) {
-                    $error .= '. Given array is too small';
-                    break;
-                }
-                if (isset ($info->max) && $r > $info->max) {
+                if (is_array($input)) {
                     if ($info->fix) {
-                        $input = array_slice($input, 0, $info->max);
-                    } else {
-                        $error .= '. Given array is too big';
+                        $input = $info->filterArray($input, true);
+                    } elseif(array_values($input)!=$input) {
+                        $error .= '. Expecting an array but an object is given';
                         break;
                     }
-                }
-                if (is_array($input)) {
-                    if ($info->contentType) {
+                    $r = count($input);
+                    if (isset ($info->min) && $r < $info->min) {
+                        $error .= '. Given array is too small';
+                        break;
+                    }
+                    if (isset ($info->max) && $r > $info->max) {
+                        if ($info->fix) {
+                            $input = array_slice($input, 0, $info->max);
+                        } else {
+                            $error .= '. Given array is too big';
+                            break;
+                        }
+                    }
+                    if (isset($info->contentType)) {
                         $name = $info->name;
                         $info->type = $info->contentType;
                         unset($info->contentType);
@@ -200,11 +208,12 @@ class Validator implements iValidate
                         }
                     }
                     return $input;
-                } elseif ($info->contentType) {
+                } elseif (isset($info->contentType)) {
                     $error .= ". Expecting an array with contents of type `$info->contentType`";
                     break;
+                } elseif ($info->fix && is_string($input)) {
+                    return array($input);
                 }
-                return array($input);
                 break;
             case 'mixed':
             case 'unknown_type':
@@ -212,11 +221,12 @@ class Validator implements iValidate
             case null: //treat as unknown
                 return $input;
             default :
-                if (!is_array($input) && !$info->children) {
+                if (!is_array($input)) {
                     break;
                 }
                 //do type conversion
                 if (class_exists($info->type)) {
+                    $input = $info->filterArray($input, false);
                     $implements = class_implements($info->type);
                     if (
                         is_array($implements) &&
