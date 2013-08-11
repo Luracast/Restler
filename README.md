@@ -33,7 +33,7 @@ Features
     * Pluggable content Formatter framework and api
     * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support
 * Pluggable Authentication schemes
-    * `[planned]` OAuth 2
+    * OAuth 2 Server
 * Pluggable Filters to effectively manage API usage
     * API Rate Limiting Filter
 * Routing
@@ -99,10 +99,11 @@ php composer.phar create-project luracast/restler {projectName}
 ```
 > **Note:-**
 >
-> * If you do not want the additional formats and BDD tools you can include `--no-dev` to enforce
->   exclusion of dev packages.
+> 1. If you do not want the additional formats and BDD tools you can include `--no-dev` to enforce
+>    exclusion of dev packages.
 >
-> * If you want to try the bleading edge v3 branch or any of the feature branches include `3.x-dev` or `dev-features/html` in the above command
+> 2. If you want to try the bleading edge v3 branch or any of the feature branches include `3.x-dev` or 
+     `dev-features/html` in the above command
 
 #### Option 2. Downloading from github
 
@@ -302,12 +303,13 @@ $r = new Restler(true); //turns on production mode. make sure cache folder is wr
 Change Log
 ----------
 
-### Changes from Restler 3.0 RC3 (only available on the v3 branch)
+### Changes from Restler 3.0 RC3
 
+ * Added many api examples under tests folder for testing feature by feature using BDD 
  * Support for custom class parameters and array of custom class parameters
  * Ability to pass the parameter directly as the body of the request when it is the only parameter
  * Fixes to composer.json and publish stable release as composer package on packagist.
- * New Routes class with improved routing, including wild card routes.
+ * New Routes class with improved routing, including wild card routes and smart routing based on paramter type.
  * Possibility to use any autoloader including composer's autoloader for maximum interoperability
  * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
  * Removed required packages as they are not technically "required" per se, Restler works out of the box.

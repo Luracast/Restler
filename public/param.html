@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler  Param</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="examples/resources/highlight.css">
+<link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+<script src="examples/resources/highlight.pack.js"></script>
+<script type="text/javascript" src="examples/resources/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript">
+  hljs.initHighlightingOnLoad();
+</script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23777019-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="examples/resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a class="active" title="Getting Started with Restler" href="#"><img src="examples/resources/quickstart.png" width="16" height="16"/> Start</a></li>
+<li><a href="examples/index.html"><img src="examples/resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="examples/resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="examples/resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="examples/resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="examples/resources/facebook.png" width="16" height="16"/> Connect</a></li>
+</ul>
+</nav>
+<nav id="left">
+        <img src="examples/resources/Restler3.gif" width="126"
+            height="126" title="Luracast Restler " />
+        <h3>
+            <a href="index.html#luracast-restler-3-0-rc3">Quick Start</a>
+        </h3>
+        <ul>
+            <li><a href="index.html#features" title="Feature List">Features</a></li>
+            <li><a href="index.html#installation" title="Install">Installation</a></li>
+            <li><a href="index.html#quick-start-guide" title="Quick Start">Getting Started</a></li>
+            <li><a href="index.html#change-log" title="What has changed?">Change Log</a></li>
+            <li><a href="annotations.html" title="Supported Comments">Annotations</a></li>
+            <li><a href="param.html" title="Attributes for @param">@param</a></li>
+        </ul>
+    </nav>
+<article>
+<p><a id="-param-and--var" class="anchor"></a><h1>@param and @var</h1></p>
+
+<p>Following attributes can be used with <code>@param</code>, they apply for <code>@var</code> comment
+that is added to model class properties. Just replace</p>
+
+<pre><code>@param [type] $name ...
+</code></pre>
+
+<p>with</p>
+
+<pre><code>@var [type] ...
+</code></pre>
+
+<p>in the examples below</p>
+
+<p><a id="-from" class="anchor"></a><h2>@from</h2></p>
+
+<p>Syntax:</p>
+
+<pre><code>@param [type] $name [Description] {@from url|body|query|head}
+</code></pre>
+
+<p>Example:</p>
+
+<pre><code>@param string $name user name {@from body}
+</code></pre>
+
+<p>override parameter mapping, define where to expect the parameter from. Value should be one of the following</p>
+
+<ul>
+<li>path as part of url</li>
+<li>query as part of the query string</li>
+<li>body as part of the body of the request</li>
+<li>head as part of the http header</li>
+</ul>
+
+<p>Please note that unlike path and head other values are only suggestive and primarly used by API Explorer to build the interface</p>
+
+<p><a id="-type" class="anchor"></a><h2>@type</h2></p>
+
+<p>Syntax:</p>
+
+<p><a id="string" class="anchor"></a><h3>string</h3></p>
+
+<pre><code>@param string $name [Description] {@type email|date|datetime|timestamp}
+</code></pre>
+
+<p><a id="array" class="anchor"></a><h3>array</h3></p>
+
+<pre><code>@param array  $name [Description] {@type className}
+</code></pre>
+
+<p>Examples:</p>
+
+<pre><code>@param string $email email id {@type email}
+</code></pre>
+
+<p>sub types for validation and documentation purpose. email will validate the given string as email. date, datetime, and timestamp will be validated as standard mysql date formats respectively</p>
+
+<pre><code>@param array $author array of Authors {@type Author}
+</code></pre>
+
+<p>States that the given array of Author instances.</p>
+
+<p>Take a look at <a href="tests/param/Type.php" target="_blank">Type API Class</a> and tests in <a href="../features/tests/param/type.feature" target="_blank">type.feature</a></p>
+
+<p><a id="-choice" class="anchor"></a><h2>@choice</h2></p>
+
+<p>Syntax:</p>
+
+<pre><code>@param string $name [Description] {@choice option1,option2...}
+</code></pre>
+
+<p>Example:</p>
+
+<pre><code>@param string $gender {@choice male,female,third}
+</code></pre>
+
+<p>Value for the parameter should match one of the choices, used for validation</p>
+
+<p><a id="-min-and--max" class="anchor"></a><h2>@min and @max</h2></p>
+
+<p>Syntax:</p>
+
+<pre><code>@param string|int|float|array $name [Description] {@min value}{@max value}
+</code></pre>
+
+<p>Examples:</p>
+
+<p><a id="string" class="anchor"></a><h3>string</h3></p>
+
+<pre><code>@param string $name 3 to 10 characters in length {@min 3}{@max 10}
+</code></pre>
+
+<p><a id="array" class="anchor"></a><h3>array</h3></p>
+
+<pre><code>@param array $items at least one item is needed  {@min 1}
+</code></pre>
+
+<p><a id="integer" class="anchor"></a><h3>integer</h3></p>
+
+<pre><code>@param int $age valid age should be 18 or above  {@min 18}
+</code></pre>
+
+<p>Minimum and maximum values for a parameter. For string and array parameters it is applied to the length. For number parameters it sets the range for the value.</p>
+
+<p>Take a look at <a href="tests/param/MinMax.php" target="_blank">MinMax API Class</a> and tests in <a href="../features/tests/param/minmax.feature" target="_blank">minmax.feature</a></p>
+
+<p><a id="-fix" class="anchor"></a><h2>@fix</h2></p>
+
+<p>Syntax:</p>
+
+<pre><code>@param string|int|float|array $name [Description] {@fix true}
+</code></pre>
+
+<p>Example:</p>
+
+<pre><code>@param string $name 3 to 10 characters in length {@max 10}{@fix true}
+</code></pre>
+
+<p>suggests the validator to attempt fixing the validation problem. In the above example Validator will trim off the excess characters instead of throwing an exception</p>
+
+<p>Take a look at <a href="tests/param/MinMaxFix.php" target="_blank">MinMaxFix API Class</a> and tests in <a href="../features/tests/param/minmaxfix.feature" target="_blank">minmaxfix.feature</a></p>
+
+<hr />
+
+<p>More to follow...</p>
+
+</article>
+</body>
+</html>
