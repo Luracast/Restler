@@ -452,6 +452,11 @@ a.anchor{
     padding-left: 10px;
 }
 
+#left ul ul a {
+    font-size: 80%;
+    line-height: 18px;
+}
+
 #left a.active {
     color: black;
     background: #E6E2DF;
