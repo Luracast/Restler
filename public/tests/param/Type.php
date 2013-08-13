@@ -2,7 +2,7 @@
 class Type
 {
     /**
-     * @param string $email      {@from body} {@type email}
+     * @param string $email {@from body}{@type email}
      */
     function postEmail($email)
     {
@@ -10,7 +10,7 @@ class Type
     }
 
     /**
-     * @param string $date       {@from body} {@type date}
+     * @param string $date {@from body}{@type date}
      */
     function postDate($date)
     {
@@ -18,7 +18,7 @@ class Type
     }
 
     /**
-     * @param string $datetime   {@from body} {@type datetime}
+     * @param string $datetime {@from body}{@type datetime}
      */
     function postDatetime($datetime)
     {
@@ -26,7 +26,7 @@ class Type
     }
 
     /**
-     * @param string $timestamp  {@from body} {@type timestamp}
+     * @param string $timestamp {@from body}{@type timestamp}
      */
     function postTimestamp($timestamp)
     {
@@ -34,7 +34,7 @@ class Type
     }
 
     /**
-     * @param array $integers   {@type int}
+     * @param array $integers {@type int}
      */
     function postIntegers(array $integers)
     {
@@ -42,7 +42,7 @@ class Type
     }
 
     /**
-     * @param array $numbers    {@type float}
+     * @param array $numbers {@type float}
      */
     function postNumbers(array $numbers)
     {
@@ -73,11 +73,13 @@ class Type
 class Author
 {
     /**
-     * @var string {@from body} {@min 3}{@max 100} name of the Author {@required true}
+     * @var string {@from body} {@min 3}{@max 100}
+     * name of the Author {@required true}
      */
     public $name='Name';
     /**
-     * @var string {@type email} {@from body} email id of the Author
+     * @var string {@type email} {@from body}
+     * email id of the Author
      */
     public $email='name@domain.com';
 }
