@@ -1,166 +1,186 @@
 # Supported Annotations
 
-You may use the following php doc comments to annotate your methods.
-All tags except @url can also be defined at the class level.
+You may use the following php doc comments to annotate your API methods.
+All tags except `@url`, `@param` and `@var` can also be defined at the class
+level so that they will be applied for all the api methods. You can override
+them at method level individually when needed.
 
-## @url	 
+## @url     
 
-Syntax:
+**Syntax:**
 
-	@url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route
+    @url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route
 
-Example:
+**Example:**
 
-	@url POST authors/{id}/books
+    @url POST authors/{id}/books
 
-Overrides auto routes and creates manual routes. use as many as you need
+Overrides auto routes and creates manual routes. Use as many as you need to map
+the same method to multiple routes.
 
-## @access	 
+## @access     
 
-Syntax:
+**Syntax:**
 
     @access private|public|protected|hybrid
     
-Example:
+**Example:**
 
     @access protected
 
-Access control for api methods. PHPDoc only supports private and public, Restler adds protected for api that needs authentication, hybrid for api that enhances resulting data for authenticated users.
+Access control for api methods. PHPDoc only supports private and public,
+Restler adds protected for api that needs authentication, hybrid for api that
+enhances resulting data for authenticated users.
 
 
-## @smart-auto-routing	 
+## @smart-auto-routing     
 
-Syntax:
+**Syntax:**
 
-	@smart-auto-routing true|false
-	
-Example:
+    @smart-auto-routing true|false
+    
+**Example:**
 
-	@smart-auto-routing false
-	
-Smart auto routing is enabled by default. Avoids creating multiple routes that can increase the ambiguity when set to true. when a method parameter is optional it is not mapped to the url and should only be used in request body or as query string 
-`/resource?id=value`. When a parameter is required and is scalar, it will be mapped as part of the url `/resource/{id}`
+    @smart-auto-routing false
+    
+Smart auto routing is enabled by default. Avoids creating multiple routes that
+can increase the ambiguity when set to true. when a method parameter is optional
+it is not mapped to the url and should only be used in request body or as a
+query string like `/resource?id=value`.
+
+When a parameter is required and is scalar, it will be mapped as part of the
+url like `/resource/{id}`
 
 
-## @class	 
+## @class     
 
-Syntax:
+**Syntax:**
 
-	@class ClassName {@propertyName value}
+    @class ClassName {@propertyName value}
 
-Example:
+**Example:**
 
-	@class AccessControl {@requires user} {@level 5}
-	
-Sets property of the specified class with specified value when the class is instantiated by Restler
+    @class AccessControl {@requires user} {@level 5}
+    
+Sets property of the specified class with specified value when the class is
+instantiated by Restler. Property can also be a static property.
 
-## @cache	 
+## @cache     
 
-Syntax:
+**Syntax:**
 
-	@cache headerCacheControlValue
-	
-Example:
+    @cache headerCacheControlValue
+    
+**Example:**
 
-	@cache max-age={expires}, must-revalidate
-	
-Specify value to set CacheControl Header, it can use @expires value as shown in the example
+    @cache max-age={expires}, must-revalidate
+    
+Specify value to set CacheControl Header, it can use @expires value as shown
+in the example
 
-## @expires	 
+## @expires     
 
-Syntax:
+**Syntax:**
 
-	@expires numberOfSeconds
-	
-Example:
+    @expires numberOfSeconds
+    
+**Example:**
 
-	@expires 30
+    @expires 30
 
-Sets the content to expire immediately when set to zero alternatively you can specify the number of seconds the content will expire
+When set to zero the content will expire immediately.  Alternatively you can
+specify the number of seconds the content will expire for client side and proxy
+caching
 
-## @throttle	 
+## @throttle     
 
-Syntax:
+**Syntax:**
 
-	@throttle numberOfMilliSeconds
-	
-Example:
+    @throttle numberOfMilliSeconds
+    
+**Example:**
 
-	@throttle 3000
-	
-Sets the time in milliseconds for bandwidth throttling, which will become the minimum response time for each API request.
+    @throttle 3000
+    
+Sets the time in milliseconds for bandwidth throttling, which will become the
+minimum response time for each API request.
 
-## @status	 
+## @status     
 
-Syntax:
+**Syntax:**
 
     @status httpStatusCode
     
-Example:
+**Example:**
 
-	@status 201
+    @status 201
 
 Sets the HTTP Status code for the successful response.
 
-## @header	 
+## @header     
 
-Syntax:
+**Syntax:**
 
-	@header httpHeader
+    @header httpHeader
 
-Example:
+**Example:**
 
-	@header Link: <meta.rdf>; rel=meta
+    @header Link: <meta.rdf>; rel=meta
 
 Sets or overrides the specific HTTP Header.
 
-## @param	 
+## @param     
 
-Syntax:
+**Syntax:**
 
-	@param [type] Name [Description] {@name value}
-	
-Example:
+    @param [type] Name [Description] {@name value}
+    
+**Example:**
 
-	@param int $num1 increment value {@min 5} {@max 100}
-	
-Standard @param comment that sets the type and description of a parameter. Supported child attributes are documented under [@param](PARAM.md)
+    @param int $num1 increment value {@min 5} {@max 100}
+    
+Standard @param comment that sets the type and description of a parameter.
+Supported child attributes are documented in detail under [@param](PARAM.md)
 
-## @throws	 
+## @throws     
 
-Syntax:
+**Syntax:**
 
-	@throws httpStatusCode [Reason]
+    @throws httpStatusCode [Reason]
 
-Example:
+**Example:**
 
-	@throws 404 No Author for specified id
+    @throws 404 No Author for specified id
 
 Documents possible error responses for the API call.
 
-## @return	 
+## @return     
 
-Syntax:
+**Syntax:**
 
-	@return type [Description]
+    @return type [Description]
 
-Example:
+**Example:**
 
-	@return Author an instance of iValueObject
+    @return Author an instance of iValueObject
 
-Documents the structure of success response, user defined classes must extend iValueObject.
+Documents the structure of success response, user defined classes must extend
+iValueObject.
 
 
 ## @var
 
-Syntax:
+**Syntax:**
 
-	@var [type] [Description] {@name value}
+    @var [type] [Description] {@name value}
 
-Example:
+**Example:**
 
-	@var int policy age {@min 18} {@max 100}
+    @var int policy age {@min 18} {@max 100}
 
-Stadard @var comments that are used with properties of model classes. Supported child attributes are documented under [@param](PARAM.md)
+When an api method is returning or having one of the parameters as an instance
+of a custom class @var comments can be used with properties of that class.
+They will be used for validation and documentation. Supported child attributes
+are same as that of @param so they are documented under [@param](PARAM.md)
 
 ---------------

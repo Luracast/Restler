@@ -1,11 +1,12 @@
-Luracast Restler v3 RC4
-========================
+![Restler](public/examples/resources/Restler.png) Luracast Restler
+==================================================================
+### Version 3.0 Release Candidate 4
 
 Restler is a simple and effective multi-format Web API Server written in PHP.
 
 Just deal with your business logic in php, restler will take care of the REST!
 
-> if you do not have PHP 5.3 on your server and wont be able to upgrade you may
+> if you do not have PHP >= 5.3.7 on your server and wont be able to upgrade you may
 > use [Restler 2](https://github.com/Luracast/Restler/tree/v2) instead
 
 ### Restler 3 - *Better APIs by Design*
@@ -26,12 +27,15 @@ Features
 * Flexible
 * Highly Customizable
 * Many Examples that can be tried on your localhost to get started
-* Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH via header or request parameter (method)
+* Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH
+  via header or request parameter (method)
 * Supports both RESTful and Pragmatic REST API Design
-* Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource Sharing and JSONP
+* Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource
+  Sharing and JSONP
 * Two way format(media type) conversion both send and receive
     * Pluggable content Formatter framework and api
-    * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format support
+    * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format
+      support
 * Pluggable Authentication schemes
     * OAuth 2 Server
 * Pluggable Filters to effectively manage API usage
@@ -68,11 +72,12 @@ Features
 Git Repository and the Branches
 -------------------------------
 
-1. Most stable and recent version is maintained at the `master` branch, previous versions
-   are kept in the branches such as `v1` and `v2`
+1. Most stable and recent version is maintained at the `master` branch, previous
+   versions are kept in the branches such as `v1` and `v2`
 
-2. Version branch with the current version such as `v3` is used for building up the next release.
-   It's documentation may not be updated frequently and thus reserved for the daring ones.
+2. Version branch with the current version such as `v3` is used for building up
+   the next release. It's documentation may not be updated frequently and thus
+   reserved for the daring ones.
 
 3. Feature branches such as `features/html` and `features/router` are purely
    for experimentation purpose to try out a feature
@@ -82,42 +87,52 @@ Installation
 ------------
 ### 1. Install Composer
 
-Restler uses [Composer](http://getcomposer.org/) to manage its dependencies. First, download a copy of
-`composer.phar`. It can be kept in your project folder or ideally in `usr/local/bin` to use it globally 
-for all your projects. If you are on Windows, you can use the composer 
+Restler uses [Composer](http://getcomposer.org/) to manage its dependencies.
+First, download a copy of `composer.phar`. It can be kept in your project folder
+or ideally in `usr/local/bin` to use it globally for all your projects. If you
+are on Windows, you can use the composer
 [windows installer](https://getcomposer.org/Composer-Setup.exe) instead.
 
 ### 2. Install Restler
 
 #### Option 1. Using composer create-project
 
-You may install Restler by running the create project command in your terminal. Replace {projectName} with
-your actual project name. It will create a folder with that name and install Restler.
+You may install Restler by running the create project command in your terminal.
+Replace {projectName} with your actual project name. It will create a folder
+with that name and install Restler.
 
 ```console
 php composer.phar create-project luracast/restler {projectName}
 ```
 > **Note:-**
 >
-> 1. If you do not want the additional formats and BDD tools you can include `--no-dev` to enforce
->    exclusion of dev packages.
+> 1. If you do not want the additional formats and BDD tools you can include
+>    `--no-dev` to enforce exclusion of dev packages.
 >
-> 2. If you want to try the bleading edge v3 branch or any of the feature branches include `3.x-dev` or 
-     `dev-features/html` in the above command
+> 2. If you want to try the bleading edge v3 branch or any of the feature
+>    branches include `3.x-dev` or `dev-features/html` in the above command
 
 #### Option 2. Downloading from github
 
-Once Composer is installed, download the [latest version]() of the Restler framework and extract its contents into a directory on your server. Next, in the root of your Restler project, run the `php composer.phar install` (or `composer install`) command to install all of the framework's dependencies. This process requires Git to be installed on the server to successfully complete the installation.
+Once Composer is installed, download the [latest version]() of the Restler
+framework and extract its contents into a directory on your server. Next, in the
+root of your Restler project, run the `php composer.phar install`
+(or `composer install`) command to install all of the framework's dependencies.
+This process requires Git to be installed on the server to successfully complete
+the installation.
 
-If you want to update the Restler framework, you may issue the `php composer.phar update` command.
+If you want to update the Restler framework, you may issue the
+`php composer.phar update` command.
 
-> **Note:-** If are not allowed to install composer and git on your server, you can install and run them on 
-> your development machine. The resulting files and folders can be uploaded and used on the server.
+> **Note:-** If are not allowed to install composer and git on your server, you
+> can install and run them on your development machine. The resulting files and
+> folders can be uploaded and used on the server.
 
 
 ### 3. Configure
 
-Ideally public folder should be mapped as your web root, It is optional, but recommended to avoid exposing unneeded files and folders.
+Ideally public folder should be mapped as your web root, It is optional, but
+recommended to avoid exposing unneeded files and folders.
 
 ### 4. Try it out
 
@@ -155,7 +170,8 @@ All set, Happy Restling! :)
 Quick Start Guide
 -----------------
 
-Once you have got restler installed with the above steps, you can quickly create your application by following these steps
+Once you have got restler installed with the above steps, you can quickly create
+your application by following these steps
 
 ### 1. Write API
 
@@ -180,7 +196,8 @@ $r->handle(); //serve the response
 
 **Enable URL Rewriting**
 
-Make sure all the requests are routed to index.php by enabling URL Rewriting for your website
+Make sure all the requests are routed to index.php by enabling URL Rewriting for
+your website
 
 For example:-
 
@@ -200,9 +217,10 @@ DirectoryIndex index.php
 </IfModule>
 ```
 
-> **Note:-** This requires `AllowOverride` to be set to `All` instead of `None` in the `httpd.conf` file,
-> and might require some tweaking on some server configurations.
-> Refer to [mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html) documentation for more info.
+> **Note:-** This requires `AllowOverride` to be set to `All` instead of `None`
+> in the `httpd.conf` file, and might require some tweaking on some server
+> configurations. Refer to [mod_rewrite](http://httpd.apache.org/docs/current/mod/mod_rewrite.html)
+> documentation for more info.
 
 If you are on Nginx, you have to make sure you set the `server_name` and pass the
 PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000
@@ -226,7 +244,8 @@ PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000
     }
 
 > **Note:-** This requires PHP, PHP-FPM to be properly installed and configured.
-> Refer to [PHP FastCGI](http://wiki.nginx.org/PHPFcgiExample) example for more info.
+> Refer to [PHP FastCGI](http://wiki.nginx.org/PHPFcgiExample) example for more
+> info.
 
 
 ### 4. Customise
@@ -250,17 +269,19 @@ $r->handle(); //serve the response
 ```
 
 If you have successfully completed Installation Step 2, you should have
-[Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer) installed in `vendor/Luracast/explorer` folder
-Create a symbolic link of `vendor/Luracast/explorer/dist` or copy the folder and name it as `explorer`
+[Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer) installed
+in `vendor/Luracast/explorer` folder. Create a symbolic link of
+`vendor/Luracast/explorer/dist` or copy the folder and name it as `explorer`
 
 Place the explorer in the same folder as the `index.php`
 
-Explore the api and try it out by openings `explorer/index.html` from the web root on your browser
+Explore the api and try it out by openings `explorer/index.html` from the web
+root on your browser
 
 Happy Exploring! :)
 
-> **Note:-** Using eAccelerator can make restler to fail as it removes the comments.
-> More info can be found [here](http://wildlyinaccurate.com/eaccelerator-and-doctrine-2)
+> **Note:-** Using eAccelerator can make restler to fail as it removes the
+> comments. More info can be found [here](http://wildlyinaccurate.com/eaccelerator-and-doctrine-2)
 
 ### 5. Annotate
 
@@ -284,10 +305,12 @@ $r->handle(); //serve the response
 
 ### 7. Start Production
 
-By default Restler runs in debug more more fine tuned for API developer, by showing detailed error messages and
-prettifying the api result to human readbale form
+By default Restler runs in debug more more fine tuned for API developer, by
+showing detailed error messages and prettifying the api result to human readbale
+form
 
-By turning on production mode you will gain some performance boost as it will cache the routes and avoid giving out debug information
+By turning on production mode you will gain some performance boost as it will
+cache the routes and avoid giving out debug information
 
 ```php
 <?php
@@ -295,7 +318,8 @@ require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
 
 //setup restler
-$r = new Restler(true); //turns on production mode. make sure cache folder is writable
+$r = new Restler(true); //turns on production mode. make sure cache folder is
+writable
 //...
 ```
 
@@ -305,15 +329,25 @@ Change Log
 
 ### Changes from Restler 3.0 RC3
 
- * Added many api examples under tests folder for testing feature by feature using BDD 
+ * Returning null from api method now excludes the response body. This behaviour
+   can be changed by setting `Defaults::$emptyBodyForNullResponse` to false.
+ * Added many api examples under tests folder for testing feature by feature
+   using BDD
  * Support for custom class parameters and array of custom class parameters
- * Ability to pass the parameter directly as the body of the request when it is the only parameter
- * Fixes to composer.json and publish stable release as composer package on packagist.
- * New Routes class with improved routing, including wild card routes and smart routing based on paramter type.
- * Possibility to use any autoloader including composer's autoloader for maximum interoperability
- * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist) package for CFPropertyList.
- * Removed required packages as they are not technically "required" per se, Restler works out of the box.
- * Created supported packages as require-dev instead which will be installed via `composer install --dev`
+ * Ability to pass the parameter directly as the body of the request when it is
+   the only parameter
+ * Fixes to composer.json and publish stable release as composer package on
+   packagist.
+ * New Routes class with improved routing, including wild card routes and smart
+   routing based on paramter type.
+ * Possibility to use any autoloader including composer's autoloader for maximum
+   interoperability
+ * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist)
+   package for CFPropertyList.
+ * Removed required packages as they are not technically "required" per se,
+   Restler works out of the box.
+ * Created supported packages as require-dev instead which will be installed via
+   `composer install --dev`
  * Added suggested section for all the supported packages.
  * Added keywords to package descriptor
  * Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev
@@ -323,13 +357,17 @@ Change Log
 
 * Added Defaults::$cacheDirectory to set cache directory in one central place
 * Added JSONP support with JsFormat class by extending JsonFormat.
-* Fixes fatal error when the JSON sent in the request body is not an object or array
-* Improves inline comment parsing by array conversion when delimiter is found and tag is not @pattern
+* Fixes fatal error when the JSON sent in the request body is not an object or
+  array
+* Improves inline comment parsing by array conversion when delimiter is found
+  and tag is not @pattern
 * RateLimit class re-written to support all range of time units
   second|minute|hour|day|week|month to have fine grained control
 * Resources class improved to include description for body parameters
-* Fixes Resources not to include namespace when the return type is array of custom class
-* Fixed Resource not to include the API of another class when the current api name is a begins with part of the other API
+* Fixes Resources not to include namespace when the return type is array of
+  custom class
+* Fixed Resource not to include the API of another class when the current api
+  name is a begins with part of the other API
 * Added two more ways to exclude API's from explorer/documentation
     * `Resources::$excludedHttpMethods` (array)
     * `Resources::$excludedPaths` (array)
@@ -342,7 +380,8 @@ Change Log
 * Fixes a bug in XmlFormat parsing XML content to array
 * Added support for JSONP via jsFormat extension of JsonFormat
 * Fixes a bug in unicode un-escaping for JsonFormat in PHP < 5.4
-* Fixes the order so that responseFormat->setCharset is called before encoding the response
+* Fixes the order so that responseFormat->setCharset is called before encoding
+  the response
 * Documentation improvements and minor bug fixes
 
 ### Changes from Restler 3.0 RC1
@@ -351,9 +390,11 @@ Change Log
   authenticated users by implementing iUseAuthentication interface
 * `RateLimit` class added to rate limit the api usage
 * Fixed a bug with setCompatibilityMode
-* Resources updated to use only paths for resource identification instead of class name
+* Resources updated to use only paths for resource identification instead of
+  class name
     * Enabled Access Control for Documentation
-* Fixed CommentParser to ignore repeated white space so that it parses comments correctly
+* Fixed CommentParser to ignore repeated white space so that it parses comments
+  correctly
 * Fixed comment parsing for @status and @expires tags
 * Added the following Examples
     * Documentation
@@ -365,7 +406,8 @@ Change Log
 
 ### Changes from Restler 2.0
 
-**Restler 3.0** is completely rewritten from Restler 2.0 with best practices in mind for
+**Restler 3.0** is completely rewritten from Restler 2.0 with best practices in
+mind for
 
 * PHP Coding
 * RESTfulness and/or Pragmatic REST
@@ -373,8 +415,8 @@ Change Log
 
 **Restler 3.0**
 
-* uses namespaces, Late Static Bindings, and Closures and thus it is **PHP 5.3+** only
-  (if you need **PHP 5.0+** support use [Restler 2](https://github.com/Luracast/Restler/tree/v2))
+* uses namespaces, Late Static Bindings, and Closures and thus it is **PHP 5.3+**
+  only (if you need **PHP 5.0+** support use [Restler 2](https://github.com/Luracast/Restler/tree/v2))
 * provides backward compatibility for Restler 1 and 2.
   Use `$r->setCompatibilityMode($version);`
 * supports hybrid api which provides extended data to authenticated users
@@ -385,27 +427,32 @@ Change Log
 * supports `suppress_response_codes` as query string, when set to true;
   all http responses will be returned with HTTP OK with the errors in the
   body to accommodate mobile and less privileged clients.
-* has improved `CommentParser` which adds support for embedded data in multiple formats
+* has improved `CommentParser` which adds support for embedded data in multiple
+  formats
     * inline doc comments `{@name value}`
     * query string params \`\`\` param1=value&param2=value2\`\`\`
-    * json \`\`\` {"param1": value, "param2": value2}\`\`\` which can be placed in multi-lines
-* has `Defaults` class with static properties that can be changed to suit the needs
-* iAuthenticate is now using `__isAllowed` method instead of `__isAuthenticated` so that same
+    * json \`\`\` {"param1": value, "param2": value2}\`\`\` which can be placed
+      in multi-lines
+* has `Defaults` class with static properties that can be changed to suit the
+  needs
+* iAuthenticate is now using `__isAllowed` method instead of `__isAuthenticated`
+  so that same
   class can be used for Authentication or Filtering
-* iUseAuthentication interface added to help hybrid access api methods and filters to
-  find out about user authentication status
+* iUseAuthentication interface added to help hybrid access api methods and
+  filters to find out about user authentication status
 * iFilter interface updated to provide charset support
 * ...(more to follow)
 
 ### Changes from Restler 1.0
 
-Restler 2.0 is a major rewrite to use convention over configuration and it is optimized
-for performance. Here are some of the major changes and improvements
+Restler 2.0 is a major rewrite to use convention over configuration and it is
+optimized for performance. Here are some of the major changes and improvements
 
 * PHPDoc comments to map a method to URI are now optional.
 * All public methods that does not begin with an underscore are mapped
   automatically to the method name (`gateway\classname\methodname\param1\...`)
 * If we do not specify the second parameter for
-  `$restler->addAPIClass` it will be mapped to the class name instead of mapping it to the root
-* Restler 2 is written for PHP 5.3 and above but it make use of compat.php and work on
-  any version of PHP starting from PHP 5.0
+  `$restler->addAPIClass` it will be mapped to the class name instead of mapping
+   it to the root
+* Restler 2 is written for PHP 5.3 and above but it make use of compat.php and
+  work on any version of PHP starting from PHP 5.0
