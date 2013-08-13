@@ -318,8 +318,11 @@ require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
 
 //setup restler
-$r = new Restler(true); //turns on production mode. make sure cache folder is
-writable
+
+$r = new Restler(true); //turn on production mode by passing true.
+//If you are using file based cache (the default) make sure cache folder is
+//writable. when you make changes to your code make sure you delete the
+// routes.php inside the cache folder
 //...
 ```
 
