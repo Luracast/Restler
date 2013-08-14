@@ -1,11 +1,6 @@
-Vendor MIME <requires>PHP >= 5.3</requires>
------------
+## Vendor MIME 
 
- <tag>versioning</tag>
- <tag>mime</tag>
- <tag>mediatype</tag>
- <tag>vendor</tag>
- <tag>custom</tag>
+ This example requires `PHP >= 5.3` and taggeed under `versioning` `mime` `mediatype` `vendor` `custom`
 
 
 This example shows how to use vendor specific media types for versioning

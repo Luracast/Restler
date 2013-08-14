@@ -1,11 +1,6 @@
-OAuth2 Client <requires>PHP >= 5.3.9</requires>
--------------
+## OAuth2 Client 
 
- <tag>access-control</tag>
- <tag>acl</tag>
- <tag>secure</tag>
- <tag>authentication</tag>
- <tag>authorization</tag>
+ This example requires `PHP >= 5.3.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 ### Setting up the client example

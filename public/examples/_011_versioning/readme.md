@@ -1,7 +1,6 @@
-Versioning <requires>PHP >= 5.3</requires>
-----------
+## Versioning 
 
- <tag>versioning</tag>
+ This example requires `PHP >= 5.3` and taggeed under `versioning`
 
 
 This example shows how to version your API using namespace. Restler supports

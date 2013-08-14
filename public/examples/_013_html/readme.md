@@ -1,13 +1,6 @@
-Html Format <requires>PHP >= 5.3</requires>
------------
+## Html Format 
 
- <tag>view</tag>
- <tag>html</tag>
- <tag>twig</tag>
- <tag>mustache</tag>
- <tag>handlebar</tag>
- <tag>php</tag>
- <tag>template</tag>
+ This example requires `PHP >= 5.3` and taggeed under `view` `html` `twig` `mustache` `handlebar` `php` `template`
 
 
 A special format that lets us render a template with the api result

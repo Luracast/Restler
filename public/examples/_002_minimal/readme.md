@@ -1,9 +1,6 @@
-Minimal Example <requires>PHP >= 5.3</requires>
----------------
+## Minimal Example 
 
- <tag>basic</tag>
- <tag>validation</tag>
- <tag>http status</tag>
+ This example requires `PHP >= 5.3` and taggeed under `basic` `validation` `http status`
 
 
 Shows the bare minimum code needed to get your RESTful api server

@@ -1,17 +1,6 @@
-Rate Limiting <requires>PHP >= 5.3</requires>
--------------
+## Rate Limiting 
 
- <tag>create</tag>
- <tag>retrieve</tag>
- <tag>read</tag>
- <tag>update</tag>
- <tag>delete</tag>
- <tag>post</tag>
- <tag>get</tag>
- <tag>put</tag>
- <tag>filter</tag>
- <tag>throttle</tag>
- <tag>rate-limiting</tag>
+ This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `filter` `throttle` `rate-limiting`
 
 
 How to Rate Limit API access using a Filter class that implements

@@ -1,18 +1,6 @@
-Documentation <requires>PHP >= 5.3</requires>
--------------
+## Documentation 
 
- <tag>create</tag>
- <tag>retrieve</tag>
- <tag>read</tag>
- <tag>update</tag>
- <tag>delete</tag>
- <tag>post</tag>
- <tag>get</tag>
- <tag>put</tag>
- <tag>routing</tag>
- <tag>doc</tag>
- <tag>production</tag>
- <tag>debug</tag>
+ This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
 
 
 How to document and let your users explore your API.

@@ -1,11 +1,6 @@
-Access Control <requires>PHP >= 5.3</requires>
---------------
+## Access Control 
 
- <tag>access-control</tag>
- <tag>acl</tag>
- <tag>secure</tag>
- <tag>authentication</tag>
- <tag>authorization</tag>
+ This example requires `PHP >= 5.3` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 This example shows how you can extend the authentication system to create
