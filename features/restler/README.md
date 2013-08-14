@@ -1,4 +1,5 @@
-### *Expected Features* for Restler Framework
+# restler
+### *Expected features* for Restler Framework
 
 For Behavior Driven Development (BDD) we are using Behat to write down the
 features and test them against the API
