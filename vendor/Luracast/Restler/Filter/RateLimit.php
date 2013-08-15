@@ -3,6 +3,7 @@ namespace Luracast\Restler\Filter;
 
 use Luracast\Restler\iFilter;
 use Luracast\Restler\iUseAuthentication;
+use Luracast\Restler\iUser;
 use Luracast\Restler\User;
 use Luracast\Restler\RestException;
 
@@ -15,7 +16,7 @@ use Luracast\Restler\RestException;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class RateLimit implements iFilter, iUseAuthentication
 {
@@ -35,6 +36,10 @@ class RateLimit implements iFilter, iUseAuthentication
      * @var string
      */
     public static $unit = 'hour';
+    /**
+     * @var string name of the class that implements iUser interface
+     */
+    public static $userClass = 'Luracast\\Restler\\User';
 
     protected static $units = array(
         'second' => 1,
@@ -94,7 +99,11 @@ class RateLimit implements iFilter, iUseAuthentication
         $maxPerUnit = $isAuthenticated
             ? static::$authenticatedUsagePerUnit
             : static::$usagePerUnit;
-        $id = User::getUniqueId();
+        $user = static::$userClass;
+        if(!is_subclass_of($user, 'Luracast\\Restler\\iUser')){
+           throw new \UnexpectedValueException('`Ratelimit::$userClass` must implement iUser interface');
+        }
+        $id = "RateLimit_" . $user::getUniqueId();
         $lastRequest = $this->restler->cache->get($id, true)
             ? : array('time' => 0, 'used' => 0);
         $diff = time() - $lastRequest['time']; # in seconds
@@ -133,18 +142,17 @@ class RateLimit implements iFilter, iUseAuthentication
 
         $ret = array();
 
-        $added = false;
-        $unit = 'days';
+        //$unit = 'days';
         foreach ($units as $k => $v) {
             if ($v > 0) {
                 $ret[] = $v > 1 ? "$v {$k}s" : "$v $k";
-                $unit = $k;
+                //$unit = $k;
             }
         }
         $i = count($ret) - 1;
         if ($i) {
             $ret[$i] = 'and ' . $ret[$i];
         }
-        return join(' ', $ret); //." $unit.";
+        return implode(' ', $ret); //." $unit.";
     }
 }

@@ -11,9 +11,9 @@ namespace Luracast\Restler\Format;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
-use Luracast\Restler\Data\Util;
+use Luracast\Restler\Data\Object;
 use Luracast\Restler\RestException;
 
 class JsonFormat extends Format
@@ -66,17 +66,24 @@ class JsonFormat extends Format
             if (self::$bigIntAsString) $options |= JSON_BIGINT_AS_STRING;
             if (self::$unEscapedUnicode) $options |= JSON_UNESCAPED_UNICODE;
             return json_encode(
-                Util::objectToArray($data, true), $options
+                Object::toArray($data, true), $options
             );
         }
 
-        $result = json_encode(Util::objectToArray($data, true));
+        $result = json_encode(Object::toArray($data, true));
         if ($humanReadable) $result = $this->formatJson($result);
         if (self::$unEscapedUnicode) {
             $result = preg_replace_callback('/\\\u(\w\w\w\w)/',
                 function($matches)
                 {
-                    return mb_convert_encoding(pack('H*', $matches[1]), 'UTF-8', 'UTF-16BE');
+                    if (function_exists('mb_convert_encoding'))
+                	{
+                		return mb_convert_encoding(pack('H*', $matches[1]), 'UTF-8', 'UTF-16BE');	
+                	}
+                	else
+                	{
+                		return iconv('UTF-16BE','UTF-8',pack('H*', $matches[1]));
+                	}
                 }
                 , $result);
         }
@@ -103,7 +110,7 @@ class JsonFormat extends Format
         if (function_exists('json_last_error')) {
             switch (json_last_error()) {
                 case JSON_ERROR_NONE :
-                    return Util::objectToArray($decoded);
+                    return Object::toArray($decoded);
                     break;
                 case JSON_ERROR_DEPTH :
                     $message = 'maximum stack depth exceeded';
@@ -130,7 +137,7 @@ class JsonFormat extends Format
             throw new RestException (400, 'Error parsing JSON');
         }
 
-        return Util::objectToArray($decoded);
+        return Object::toArray($decoded);
     }
 
     /**

@@ -1,6 +1,9 @@
-Hello World Example <requires>PHP >= 5.3</requires>
--------------------
-<tag>basic</tag> 
+## Hello World Example 
+
+ This example requires `PHP >= 5.3` 
+
+<tag>basic`
+
 
 Basic hello world example to get started with Restler 3.
 
@@ -128,3 +131,4 @@ bin/behat  features/examples/_001_helloworld.feature
 *[Say.php]: _001_helloworld/Say.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+

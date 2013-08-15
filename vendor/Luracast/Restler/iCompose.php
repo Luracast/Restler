@@ -1,8 +1,11 @@
 <?php
 namespace Luracast\Restler;
 
+use Exception;
+
 /**
- * Interface for creating response classes
+ * Interface for composing response
+ *
  * @category   Framework
  * @package    Restler
  * @subpackage result
@@ -10,26 +13,24 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
-interface iRespond
-{
+interface iCompose {
     /**
      * Result of an api call is passed to this method
      * to create a standard structure for the data
      *
-     * @param unknown_type $result
-     *            can be a primitive or array or object
+     * @param mixed $result can be a primitive or array or object
      */
-    public function formatResponse($result);
+    public function response($result);
 
     /**
      * When the api call results in RestException this method
      * will be called to return the error message
      *
-     * @param int    $statusCode
-     * @param String $message
+     * @param RestException $exception exception that has reasons for failure
+     *
+     * @return
      */
-    public function formatError($statusCode, $message);
+    public function message(RestException $exception);
 }
-

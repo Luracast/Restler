@@ -17,7 +17,12 @@ vendor/mustache
 vendor/zendframework
 vendor/rodneyrehm
 vendor/twig
+vendor/bshaffer
 .idea
 tag.sh
-bin
+bin/*
+build/*
 build
+public/examples/_014_oauth2_client/cache
+public/examples/_015_oauth2_server/cache
+public/examples/_015_oauth2_server/OAuth2/db

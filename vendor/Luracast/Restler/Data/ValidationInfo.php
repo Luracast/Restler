@@ -2,6 +2,7 @@
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\CommentParser;
+use Luracast\Restler\Util;
 
 /**
  * ValueObject for validation information. An instance is created and
@@ -14,7 +15,7 @@ use Luracast\Restler\CommentParser;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class ValidationInfo implements iValueObject
 {
@@ -40,10 +41,19 @@ class ValidationInfo implements iValueObject
      * Data type of the variable being validated.
      * It will be mostly string
      *
-     * @var string array multiple types are specified it will be of
+     * @var string|array multiple types are specified it will be of
      *      type array otherwise it will be a string
      */
     public $type;
+
+    /**
+     * When the type is array, this field is used to define the type of the
+     * contents of the array
+     *
+     * @var string|null when all the items in an array are of certain type, we
+     * can set this property. It will be null if the items can be of any type
+     */
+    public $contentType;
 
     /**
      * Should we attempt to fix the value?
@@ -55,6 +65,11 @@ class ValidationInfo implements iValueObject
      * @var boolean true or false
      */
     public $fix = false;
+
+    /**
+     * @var array of children to be validated
+     */
+    public $children = null;
 
     // ==================================================================
     //
@@ -152,11 +167,33 @@ class ValidationInfo implements iValueObject
         );
     }
 
-    public static function stringValue($value)
+    public static function stringValue($value, $glue=',')
     {
         return is_array($value)
-            ? implode(',', $value)
+            ? implode($glue, $value)
             : ( string )$value;
+    }
+
+    public static function booleanValue($value)
+    {
+        return is_bool($value)
+            ? $value
+            : $value !== 'false';
+    }
+
+    public static function filterArray(array $data, $keepNumericKeys)
+    {
+        $r = array();
+        foreach ($data as $key => $value) {
+            if (is_numeric($key)) {
+                if ($keepNumericKeys) {
+                    $r[$key] = $value;
+                }
+            } elseif (!$keepNumericKeys) {
+                $r[$key] = $value;
+            }
+        }
+        return $r;
     }
 
     public function __toString()
@@ -164,50 +201,44 @@ class ValidationInfo implements iValueObject
         return ' new ValidationInfo() ';
     }
 
-    public function __construct(array $info)
+    private function getProperty(array &$from, $property)
     {
-        $this->name = isset($info ['name']) ? $info ['name'] :
-            'Unknown';
-        $this->required = isset($info['required'])
-            ? (bool)$info['required']
-            : false;
-        $this->from = isset($info['from'])
-            ? $info['from']
-            : 'query';
-        $this->rules = $rules = isset($info [CommentParser::$embeddedDataName])
-            ? $info [CommentParser::$embeddedDataName] : $info;
-        $this->type = isset($info['type']) ? $info ['type'] : 'mixed';
-        $this->rules ['fix'] = $this->fix
-            = isset ($rules ['fix']) && $rules ['fix'] == 'true';
-        unset ($rules ['fix']);
-        if (isset ($rules ['min'])) {
-            $this->rules ['min'] = $this->min
-                = self::numericValue($rules ['min']);
-            unset ($rules ['min']);
+        $p = Util::nestedValue($from, $property);
+        if ($p) {
+            unset($from[$property]);
         }
-        if (isset ($rules ['max'])) {
-            $this->rules ['max'] = $this->max
-                = self::numericValue($rules ['max']);
-            unset ($rules ['max']);
+        $p2 = Util::nestedValue($from, 'properties', $property);
+        if ($p2) {
+            unset($from['properties'][$property]);
         }
-        if (isset ($rules ['pattern'])) {
-            $this->rules ['pattern'] = $this->pattern
-                = is_array($rules ['pattern'])
-                ? implode(',', $rules ['pattern'])
-                : ( string )$rules ['pattern'];
-            unset ($rules ['pattern']);
+        if ($property == 'type' && $p == 'array' && $p2) {
+            $this->contentType = $p2;
+            return $p;
         }
-        if (isset ($rules ['choice'])) {
-            $this->rules ['choice'] = $this->choice
-                = is_array($rules ['choice'])
-                ? $rules ['choice'] : array($rules ['choice']);
-            unset ($rules ['pattern']);
-        }
-        foreach ($rules as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
+        $r = $p2 ? : $p ? : null;
+        if (!is_null($r)) {
+            if ($property == 'min' || $property == 'max') {
+                return static::numericValue($r);
+            } elseif ($property == 'required' || $property == 'fix') {
+                return static::booleanValue($r);
+            } elseif ($property == 'choice') {
+                return static::arrayValue($r);
+            } elseif ($property == 'pattern') {
+                return static::stringValue($r);
             }
         }
+        return $r;
+    }
+
+    public function __construct(array $info)
+    {
+        $properties = get_object_vars($this);
+        unset($properties['contentType']);
+        foreach ($properties as $property => $value) {
+            $this->{$property} = $this->getProperty($info, $property);
+        }
+        $this->rules = Util::nestedValue($info, 'properties') ? : $info;
+        unset($this->rules['properties']);
         if (is_string($this->type) && $this->type == 'integer') {
             $this->type = 'int';
         }

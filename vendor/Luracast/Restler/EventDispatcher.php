@@ -9,15 +9,16 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 use Closure;
 
-class EventEmitter
+class EventDispatcher
 {
     private $listeners = array();
 
     public static $self;
+    protected $events = array();
 
     public function __construct() {
         static::$self = $this;
@@ -25,18 +26,22 @@ class EventEmitter
 
     public static function __callStatic($eventName, $params)
     {
-        return call_user_func_array(array(static::$self, $eventName), $params);
+        if (0 === strpos($eventName, 'on')) {
+            return call_user_func_array(array(static::$self, $eventName), $params);
+        }
     }
 
     public function __call($eventName, $params)
     {
-        if (!@is_array($this->listeners[$eventName]))
-            $this->listeners[$eventName] = array();
-        $this->listeners[$eventName][] = $params[0];
+        if (0 === strpos($eventName, 'on')) {
+            if (!@is_array($this->listeners[$eventName]))
+                $this->listeners[$eventName] = array();
+            $this->listeners[$eventName][] = $params[0];
+        }
         return $this;
     }
 
-    public static function listen($eventName, Closure $callback)
+    public static function addListener($eventName, Closure $callback)
     {
         return static::$eventName($callback);
     }
@@ -63,9 +68,15 @@ class EventEmitter
         );
     }
 
-    /** The attributes are just place holders we need a $sevenName and 0..N parameters */
-    protected function trigger($eventName, $params = null)
+    /**
+     * Fire an event to notify all listeners
+     *
+     * @param string $eventName name of the event
+     * @param array  $params    event related data
+     */
+    protected function dispatch($eventName, array $params = array())
     {
+        $this->events[] = $eventName;
         $params = func_get_args();
         $eventName = array_shift($params);
         if (isset($this->listeners[$eventName]))

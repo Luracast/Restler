@@ -2,6 +2,7 @@
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\RestException;
+use Luracast\Restler\Util;
 
 /**
  * Default Validator class used by Restler. It can be replaced by any
@@ -13,24 +14,23 @@ use Luracast\Restler\RestException;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class Validator implements iValidate
 {
 
-    public static function validate($input, ValidationInfo $info)
+    public static function validate($input, ValidationInfo $info, $full=null)
     {
         if (is_null($input)) {
-            if($info->required){
+            if ($info->required) {
                 throw new RestException (400,
-                    "$info->name is missing.");
+                    "`$info->name` is required but missing.");
             }
             return null;
         }
-
         $error = isset ($info->rules ['message'])
             ? $info->rules ['message']
-            : "invalid value specified for $info->name";
+            : "invalid value specified for `$info->name`";
 
         //if a validation method is specified
         if (!empty($info->method)) {
@@ -81,18 +81,63 @@ class Validator implements iValidate
                 if ($r) {
                     return $r;
                 }
+                $error .= '. Expecting email in `name@example.com` format';
+                break;
+            case 'date' :
+                if (
+                    preg_match('#^(?P<year>\d{2}|\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})$#', $input, $date)
+                    && checkdate($date['month'], $date['day'], $date['year'])
+                ) {
+                    return $input;
+                }
+                $error .= '. Expecting date in `YYYY-MM-DD` format, such as `'
+                    . date("Y-m-d") . '`';
+                break;
+            case 'datetime' :
+                if (
+                    preg_match('/^(?<year>19\d\d|20\d\d)\-(?<month>0[1-9]|1[0-2])\-' .
+                        '(?<day>0\d|[1-2]\d|3[0-1]) (?<h>0\d|1\d|2[0-3]' .
+                        ')\:(?<i>[0-5][0-9])\:(?<s>[0-5][0-9])$/',
+                        $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
+                )
+                    return $input;
+                $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
+                    . date("Y-m-d H:i:s") . '`';
+                break;
+            case 'timestamp' :
+                if (
+                    (string)(int)$input == $input &&
+                    ($input <= PHP_INT_MAX) &&
+                    ($input >= ~PHP_INT_MAX)
+                ) {
+                    return (int)$input;
+                }
+                $error .= '. Expecting unix timestamp, such as ' . time();
                 break;
             case 'int' :
             case 'float' :
             case 'number' :
                 if (!is_numeric($input)) {
+                    $error .= '. Expecting '
+                        . ($info->type == 'int' ? 'integer' : 'numeric')
+                        . ' value';
                     break;
                 }
-                $r = $info->numericValue($input);
+                if ($info->type == 'int' && (int)$input != $input) {
+                    if ($info->fix) {
+                        $r = (int)$input;
+                    } else {
+                        $error .= '. Expecting integer value';
+                        break;
+                    }
+                } else {
+                    $r = $info->numericValue($input);
+                }
                 if (isset ($info->min) && $r < $info->min) {
                     if ($info->fix) {
                         $r = $info->min;
                     } else {
+                        $error .= '. Given value is too low';
                         break;
                     }
                 }
@@ -100,12 +145,11 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $r = $info->max;
                     } else {
+                        $error .= '. Given value is too high';
                         break;
                     }
                 }
-                return $info->type == 'int'
-                    ? (int)$r
-                    : ($info->type == 'float' ? floatval($r) : $r);
+                return $r;
 
             case 'string' :
                 $r = strlen($input);
@@ -113,6 +157,7 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $input = str_pad($input, $info->min, $input);
                     } else {
+                        $error .= '. Given string is too short';
                         break;
                     }
                 }
@@ -120,23 +165,60 @@ class Validator implements iValidate
                     if ($info->fix) {
                         $input = substr($input, 0, $info->max);
                     } else {
+                        $error .= '. Given string is too long';
                         break;
                     }
                 }
                 return $input;
+
             case 'bool':
             case 'boolean':
                 if ($input == 'true') return true;
                 if (is_numeric($input)) return $input > 0;
                 return false;
+
             case 'array':
                 if (is_array($input)) {
+                    if ($info->fix) {
+                        $input = $info->filterArray($input, true);
+                    } elseif(array_values($input)!=$input) {
+                        $error .= '. Expecting an array but an object is given';
+                        break;
+                    }
+                    $r = count($input);
+                    if (isset ($info->min) && $r < $info->min) {
+                        $error .= '. Given array is too small';
+                        break;
+                    }
+                    if (isset ($info->max) && $r > $info->max) {
+                        if ($info->fix) {
+                            $input = array_slice($input, 0, $info->max);
+                        } else {
+                            $error .= '. Given array is too big';
+                            break;
+                        }
+                    }
+                    if (isset($info->contentType)) {
+                        $name = $info->name;
+                        $info->type = $info->contentType;
+                        unset($info->contentType);
+                        foreach ($input as $key => $chinput) {
+                            $info->name = "{$name}[$key]";
+                            $input[$key] = static::validate($chinput, $info);
+                        }
+                    }
                     return $input;
+                } elseif (isset($info->contentType)) {
+                    $error .= ". Expecting an array with contents of type `$info->contentType`";
+                    break;
+                } elseif ($info->fix && is_string($input)) {
+                    return array($input);
                 }
-                return array($input);
                 break;
             case 'mixed':
             case 'unknown_type':
+            case 'unknown':
+            case null: //treat as unknown
                 return $input;
             default :
                 if (!is_array($input)) {
@@ -144,14 +226,35 @@ class Validator implements iValidate
                 }
                 //do type conversion
                 if (class_exists($info->type)) {
+                    $input = $info->filterArray($input, false);
                     $implements = class_implements($info->type);
-                    if (is_array($implements)
-                        && in_array('Luracast\\Restler\\Data\\iValueObject',
-                            $implements)
-                    )
+                    if (
+                        is_array($implements) &&
+                        in_array('Luracast\\Restler\\Data\\iValueObject', $implements)
+                    ) {
                         return call_user_func(
                             "{$info->type}::__set_state", $input
                         );
+                    }
+                    $class = $info->type;
+                    $instance =  new $class();
+                    if (is_array($info->children)) {
+                        if (
+                            empty($input) ||
+                            !is_array($input) ||
+                            $input === array_values($input)
+                        ) {
+                            $error .= ". Expecting an object of type `$info->type`";
+                            break;
+                        }
+                        foreach ($info->children as $key => $value) {
+                            $instance->{$key} = static::validate(
+                                Util::nestedValue($input, $key),
+                                new ValidationInfo($value)
+                            );
+                        }
+                    }
+                    return $instance;
                 }
         }
         throw new RestException (400, $error);

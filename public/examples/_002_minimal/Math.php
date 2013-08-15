@@ -24,4 +24,12 @@ class Math
             'result' => ($n1 * $n2)
         );
     }
+
+    /**
+     * @url GET sum/*
+     */
+    function sum()
+    {
+        return array_sum(func_get_args());
+    }
 }

@@ -9,7 +9,7 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class Util
 {
@@ -17,6 +17,34 @@ class Util
      * @var Restler instance injected at runtime
      */
     public static $restler;
+    public static $classAliases = array(
+
+        //Format classes
+        'AmfFormat' => 'Luracast\\Restler\\Format\\AmfFormat',
+        'JsFormat' => 'Luracast\\Restler\\Format\\JsFormat',
+        'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
+        'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
+        'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
+        'UploadFormat' => 'Luracast\\Restler\\Format\\UploadFormat',
+        'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
+        'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
+        'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
+
+        //Filter classes
+        'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
+
+        //API classes
+        'Resources' => 'Luracast\\Restler\\Resources',
+
+        //Cache classes
+        'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
+
+        //Utility classes
+        'Object' => 'Luracast\\Restler\\Data\\Object',
+
+        //Exception
+        'RestException' => 'Luracast\\Restler\\RestException'
+    );
 
     /**
      * verify if the given data type string is scalar or not
@@ -30,6 +58,43 @@ class Util
     public static function isObjectOrArray($type)
     {
         return !(boolean)strpos('|bool|boolean|int|float|string|', $type);
+    }
+
+    /**
+     * Get the value deeply nested inside an array / object
+     *
+     * Using isset() to test the presence of nested value can give a false positive
+     *
+     * This method serves that need
+     *
+     * When the deeply nested property is found its value is returned, otherwise
+     * false is returned.
+     *
+     * @param array         $from   array to extract the value from
+     * @param string|array  $key... pass more to go deeply inside the array
+     *                              alternatively you can pass a single array
+     *
+     * @return null|mixed null when not found, value otherwise
+     */
+    public static function nestedValue($from, $key /**, $key2 ... $key`n` */)
+    {
+        if(is_array($key)){
+            $keys =  $key;
+        } else {
+            $keys = func_get_args();
+            array_shift($keys);
+        }
+        foreach ($keys as $key) {
+            if (is_array($from) && isset($from[$key])) {
+                $from = $from[$key];
+                continue;
+            } elseif (is_object($from) && isset($from->{$key})) {
+                $from = $from->{$key};
+                continue;
+            }
+            return null;
+        }
+        return $from;
     }
 
     public static function getResourcePath($className,
@@ -151,29 +216,41 @@ class Util
      *
      * @static
      *
-     * @param string      $className name of the class to apply properties to
-     * @param array       $metadata  which contains the properties
-     * @param null|object $instance  new instance is crated if set to null
+     * @param string $classNameOrInstance      name or instance of the class
+     *                                         to apply properties to
+     * @param array  $metadata                 properties as key value pairs
      *
      * @throws RestException
+     * @internal param null|object $instance new instance is crated if set to null
+     *
      * @return object instance of the specified class with properties applied
      */
-    public static function setProperties($className, array $metadata = null,
-                                         $instance = null)
+    public static function initialize($classNameOrInstance, array $metadata = null)
     {
-        if (!class_exists($className)) {
-            throw new RestException(500, "Class '$className' not found");
-        }
-        if (!$instance) {
-            $instance = new $className();
+        if (is_object($classNameOrInstance)) {
+            $instance = $classNameOrInstance;
+            $instance->restler = self::$restler;
+            $className = get_class($instance);
+        } else {
+            $className = ltrim($classNameOrInstance, '\\');
+            if (isset(self::$classAliases[$classNameOrInstance])) {
+                $classNameOrInstance = self::$classAliases[$classNameOrInstance];
+            }
+            if (!class_exists($classNameOrInstance)) {
+                throw new RestException(500, "Class '$classNameOrInstance' not found");
+            }
+            $instance = new $classNameOrInstance();
             $instance->restler = self::$restler;
         }
-        if (
-            isset($metadata['class'][$className]
-            [CommentParser::$embeddedDataName])
-        ) {
-            $properties = $metadata['class'][$className]
-            [CommentParser::$embeddedDataName];
+        $shortName = static::getShortName($className);
+        $properties = null;
+        if (isset($metadata['class'][$className][CommentParser::$embeddedDataName])) {
+            $properties = $metadata['class'][$className][CommentParser::$embeddedDataName];
+
+        } elseif (isset($metadata['class'][$shortName][CommentParser::$embeddedDataName])) {
+            $properties = $metadata['class'][$shortName][CommentParser::$embeddedDataName];
+        }
+        if (isset($properties)) {
 
             $objectVars = get_object_vars($instance);
 
@@ -188,13 +265,18 @@ class Util
                 }
             }
         }
-
-        if ($instance instanceof iUseAuthentication) {
+        if ($instance instanceof iUseAuthentication && self::$restler->_authVerified) {
             $instance->__setAuthenticationStatus
-            (self::$restler->_authenticated);
+                (self::$restler->_authenticated);
         }
 
         return $instance;
+    }
+
+    public static function getShortName($className)
+    {
+        $className = explode('\\', $className);
+        return end($className);
     }
 }
 

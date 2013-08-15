@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler  Annotations</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="examples/resources/highlight.css">
+<link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+<script src="examples/resources/highlight.pack.js"></script>
+<script type="text/javascript" src="examples/resources/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript">
+  hljs.initHighlightingOnLoad();
+</script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23777019-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="examples/resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a class="active" title="Getting Started with Restler" href="index.html#luracast-restler"><img src="examples/resources/quickstart.png" width="16" height="16"/> Start</a></li>
+<li><a href="examples/index.html"><img src="examples/resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="examples/resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="examples/resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="examples/resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="examples/resources/facebook.png" width="16" height="16"/> Connect</a></li>
+</ul>
+</nav>
+<nav id="left">
+        <img src="examples/resources/Restler3.gif" width="126"
+            height="126" title="Luracast Restler " />
+        <h3>
+            <a href="index.html#luracast-restler">Quick Start</a>
+        </h3>
+        <ul>
+            <li><a href="index.html#features" title="Feature List">Features</a></li>
+            <li><a href="index.html#git-repository-and-the-branches" title="Git Repository and the Branches">Branches</a></li>
+            <li><a href="index.html#installation" title="Install">Installation</a></li>
+            <li><a href="index.html#quick-start-guide" title="Quick Start">Getting Started</a></li>
+            <li><a href="index.html#change-log" title="What has changed?">Change Log</a></li>
+            <li><a href="annotations.html#supported-annotations" title="Supported Annotations">Annotations</a>
+                <ul><li><a href="annotations.html#url" title="Annotations - @url">@url</a></li></ul>
+                <ul><li><a href="annotations.html#access" title="Annotations - @access">@access</a></li></ul>
+                <ul><li><a href="annotations.html#smart-auto-routing" title="Annotations - @smart-auto-routing">@smart-auto...</a></li></ul>
+                <ul><li><a href="annotations.html#class" title="Annotations - @class">@class</a></li></ul>
+                <ul><li><a href="annotations.html#cache" title="Annotations - @cache">@cache</a></li></ul>
+                <ul><li><a href="annotations.html#expires" title="Annotations - @expires">@expires</a></li></ul>
+                <ul><li><a href="annotations.html#throttle" title="Annotations - @throttle">@throttle</a></li></ul>
+                <ul><li><a href="annotations.html#status" title="Annotations - @status">@status</a></li></ul>
+                <ul><li><a href="annotations.html#header" title="Annotations - @header">@header</a></li></ul>
+                <ul><li><a href="annotations.html#param" title="Annotations - @param">@param</a></li></ul>
+                <ul><li><a href="annotations.html#throws" title="Annotations - @throws">@throws</a></li></ul>
+                <ul><li><a href="annotations.html#return" title="Annotations - @return">@return</a></li></ul>
+                <ul><li><a href="annotations.html#var" title="Annotations - @var">@var</a></li></ul>
+            </li>
+            <li><a href="param.html#param-and--var" title="@param and @var">Param</a>
+                <ul><li><a href="param.html#from" title="Param - @from">@from</a></li></ul>
+                <ul><li><a href="param.html#type" title="Param - @type">@type</a></li></ul>
+                <ul><li><a href="param.html#choice" title="Param - @choice">@choice</a></li></ul>
+                <ul><li><a href="param.html#min----max" title="Param - @min & @max">@min & @max</a></li></ul>
+                <ul><li><a href="param.html#fix" title="Param - @fix">@fix</a></li></ul>
+            </li>
+
+        </ul>
+    </nav>
+<article>
+
+<p><a id="supported-annotations" class="anchor"></a></p>
+<h1>Supported Annotations</h1>
+
+<p>You may use the following php doc comments to annotate your API methods.
+All tags except <code>@url</code>, <code>@param</code> and <code>@var</code> can also be defined at the class
+level so that they will be applied for all the api methods. You can override
+them at method level individually when needed.</p>
+
+<p><a id="url" class="anchor"></a></p>
+<h2>@url</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@url GET|POST|PUT|PATCH|DELETE custom/{dynamic}/route
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@url POST authors/{id}/books
+</code></pre>
+
+<p>Overrides auto routes and creates manual routes. Use as many as you need to map
+the same method to multiple routes.</p>
+
+<p><a id="access" class="anchor"></a></p>
+<h2>@access</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@access private|public|protected|hybrid
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@access protected
+</code></pre>
+
+<p>Access control for api methods. PHPDoc only supports private and public,
+Restler adds protected for api that needs authentication, hybrid for api that
+enhances resulting data for authenticated users.</p>
+
+<p><a id="smart-auto-routing" class="anchor"></a></p>
+<h2>@smart-auto-routing</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@smart-auto-routing true|false
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@smart-auto-routing false
+</code></pre>
+
+<p>Smart auto routing is enabled by default. Avoids creating multiple routes that
+can increase the ambiguity when set to true. when a method parameter is optional
+it is not mapped to the url and should only be used in request body or as a
+query string like <code>/resource?id=value</code>.</p>
+
+<p>When a parameter is required and is scalar, it will be mapped as part of the
+url like <code>/resource/{id}</code></p>
+
+<p><a id="class" class="anchor"></a></p>
+<h2>@class</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@class ClassName {@propertyName value}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@class AccessControl {@requires user} {@level 5}
+</code></pre>
+
+<p>Sets property of the specified class with specified value when the class is
+instantiated by Restler. Property can also be a static property.</p>
+
+<p><a id="cache" class="anchor"></a></p>
+<h2>@cache</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@cache headerCacheControlValue
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@cache max-age={expires}, must-revalidate
+</code></pre>
+
+<p>Specify value to set CacheControl Header, it can use @expires value as shown
+in the example</p>
+
+<p><a id="expires" class="anchor"></a></p>
+<h2>@expires</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@expires numberOfSeconds
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@expires 30
+</code></pre>
+
+<p>When set to zero the content will expire immediately.  Alternatively you can
+specify the number of seconds the content will expire for client side and proxy
+caching</p>
+
+<p><a id="throttle" class="anchor"></a></p>
+<h2>@throttle</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@throttle numberOfMilliSeconds
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@throttle 3000
+</code></pre>
+
+<p>Sets the time in milliseconds for bandwidth throttling, which will become the
+minimum response time for each API request.</p>
+
+<p><a id="status" class="anchor"></a></p>
+<h2>@status</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@status httpStatusCode
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@status 201
+</code></pre>
+
+<p>Sets the HTTP Status code for the successful response.</p>
+
+<p><a id="header" class="anchor"></a></p>
+<h2>@header</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@header httpHeader
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@header Link: &lt;meta.rdf&gt;; rel=meta
+</code></pre>
+
+<p>Sets or overrides the specific HTTP Header.</p>
+
+<p><a id="param" class="anchor"></a></p>
+<h2>@param</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param [type] Name [Description] {@name value}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param int $num1 increment value {@min 5} {@max 100}
+</code></pre>
+
+<p>Standard @param comment that sets the type and description of a parameter.
+Supported child attributes are documented in detail under <a href="param.html" target="_blank">@param</a></p>
+
+<p><a id="throws" class="anchor"></a></p>
+<h2>@throws</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@throws httpStatusCode [Reason]
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@throws 404 No Author for specified id
+</code></pre>
+
+<p>Documents possible error responses for the API call.</p>
+
+<p><a id="return" class="anchor"></a></p>
+<h2>@return</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@return type [Description]
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@return Author an instance of iValueObject
+</code></pre>
+
+<p>Documents the structure of success response, user defined classes must extend
+iValueObject.</p>
+
+<p><a id="var" class="anchor"></a></p>
+<h2>@var</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@var [type] [Description] {@name value}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@var int policy age {@min 18} {@max 100}
+</code></pre>
+
+<p>When an api method is returning or having one of the parameters as an instance
+of a custom class @var comments can be used with properties of that class.
+They will be used for validation and documentation. Supported child attributes
+are same as that of @param so they are documented under <a href="param.html" target="_blank">@param</a></p>
+
+<hr>
+
+</article>
+</body>
+</html>

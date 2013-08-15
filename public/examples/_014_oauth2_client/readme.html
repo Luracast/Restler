@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler 3 Live Examples:- OAuth2 Client</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
+
+<link rel="stylesheet" type="text/css" href="../resources/highlight.css" />
+
+<link rel="stylesheet" type="text/css" href="../resources/style.css" />
+
+<link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
+
+<link rel="stylesheet" type="text/css" href="../resources/hacks.css" />
+ 
+<script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript" src="../resources/facebox.js"></script>
+
+<script type="text/javascript" src="../resources/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="../resources/highlight.pack.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(
+            function() {
+                $('dd pre code').each(function(i, e) {
+                    text = $(e).text();
+                    $(e).addClass(text.charAt(0) == '<' ? 'xml' : 'json')
+                    //hljs.highlightBlock(e);
+                });
+                $('pre code').each(function(i, e) {
+                    if($(e).attr('class'))
+                        hljs.highlightBlock(e);
+                });
+                $('abbr').parents().not('a').children('abbr').click(
+                        function() {
+                            $('#codeviewer').load(
+                                    '../resources/getsource.php?file='
+                                            + $(this).attr("title"),
+                                    function() {
+                                        /*
+                                        $("pre#php").snippet("php", {
+                                            style : "acid",
+                                            showNum : false
+                                        });
+                                        */
+
+                                        jQuery.facebox({
+                                            div : '#codeviewer'
+                                        });
+                                        hljs.highlightBlock($("pre#php")[1]);
+                                    });
+                        });
+                var curURL = window.location.pathname.split('/examples/')[1];
+                if (curURL == '')
+                    curURL = 'index.html';
+                $("a").each(function() {
+                    if ($(this).attr("href") && $(this).attr("href").indexOf(curURL) > -1) {
+                        $(this).addClass("active");
+                    }
+                });
+
+                $('#right tag').popover({
+                    html : true,
+                    placement : 'left',
+                    trigger : 'manual',
+                    title : 'Tagged Examples',
+                    content : '...'
+                }).click(function(e) {
+                    $('#right tag').popover('hide');
+                    $(this).popover('show');
+                    e.preventDefault();
+                    e.stopPropagation ? e.stopPropagation() : e.cancelBubble = true;
+                });
+
+                $(document).click(function(e) {
+                    $('#right tag').popover('hide');
+                });
+            })
+</script>
+<!--[if lte IE 8]>
+<script type="text/javascript">
+(function(){if(!/*@cc_on!@*/0)return;var e = "abbr,article,aside,audio,bb,canvas,datagrid,datalist,details,dialog,eventsource,figure,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,time,video,tag".split(',');for(var i=0;i<e.length;i++){document.createElement(e[i])}})()
+</script>
+<![endif]-->
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23777019-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</head>
+<body>
+    <nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a title="Getting Started with Restler" href="../.."><img src="../resources/quickstart.png" width="16" height="16"/> Start</a></li>
+<!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
+<li><a class="active" href="../index.html"><img src="../resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="../resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="../resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="../resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="../resources/facebook.png" width="16" height="16"/> Connect</a></li>
+</ul>
+</nav>
+    <div id="codeviewer" style="display: none;"></div>
+    <nav id="left">
+        <img src="../resources/Restler3.gif" width="126"
+            height="126" title="Luracast Restler 3" />
+        <h3>
+            <a href="../index.html">Examples</a>
+        </h3>
+        <ul>
+            
+            <li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
+            <li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
+            <li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
+            <li><a href="../_004_error_response/readme.html" title="Making use of HTTP status codes">Error Response</a></li>
+            <li><a href="../_005_protected_api/readme.html" title="Creating restricted zone">Protected API</a></li>
+            <li><a href="../_006_routing/readme.html" title="Ways to map api methods to url">Routing</a></li>
+            <li><a href="../_007_crud/readme.html" title="using POST, GET, PUT and DELETE">CRUD</a></li>
+            <li><a href="../_008_documentation/readme.html" title="Commenting can be more rewarding">Documentation</a></li>
+            <li><a href="../_009_rate_limiting/readme.html" title="Abuse no more">Rate Limiting</a></li>
+            <li><a href="../_010_access_control/readme.html" title="Who can do what">Access Control</a></li>
+            <li><a href="../_011_versioning/readme.html" title="using the URL">Versioning</a></li>
+            <li><a href="../_012_vendor_mime/readme.html" title="custom media type for versioning">Vendor MIME</a></li>
+            <li><a href="../_013_html/readme.html" title="rendering custom views">Html Format</a></li>
+            <li><a href="../_014_oauth2_client/readme.html" title="to consume protected API">OAuth2 Client</a></li>
+            <li><a href="../_015_oauth2_server/readme.html" title="offering protected API">OAuth2 Server</a></li>
+        </ul>
+    </nav>
+    <nav id="right">
+        <h3><a href="../index.html">Examples by Tag</a></h3>
+        <ul class="tags">
+<li><tag title="Access-control Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt; &lt;a href=&quot;../_014_oauth2_client/readme.html&quot;&gt;OAuth2 Client&lt;/a&gt; &lt;a href=&quot;../_015_oauth2_server/readme.html&quot;&gt;OAuth2 Server&lt;/a&gt;">access-control</tag><badge>3</badge></li>
+
+<li><tag title="Acl Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt; &lt;a href=&quot;../_014_oauth2_client/readme.html&quot;&gt;OAuth2 Client&lt;/a&gt; &lt;a href=&quot;../_015_oauth2_server/readme.html&quot;&gt;OAuth2 Server&lt;/a&gt;">acl</tag><badge>3</badge></li>
+
+<li><tag title="Authentication Example(s)" data-content="&lt;a href=&quot;../_005_protected_api/readme.html&quot;&gt;Protected API&lt;/a&gt; &lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt; &lt;a href=&quot;../_014_oauth2_client/readme.html&quot;&gt;OAuth2 Client&lt;/a&gt; &lt;a href=&quot;../_015_oauth2_server/readme.html&quot;&gt;OAuth2 Server&lt;/a&gt;">authentication</tag><badge>4</badge></li>
+
+<li><tag title="Authorization Example(s)" data-content="&lt;a href=&quot;../_005_protected_api/readme.html&quot;&gt;Protected API&lt;/a&gt; &lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt; &lt;a href=&quot;../_014_oauth2_client/readme.html&quot;&gt;OAuth2 Client&lt;/a&gt; &lt;a href=&quot;../_015_oauth2_server/readme.html&quot;&gt;OAuth2 Server&lt;/a&gt;">authorization</tag><badge>4</badge></li>
+
+<li><tag title="Basic Example(s)" data-content="&lt;a href=&quot;../_001_helloworld/readme.html&quot;&gt;Hello World Example&lt;/a&gt; &lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt;">basic</tag><badge>2</badge></li>
+
+<li><tag title="Create Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">create</tag><badge>3</badge></li>
+
+<li><tag title="Custom Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">custom</tag></li>
+
+<li><tag title="Debug Example(s)" data-content="&lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">debug</tag></li>
+
+<li><tag title="Delete Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">delete</tag><badge>4</badge></li>
+
+<li><tag title="Doc Example(s)" data-content="&lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">doc</tag></li>
+
+<li><tag title="Exception Example(s)" data-content="&lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">exception</tag></li>
+
+<li><tag title="Filter Example(s)" data-content="&lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">filter</tag></li>
+
+<li><tag title="Get Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">get</tag><badge>4</badge></li>
+
+<li><tag title="Handlebar Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">handlebar</tag></li>
+
+<li><tag title="Html Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">html</tag></li>
+
+<li><tag title="Http Status Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">http status</tag><badge>2</badge></li>
+
+<li><tag title="Json Example(s)" data-content="&lt;a href=&quot;../_003_multiformat/readme.html&quot;&gt;Multi-format&lt;/a&gt;">json</tag></li>
+
+<li><tag title="Mediatype Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mediatype</tag></li>
+
+<li><tag title="Mime Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">mime</tag></li>
+
+<li><tag title="Mustache Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">mustache</tag></li>
+
+<li><tag title="Patch Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt;">patch</tag></li>
+
+<li><tag title="Php Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">php</tag></li>
+
+<li><tag title="Post Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">post</tag><badge>4</badge></li>
+
+<li><tag title="Production Example(s)" data-content="&lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">production</tag></li>
+
+<li><tag title="Put Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">put</tag><badge>4</badge></li>
+
+<li><tag title="Rate-limiting Example(s)" data-content="&lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">rate-limiting</tag></li>
+
+<li><tag title="Read Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">read</tag><badge>3</badge></li>
+
+<li><tag title="Retrieve Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">retrieve</tag><badge>3</badge></li>
+
+<li><tag title="Routing Example(s)" data-content="&lt;a href=&quot;../_006_routing/readme.html&quot;&gt;Routing&lt;/a&gt; &lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt;">routing</tag><badge>3</badge></li>
+
+<li><tag title="Secure Example(s)" data-content="&lt;a href=&quot;../_010_access_control/readme.html&quot;&gt;Access Control&lt;/a&gt; &lt;a href=&quot;../_014_oauth2_client/readme.html&quot;&gt;OAuth2 Client&lt;/a&gt; &lt;a href=&quot;../_015_oauth2_server/readme.html&quot;&gt;OAuth2 Server&lt;/a&gt;">secure</tag><badge>3</badge></li>
+
+<li><tag title="Template Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">template</tag></li>
+
+<li><tag title="Throttle Example(s)" data-content="&lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">throttle</tag></li>
+
+<li><tag title="Twig Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">twig</tag></li>
+
+<li><tag title="Update Example(s)" data-content="&lt;a href=&quot;../_007_crud/readme.html&quot;&gt;CRUD&lt;/a&gt; &lt;a href=&quot;../_008_documentation/readme.html&quot;&gt;Documentation&lt;/a&gt; &lt;a href=&quot;../_009_rate_limiting/readme.html&quot;&gt;Rate Limiting&lt;/a&gt;">update</tag><badge>3</badge></li>
+
+<li><tag title="Validation Example(s)" data-content="&lt;a href=&quot;../_002_minimal/readme.html&quot;&gt;Minimal Example&lt;/a&gt; &lt;a href=&quot;../_004_error_response/readme.html&quot;&gt;Error Response&lt;/a&gt;">validation</tag><badge>2</badge></li>
+
+<li><tag title="Vendor Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">vendor</tag></li>
+
+<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;../_011_versioning/readme.html&quot;&gt;Versioning&lt;/a&gt; &lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag><badge>2</badge></li>
+
+<li><tag title="View Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">view</tag></li>
+
+<li><tag title="Xml Example(s)" data-content="&lt;a href=&quot;../_003_multiformat/readme.html&quot;&gt;Multi-format&lt;/a&gt;">xml</tag></li>
+</ul>
+    </nav>
+    <article id="page">
+<div class="right"><small>14</small></div>
+<p><a id="oauth2-client" class="anchor"></a><h2>OAuth2 Client <requires>PHP >= 5.3.9</requires></h2></p>
+
+<p><tag>access-control</tag>
+ <tag>acl</tag>
+ <tag>secure</tag>
+ <tag>authentication</tag>
+ <tag>authorization</tag></p>
+
+<p><a id="setting-up-the-client-example" class="anchor"></a><h3>Setting up the client example</h3></p>
+
+<p>In order to run this example on your localhost do the following</p>
+
+<ol>
+<li>run composer update to make sure you have
+
+<ul>
+<li>twig template library</li>
+<li>bshaffer's oauth2 library</li>
+</ul></li>
+<li>make sure <code>public/examples/_014_oauth2_client/cache</code> has write permissions to create the compiled template files</li>
+</ol>
+
+<p>Now that you are ready, lets look at the example</p>
+
+<p><a href="./" target="_blank"><img src="../resources/OAuth2Client.png" alt="OAuth 2 Client" /></a></p>
+
+<blockquote>
+  <p>This API Server is made using the following php files/folders</p>
+  
+  <ul>
+  <li><abbr title="_014_oauth2_client/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_014_oauth2_client/OAuth2/Client.php">Client.php</abbr>      (api)</li>
+  <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
+  </ul>
+</blockquote>
+
+<p>This API Server exposes the following URIs</p>
+
+<pre><code>GET authorized ⇠ OAuth2\Client::authorized()
+GET v1         ⇠ OAuth2\Client::index()
+</code></pre>
+
+<p>This example is part 1 in a 2 part example that shows how Restler can
+be integrated with the popular <a href="http://bshaffer.github.io/oauth2-server-php-docs/" target="_blank">OAuth 2.0 Server </a>
+library. This section -- the "client" -- is about asking for access rights and keeping a record of the
+important state mechanisms required to communicate with Restler once access has been granted.</p>
+
+<p>If you're not familiar with OAuth, it's worth familiarizing yourself with the 
+basics and in particular understanding the various workflows that OAuth 2.0 offers. 
+The following two links may help:</p>
+
+<ul>
+<li><a href="http://tools.ietf.org/html/draft-ietf-oauth-v2" target="_blank">Official OAuth Specification</a>: 
+a bit dry but if you want the "facts" they're there.</li>
+<li><a href="http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified" target="_blank">OAuth2 Simplified</a>: 
+a nicely summarized overview of how to think through the key aspects of OAuth 2.0</li>
+</ul>
+
+<p>The role of the <code>client application</code> in OAuth is two-fold:</p>
+
+<ol>
+<li>Asking for access (aka, Authorization)</li>
+<li>Making authenticated requests (aka, Authentication)</li>
+</ol>
+
+<p>It's important to understand that the <em>workflow</em> of asking for access varies by "grant type" in OAuth.
+The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:</p>
+
+<ul>
+<li><strong>Implicit</strong>: typically for browser based or mobile apps</li>
+<li><strong>Authorization Code</strong>: typically for apps running on a server</li>
+<li><strong>Password Credentials</strong>: typically used for apps that are owned by the same organisation as the OAuth service provider (aka, the Twitter client, etc.)</li>
+<li><strong>Client Credentials</strong>: used by client's who want to update meta information about their site (URL's, logo's, etc.)</li>
+<li><strong>JWT Auth Grant</strong>: the client submits a <em>JSON Web Token</em> in a request to the token endpoint. An access token (without a refresh token) is then returned directly.</li>
+<li><strong>Refresh Token</strong>: client can submit refresh token and receive a new access token</li>
+</ul>
+
+<p><a id="workflow" class="anchor"></a><h2>Workflow</h2></p>
+
+<p>In this example the <code>OAuth server</code> is setup to manage the <code>authorization code</code> grant. Holistically
+there really two parts to the process. First, the client must get authorization from the server and then
+it will use that authorization (in the form of an "access token") to authenticate with the REST API from 
+that point forward. The two flows are illustrated below:</p>
+
+<p><a href="../resources/auth-code-workflow.png" target="_blank"><img src="../resources/auth-code-workflow-thumb.png" alt="Authorization Code Flow" /></a></p>
+
+<p><a id="authorization" class="anchor"></a><h3>Authorization</h3></p>
+
+<p>The client apps role in authentication is two-fold. First it must direct the user to the server to start 
+the process. And second, when the authorization has completed the client application's <em>callback</em> function will be executed
+and it will be responsible for saving the authorization information.</p>
+
+<p><a id="authentication" class="anchor"></a><h3>Authentication</h3></p>
+
+<p>Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's 
+authorization status in each RESTful API request. This is achieved by the client application adding a <em>query parameter</em> of 
+'code' set to the access token that the OAuth Server provided to the application in the authorization step.</p>
+
+<blockquote>
+  <p><strong>Note:-</strong>
+  there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a
+  query parameter.</p>
+</blockquote>
+
+<p><a id="in-conclusion" class="anchor"></a><h2>In Conclusion</h2></p>
+
+<p>The "client application" plays an important role in the OAuth interaction and while your Restler server's primarily role will
+likely be to play the <em>server</em> role in this process it is useful to know that both client and server are available as part of
+the <a href="http://bshaffer.github.io/oauth2-server-php-docs/" target="_blank">OAuth 2.0 Server </a> module and both are easily made available to Restler.</p>
+
+<p>For more information on how to start using this functionality with Restler be sure to look at the <a href="../_015_oauth2_server/index.php" target="_blank">OAuth Server example</a>.</p>
+
+</article>
+<footer>
+&#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
+</footer>
+</body>
+</html>

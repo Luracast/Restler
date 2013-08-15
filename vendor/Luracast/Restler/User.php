@@ -11,9 +11,9 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
-class User
+class User implements iUser
 {
     private static $initialized = false;
     public static $id = null;
@@ -55,5 +55,17 @@ class User
                 }
             }
         }
+    }
+
+    /**
+     * Authentication classes should call this method
+     *
+     * @param string $id user id as identified by the authentication classes
+     *
+     * @return void
+     */
+    public static function setUserId($id)
+    {
+        static::$id = $id;
     }
 }

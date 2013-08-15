@@ -1,6 +1,7 @@
-Documentation <requires>PHP >= 5.3</requires>
--------------
-<tag>create</tag> <tag>retrieve</tag> <tag>read</tag> <tag>update</tag> <tag>delete</tag> <tag>post</tag> <tag>get</tag> <tag>put</tag> <tag>routing</tag> <tag>doc</tag> <tag>production</tag> <tag>debug</tag> 
+## Documentation 
+
+ This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
+
 
 How to document and let your users explore your API.
 We have modified SwaggerUI to create 
@@ -35,15 +36,14 @@ Happy Exploring! :)
 
 This API Server exposes the following URIs
 
-    GET    authors                   ⇠ improved\Authors::index()
-    POST   authors                   ⇠ improved\Authors::post()
-    PATCH  authors/{id}              ⇠ improved\Authors::patch()
-    DELETE authors/{id}              ⇠ improved\Authors::delete()
-    GET    authors/{id}              ⇠ improved\Authors::get()
-    PUT    authors/{id}              ⇠ improved\Authors::put()
-    GET    resources                 ⇠ Resources::index()
-    GET    resources/v{version}      ⇠ Resources::get()
-    GET    resources/{id}-v{version} ⇠ Resources::get()
+    GET    authors        ⇠ improved\Authors::index()
+    POST   authors        ⇠ improved\Authors::post()
+    PATCH  authors/{id}   ⇠ improved\Authors::patch()
+    DELETE authors/{id}   ⇠ improved\Authors::delete()
+    PUT    authors/{id}   ⇠ improved\Authors::put()
+    GET    authors/{id}   ⇠ improved\Authors::get()
+    GET    resources      ⇠ Luracast\Restler\Resources::index()
+    GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
 
 
 

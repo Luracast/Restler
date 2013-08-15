@@ -10,9 +10,9 @@ namespace Luracast\Restler\Format;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
-use Luracast\Restler\Data\Util;
+use Luracast\Restler\Data\Object;
 use Luracast\Restler\Exception;
 use Luracast\Restler\RestException;
 use SimpleXMLElement;
@@ -37,7 +37,7 @@ class XmlFormat extends Format
       public function encode($data, $humanReadable = false)
     {
         return $this->toXML(
-                Util::objectToArray($data, false),
+                Object::toArray($data, false),
                 self::$rootName, $humanReadable
         );
     }

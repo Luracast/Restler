@@ -15,7 +15,7 @@ use Luracast\Restler\Data\Validator;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class Defaults
 {
@@ -45,10 +45,10 @@ class Defaults
     public static $validatorClass = 'Luracast\\Restler\\Data\\Validator';
 
     /**
-     * @var string name of the class that implements \Luracast\Restler\iRespond
-     * the responder class to be used
+     * @var string name of the class that implements \Luracast\Restler\iCompose
+     * the class to be used to compose the response
      */
-    public static $responderClass = 'Luracast\\Restler\\Responder';
+    public static $composeClass = 'Luracast\\Restler\\Compose';
 
     // ==================================================================
     //
@@ -142,6 +142,11 @@ class Defaults
     public static $language = 'en';
 
     /**
+     * @var bool when set to true, it will exclude the response body
+     */
+    public static $emptyBodyForNullResponse = true;
+
+    /**
      * @var bool enables CORS support
      */
     public static $crossOriginResourceSharing = false;
@@ -212,7 +217,7 @@ class Defaults
 
     // ==================================================================
     //
-    // API User Options
+    // Overrides for API User
     //
     // ------------------------------------------------------------------
 
@@ -249,7 +254,7 @@ class Defaults
 
     // ==================================================================
     //
-    // API Developer Options
+    // Overrides API Developer
     //
     // ------------------------------------------------------------------
 

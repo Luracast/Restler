@@ -31,14 +31,14 @@ Feature: Testing CRUD Example
     And the response should be JSON
     And the response has a "id" property
 
-  Scenario: Failing to update Author with JSON
+  Scenario: Given url is valid for other http method(s)
     Given that I want to update "Author"
     And his "name" is "Jac"
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
     When I request "/examples/_007_crud/authors"
-    Then the response status code should be 404
+    Then the response status code should be 405
 
   Scenario: Deleting Author
     Given that I want to delete an "Author"

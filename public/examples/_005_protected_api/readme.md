@@ -1,6 +1,7 @@
-Protected API <requires>PHP >= 5.3</requires>
--------------
-<tag>authentication</tag> <tag>authorization</tag> 
+## Protected API 
+
+ This example requires `PHP >= 5.3` and taggeed under `authentication` `authorization`
+
 
 Not all the API exposed needs to be public, we need to protect
  some of our API.

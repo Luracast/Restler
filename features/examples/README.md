@@ -1,4 +1,5 @@
-### *Expected Features* for Live Examples
+# examples
+### Expected features for Live Examples
 
 For Behavior Driven Development (BDD) we are using Behat to write down the
 features and test them against the API

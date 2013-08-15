@@ -11,7 +11,7 @@ namespace Luracast\Restler\Format;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class JsFormat extends JsonFormat
 {
@@ -33,9 +33,9 @@ class JsFormat extends JsonFormat
             }
         }
         $r['data'] = $data;
-        if ($_GET[static::$callbackOverrideQueryString]) {
+        if (isset($_GET[static::$callbackOverrideQueryString])) {
             static::$callbackMethodName
-                = $_GET[static::$callbackOverrideQueryString];
+                = (string) $_GET[static::$callbackOverrideQueryString];
         }
         return static::$callbackMethodName . '('
             . parent::encode($r, $human_readable) . ');';

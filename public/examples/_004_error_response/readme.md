@@ -1,6 +1,7 @@
-Error Response <requires>PHP >= 5.3</requires>
---------------
-<tag>exception</tag> <tag>http status</tag> <tag>validation</tag> 
+## Error Response 
+
+ This example requires `PHP >= 5.3` and taggeed under `exception` `http status` `validation`
+
 
 API methods can make use of RestException class to provide
  error information to the user.

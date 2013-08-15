@@ -1,9 +1,12 @@
 <?php
 namespace Luracast\Restler;
 
+use Exception;
+
 /**
  * Special Exception for raising API errors
  * that can be used in API methods
+ *
  * @category   Framework
  * @package    Restler
  * @subpackage exception
@@ -64,10 +67,72 @@ class RestException extends Exception
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported'
     );
+    private $details;
+    private $stage;
 
-    public function __construct($httpStatusCode, $errorMessage = null)
+    /**
+     * @param string      $httpStatusCode http status code
+     * @param string|null $errorMessage   error message
+     * @param array       $details        any extra detail about the exception
+     * @param Exception   $previous       previous exception if any
+     */
+    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
     {
-        parent::__construct ( $errorMessage, $httpStatusCode );
+        $events = Util::$restler->getEvents();
+        if(count($events)<= 1){
+            $this->stage = 'setup';
+        } else {
+            $this->stage = $previous ? $events[count($events)-2] : end($events);
+        }
+        $this->details = $details;
+        parent::__construct($errorMessage, $httpStatusCode, $previous);
+    }
+
+    /**
+     * Get extra details about the exception
+     *
+     * @return array details array
+     */
+    public function getDetails()
+    {
+        return $this->details;
+    }
+
+    public function getStage()
+    {
+        return $this->stage;
+    }
+
+    public function getStages()
+    {
+        $e = Util::$restler->_events;
+        $i = array_search($this->stage, $e);
+        return array(
+            'success' => array_slice($e, 0, $i),
+            'failure' => array_slice($e, $i),
+        );
+    }
+
+    public function getErrorMessage()
+    {
+        $statusCode = $this->getCode();
+        $message = $this->getMessage();
+        if (isset(RestException::$codes[$statusCode])) {
+            $message = RestException::$codes[$statusCode] .
+                (empty($message) ? '' : ': ' . $message);
+        }
+        return $message;
+    }
+
+    public function getSource()
+    {
+        $e = $this;
+        while ($e->getPrevious()) {
+            $e = $e->getPrevious();
+        }
+        return basename($e->getFile()) . ':'
+        . $e->getLine() . ' at '
+        . $this->getStage() . ' stage';
     }
 }
 

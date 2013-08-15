@@ -1,0 +1,351 @@
+body {
+background: #E9E9E9 url('http://static01.linkedin.com/scds/common/u/img/bg/bg_grain_200x200.png');
+font-family: Arial,Helvetica,"Nimbus Sans L",sans-serif;
+}
+
+a:visited {
+    color: #069;
+}
+a {
+    text-decoration: none;
+    color: #069;
+    outline: none;
+}
+
+#content ul li {
+    font-style:italic;
+    font-size:14px;
+    color:#D85700;
+}
+
+.authorize_options {
+    margin:0;
+    padding:0;
+}
+
+#content .authorize_options li {
+    float:left;
+    list-style-type:none;
+    font-style:normal;
+}
+
+.authorize_options li.cancel { margin-left:15px;padding-top: 8px;}
+
+#container {
+z-index: 10001;
+margin-top: 89px;
+}
+#container {
+margin-left: auto;
+margin-right: auto;
+width: 974px;
+padding: 0;
+}
+
+#content {
+margin-left: auto;
+margin-right: auto;
+width: 974px;
+float: left;
+background:white;
+padding:10px 20px;
+-moz-box-shadow: 0 0 1px #999;
+-webkit-box-shadow: 0 0 1px #999;
+-o-box-shadow: 0 0 1px #999;
+box-shadow: 0 0 1px #999;
+margin-bottom: 10px;
+position: relative;
+}
+
+.global-nav {
+z-index: 10002;
+margin-bottom: 0px;
+left: 0;
+position: fixed;
+top: 0;
+width: 100%;
+}
+
+.global-nav .top-nav {
+height: 38px;
+margin: 0;
+filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF696969', endColorstr='#FF252525');
+background: #252525;
+background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, dimGray), color-stop(95%, #363636), color-stop(97%, #313131), color-stop(100%, #252525));
+background-image: -webkit-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: -moz-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: -o-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: -ms-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+}
+
+.global-nav .wrapper {
+margin: 0 auto;
+width: 974px;
+z-index: 10004;
+}
+.primary, .wrapper {
+clear: both;
+}
+.global-nav .util {
+float: right;
+}
+.global-nav ul, .global-nav li, .global-nav p, .global-nav fieldset, #section-header ul, #section-header li, #section-header p, #section-header, .global-search fieldset, .global-search select, .global-search input, #footer ul, #footer li, #footer p {
+margin: 0;
+padding: 0;
+list-style-type: none;
+border: 0;
+outline: 0;
+background: none;
+vertical-align: middle;
+}
+.wrapper .util .tab.username-cont {
+z-index: 10010;
+}
+.global-nav .util .jump {
+position: absolute;
+left: -9999px;
+}
+
+.global-nav .util .tab {
+line-height: 38px;
+}
+.global-nav .tab {
+float: left;
+_border: none;
+_clear: none;
+_padding: 0;
+position: relative;
+z-index: 10010;
+}
+.global-nav p, .global-nav li {
+margin-bottom: 0;
+}
+
+.global-nav ul, .global-nav li, .global-nav p, .global-nav fieldset, #section-header ul, #section-header li, #section-header p, #section-header, .global-search fieldset, .global-search select, .global-search input, #footer ul, #footer li, #footer p {
+margin: 0;
+padding: 0;
+list-style-type: none;
+border: 0;
+outline: 0;
+background: none;
+vertical-align: middle;
+}
+
+.global-nav .util .username {
+color: white;
+}
+.global-nav .tab .tab-name {
+color: #71C5EF;
+display: block;
+padding: 0 10px;
+}
+.global-nav .util .username .menu-indicator {
+margin: 0 0 0 4px;
+display: -moz-inline-box;
+-moz-box-orient: vertical;
+display: inline-block;
+vertical-align: middle;
+height: 0;
+width: 0;
+_font-size: 0;
+_line-height: 0;
+border-style: dashed;
+border-color: transparent;
+border-width: 4px 4px 0;
+border-top-color: white;
+border-top-style: solid;
+}
+.global-nav .tab .tab-name span {
+position: relative;
+z-index: 10011;
+}
+.global-nav .logo {
+float: left;
+margin: 8px 10px 0 3px;
+}
+.global-nav .logo a {
+    color:white;
+}
+.global-nav .logo a span{
+    background-color:#069;
+    padding:0px 3px;
+}
+
+.global-nav .account {
+float: left;
+font-size: 12px;
+margin-top: 14px;
+}
+
+.global-nav #header-notifications.v2 {
+background: url('http://static01.linkedin.com/scds/common/u/img/anim/anim_loading_16x16.gif') no-repeat -12345px -12345px;
+}
+.global-nav .header-notifications {
+border: none;
+float: left;
+margin-left: 15px;
+padding: 0;
+}
+.global-nav .bottom-nav {
+height: 39px;
+margin: 0;
+filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF121212', endColorstr='#FF303030');
+background: #303030;
+background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #121212), color-stop(100%, #303030));
+background-image: -webkit-linear-gradient(top, #121212 0%,#303030 100%);
+background-image: -moz-linear-gradient(top, #121212 0%,#303030 100%);
+background-image: -o-linear-gradient(top, #121212 0%,#303030 100%);
+background-image: -ms-linear-gradient(top, #121212 0%,#303030 100%);
+background-image: linear-gradient(top, #121212 0%,#303030 100%);
+}
+
+.global-nav .global-search {
+float: right;
+margin: 6px 0 0;
+padding: 0;
+}
+
+.global-nav .global-search fieldset {
+float: left;
+white-space: nowrap;
+}
+
+.global-nav .global-search legend, .global-nav .global-search legend span, .global-nav .global-search label {
+left: -12345px;
+position: absolute;
+}
+
+.global-nav .global-search .search-scope {
+font-size: 12px;
+float: left;
+line-height: 13px;
+z-index: 10008;
+}
+.global-nav .global-search .search-scope .label span {
+background: transparent url('http://static01.linkedin.com/scds/common/u/img/sprite/sprite_global_v8.png') no-repeat 100% -1914px;
+color: white;
+cursor: pointer;
+float: left;
+padding: 6px 15px 6px 11px;
+margin-right: 10px;
+}
+ .global-nav .global-search .search-scope .label {
+border: 1px solid #1A2229;
+float: left;
+left: 0;
+position: static;
+margin: 0;
+_vertical-align: -5px;
+-moz-border-radius-topleft: 4px;
+-webkit-border-top-left-radius: 4px;
+-o-border-top-left-radius: 4px;
+-ms-border-top-left-radius: 4px;
+-khtml-border-top-left-radius: 4px;
+border-top-left-radius: 4px;
+-moz-border-radius-bottomleft: 4px;
+-webkit-border-bottom-left-radius: 4px;
+-o-border-bottom-left-radius: 4px;
+-ms-border-bottom-left-radius: 4px;
+-khtml-border-bottom-left-radius: 4px;
+border-bottom-left-radius: 4px;
+filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF696969', endColorstr='#FF252525');
+background: #252525;
+background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, dimGray), color-stop(95%, #363636), color-stop(97%, #313131), color-stop(100%, #252525));
+background-image: -webkit-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: -moz-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: -o-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: -ms-linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+background-image: linear-gradient(top, dimGray 0%,#363636 95%,#313131 97%,#252525 100%);
+}
+.global-nav .global-search .search-box-container {
+background: white;
+border: 1px solid #1A2229;
+border-left: none;
+display: block;
+float: left;
+padding: 0;
+-moz-border-radius-topright: 4px 4px;
+-webkit-border-top-right-radius: 4px 4px;
+-o-border-top-right-radius: 4px 4px;
+-ms-border-top-right-radius: 4px 4px;
+-khtml-border-top-right-radius: 4px 4px;
+border-top-right-radius: 4px 4px;
+-moz-border-radius-bottomright: 4px 4px;
+-webkit-border-bottom-right-radius: 4px 4px;
+-o-border-bottom-right-radius: 4px 4px;
+-ms-border-bottom-right-radius: 4px 4px;
+-khtml-border-bottom-right-radius: 4px 4px;
+border-bottom-right-radius: 4px 4px;
+}
+.global-nav .global-search .search-box-container .search-term {
+border: none;
+font-size: 13px;
+line-height: 13px;
+margin: 0;
+padding: 5px;
+position: relative;
+width: 205px;
+z-index: 3;
+}
+#search-autocomplete-container {
+position: relative;
+display: inline;
+float: left;
+padding-right: 3px;
+_padding-right: 0;
+_float: none;
+}
+.global-nav .global-search .search-box-container .search-go {
+background: transparent url('http://static01.linkedin.com/scds/common/u/img/sprite/sprite_global_v8.png') no-repeat 0 -2197px;
+border: none;
+color: #0076A8;
+cursor: pointer;
+height: 20px;
+line-height: 1em;
+margin: 3px 5px 0 0;
+padding: 0px;
+width: 18px;
+text-indent: -1234px;
+_width: 22px;
+}
+
+.global-nav .global-search .search-link {
+color: white;
+float: left;
+font-size: 11px;
+line-height: 29px;
+margin: 0 0 0 12px;
+}
+
+.global-nav .nav .tab {
+    line-height: 37px;
+}
+
+.global-nav .tab:hover .tab-name, .global-nav .tab.hover .tab-name, .global-nav .tab.selected .tab-name {
+color: white;
+}
+
+.global-nav .tab .tab-name {
+color: #71C5EF;
+display: block;
+padding: 0 10px;
+text-decoration: none;
+}
+
+.global-nav {
+font-family: sans-serif;
+}
+.global-nav {
+font-size: 13px;
+}
+
+.global-nav .account {
+float: left;
+font-size: 12px;
+margin-top: 14px;
+}
+
+.global-nav .account span {
+color: #87877D;
+}

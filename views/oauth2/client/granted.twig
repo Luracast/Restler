@@ -1,0 +1,15 @@
+{% extends "oauth2/client/base.twig" %}
+
+{% block content %}
+    <h3>Authorization Granted!</h3>
+    <pre><code>  Access Token: {{ response.token }}  </code></pre>
+    <p>
+        Here are your friends:
+    </p>
+    <ul>
+        {% for friend in response.friends %}
+            <li>{{ friend }}</li>
+        {% endfor %}
+    </ul>
+    <div class="help"><em>The API call can be seen at <a href="{{ response.endpoint }}" target="_blank">{{ response.endpoint }}</a></em></div>
+{% endblock %}

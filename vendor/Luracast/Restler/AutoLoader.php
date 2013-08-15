@@ -12,7 +12,7 @@ namespace Luracast\Restler {
  * @subpackage helper
  * @author     Nick Lombard <github@jigsoft.co.za>
  * @copyright  2012 Luracast
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class AutoLoader
 {
@@ -259,7 +259,6 @@ class AutoLoader
      * @return bool false unless className now exists
      */
     private function loadLastResort($className, $loader = null) {
-        return false;
         $loaders = array_unique(static::$rogueLoaders);
         if (isset($loader)) {
             if (false === array_search($loader, $loaders))

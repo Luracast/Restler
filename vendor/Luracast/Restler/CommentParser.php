@@ -1,5 +1,7 @@
 <?php
 namespace Luracast\Restler;
+
+use Exception;
 /**
  * Parses the PHPDoc comments for metadata. Inspired by `Documentor` code base.
  *
@@ -10,7 +12,7 @@ namespace Luracast\Restler;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class CommentParser
 {
@@ -214,6 +216,9 @@ class CommentParser
                 $value = $this->formatParam($value);
                 $allowMultiple = true;
                 break;
+            case 'var' :
+                $value = $this->formatVar($value);
+                break;
             case 'return' :
                 $value = $this->formatReturn($value);
                 break;
@@ -313,11 +318,12 @@ class CommentParser
                 && !empty ($matches[1])
             ) {
                 $extension = $matches[1];
-                if (isset ($this->restler->formatMap[$extension])) {
+                $formatMap =  $this->restler->getFormatMap();
+                if (isset ($formatMap[$extension])) {
                     /**
                      * @var \Luracast\Restler\Format\iFormat
                      */
-                    $format = $this->restler->formatMap[$extension];
+                    $format = $formatMap[$extension];
                     $format = new $format();
                     $data = $format->decode($str);
                 }
@@ -364,9 +370,7 @@ class CommentParser
 
     private function formatThrows(array $value)
     {
-        $r = array(
-            'exception' => array_shift($value)
-        );
+        $r = array();
         $r['code'] = count($value) && is_numeric($value[0])
             ? intval(array_shift($value)) : 500;
         $reason = implode(' ', $value);
@@ -428,6 +432,25 @@ class CommentParser
             if (!empty($data) && $data{0} == '$') {
                 $r['name'] = substr($data, 1);
             }
+        }
+        if ($value) {
+            $r['description'] = implode(' ', $value);
+        }
+        return $r;
+    }
+
+    private function formatVar(array $value)
+    {
+        $r = array();
+        $data = array_shift($value);
+        if (empty($data)) {
+            $r['type'] = 'mixed';
+        } elseif ($data{0} == '$') {
+            $r['name'] = substr($data, 1);
+            $r['type'] = 'mixed';
+        } else {
+            $data = explode('|', $data);
+            $r['type'] = count($data) == 1 ? $data[0] : $data;
         }
         if ($value) {
             $r['description'] = implode(' ', $value);

@@ -452,6 +452,11 @@ a.anchor{
     padding-left: 10px;
 }
 
+#left ul ul a {
+    font-size: 80%;
+    line-height: 18px;
+}
+
 #left a.active {
     color: black;
     background: #E6E2DF;
@@ -674,21 +679,30 @@ requires:after{
 /*
 	Generic Styling, for Desktops/Laptops
 	*/
-	table {
-		width: 100%;
-		border-collapse: collapse;
-	}
-	/* Zebra striping */
-	tr:nth-of-type(odd) {
-		background: #f5f5f5;
-	}
-	th {
-		background: #505050;
-		color: white;
-		font-weight: normal;
-	}
-	td, th {
-		padding: 6px;
-		border: 1px solid #cccccc;
-		text-align: left;
-	}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+/* Zebra striping */
+tr:nth-of-type(odd) {
+    background: #f5f5f5;
+}
+th {
+    background: #505050;
+    color: white;
+    font-weight: normal;
+}
+td, th {
+    padding: 6px;
+    border: 1px solid #cccccc;
+    text-align: left;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+@media  screen {
+  img {
+  	width: auto; /* for ie 8 */
+  }
+}

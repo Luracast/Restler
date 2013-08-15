@@ -1,6 +1,7 @@
-Multi-format <requires>PHP >= 5.3</requires>
-------------
-<tag>json</tag> <tag>xml</tag> 
+## Multi-format 
+
+ This example requires `PHP >= 5.3` and taggeed under `json` `xml`
+
 
 This BMI calculator service shows how you can serve data in different
  formats using Restler. This example uses JsonFormat (default) and XmlFormat.

@@ -13,13 +13,12 @@ use Luracast\Restler\RestException;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class UploadFormat extends Format
 {
     const MIME = 'multipart/form-data';
     const EXTENSION = 'post';
-
     /**
      * use it if you need to restrict uploads based on file type
      * setting it as an empty array allows all file types
@@ -28,7 +27,6 @@ class UploadFormat extends Format
      * @var array
      */
     public static $allowedMimeTypes = array('image/jpeg', 'image/png');
-
     /**
      * use it to restrict uploads based on file size
      * set it to 0 to allow all sizes
@@ -40,7 +38,6 @@ class UploadFormat extends Format
      * @var int
      */
     public static $maximumFileSize = 1048576;
-
     /**
      * Your own validation function for validating each uploaded file
      * it can return false or throw an exception for invalid file
@@ -61,28 +58,43 @@ class UploadFormat extends Format
         $doMimeCheck = !empty(self::$allowedMimeTypes);
         $doSizeCheck = self::$maximumFileSize ? TRUE : FALSE;
         //validate
-        foreach ($_FILES as $index => $file) {
-            if ($file['error']) {
-                //server is throwing an error
-                //assume that the error is due to maximum size limit
-                throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
-            }
-            if ($doMimeCheck && !in_array($file['type'],
-                self::$allowedMimeTypes)
-            ) {
-                throw new RestException(403, "File type ({$file['type']}) is not supported.");
-            }
-            if ($doSizeCheck && $file['size'] > self::$maximumFileSize) {
-                throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
-            }
-            if (self::$customValidationFunction) {
-                if (!call_user_func(self::$customValidationFunction, $file)) {
-                    throw new RestException(403, "File ({$file['name']}) is not supported.");
+        foreach ($_FILES as $file) {
+            if (is_array($file['error'])) {
+                foreach ($file['error'] as $i => $error) {
+                    $innerFile = array();
+                    foreach ($file as $property => $value) {
+                        $innerFile[$property] = $value[$i];
+                    }
+                    static::checkFile($innerFile, $doMimeCheck, $doSizeCheck);
                 }
+            } else {
+                static::checkFile($file, $doMimeCheck, $doSizeCheck);
             }
         }
         //sort file order if needed;
         return $_FILES + $_POST;
+    }
+
+    protected static function checkFile($file, $doMimeCheck = false, $doSizeCheck = false)
+    {
+        if ($file['error']) {
+            //server is throwing an error
+            //assume that the error is due to maximum size limit
+            throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
+        }
+        if ($doMimeCheck && !in_array($file['type'],
+                self::$allowedMimeTypes)
+        ) {
+            throw new RestException(403, "File type ({$file['type']}) is not supported.");
+        }
+        if ($doSizeCheck && $file['size'] > self::$maximumFileSize) {
+            throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
+        }
+        if (self::$customValidationFunction) {
+            if (!call_user_func(self::$customValidationFunction, $file)) {
+                throw new RestException(403, "File ({$file['name']}) is not supported.");
+            }
+        }
     }
 
 }

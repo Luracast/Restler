@@ -13,7 +13,7 @@ use stdClass;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc3
+ * @version    3.0.0rc4
  */
 class Resources implements iUseAuthentication
 {
@@ -21,29 +21,28 @@ class Resources implements iUseAuthentication
      * @var bool should protected resources be shown to unauthenticated users?
      */
     public static $hideProtected = true;
-
     /**
      * @var bool should we use format as extension?
      */
     public static $useFormatAsExtension = true;
-
     /**
      * @var array all http methods specified here will be excluded from
      * documentation
      */
     public static $excludedHttpMethods = array('OPTIONS');
-
     /**
      * @var array all paths beginning with any of the following will be excluded
      * from documentation
      */
     public static $excludedPaths = array();
-
     /**
      * @var bool
      */
     public static $placeFormatExtensionBeforeDynamicParts = true;
-
+    /**
+     * @var bool should we group all the operations with the same url or not
+     */
+    public static $groupOperations = false;
     /**
      * @var null|callable if the api methods are under access control mechanism
      * you can attach a function here that returns true or false to determine
@@ -51,7 +50,9 @@ class Resources implements iUseAuthentication
      * info as the only parameter.
      */
     public static $accessControlFunction = null;
-
+    /**
+     * @var array type mapping for converting data types to javascript / swagger
+     */
     public static $dataTypeAlias = array(
         'string' => 'string',
         'int' => 'int',
@@ -64,7 +65,16 @@ class Resources implements iUseAuthentication
         'object' => 'Object',
         'stdClass' => 'Object',
         'mixed' => 'string',
-		'DateTime' => 'Date'
+        'DateTime' => 'Date'
+    );
+    /**
+     * @var array configurable symbols to differentiate public, hybrid and
+     * protected api
+     */
+    public static $apiDescriptionSuffixSymbols = array(
+        0 => ' &nbsp;', //public api
+        1 => ' <strong>&#926;</strong>', //hybrid api
+        2 => ' <strong>&#1138;</strong>', //protected api
     );
 
     /**
@@ -73,16 +83,40 @@ class Resources implements iUseAuthentication
      * @var Restler instance of restler
      */
     public $restler;
+    /**
+     * @var string when format is not used as the extension this property is
+     * used to set the extension manually
+     */
     public $formatString = '';
-
     private $_models;
-
     private $_bodyParam;
-
-    private $crud = array('POST' => 'create', 'GET' => 'retrieve',
-        'PUT' => 'update', 'DELETE' => 'delete', 'PATCH' => 'partial update');
-
+    /**
+     * @var bool|stdClass
+     */
+    private $_fullDataRequested = false;
+    private $crud = array(
+        'POST' => 'create',
+        'GET' => 'retrieve',
+        'PUT' => 'update',
+        'DELETE' => 'delete',
+        'PATCH' => 'partial update'
+    );
+    private static $prefixes = array(
+        'get' => 'retrieve',
+        'index' => 'list',
+        'post' => 'create',
+        'put' => 'update',
+        'patch' => 'modify',
+        'delete' => 'remove',
+    );
     private $_authenticated = false;
+
+    public function __construct()
+    {
+        if (static::$useFormatAsExtension) {
+            $this->formatString = '.{format}';
+        }
+    }
 
     /**
      * This method will be called first for filter classes and api classes so
@@ -100,29 +134,25 @@ class Resources implements iUseAuthentication
         $this->_authenticated = $isAuthenticated;
     }
 
-    public function __construct()
-    {
-        if (static::$useFormatAsExtension) {
-            $this->formatString = '.{format}';
-        }
-    }
-
     /**
      * @access hybrid
      *
-     * @param int    $version
      * @param string $id
      *
      * @throws RestException
      * @return null|stdClass
      *
-     * @url    GET {id}-v{version}
-     * @url    GET v{version}
+     * @url    GET {id}
      */
-    public function get($version, $id = '')
+    public function get($id = '')
     {
+        $version = 1;
+        if(false !== ($pos = strpos($id, '-'))){
+            $version =  intval(substr($id,$pos+2));
+            $id = substr($id,0,$pos);
+        }
         if (!Defaults::$useUrlBasedVersioning
-            && $version != $this->restler->_requestedApiVersion
+            && $version != $this->restler->getRequestedApiVersion()
         ) {
             throw new RestException(404);
         }
@@ -132,11 +162,13 @@ class Resources implements iUseAuthentication
 
         $target = empty($id) ? "v$version" : "v$version/$id";
 
-        foreach ($this->restler->routes as $httpMethod => $value) {
-            if (in_array($httpMethod, static::$excludedHttpMethods)) {
-                continue;
-            }
-            foreach ($value as $fullPath => $route) {
+        $routes = Routes::toArray();
+        foreach ($routes as $value) {
+            foreach ($value as $httpMethod => $route) {
+                if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                    continue;
+                }
+                $fullPath = $route['url'];
                 if (0 !== strpos($fullPath, $target)) {
                     continue;
                 }
@@ -190,10 +222,7 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = preg_replace(
-                    array('/[{]/', '/[^A-Za-z0-9-_]/'),
-                    array('_', '-'),
-                    implode('-', $parts));
+                $nickname = $this->_nickname($route);
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
@@ -205,27 +234,30 @@ class Resources implements iUseAuthentication
                 $m['classDescription'])
                     ? $m['classDescription']
                     : $className . ' API';
-                $api = $this->_api("/$fullPath", $description);
                 if (empty($m['description'])) {
-                    $m['description'] = $this->restler->_productionMode
+                    $m['description'] = $this->restler->getProductionMode()
                         ? ''
                         : 'routes to <mark>'
-                            . $route['className']
-                            . '::'
-                            . $route['methodName'] . '();</mark>';
+                        . $route['className']
+                        . '::'
+                        . $route['methodName'] . '();</mark>';
                 }
                 if (empty($m['longDescription'])) {
-                    $m['longDescription'] = $this->restler->_productionMode
+                    $m['longDescription'] = $this->restler->getProductionMode()
                         ? ''
                         : 'Add PHPDoc long description to '
-                            . "<mark>$className::"
-                            . $route['methodName'] . '();</mark>'
-                            . '  (the api method) to write here';
+                        . "<mark>$className::"
+                        . $route['methodName'] . '();</mark>'
+                        . '  (the api method) to write here';
                 }
                 $operation = $this->_operation(
                     $nickname,
                     $httpMethod,
-                    $m['description'],
+                    $m['description'] .
+                    ($route['accessLevel'] > 2
+                        ? static::$apiDescriptionSuffixSymbols[2]
+                        : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
+                    ),
                     $m['longDescription']
                 );
                 if (isset($m['throws'])) {
@@ -246,7 +278,10 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                if (count($this->_bodyParam['description'])) {
+                if (
+                    count($this->_bodyParam['description']) ||
+                    $this->_fullDataRequested
+                ) {
                     $operation->parameters[] = $this->_getBody();
                 }
                 if (isset($m['return']['type'])) {
@@ -269,13 +304,27 @@ class Resources implements iUseAuthentication
                                     $operation->responseClass .= '[' .
                                         $this->_noNamespace($rt) . ']';
                                 }
-
                             }
                         }
                     }
                 }
+                $api = false;
+
+                if(static::$groupOperations){
+                    foreach ($r->apis as $a) {
+                        if ($a->path == "/$fullPath") {
+                            $api = $a;
+                            break;
+                        }
+                    }
+                }
+
+                if (!$api) {
+                    $api = $this->_api("/$fullPath", $description);
+                    $r->apis[] = $api;
+                }
+
                 $api->operations[] = $operation;
-                $r->apis[] = $api;
             }
         }
         if (!$count) {
@@ -283,73 +332,345 @@ class Resources implements iUseAuthentication
         }
         if (!is_null($r))
             $r->models = $this->_models;
+        usort(
+           $r->apis,
+            function($a, $b){
+                $order = array(
+                    'GET' => 1,
+                    'POST' => 2,
+                    'PUT' => 3,
+                    'PATCH' => 4,
+                    'DELETE' => 5
+                );
+                return
+                    $order[$a->operations[0]->httpMethod]
+                    >
+                    $order[$b->operations[0]->httpMethod];
+
+            }
+        );
         return $r;
     }
 
-    /**
-     * @access hybrid
-     * @return \stdClass
-     */
-    public function index()
+    protected function _nickname(array $route)
     {
-        $r = $this->_resourceListing();
-        $map = array();
-        foreach ($this->restler->routes as $httpMethod => $routes) {
-            if (in_array($httpMethod, static::$excludedHttpMethods)) {
-                continue;
-            }
-            foreach ($routes as $fullPath => $route) {
-                if (
-                    self::$hideProtected
-                    && !$this->_authenticated
-                    && $route['accessLevel'] > 1
-                ) {
-                    continue;
-                }
-                $path = explode('/', $fullPath);
-
-                $resource = isset($path[1]) ? $path[1] : '';
-
-                $version = intval(substr($path[0], 1));
-
-                if ($resource == 'resources'
-                    || (!Defaults::$useUrlBasedVersioning
-                        && $version != $this->restler->_requestedApiVersion)
-                ) {
-                    continue;
-                }
-
-                foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($fullPath, "v$version/$exclude")) {
-                        continue 2;
-                    }
-                }
-
-                if ($this->_authenticated
-                    && static::$accessControlFunction
-                    && (!call_user_func(
-                        static::$accessControlFunction, $route['metadata']))
-                ) {
-                    continue;
-                }
-
-                $resource = $resource ? $resource . "-v$version" : "v$version";
-
-                if (empty($map[$resource])) {
-                    $map[$resource] = isset(
-                    $route['metadata']['classDescription'])
-                        ? $route['metadata']['classDescription'] : '';
-                }
-            }
-        }
-        foreach ($map as $path => $description) {
-            //add id
-            $r->apis[] = array(
-                'path' => "/resources/{$path}$this->formatString",
-                'description' => $description
+        $method = $route['methodName'];
+        if(isset(self::$prefixes[$method])){
+            $method = self::$prefixes[$method];
+        } else {
+            $method = str_replace(
+                array_keys(self::$prefixes),
+                array_values(self::$prefixes),
+                $method
             );
         }
+        return $method;
+    }
+
+    private function _noNamespace($className)
+    {
+        $className = explode('\\', $className);
+        return end($className);
+    }
+
+    private function _operationListing($resourcePath = '/')
+    {
+        $r = $this->_resourceListing();
+        $r->resourcePath = $resourcePath;
+        $r->models = new stdClass();
         return $r;
+    }
+
+    private function _resourceListing()
+    {
+        $r = new stdClass();
+        $r->apiVersion = (string)$this->restler->getApiVersion();
+        $r->swaggerVersion = "1.1";
+        $r->basePath = $this->restler->getBaseUrl();
+        $r->apis = array();
+        return $r;
+    }
+
+    private function _api($path, $description = '')
+    {
+        $r = new stdClass();
+        $r->path = $path;
+        $r->description =
+            empty($description) && $this->restler->getProductionMode()
+                ? 'Use PHPDoc comment to describe here'
+                : $description;
+        $r->operations = array();
+        return $r;
+    }
+
+    private function _operation(
+        $nickname,
+        $httpMethod = 'GET',
+        $summary = 'description',
+        $notes = 'long description',
+        $responseClass = 'void'
+    )
+    {
+        //reset body params
+        $this->_bodyParam = array(
+            'required' => false,
+            'description' => array()
+        );
+
+        $r = new stdClass();
+        $r->httpMethod = $httpMethod;
+        $r->nickname = $nickname;
+        $r->responseClass = $responseClass;
+
+        $r->parameters = array();
+
+        $r->summary = $summary;
+        $r->notes = $notes;
+
+        $r->errorResponses = array();
+        return $r;
+    }
+
+    private function _parameter($param)
+    {
+        $r = new stdClass();
+        $r->name = $param['name'];
+        $r->description = !empty($param['description'])
+            ? $param['description'] . '.'
+            : ($this->restler->getProductionMode()
+                ? ''
+                : 'add <mark>@param {type} $' . $r->name
+                . ' {comment}</mark> to describe here');
+        //paramType can be path or query or body or header
+        $r->paramType = isset($param['from']) ? $param['from'] : 'query';
+        $r->required = isset($param['required']) && $param['required'];
+        if (isset($param['default'])) {
+            $r->defaultValue = $param['default'];
+        } elseif (isset($param[CommentParser::$embeddedDataName]['example'])) {
+            $r->defaultValue
+                = $param[CommentParser::$embeddedDataName]['example'];
+        }
+        $r->allowMultiple = false;
+        $type = 'string';
+        if (isset($param['type'])) {
+            $type = $param['type'];
+            if (is_array($type)) {
+                $type = array_shift($type);
+            }
+            if($type == 'array') {
+                $contentType = Util::nestedValue(
+                    $param,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                );
+                if($contentType){
+                    $type = "Array[$contentType]";
+                    if(Util::isObjectOrArray($contentType)){
+                        $this->_model($contentType);
+                    }
+                }
+            } elseif (Util::isObjectOrArray($type)) {
+                $this->_model($type);
+            } elseif (isset(static::$dataTypeAlias[$type])) {
+                $type = static::$dataTypeAlias[$type];
+            }
+        }
+        $r->dataType = $type;
+        if (isset($param[CommentParser::$embeddedDataName])) {
+            $p = $param[CommentParser::$embeddedDataName];
+            if (isset($p['min']) && isset($p['max'])) {
+                $r->allowableValues = array(
+                    'valueType' => 'RANGE',
+                    'min' => $p['min'],
+                    'max' => $p['max'],
+                );
+            } elseif (isset($p['choice'])) {
+                $r->allowableValues = array(
+                    'valueType' => 'LIST',
+                    'values' => $p['choice']
+                );
+            }
+        }
+        return $r;
+    }
+
+    private function _appendToBody($p)
+    {
+        if ($p->name === Defaults::$fullRequestDataName) {
+            $this->_fullDataRequested = $p;
+            unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
+            return;
+        }
+        $this->_bodyParam['description'][$p->name]
+            = "$p->name"
+            . ' : <tag>' . $p->dataType. '</tag> '
+            . ($p->required ? ' <i>(required)</i> - ' : ' - ')
+            . $p->description;
+        $this->_bodyParam['required'] = $p->required
+            || $this->_bodyParam['required'];
+        $this->_bodyParam['names'][$p->name] = $p;
+    }
+
+    private function _getBody()
+    {
+        $r = new stdClass();
+        $n = array_values($this->_bodyParam['names']);
+        if(count($n)==1){
+            if (isset($this->_models->{$n[0]->dataType})) {
+                $r = $n[0];
+                $c = $this->_models->{$r->dataType};
+                $a = $c->properties;
+                $r->description = "Paste JSON data here";
+                if (count($a)) {
+                    $r->description .= " with the following"
+                        . (count($a) > 1 ? ' properties.' : ' property.');
+                    foreach ($a as $k => $v) {
+                        $r->description .= "<hr/>$k : <tag>"
+                            . $v['type'] . '</tag> '
+                            . (isset($v['required']) ? '(required)' : '')
+                            . ' - ' . $v['description'];
+                    }
+                }
+                $r->defaultValue = "{\n    \""
+                    . implode("\": \"\",\n    \"",
+                        array_keys($c->properties))
+                    . "\": \"\"\n}";
+                return $r;
+            } elseif (false !== ($p = strpos($n[0]->dataType, '['))) {
+                $r = $n[0];
+                $t = substr($r->dataType, $p + 1, -1);
+                if($c = Util::nestedValue($this->_models,$t)){
+                    $a = $c->properties;
+                    $r->description = "Paste JSON data here";
+                    if (count($a)) {
+                        $r->description .= " with an array of objects with the following"
+                            . (count($a) > 1 ? ' properties.' : ' property.');
+                        foreach ($a as $k => $v) {
+                            $r->description .= "<hr/>$k : <tag>"
+                                . $v['type'] . '</tag> '
+                                . (isset($v['required']) ? '(required)' : '')
+                                . ' - ' . $v['description'];
+                        }
+                    }
+                    $r->defaultValue = "[\n    {\n        \""
+                        . implode("\": \"\",\n        \"",
+                            array_keys($c->properties))
+                        . "\": \"\"\n    }\n]";
+                    return $r;
+                } else {
+                    $r->description = "Paste JSON data here with an array of $t values.";
+                    $r->defaultValue = "[ ]";
+                    return $r;
+                }
+
+            }
+        }
+        $p = array_values($this->_bodyParam['description']);
+        $r->name = 'REQUEST_BODY';
+        $r->description = "Paste JSON data here";
+        if (count($p)==0 && $this->_fullDataRequested) {
+            $r->required = $this->_fullDataRequested->required;
+            $r->defaultValue = "{\n    \"property\" : \"\"\n}";
+        } else {
+            $r->description .= " with the following"
+                . (count($p) > 1 ? ' properties.' : ' property.')
+                . '<hr/>'
+                . implode("<hr/>", $p);
+            $r->required = $this->_bodyParam['required'];
+            $r->defaultValue = "{\n    \""
+                . implode("\": \"\",\n    \"",
+                    array_keys($this->_bodyParam['names']))
+                . "\": \"\"\n}";
+        }
+        $r->paramType = 'body';
+        $r->allowMultiple = false;
+        $r->dataType = 'Object';
+        return $r;
+    }
+
+    private function _model($className, $instance = null)
+    {
+        $id = $this->_noNamespace($className);
+        if(isset($this->_models->{$id})){
+            return;
+        }
+        $properties = array();
+        if (!$instance) {
+            $instance = new $className();
+        }
+        $data = get_object_vars($instance);
+        $reflectionClass = new \ReflectionClass($className);
+        foreach ($data as $key => $value) {
+
+            $propertyMetaData = null;
+
+            try {
+                $property = $reflectionClass->getProperty($key);
+                if ($c = $property->getDocComment()) {
+                    $propertyMetaData = Util::nestedValue(
+                        CommentParser::parse($c),
+                        'var'
+                    );
+                }
+            } catch (\ReflectionException $e) {
+            }
+
+            if (is_null($propertyMetaData)) {
+                $type = $this->getType($value, true);
+                $description = '';
+            } else {
+                $type = Util::nestedValue(
+                    $propertyMetaData,
+                    'type'
+                ) ? : $this->getType($value, true);
+                $description = Util::nestedValue(
+                    $propertyMetaData,
+                    'description'
+                ) ? : '';
+
+                if (class_exists($type)) {
+                    $this->_model($type);
+                }
+            }
+
+            if (isset(static::$dataTypeAlias[$type])) {
+                $type = static::$dataTypeAlias[$type];
+            }
+            $properties[$key] = array(
+                'type' => $type,
+                'description' => $description
+            );
+            if(Util::nestedValue(
+                $propertyMetaData,
+                CommentParser::$embeddedDataName,
+                'required'
+            )){
+                $properties[$key]['required'] = true;
+            }
+            if ($type == 'Array') {
+                $itemType = count($value)
+                    ? $this->getType(end($value), true)
+                    : 'string';
+                $properties[$key]['item'] = array(
+                    'type' => $itemType,
+                    /*'description' => '' */ //TODO: add description
+                );
+            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+                $itemType = $matches[1];
+                $properties[$key]['type'] = 'Array';
+                $properties[$key]['item']['type'] = $itemType;
+
+                if (class_exists($itemType)) {
+                    $this->_model($itemType);
+                }
+            }
+        }
+        if (!empty($properties)) {
+            $model = new stdClass();
+            $model->id = $id;
+            $model->properties = $properties;
+            $this->_models->{$id} = $model;
+        }
     }
 
     /**
@@ -389,235 +710,84 @@ class Resources implements iUseAuthentication
         return 'string';
     }
 
-    private function _resourceListing()
-    {
-        $r = new stdClass();
-        $r->apiVersion = (string)$this->restler->_apiVersion;
-        $r->swaggerVersion = "1.1";
-        $r->basePath = $this->restler->_baseUrl;
-        $r->apis = array();
-        return $r;
-    }
-
-    private function _operationListing($resourcePath = '/')
+    /**
+     * @access hybrid
+     * @return \stdClass
+     */
+    public function index()
     {
         $r = $this->_resourceListing();
-        $r->resourcePath = $resourcePath;
-        $r->models = new stdClass();
-        return $r;
-    }
-
-    private function _api($path, $description = '')
-    {
-        $r = new stdClass();
-        $r->path = $path;
-        $r->description =
-            empty($description) && $this->restler->_productionMode
-                ? 'Use PHPDoc comment to describe here'
-                : $description;
-        $r->operations = array();
-        return $r;
-    }
-
-    private function _operation(
-        $nickname,
-        $httpMethod = 'GET',
-        $summary = 'description',
-        $notes = 'long description',
-        $responseClass = 'void'
-    )
-    {
-        //reset body params
-        $this->_bodyParam = array(
-            'required' => false,
-            'description' => array()
-        );
-
-        $r = new stdClass();
-        $r->httpMethod = $httpMethod;
-        $r->nickname = $nickname;
-        $r->responseClass = $responseClass;
-
-        $r->parameters = array();
-
-        $r->summary = $summary;
-        $r->notes = $notes;
-
-        $r->errorResponses = array();
-        return $r;
-    }
-
-    private function _appendToBody($p)
-    {
-        if($p->name === Defaults::$fullRequestDataName)
-        return;
-        $this->_bodyParam['description'][$p->name]
-            = "<mark>$p->name</mark>"
-            . ($p->required ? ' <i>(required)</i>: ' : ': ')
-            . $p->description;
-        $this->_bodyParam['required'] = $p->required
-            || $this->_bodyParam['required'];
-        $this->_bodyParam['names'][$p->name] = true;
-    }
-
-    private function _getBody()
-    {
-        $r = new stdClass();
-        $r->name = 'REQUEST_BODY';
-        $p = array_values($this->_bodyParam['description']);
-        $r->description = "Paste JSON data here";
-        if (count($p) == 1
-            && isset(
-            $this->_bodyParam['description'][Defaults::$fullRequestDataName])
-        ) {
-
-        } else {
-            $r->description .= " with the following"
-                . (count($p) > 1 ? ' properties.' : ' property.')
-                . '<hr/>'
-                . implode("<hr/>", $p);
+        $map = array();
+        $allRoutes = Routes::toArray();
+        if (isset($allRoutes['*'])) {
+            $this->_mapResources($allRoutes['*'], $map);
+            unset($allRoutes['*']);
         }
-        $r->paramType = 'body';
-        $r->required = $this->_bodyParam['required'];
-        $r->allowMultiple = false;
-        $r->dataType = 'Object';
-        unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
-        $r->defaultValue = "{\n    \""
-            . implode("\": \"\",\n    \"", array_keys($this->_bodyParam['names']))
-            . "\": \"\"\n}";
-        return $r;
-    }
-
-    private function _parameter($param)
-    {
-        $r = new stdClass();
-        $r->name = $param['name'];
-        $r->description = !empty($param['description'])
-            ? $param['description'] . '.'
-            : ($this->restler->_productionMode
-                ? ''
-                : 'add <mark>@param {type} $' . $r->name
-                    . ' {comment}</mark> to describe here');
-        //paramType can be path or query or body or header
-        $r->paramType = isset($param['from']) ? $param['from'] : 'query';
-        $r->required = isset($param['required']) && $param['required'];
-        if (isset($param['default'])) {
-            $r->defaultValue = $param['default'];
-        } elseif (isset($param[CommentParser::$embeddedDataName]['example'])) {
-            $r->defaultValue
-                = $param[CommentParser::$embeddedDataName]['example'];
-        }
-        $r->allowMultiple = false;
-        $type = 'string';
-        if (isset($param['type'])) {
-            $type = $param['type'];
-            if (is_array($type)) {
-                $type = array_shift($type);
-            }
-            $type = isset(static::$dataTypeAlias[$type])
-                ? static::$dataTypeAlias[$type]
-                : $type;
-        }
-        $r->dataType = $type;
-        if (isset($param[CommentParser::$embeddedDataName])) {
-            $p = $param[CommentParser::$embeddedDataName];
-            if (isset($p['min']) && isset($p['max'])) {
-                $r->allowableValues = array(
-                    'valueType' => 'RANGE',
-                    'min' => $p['min'],
-                    'max' => $p['max'],
-                );
-            } elseif (isset($p['choice'])) {
-                $r->allowableValues = array(
-                    'valueType' => 'LIST',
-                    'values' => $p['choice']
+        $this->_mapResources($allRoutes, $map);
+        foreach ($map as $path => $description) {
+            if(false === strpos($path,'{')){
+                //add id
+                $r->apis[] = array(
+                    'path' => "/resources/{$path}$this->formatString",
+                    'description' => $description
                 );
             }
         }
         return $r;
     }
 
-    private function _model($className, $instance = null)
+    private function _mapResources(array $allRoutes, array &$map)
     {
-        $properties = array();
-        $reflectionClass = new \ReflectionClass($className);
-
-        if (!$instance) {
-            $instance = new $className();
-        }
-        $data = get_object_vars($instance);
-
-        foreach ($data as $key => $value) {
-            $propertyMetaData = null;
-
-			try {
-				$property = $reflectionClass->getProperty($key);
-
-				if ($c = $property->getDocComment()) {
-					$propertyMetaData = CommentParser::parse($c);
-				}
-			} catch (\ReflectionException $e) {}
-
-            if ($propertyMetaData !== null) {
-                $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
-                $description = @$propertyMetaData['description'] ?: '';
-
-				$type = explode(" ", $type);
-				$type = array_shift($type);
-
-                if (class_exists($type)) {
-                    $this->_model($type);
+        foreach ($allRoutes as $fullPath => $routes) {
+            foreach ($routes as $httpMethod => $route) {
+                if (in_array($httpMethod, static::$excludedHttpMethods)) {
+                    continue;
                 }
-            } else {
-                $type = $this->getType($value, true);
-                $description = '';
+                if (
+                    self::$hideProtected
+                    && !$this->_authenticated
+                    && $route['accessLevel'] > 1
+                ) {
+                    continue;
+                }
+                $path = explode('/', $fullPath);
+
+                $resource = isset($path[1]) ? $path[1] : '';
+
+                $version = intval(substr($path[0], 1));
+
+                if ($resource == 'resources'
+                    || (!Defaults::$useUrlBasedVersioning
+                        && $version != $this->restler->getRequestedApiVersion())
+                ) {
+                    continue;
+                }
+
+                foreach (static::$excludedPaths as $exclude) {
+                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                        continue 2;
+                    }
+                }
+
+                if ($this->_authenticated
+                    && static::$accessControlFunction
+                    && (!call_user_func(
+                        static::$accessControlFunction, $route['metadata']))
+                ) {
+                    continue;
+                }
+
+                $resource = $resource
+                    ? ($version == 1 ? $resource : $resource . "-v$version")
+                    : "v$version";
+
+                if (empty($map[$resource])) {
+                    $map[$resource] = isset(
+                    $route['metadata']['classDescription'])
+                        ? $route['metadata']['classDescription'] : '';
+                }
             }
-
-            if (isset(static::$dataTypeAlias[$type])) {
-                $type = static::$dataTypeAlias[$type];
-            }
-
-            $properties[$key] = array(
-                'type' => $type,
-                'description' => $description
-            );
-
-            if ($type == 'Array') {
-                $itemType = count($value)
-                    ? $this->getType($value[0], true)
-                    : 'string';
-                $properties[$key]['item'] = array(
-                    'type' => $itemType,
-                    /*'description' => '' */ //TODO: add description
-                );
-            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
-				$itemType = $matches[1];
-				$properties[$key]['type'] = 'Array';
-				$properties[$key]['item']['type'] = $itemType;
-
-				if (class_exists($itemType)) {
-					$this->_model($itemType);
-				}
-			}
         }
-
-        if (!empty($properties)) {
-            $id = $this->_noNamespace($className);
-            $model = new stdClass();
-            $model->id = $id;
-            $model->properties = $properties;
-            $this->_models->{$id} = $model;
-        }
-    }
-
-    private function _noNamespace($className)
-    {
-		if (strpos($className, '\\') === false and strpos($className, '_') !== false) {
-			$className = explode('_', $className);
-		} else {
-			$className = explode('\\', $className);
-		}
-        return end($className);
     }
 }
 

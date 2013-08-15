@@ -1,6 +1,7 @@
-Minimal Example <requires>PHP >= 5.3</requires>
----------------
-<tag>basic</tag> <tag>validation</tag> <tag>http status</tag> 
+## Minimal Example 
+
+ This example requires `PHP >= 5.3` and taggeed under `basic` `validation` `http status`
+
 
 Shows the bare minimum code needed to get your RESTful api server
  up and running
@@ -16,11 +17,16 @@ This API Server exposes the following URIs
 
     GET math/add                ⇠ Math::add()
     GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
+    GET math/sum/*              ⇠ Math::sum()
 
 
-> **Note:-** Take note of the php doc comments, they make sure the
- data is sent in the right type and validated automatically before calling
- the api method.
+> **Note:-**
+>
+> 1. Take note of the php doc comments, they make sure the data is sent in the
+>    right type and validated automatically before calling the api method.
+> 2. Sum method accepts variable number of parameters with the help of
+>    wildcard manual route. Read the [Routes](../_006_routing/readme.html)
+>    example for better understanding
 
 
 
@@ -53,6 +59,12 @@ GET [math/multiply/4/NaN](index.php/math/multiply/4/NaN)
     "message": "Bad Request: invalid value specified for n2"
   }
 }
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET [math/sum/1/2/3/4/5](index.php/math/sum/1/2/3/4/5)
+:    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+15
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
