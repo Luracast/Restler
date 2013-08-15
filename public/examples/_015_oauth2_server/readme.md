@@ -15,6 +15,10 @@ In order to run this example on your localhost do the following
 
 Now that you are ready, lets look at the example
 
+![OAuth 2 Client](../resources/OAuth2Server.png)
+
+To look at the server start from the client app [here](../_014_oauth2_client)
+
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)

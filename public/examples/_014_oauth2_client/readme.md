@@ -14,6 +14,8 @@ In order to run this example on your localhost do the following
 
 Now that you are ready, lets look at the example
 
+[![OAuth 2 Client](../resources/OAuth2Client.png)](./)
+
 > This API Server is made using the following php files/folders
 > 
 > * index.php      (gateway)
