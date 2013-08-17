@@ -480,6 +480,9 @@ $r = new Restler(true); //turn on production mode by passing true.
 <h3>Changes from Restler 3.0 RC3</h3>
 
 <ul>
+<li>
+<code>$reques_data</code> in api method parameters and <code>getRequestData()</code> on restler
+instance now excludes <code>$_GET</code> parameters.</li>
 <li>Returning null from api method now excludes the response body. This behaviour
 can be changed by setting <code>Defaults::$emptyBodyForNullResponse</code> to false.</li>
 <li>Added many api examples under tests folder for testing feature by feature

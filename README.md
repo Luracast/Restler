@@ -332,6 +332,8 @@ Change Log
 
 ### Changes from Restler 3.0 RC3
 
+ * `$reques_data` in api method parameters and `getRequestData()` on restler
+   instance now excludes `$_GET` parameters.
  * Returning null from api method now excludes the response body. This behaviour
    can be changed by setting `Defaults::$emptyBodyForNullResponse` to false.
  * Added many api examples under tests folder for testing feature by feature
