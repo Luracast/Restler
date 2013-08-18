@@ -57,6 +57,14 @@ class Util
      */
     public static function isObjectOrArray($type)
     {
+        if (is_array($type)) {
+            foreach ($type as $t) {
+                if (static::isObjectOrArray($t)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         return !(boolean)strpos('|bool|boolean|int|float|string|', $type);
     }
 
