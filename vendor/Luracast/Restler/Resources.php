@@ -596,6 +596,8 @@ class Resources implements iUseAuthentication
         }
         $properties = array();
         if (!$instance) {
+            if(!class_exists($instance))
+                return;
             $instance = new $className();
         }
         $data = get_object_vars($instance);
