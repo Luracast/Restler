@@ -201,6 +201,11 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
+                //reset body params
+                $this->_bodyParam = array(
+                    'required' => false,
+                    'description' => array()
+                );
                 $count++;
                 $className = $this->_noNamespace($route['className']);
                 if (!$r) {
@@ -281,7 +286,11 @@ class Resources implements iUseAuthentication
                 }
                 if (
                     count($this->_bodyParam['description']) ||
-                    $this->_fullDataRequested
+                    (
+                        $this->_fullDataRequested &&
+                        $httpMethod != 'GET' &&
+                        $httpMethod != 'DELETE'
+                    )
                 ) {
                     $operation->parameters[] = $this->_getBody();
                 }
