@@ -114,7 +114,10 @@ class Routes
                 }
                 $m ['children'] = $children;
 
-                if (isset($m[CommentParser::$embeddedDataName]['from'])) {
+                if ($m['name']==Defaults::$fullRequestDataName) {
+                    $from = 'body';
+                    unset($m[CommentParser::$embeddedDataName]['from']);
+                } elseif (isset($m[CommentParser::$embeddedDataName]['from'])) {
                     $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
                     if ((isset($type) && Util::isObjectOrArray($type))
