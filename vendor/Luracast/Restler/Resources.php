@@ -72,9 +72,9 @@ class Resources implements iUseAuthentication
      * protected api
      */
     public static $apiDescriptionSuffixSymbols = array(
-        0 => ' &nbsp;', //public api
-        1 => ' <strong>&#926;</strong>', //hybrid api
-        2 => ' <strong>&#1138;</strong>', //protected api
+        0 => '&nbsp; <i class="icon-unlock-alt icon-large"></i>', //public api
+        1 => '&nbsp; <i class="icon-adjust icon-large"></i>', //hybrid api
+        2 => '&nbsp; <i class="icon-lock icon-large"></i>', //protected api
     );
 
     /**
