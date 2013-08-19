@@ -163,14 +163,7 @@ class Resources implements iUseAuthentication
         $target = empty($id) ? "v$version" : "v$version/$id";
 
         $routes = Routes::toArray();
-        
-        usort(
-            $routes,
-            function ($a, $b) {
-                return ($a['url'] > $b['url']);
-            }
-        );
-        
+
         foreach ($routes as $value) {
             foreach ($value as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
