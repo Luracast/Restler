@@ -25,6 +25,12 @@ use Luracast\Restler\Format\UrlEncodedFormat;
 class Restler extends EventDispatcher
 {
     const VERSION = '3.0.0rc4';
+
+    // ==================================================================
+    //
+    // Public variables
+    //
+    // ------------------------------------------------------------------
     /**
      * Reference to the last exception thrown
      * @var RestException
@@ -58,12 +64,6 @@ class Restler extends EventDispatcher
      * @example jsonFormat, xmlFormat, yamlFormat etc
      */
     public $requestFormat;
-    /**
-     * Data sent to the service
-     *
-     * @var array
-     */
-    public $requestData = array();
     /**
      * Response data format.
      *
@@ -152,9 +152,16 @@ class Restler extends EventDispatcher
 
     // ==================================================================
     //
-    // Public variables
+    // Protected variables
     //
     // ------------------------------------------------------------------
+
+    /**
+     * Data sent to the service
+     *
+     * @var array
+     */
+    protected $requestData = array();
     /**
      * list of authentication classes
      *
@@ -280,7 +287,7 @@ class Restler extends EventDispatcher
         $this->url = $this->getPath();
         $this->requestMethod = Util::getRequestMethod();
         $this->requestFormat = Util::initialize($this->getRequestFormat());
-        $this->requestData = $this->getRequestData();
+        $this->requestData = $this->getRequestData(false);
 
         //parse defaults
         foreach ($_GET as $key => $value) {
@@ -468,14 +475,16 @@ class Restler extends EventDispatcher
      *
      * @return array php data
      */
-    public function getRequestData()
+    public function getRequestData($includeQueryParameters = true)
     {
         if ($this->requestMethod == 'PUT'
             || $this->requestMethod == 'PATCH'
             || $this->requestMethod == 'POST'
         ) {
             if (!empty($this->requestData)) {
-                return $this->requestData;
+                return $includeQueryParameters
+                    ? array_merge($this->requestData, $_GET)
+                    : $this->requestData;
             }
 
             $r = file_get_contents('php://input');
@@ -483,11 +492,14 @@ class Restler extends EventDispatcher
                 return array(); //no body
             }
             $r = $this->requestFormat->decode($r);
-            return is_array($r)
+            $r = is_array($r)
                 ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
                 : array(Defaults::$fullRequestDataName => $r);
+            return $includeQueryParameters
+                ? array_merge($r, $_GET)
+                : $r;
         }
-        return array(); //no body
+        return $includeQueryParameters ? $_GET : array(); //no body
     }
 
     /**
@@ -497,7 +509,7 @@ class Restler extends EventDispatcher
     {
         $this->dispatch('route');
 
-        $params = array_merge($this->requestData, $_GET);
+        $params = $this->getRequestData();
 
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
