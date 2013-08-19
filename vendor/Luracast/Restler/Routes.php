@@ -90,7 +90,7 @@ class Routes
                     $metadata['param'][$position] = array();
                 }
                 $m = & $metadata ['param'] [$position];
-                $m ['name'] = trim($param->getName(), '$ ');
+                $m ['name'] = $param->getName();
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
                 if(is_null($type) && isset($m['type'])) {
