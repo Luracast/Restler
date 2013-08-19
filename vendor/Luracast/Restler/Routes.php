@@ -209,14 +209,14 @@ class Routes
                 if (!$ignorePathTill) {
                     static::addPath($url, $call, $httpMethod);
                 }
-                $position = 1;
+                $position = 0;
                 foreach ($params as $param) {
-                    $from = $metadata ['param'] [$position - 1] ['from'];
+                    $from = $metadata['param'][$position]['from'];
 
                     if ($from == 'body' && ($httpMethod == 'GET' ||
                         $httpMethod == 'DELETE')
                     ) {
-                        $from = $metadata ['param'] [$position - 1] ['from']
+                        $from = $metadata['param'][$position]['from']
                             = 'query';
                     }
 
@@ -229,11 +229,11 @@ class Routes
                     //$call['metadata']['url'] = "$httpMethod $url{"
                     //. $param->getName() . '}';
                     $url .= '{' .
-                        static::typeChar(isset($call['metadata']['param'][$position - 1]['type'])
-                            ? $call['metadata']['param'][$position - 1]['type']
+                        static::typeChar(isset($call['metadata']['param'][$position]['type'])
+                            ? $call['metadata']['param'][$position]['type']
                             : null)
-                        . ($position - 1) . '}';
-                    if ($allowAmbiguity || $position == $ignorePathTill) {
+                        . $position . '}';
+                    if ($allowAmbiguity || $position == $ignorePathTill-1) {
                         static::addPath($url, $call, $httpMethod);
                     }
                     $position++;
