@@ -201,11 +201,11 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
-                //reset body params
+                /*reset body params
                 $this->_bodyParam = array(
                     'required' => false,
                     'description' => array()
-                );
+                );*/
                 $count++;
                 $className = $this->_noNamespace($route['className']);
                 if (!$r) {
@@ -608,7 +608,7 @@ class Resources implements iUseAuthentication
         }
         $properties = array();
         if (!$instance) {
-            if(!class_exists($instance))
+            if(!class_exists($className))
                 return;
             $instance = new $className();
         }
