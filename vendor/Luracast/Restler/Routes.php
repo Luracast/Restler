@@ -290,6 +290,9 @@ class Routes
             static::$routes['*'][$path][$httpMethod] = $call;
         } else {
             static::$routes[$path][$httpMethod] = $call;
+            //create an alias with index if the method name is index
+            if ($call['methodName'] == 'index')
+                static::$routes["$path/index"][$httpMethod] = $call;
         }
     }
 
