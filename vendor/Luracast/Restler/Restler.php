@@ -399,11 +399,11 @@ class Restler extends EventDispatcher
         } else {
             $baseUrl .= $_SERVER['SERVER_NAME'];
         }
-        $this->baseUrl = $baseUrl . rtrim(substr(
+        $this->baseUrl = $baseUrl . substr(
                 $fullPath,
                 0,
                 strlen($fullPath) - strlen($path)
-            ), '/');
+            );
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace(
@@ -414,6 +414,7 @@ class Restler extends EventDispatcher
             '',
             $path
         );
+        //echo "path: $path\n";
         if (Defaults::$useUrlBasedVersioning
             && strlen($path) && $path{0} == 'v'
         ) {
