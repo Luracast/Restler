@@ -151,6 +151,9 @@ class Resources implements iUseAuthentication
             $version =  intval(substr($id,$pos+2));
             $id = substr($id,0,$pos);
         }
+        if($id == 'index'){
+            $id = '';
+        }
         if (!Defaults::$useUrlBasedVersioning
             && $version != $this->restler->getRequestedApiVersion()
         ) {
@@ -526,7 +529,9 @@ class Resources implements iUseAuthentication
     private function _getBody()
     {
         $r = new stdClass();
-        $n = array_values($this->_bodyParam['names']);
+        $n = isset($this->_bodyParam['names'])
+            ? array_values($this->_bodyParam['names'])
+            : array();
         if(count($n)==1){
             if (isset($this->_models->{$n[0]->dataType})) {
                 $r = $n[0];
@@ -793,7 +798,7 @@ class Resources implements iUseAuthentication
 
                 $resource = $resource
                     ? ($version == 1 ? $resource : $resource . "-v$version")
-                    : "v$version";
+                    : ($version == 1 ? 'index' : "index-v$version");
 
                 if (empty($map[$resource])) {
                     $map[$resource] = isset(
