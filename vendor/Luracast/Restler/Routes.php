@@ -279,7 +279,8 @@ class Routes
         $call['url'] = preg_replace_callback(
             "/\{\S(\d+)\}/",
             function ($matches) use ($call) {
-                return '{' . $call['metadata']['param'][$matches[1]]['name'] . '}';
+                return '{' .
+                $call['metadata']['param'][$matches[1]]['name'] . '}';
             },
             $path
         );
@@ -309,10 +310,10 @@ class Routes
         $message = null;
         $methods = array();
         if (isset($p[$path][$httpMethod])) {
-            //static route
+            //================== static routes ==========================
             return static::populate($p[$path][$httpMethod], $data);
         } elseif (isset($p['*'])) {
-            //wildcard routes
+            //================== wildcard routes ========================
             uksort($p['*'], function ($a, $b) {
                 return strlen($b) - strlen($a);
             });
@@ -321,12 +322,19 @@ class Routes
                     //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
                     $call = ApiMethodInfo::__set_state($value[$httpMethod]);
-                    $call->parameters = empty($path) ? array() : explode('/', $path);
+                    $call->parameters = empty($path)
+                        ? array()
+                        : explode('/', $path);
                     return $call;
                 }
             }
         }
-        //dynamic route
+        //================== dynamic routes =============================
+        //add newline char if trailing slash is found
+        if(substr($path,-1)=='/')
+            $path .= PHP_EOL;
+        //if double slash is found fill in newline char;
+        $path = str_replace('//', '/' . PHP_EOL . '/', $path);
         ksort($p);
         foreach ($p as $key => $value) {
             if (!isset($value[$httpMethod])) {
@@ -345,10 +353,12 @@ class Routes
                     $index = intval(substr($k, 1));
                     $details = $value[$httpMethod]['metadata']['param'][$index];
                     if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
-                        $data[$details['name']] = $v;
+                        //remove the newlines
+                        $data[$details['name']] = trim($v, PHP_EOL);
                     } else {
                         $status = 400;
-                        $message = 'invalid value specified for `' . $details['name'] . '`';
+                        $message = 'invalid value specified for `'
+                            . $details['name'] . '`';
                         $found = false;
                         break;
                     }
