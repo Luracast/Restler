@@ -414,7 +414,6 @@ class Restler extends EventDispatcher
             '',
             $path
         );
-        //echo "path: $path\n";
         if (Defaults::$useUrlBasedVersioning
             && strlen($path) && $path{0} == 'v'
         ) {
