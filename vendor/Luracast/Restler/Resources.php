@@ -353,9 +353,11 @@ class Resources implements iUseAuthentication
                     'DELETE' => 5
                 );
                 return
-                    $order[$a->operations[0]->httpMethod]
-                    >
-                    $order[$b->operations[0]->httpMethod];
+                    $a->operations[0]->httpMethod ==
+                    $b->operations[0]->httpMethod
+                        ? $a->path > $b->path
+                        : $order[$a->operations[0]->httpMethod] >
+                        $order[$b->operations[0]->httpMethod];
 
             }
         );
