@@ -11,4 +11,5 @@ $r = new Restler();
 $r->addAPIClass('MinMax');
 $r->addAPIClass('MinMaxFix');
 $r->addAPIClass('Type');
+$r->addAPIClass('Resources');
 $r->handle();
