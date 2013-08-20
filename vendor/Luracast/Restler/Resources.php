@@ -163,7 +163,9 @@ class Resources implements iUseAuthentication
         $r = null;
         $count = 0;
 
+        $tSlash = !empty($id);
         $target = empty($id) ? "v$version" : "v$version/$id";
+        $tLen = strlen($target);
 
         $routes = Routes::toArray();
 
@@ -176,9 +178,14 @@ class Resources implements iUseAuthentication
                 if (0 !== strpos($fullPath, $target)) {
                     continue;
                 }
-                if (strlen($fullPath) != strlen($target) &&
-                    0 !== strpos($fullPath, $target . '/')
+                $fLen = strlen($fullPath);
+                if ($fLen != $tLen &&  0 !== strpos($fullPath, $target . '/')
                 ) {
+                    continue;
+                }
+                if (!$tSlash && $fLen > $tLen + 1 && $fullPath{$tLen + 1} != '{') {
+                    //when mapped to root exclude paths that have static parts
+                    //they are listed else where under that static part name
                     continue;
                 }
                 if (
@@ -803,7 +810,7 @@ class Resources implements iUseAuthentication
                 }
 
                 $resource = $resource
-                    ? ($version == 1 ? $resource : $resource . "-v$version")
+                    ? ($version == 1 ? $resource : "$resource-v$version")
                     : ($version == 1 ? 'index' : "index-v$version");
 
                 if (empty($map[$resource])) {
