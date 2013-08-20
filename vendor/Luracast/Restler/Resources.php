@@ -147,11 +147,15 @@ class Resources implements iUseAuthentication
     public function get($id = '')
     {
         $version = 1;
-        if(false !== ($pos = strpos($id, '-'))){
-            $version =  intval(substr($id,$pos+2));
-            $id = substr($id,0,$pos);
-        }
-        if($id == 'index'){
+        if (empty($id)) {
+            //do nothing
+        } elseif (false !== ($pos = strpos($id, '-'))) {
+            $version = intval(substr($id, $pos + 2));
+            $id = substr($id, 0, $pos);
+        } elseif ($id{0} == 'v' && is_numeric($v = substr($id, 1))) {
+            $id = '';
+            $version = $v;
+        } elseif ($id == 'root' || $id == 'index') {
             $id = '';
         }
         if (!Defaults::$useUrlBasedVersioning
@@ -811,7 +815,7 @@ class Resources implements iUseAuthentication
 
                 $resource = $resource
                     ? ($version == 1 ? $resource : "$resource-v$version")
-                    : ($version == 1 ? 'index' : "index-v$version");
+                    : ($version == 1 ? 'root' : "root-v$version");
 
                 if (empty($map[$resource])) {
                     $map[$resource] = isset(
