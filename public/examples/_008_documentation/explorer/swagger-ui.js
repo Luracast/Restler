@@ -402,11 +402,10 @@ function program9(depth0,data) {
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + ": <tag>";
-  foundHelper = helpers.signature;
+  foundHelper = helpers.dataType;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.signature; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</tag></td>\n<td>\n	";
+  else { stack1 = depth0.dataType; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</tag></td>\n<td>\n	";
   stack1 = depth0.isBody;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.program(6, program6, data),fn:self.program(1, program1, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -491,11 +490,10 @@ function program11(depth0,data) {
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + ": <tag>";
-  foundHelper = helpers.signature;
+  foundHelper = helpers.dataType;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.signature; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</tag></td>\n<td>\n    <select name='";
+  else { stack1 = depth0.dataType; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</tag></td>\n<td>\n    <select name='";
   foundHelper = helpers.name;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
@@ -552,11 +550,10 @@ function program3(depth0,data) {
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + ": <tag>";
-  foundHelper = helpers.signature;
+  foundHelper = helpers.dataType;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.signature; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</tag></td>\n<td>\n    ";
+  else { stack1 = depth0.dataType; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</tag></td>\n<td>\n    ";
   stack1 = depth0.isBody;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -604,11 +601,10 @@ function program3(depth0,data) {
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + ": <tag>";
-  foundHelper = helpers.signature;
+  foundHelper = helpers.dataType;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.signature; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "</tag></td>\n<td>\n    ";
+  else { stack1 = depth0.dataType; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  buffer += escapeExpression(stack1) + "</tag></td>\n<td>\n    ";
   stack1 = depth0.isBody;
   stack1 = helpers['if'].call(depth0, stack1, {hash:{},inverse:self.program(3, program3, data),fn:self.program(1, program1, data)});
   if(stack1 || stack1 === 0) { buffer += stack1; }
@@ -698,9 +694,9 @@ function program9(depth0,data) {
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.name; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   buffer += escapeExpression(stack1) + ": <tag>";
-  foundHelper = helpers.signature;
+  foundHelper = helpers.dataType;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
-  else { stack1 = depth0.signature; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
+  else { stack1 = depth0.dataType; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "</tag></td>\n<td>\n	";
   stack1 = depth0.isBody;
