@@ -2,6 +2,8 @@
 class Type
 {
     /**
+     * Email validation
+     *
      * @param string $email {@from body}{@type email}
      */
     function postEmail($email)
@@ -10,6 +12,8 @@ class Type
     }
 
     /**
+     * Date validation
+     *
      * @param string $date {@from body}{@type date}
      */
     function postDate($date)
@@ -18,6 +22,8 @@ class Type
     }
 
     /**
+     * DateTime validation
+     *
      * @param string $datetime {@from body}{@type datetime}
      */
     function postDatetime($datetime)
@@ -26,6 +32,8 @@ class Type
     }
 
     /**
+     * Timestamp validation
+     *
      * @param string $timestamp {@from body}{@type timestamp}
      */
     function postTimestamp($timestamp)
@@ -34,6 +42,8 @@ class Type
     }
 
     /**
+     * Integer validation
+     *
      * @param array $integers {@type int}
      */
     function postIntegers(array $integers)
@@ -42,6 +52,8 @@ class Type
     }
 
     /**
+     * Array of numbers
+     *
      * @param array $numbers {@type float}
      */
     function postNumbers(array $numbers)
@@ -50,6 +62,8 @@ class Type
     }
 
     /**
+     * Custom class parameter
+     *
      * @param Author $author
      *
      * @return Author
@@ -60,6 +74,8 @@ class Type
     }
 
     /**
+     * Array of authors
+     *
      * @param array $authors {@type Author}
      *
      * @return mixed
@@ -76,10 +92,10 @@ class Author
      * @var string {@from body} {@min 3}{@max 100}
      * name of the Author {@required true}
      */
-    public $name='Name';
+    public $name = 'Name';
     /**
      * @var string {@type email} {@from body}
      * email id of the Author
      */
-    public $email='name@domain.com';
+    public $email = 'name@domain.com';
 }
