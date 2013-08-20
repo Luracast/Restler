@@ -177,17 +177,33 @@ class Routes
                 foreach ($matches as $match) {
                     $httpMethod = $match[1];
                     $url = rtrim($resourcePath . $match[2], '/');
+                    //deep copy the call, as it may change for each @url
+                    $copy = unserialize(serialize($call));
+                    foreach ($copy['metadata']['param'] as $i => $p) {
+                        if (
+                            $p['from'] == 'path' &&
+                            false === strpos($url, '{' . $p['name'] . '}') &&
+                            false === strpos($url, ':' . $p['name'])
+                        ) {
+                            $copy['metadata']['param'][$i]['from'] =
+                                $httpMethod == 'GET' ||
+                                $httpMethod == 'DELETE'
+                                    ? 'query'
+                                    : 'body';
+                        }
+                    }
                     $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
                         function ($matches) use ($call) {
                             $match = trim($matches[0], '{}:');
                             $index = $call['arguments'][$match];
                             return '{' .
-                                Routes::typeChar(isset($call['metadata']['param'][$index]['type'])
-                                    ? $call['metadata']['param'][$index]['type']
-                                    : null)
-                                . $index . '}';
+                            Routes::typeChar(isset(
+                            $call['metadata']['param'][$index]['type'])
+                                ? $call['metadata']['param'][$index]['type']
+                                : null)
+                            . $index . '}';
                         }, $url);
-                    static::addPath($url, $call, $httpMethod);
+                    static::addPath($url, $copy, $httpMethod);
                 }
                 //if auto route enabled, do so
             } elseif (Defaults::$autoRoutingEnabled) {
