@@ -369,6 +369,7 @@ class Resources implements iUseAuthentication
 
     protected function _nickname(array $route)
     {
+        static $hash = array();
         $method = $route['methodName'];
         if(isset(self::$prefixes[$method])){
             $method = self::$prefixes[$method];
@@ -379,6 +380,11 @@ class Resources implements iUseAuthentication
                 $method
             );
         }
+        while (isset($hash[$method]) && $route['url'] != $hash[$method]) {
+            //create another one
+            $method .= '_';
+        }
+        $hash[$method] = $route['url'];
         return $method;
     }
 
