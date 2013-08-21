@@ -204,6 +204,7 @@ class Restler extends EventDispatcher
      */
     public function __construct($productionMode = false, $refreshCache = false)
     {
+        parent::__construct();
         $this->startTime = time();
         Util::$restler = $this;
         $this->productionMode = $productionMode;
@@ -399,11 +400,11 @@ class Restler extends EventDispatcher
         } else {
             $baseUrl .= $_SERVER['SERVER_NAME'];
         }
-        $this->baseUrl = $baseUrl . substr(
-                $fullPath,
-                0,
-                strlen($fullPath) - strlen($path)
-            );
+        $this->baseUrl = rtrim($baseUrl . substr(
+            $fullPath,
+            0,
+            strlen($fullPath) - strlen($path)
+        ), '/');
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace(
