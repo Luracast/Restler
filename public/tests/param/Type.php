@@ -108,6 +108,18 @@ class Type
     {
         return $array;
     }
+
+    /**
+     * An array indexed or associative
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    function postArrayOrObject(array $array)
+    {
+        return $array;
+    }
 }
 
 class Author
