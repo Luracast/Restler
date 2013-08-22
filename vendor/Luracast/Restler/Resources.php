@@ -171,6 +171,8 @@ class Resources implements iUseAuthentication
         $target = empty($id) ? "v$version" : "v$version/$id";
         $tLen = strlen($target);
 
+        $filter = array();
+
         $routes = Routes::toArray();
 
         foreach ($routes as $value) {
@@ -215,6 +217,10 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
+                if (isset($filter[$httpMethod][$fullPath])) {
+                    continue;
+                }
+                $filter[$httpMethod][$fullPath] = true;
                 // reset body params
                 $this->_bodyParam = array(
                     'required' => false,
