@@ -179,10 +179,26 @@ class Validator implements iValidate
 
             case 'array':
                 if (is_array($input)) {
+                    $contentType =
+                        Util::nestedValue($info, 'contentType') ? : null;
                     if ($info->fix) {
-                        $input = $info->filterArray($input, true);
-                    } elseif(array_values($input)!=$input) {
+                        if ($contentType == 'indexed') {
+                            $input = $info->filterArray($input, true);
+                        } elseif ($contentType == 'associative') {
+                            $input = $info->filterArray($input, true);
+                        }
+                    } elseif (
+                        $contentType == 'indexed' &&
+                        array_values($input) != $input
+                    ) {
                         $error .= '. Expecting an array but an object is given';
+                        break;
+                    } elseif (
+                        $contentType == 'associative' &&
+                        array_values($input) == $input &&
+                        count($input)
+                    ) {
+                        $error .= '. Expecting an object but an array is given';
                         break;
                     }
                     $r = count($input);
@@ -198,9 +214,13 @@ class Validator implements iValidate
                             break;
                         }
                     }
-                    if (isset($info->contentType)) {
+                    if (
+                        isset($contentType) &&
+                        $contentType != 'associative' &&
+                        $contentType != 'indexed'
+                    ) {
                         $name = $info->name;
-                        $info->type = $info->contentType;
+                        $info->type = $contentType;
                         unset($info->contentType);
                         foreach ($input as $key => $chinput) {
                             $info->name = "{$name}[$key]";
@@ -208,8 +228,8 @@ class Validator implements iValidate
                         }
                     }
                     return $input;
-                } elseif (isset($info->contentType)) {
-                    $error .= ". Expecting an array with contents of type `$info->contentType`";
+                } elseif (isset($contentType)) {
+                    $error .= ". Expecting an array with contents of type `$contentType`";
                     break;
                 } elseif ($info->fix && is_string($input)) {
                     return array($input);
