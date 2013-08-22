@@ -496,7 +496,13 @@ class Resources implements iUseAuthentication
                     'type'
                 );
                 if($contentType){
-                    $type = "Array[$contentType]";
+                    if ($contentType == 'indexed') {
+                        $type = 'Array';
+                    } elseif ($contentType == 'associative') {
+                        $type = 'Object';
+                    } else {
+                        $type = "Array[$contentType]";
+                    }
                     if(Util::isObjectOrArray($contentType)){
                         $this->_model($contentType);
                     }
