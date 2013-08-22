@@ -84,6 +84,30 @@ class Type
     {
         return $authors;
     }
+
+    /**
+     * An associative array
+     *
+     * @param array $object {@type associative}
+     *
+     * @return array
+     */
+    function postObject(array $object)
+    {
+        return $object;
+    }
+
+    /**
+     * An indexed array
+     *
+     * @param array $array {@type indexed}
+     *
+     * @return array
+     */
+    function postArray(array $array)
+    {
+        return $array;
+    }
 }
 
 class Author
