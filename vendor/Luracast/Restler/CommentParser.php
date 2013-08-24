@@ -381,8 +381,8 @@ class CommentParser
         $r = array();
         $r['code'] = count($value) && is_numeric($value[0])
             ? intval(array_shift($value)) : 500;
-        $reason = implode(' ', $value);
-        $r['reason'] = empty($reason) ? '' : $reason;
+        $message = implode(' ', $value);
+        $r['message'] = empty($message) ? '' : $message;
         return $r;
     }
 
