@@ -397,7 +397,7 @@ class Routes
     protected static function populate(array $call, $data)
     {
         $call['parameters'] = $call['defaults'];
-        $p = &$call['parameters'];
+        $p = & $call['parameters'];
         foreach ($data as $key => $value) {
             if (isset($call['arguments'][$key])) {
                 $p[$call['arguments'][$key]] = $value;
@@ -411,6 +411,25 @@ class Routes
             !is_null($d = $data[Defaults::$fullRequestDataName])
         ) {
             $p[0] = $d;
+        } else {
+            $bodyParamCount = 0;
+            $lastBodyParamIndex = -1;
+            $lastM = null;
+            foreach ($call['metadata']['param'] as $k => $m) {
+                if ($m['from'] == 'body') {
+                    $bodyParamCount++;
+                    $lastBodyParamIndex = $k;
+                    $lastM = $m;
+                }
+            }
+            if (
+                $bodyParamCount == 1 &&
+                !array_key_exists($lastM['name'], $data) &&
+                array_key_exists(Defaults::$fullRequestDataName, $data) &&
+                !is_null($d = $data[Defaults::$fullRequestDataName])
+            ) {
+                $p[$lastBodyParamIndex] = $d;
+            }
         }
         return ApiMethodInfo::__set_state($call);
     }
