@@ -512,6 +512,8 @@ class Resources implements iUseAuthentication
                     if(Util::isObjectOrArray($contentType)){
                         $this->_model($contentType);
                     }
+                } elseif (isset(static::$dataTypeAlias[$type])) {
+                    $type = static::$dataTypeAlias[$type];
                 }
             } elseif (Util::isObjectOrArray($type)) {
                 $this->_model($type);
@@ -563,6 +565,7 @@ class Resources implements iUseAuthentication
             : array();
         if(count($n)==1){
             if (isset($this->_models->{$n[0]->dataType})) {
+                // ============ custom class ===================
                 $r = $n[0];
                 $c = $this->_models->{$r->dataType};
                 $a = $c->properties;
@@ -583,6 +586,7 @@ class Resources implements iUseAuthentication
                     . "\": \"\"\n}";
                 return $r;
             } elseif (false !== ($p = strpos($n[0]->dataType, '['))) {
+                // ============ array of custom class ===============
                 $r = $n[0];
                 $t = substr($r->dataType, $p + 1, -1);
                 if($c = Util::nestedValue($this->_models,$t)){
@@ -608,7 +612,24 @@ class Resources implements iUseAuthentication
                     $r->defaultValue = "[ ]";
                     return $r;
                 }
-
+            } elseif ($n[0]->dataType == 'Array') {
+                // ============ array ===============================
+                $r = $n[0];
+                $r->description = "Paste JSON array data here"
+                    . ($r->required ? ' (required) . ' : '. ')
+                    . "<br/>$r->description";
+                $r->defaultValue = "[\n    {\n        \""
+                    . "property\" : \"\"\n    }\n]";
+                return $r;
+            } elseif ($n[0]->dataType == 'Object') {
+                // ============ object ==============================
+                $r = $n[0];
+                $r->description = "Paste JSON object data here"
+                    . ($r->required ? ' (required) . ' : '. ')
+                    . "<br/>$r->description";
+                $r->defaultValue = "{\n    \""
+                    . "property\" : \"\"\n}";
+                return $r;
             }
         }
         $p = array_values($this->_bodyParam['description']);
