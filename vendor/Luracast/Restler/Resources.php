@@ -315,6 +315,24 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     $m['description'],
                     $m['longDescription']
                 );
+                if (isset($m['format'])) {
+                    $mimes = array();
+                    $formats = explode(',', (string)$m['format']);
+                    foreach ($formats as $i => $f) {
+                        if (in_array($f, $this->restler->_formatOverridesMap)) {
+                            foreach (
+                                array_keys($this->restler->_formatOverridesMap, $f
+                                ) as $k) {
+                                if (false !== strpos($k, '/')) {
+                                    $mimes[] = $k;
+                                }
+                            }
+                        }
+                    }
+                    if(!empty($mimes)){
+                        $operation->produces = $mimes;
+                    }
+                }
                 if (isset($m['throws'])) {
                     foreach ($m['throws'] as $exception) {
                         $operation->responseMessages[] = array(
@@ -469,13 +487,13 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 ? 'Use PHPDoc comment to describe here'
                 : $description;
         $mimes = array();
-        $r->operations = array();
         foreach ($this->restler->getFormatMap() as $k => $v) {
             if (false !== strpos($k, '/')) {
                 $mimes[] = $k;
             }
         }
         $r->produces = $r->consumes = $mimes;
+        $r->operations = array();
         return $r;
     }
 
