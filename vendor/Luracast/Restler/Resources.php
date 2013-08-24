@@ -4,7 +4,7 @@ namespace Luracast\Restler;
 use stdClass;
 
 /**
- * API Class to create Swagger Spec 1.1 compatible id and operation
+ * API Class to create Swagger Spec 1.2 compatible id and operation
  * listing
  *
  * @category   Framework
@@ -326,7 +326,7 @@ class Resources implements iUseAuthentication
                 );
                 if (isset($m['throws'])) {
                     foreach ($m['throws'] as $exception) {
-                        $operation->errorResponses[] = array(
+                        $operation->responseMessages[] = array(
                             'reason' => $exception['reason'],
                             'code' => $exception['code']);
                     }
@@ -503,7 +503,7 @@ class Resources implements iUseAuthentication
         $r->summary = $summary;
         $r->notes = $notes;
 
-        $r->errorResponses = array();
+        $r->responseMessages = array();
         return $r;
     }
 
