@@ -51,21 +51,25 @@ class Resources implements iUseAuthentication
      */
     public static $accessControlFunction = null;
     /**
-     * @var array type mapping for converting data types to javascript / swagger
+     * @var array type mapping for converting data types to JSON-Schema Draft 4
+     * Which is followed by swagger 1.2 spec
      */
     public static $dataTypeAlias = array(
+        'int' => 'integer',
+        'float' => array('number', 'float'),
+        'number' => 'number',
         'string' => 'string',
-        'int' => 'int',
-        'number' => 'float',
-        'float' => 'float',
         'bool' => 'boolean',
         'boolean' => 'boolean',
-        'NULL' => 'null',
-        'array' => 'Array',
-        'object' => 'Object',
-        'stdClass' => 'Object',
+        'date' => array('string', 'date'),
+        'dateTime' => array('string', 'date-time'),
+        'array' => 'array',
         'mixed' => 'string',
-        'DateTime' => 'Date'
+        //not in swagger documentation
+        'NULL' => 'null',
+        'object' => 'object',
+        'Object' => 'object',
+        'stdClass' => 'object',
     );
     /**
      * @var array configurable symbols to differentiate public, hybrid and
@@ -360,7 +364,7 @@ class Resources implements iUseAuthentication
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
                         } elseif (strtolower($responseClass) == 'array') {
-                            $operation->responseClass = 'Array';
+                            $operation->responseClass = 'array';
                             $rt = $m['return'];
                             if (isset(
                             $rt[CommentParser::$embeddedDataName]['type'])
@@ -541,22 +545,18 @@ class Resources implements iUseAuthentication
                 );
                 if($contentType){
                     if ($contentType == 'indexed') {
-                        $type = 'Array';
+                        $type = 'array';
                     } elseif ($contentType == 'associative') {
-                        $type = 'Object';
+                        $type = 'object';
                     } else {
-                        $type = "Array[$contentType]";
+                        $type = "array[$contentType]";
                     }
                     if(Util::isObjectOrArray($contentType)){
                         $this->_model($contentType);
                     }
-                } elseif (isset(static::$dataTypeAlias[$type])) {
-                    $type = static::$dataTypeAlias[$type];
                 }
             } elseif (Util::isObjectOrArray($type)) {
                 $this->_model($type);
-            } elseif (isset(static::$dataTypeAlias[$type])) {
-                $type = static::$dataTypeAlias[$type];
             }
         }
         $r->dataType = $type;
@@ -575,7 +575,7 @@ class Resources implements iUseAuthentication
                 );
             }
         }
-        return $r;
+        return $this->_fixDataType($r);
     }
 
     private function _appendToBody($p)
@@ -650,7 +650,7 @@ class Resources implements iUseAuthentication
                     $r->defaultValue = "[ ]";
                     return $r;
                 }
-            } elseif ($n[0]->dataType == 'Array') {
+            } elseif ($n[0]->dataType == 'array') {
                 // ============ array ===============================
                 $r = $n[0];
                 $r->description = "Paste JSON array data here"
@@ -659,7 +659,7 @@ class Resources implements iUseAuthentication
                 $r->defaultValue = "[\n    {\n        \""
                     . "property\" : \"\"\n    }\n]";
                 return $r;
-            } elseif ($n[0]->dataType == 'Object') {
+            } elseif ($n[0]->dataType == 'object') {
                 // ============ object ==============================
                 $r = $n[0];
                 $r->description = "Paste JSON object data here"
@@ -689,7 +689,7 @@ class Resources implements iUseAuthentication
         }
         $r->paramType = 'body';
         $r->allowMultiple = false;
-        $r->dataType = 'Object';
+        $r->dataType = 'object';
         return $r;
     }
 
@@ -699,6 +699,7 @@ class Resources implements iUseAuthentication
         if(isset($this->_models->{$id})){
             return;
         }
+        $required = array();
         $properties = array();
         if (!$instance) {
             if(!class_exists($className))
@@ -741,21 +742,19 @@ class Resources implements iUseAuthentication
                 }
             }
 
-            if (isset(static::$dataTypeAlias[$type])) {
-                $type = static::$dataTypeAlias[$type];
-            }
-            $properties[$key] = array(
+            $properties[$key] = (array)$this->_fixDataType((object)array(
                 'type' => $type,
                 'description' => $description
-            );
+            ));
+
             if(Util::nestedValue(
                 $propertyMetaData,
                 CommentParser::$embeddedDataName,
                 'required'
             )){
-                $properties[$key]['required'] = true;
+                $required[$key] = true;
             }
-            if ($type == 'Array') {
+            if ($type == 'array') {
                 $itemType = Util::nestedValue(
                     $propertyMetaData,
                     CommentParser::$embeddedDataName,
@@ -772,9 +771,9 @@ class Resources implements iUseAuthentication
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
-            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+            } else if (preg_match('/^array\[(.+)\]$/i', $type, $matches)) {
                 $itemType = $matches[1];
-                $properties[$key]['type'] = 'Array';
+                $properties[$key]['type'] = 'array';
                 $properties[$key]['item']['type'] = $itemType;
 
                 if (class_exists($itemType)) {
@@ -785,6 +784,7 @@ class Resources implements iUseAuthentication
         if (!empty($properties)) {
             $model = new stdClass();
             $model->id = $id;
+            $model->required = array_keys($required);
             $model->properties = $properties;
             $this->_models->{$id} = $model;
         }
@@ -817,7 +817,7 @@ class Resources implements iUseAuthentication
                 $child = end($o);
                 if (Util::isObjectOrArray($child)) {
                     $childType = $this->getType($child, $appendToModels);
-                    return "Array[$childType]";
+                    return "array[$childType]";
                 }
             }
             return 'array';
@@ -887,6 +887,22 @@ class Resources implements iUseAuthentication
             }
         }
         return $r;
+    }
+
+    private function _fixDataType($item)
+    {
+        $type = isset($item->type) ? $item->type : 'string';
+        if ($t = Util::nestedValue(
+            static::$dataTypeAlias, strtolower($type))
+        ) {
+            if (is_array($t)) {
+                $item->type = $t[0];
+                $item->format = $t[1];
+            } else {
+                $item->type = $t;
+            }
+        }
+        return $item;
     }
 
     private function _mapResources(array $allRoutes, array &$map)
