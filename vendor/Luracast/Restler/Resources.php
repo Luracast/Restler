@@ -559,7 +559,7 @@ class Resources implements iUseAuthentication
                 $this->_model($type);
             }
         }
-        $r->dataType = $type;
+        $r->type = $type;
         if (isset($param[CommentParser::$embeddedDataName])) {
             $p = $param[CommentParser::$embeddedDataName];
             if (isset($p['min']) && isset($p['max'])) {
@@ -587,7 +587,7 @@ class Resources implements iUseAuthentication
         }
         $this->_bodyParam['description'][$p->name]
             = "$p->name"
-            . ' : <tag>' . $p->dataType. '</tag> '
+            . ' : <tag>' . $p->type. '</tag> '
             . ($p->required ? ' <i>(required)</i> - ' : ' - ')
             . $p->description;
         $this->_bodyParam['required'] = $p->required
@@ -602,10 +602,10 @@ class Resources implements iUseAuthentication
             ? array_values($this->_bodyParam['names'])
             : array();
         if(count($n)==1){
-            if (isset($this->_models->{$n[0]->dataType})) {
+            if (isset($this->_models->{$n[0]->type})) {
                 // ============ custom class ===================
                 $r = $n[0];
-                $c = $this->_models->{$r->dataType};
+                $c = $this->_models->{$r->type};
                 $a = $c->properties;
                 $r->description = "Paste JSON data here";
                 if (count($a)) {
@@ -623,10 +623,10 @@ class Resources implements iUseAuthentication
                         array_keys($c->properties))
                     . "\": \"\"\n}";
                 return $r;
-            } elseif (false !== ($p = strpos($n[0]->dataType, '['))) {
+            } elseif (false !== ($p = strpos($n[0]->type, '['))) {
                 // ============ array of custom class ===============
                 $r = $n[0];
-                $t = substr($r->dataType, $p + 1, -1);
+                $t = substr($r->type, $p + 1, -1);
                 if($c = Util::nestedValue($this->_models,$t)){
                     $a = $c->properties;
                     $r->description = "Paste JSON data here";
@@ -650,7 +650,7 @@ class Resources implements iUseAuthentication
                     $r->defaultValue = "[ ]";
                     return $r;
                 }
-            } elseif ($n[0]->dataType == 'array') {
+            } elseif ($n[0]->type == 'array') {
                 // ============ array ===============================
                 $r = $n[0];
                 $r->description = "Paste JSON array data here"
@@ -659,7 +659,7 @@ class Resources implements iUseAuthentication
                 $r->defaultValue = "[\n    {\n        \""
                     . "property\" : \"\"\n    }\n]";
                 return $r;
-            } elseif ($n[0]->dataType == 'object') {
+            } elseif ($n[0]->type == 'object') {
                 // ============ object ==============================
                 $r = $n[0];
                 $r->description = "Paste JSON object data here"
@@ -689,7 +689,7 @@ class Resources implements iUseAuthentication
         }
         $r->paramType = 'body';
         $r->allowMultiple = false;
-        $r->dataType = 'object';
+        $r->type = 'object';
         return $r;
     }
 
