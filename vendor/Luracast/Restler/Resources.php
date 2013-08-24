@@ -468,7 +468,14 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             empty($description) && $this->restler->getProductionMode()
                 ? 'Use PHPDoc comment to describe here'
                 : $description;
+        $mimes = array();
         $r->operations = array();
+        foreach ($this->restler->getFormatMap() as $k => $v) {
+            if (false !== strpos($k, '/')) {
+                $mimes[] = $k;
+            }
+        }
+        $r->produces = $r->consumes = $mimes;
         return $r;
     }
 
