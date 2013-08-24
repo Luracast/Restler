@@ -562,17 +562,14 @@ class Resources implements iUseAuthentication
         $r->type = $type;
         if (isset($param[CommentParser::$embeddedDataName])) {
             $p = $param[CommentParser::$embeddedDataName];
-            if (isset($p['min']) && isset($p['max'])) {
-                $r->allowableValues = array(
-                    'valueType' => 'RANGE',
-                    'min' => $p['min'],
-                    'max' => $p['max'],
-                );
-            } elseif (isset($p['choice'])) {
-                $r->allowableValues = array(
-                    'valueType' => 'LIST',
-                    'values' => $p['choice']
-                );
+            if (isset($p['min'])) {
+                $r->minimum = $p['min'];
+            }
+            if (isset($p['max'])) {
+                $r->minimum = $p['max'];
+            }
+            if (isset($p['choice'])) {
+                $r->enum = $p['choice'];
             }
         }
         return $this->_fixDataType($r);
