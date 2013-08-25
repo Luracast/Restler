@@ -136,8 +136,8 @@ class Scope
                     $m, 'class', $className, CommentParser::$embeddedDataName
                 )) ||
                 ($properties = Util::nestedValue(
-                    $m, 'class', $fullName, CommentParser::$embeddedDataName)
-                )
+                    $m, 'class', $fullName, CommentParser::$embeddedDataName
+                ))
             ) {
                 $objectVars = get_object_vars($instance);
                 foreach ($properties as $property => $value) {
@@ -149,6 +149,15 @@ class Scope
                     }
                 }
             }
+        }
+        if (
+            !isset(self::$instances[$className]['authVerified']) &&
+            $instance instanceof iUseAuthentication &&
+            self::$restler->_authVerified
+        ) {
+            self::$instances[$className]['authVerified'] = true;
+            $instance->__setAuthenticationStatus
+                (self::$restler->_authenticated);
         }
         return $instance;
     }
