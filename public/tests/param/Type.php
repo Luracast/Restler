@@ -62,6 +62,16 @@ class Type
     }
 
     /**
+     * Array of timestamps
+     *
+     * @param array $timestamp {@from body}{@type timestamp}
+     */
+    function postTimestamps(array $timestamps)
+    {
+        return $timestamps;
+    }
+
+    /**
      * Custom class parameter
      *
      * @param Author $author
