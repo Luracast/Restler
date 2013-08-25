@@ -148,7 +148,7 @@ class Restler extends EventDispatcher
      *
      * @var array
      */
-    protected $filterObjects = array();
+    protected $postAuthFilterClasses = array();
 
 
     // ==================================================================
@@ -248,7 +248,7 @@ class Restler extends EventDispatcher
             $this->validate();
             if(!$this->apiClassInstance) {
                 $this->apiClassInstance
-                    = Scope::findOne($this->apiMethodInfo->className);
+                    = Scope::get($this->apiMethodInfo->className);
             }
             $this->preCall();
             $this->call();
@@ -284,7 +284,7 @@ class Restler extends EventDispatcher
         }
         $this->url = $this->getPath();
         $this->requestMethod = Util::getRequestMethod();
-        $this->requestFormat = Scope::findOne($this->getRequestFormat());
+        $this->requestFormat = $this->getRequestFormat();
         $this->requestData = $this->getRequestData(false);
 
         //parse defaults
@@ -317,7 +317,7 @@ class Restler extends EventDispatcher
         $throwException = $this->requestFormatDiffered;
         foreach ($args as $className) {
 
-            $obj = Scope::findOne($className);
+            $obj = Scope::get($className);
 
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
@@ -360,7 +360,7 @@ class Restler extends EventDispatcher
         $extensions = array();
         foreach ($args as $className) {
 
-            $obj = Scope::findOne($className);
+            $obj = Scope::get($className);
 
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
@@ -443,15 +443,18 @@ class Restler extends EventDispatcher
                 $mime = substr($mime, 0, $pos);
             }
             if ($mime == UrlEncodedFormat::MIME)
-                $format = Scope::findOne('UrlEncodedFormat');
+                $format = Scope::get('UrlEncodedFormat');
             elseif (isset($this->formatMap[$mime])) {
-                $format = Scope::findOne($this->formatMap[$mime]);
+                $format = Scope::get($this->formatMap[$mime]);
                 $format->setMIME($mime);
-            } elseif (!$this->requestFormatDiffered && isset($this->formatOverridesMap[$mime])) {
+            } elseif (
+                !$this->requestFormatDiffered &&
+                isset($this->formatOverridesMap[$mime])
+            ) {
                 //if our api method is not using an @format comment
                 //to point to this $mime, we need to throw 403 as in below
                 //but since we don't know that yet, we need to defer that here
-                $format = Scope::findOne($this->formatOverridesMap[$mime]);
+                $format = Scope::get($this->formatOverridesMap[$mime]);
                 $format->setMIME($mime);
                 $this->requestFormatDiffered = true;
             } else {
@@ -462,7 +465,7 @@ class Restler extends EventDispatcher
             }
         }
         if(!$format){
-            $format = Scope::findOne($this->formatMap['default']);
+            $format = Scope::get($this->formatMap['default']);
         }
         return $format;
     }
@@ -615,10 +618,7 @@ class Restler extends EventDispatcher
             $extension = explode('/', $extension);
             $extension = array_shift($extension);
             if ($extension && isset($this->formatMap[$extension])) {
-                $format = Scope::findOne(
-                    $this->formatMap[$extension],
-                    $metadata
-                );
+                $format = Scope::get($this->formatMap[$extension]);
                 $format->setExtension($extension);
                 // echo "Extension $extension";
                return $format;
@@ -629,10 +629,7 @@ class Restler extends EventDispatcher
             $acceptList = Util::sortByPriority($_SERVER['HTTP_ACCEPT']);
             foreach ($acceptList as $accept => $quality) {
                 if (isset($this->formatMap[$accept])) {
-                    $format = Scope::findOne(
-                        $this->formatMap[$accept],
-                        $metadata
-                    );
+                    $format = Scope::get($this->formatMap[$accept]);
                     $format->setMIME($accept);
                     //echo "MIME $accept";
                     // Tell cache content is based on Accept header
@@ -653,10 +650,7 @@ class Restler extends EventDispatcher
                                 18 + strlen(Defaults::$apiVendor)));
                             if ($version > 0 && $version <= $this->apiVersion) {
                                 $this->requestedApiVersion = $version;
-                                $format = Scope::findOne(
-                                    $this->formatMap[$extension],
-                                    $metadata
-                                );
+                                $format = Scope::get($this->formatMap[$extension]);
                                 $format->setExtension($extension);
                                 // echo "Extension $extension";
                                 Defaults::$useVendorMIMEVersioning = true;
@@ -677,14 +671,11 @@ class Restler extends EventDispatcher
         }
         if (strpos($_SERVER['HTTP_ACCEPT'], '*') !== false) {
             if (false !== strpos($_SERVER['HTTP_ACCEPT'], 'application/*')) {
-                $format = Scope::findOne('JsonFormat', $metadata);
+                $format = Scope::get('JsonFormat');
             } elseif (false !== strpos($_SERVER['HTTP_ACCEPT'], 'text/*')) {
-                $format = Scope::findOne('XmlFormat', $metadata);
+                $format = Scope::get('XmlFormat');
             } elseif (false !== strpos($_SERVER['HTTP_ACCEPT'], '*/*')) {
-                $format = Scope::findOne(
-                    $this->formatMap['default'],
-                    $metadata
-                );
+                $format = Scope::get($this->formatMap['default']);
             }
         }
         if (empty($format)) {
@@ -692,10 +683,7 @@ class Restler extends EventDispatcher
             // server cannot send a response which is acceptable according to
             // the combined Accept field value, then the server SHOULD send
             // a 406 (not acceptable) response.
-            $format = Scope::findOne(
-                $this->formatMap['default'],
-                $metadata
-            );
+            $format = Scope::get($this->formatMap['default']);
             $this->responseFormat = $format;
             throw new RestException(
                 406,
@@ -772,7 +760,7 @@ class Restler extends EventDispatcher
             /**
              * @var iFilter
              */
-            $filterObj = Scope::findOne($filterClass);
+            $filterObj = Scope::get($filterClass);
 
             if (!$filterObj instanceof iFilter) {
                 throw new RestException (
@@ -783,7 +771,7 @@ class Restler extends EventDispatcher
                     && $filterObj instanceof iUseAuthentication
                 ) {
                     //handle at authentication stage
-                    $this->filterObjects[] = $filterObj;
+                    $this->postAuthFilterClasses[] = $filterClass;
                     continue;
                 }
                 throw new RestException(403); //Forbidden
@@ -797,15 +785,13 @@ class Restler extends EventDispatcher
         $accessLevel = max(Defaults::$apiAccessLevel,
             $o->accessLevel);
         try {
-            if ($accessLevel || count($this->filterObjects)) {
+            if ($accessLevel || count($this->postAuthFilterClasses)) {
                 $this->dispatch('authenticate');
                 if (!count($this->authClasses)) {
                     throw new RestException(401);
                 }
                 foreach ($this->authClasses as $authClass) {
-                    $authObj = Scope::findOne(
-                        $authClass, $o->metadata
-                    );
+                    $authObj = Scope::get($authClass);
                     if (!method_exists($authObj,
                         Defaults::$authenticationMethod)
                     ) {
@@ -836,12 +822,12 @@ class Restler extends EventDispatcher
      */
     protected function postAuthFilter()
     {
-        if(empty($this->filterObjects)) {
+        if(empty($this->postAuthFilterClasses)) {
             return;
         }
         $this->dispatch('postAuthFilter');
-        foreach ($this->filterObjects as $filterObj) {
-            Scope::findOne($filterObj, $this->apiMethodInfo->metadata);
+        foreach ($this->postAuthFilterClasses as $filterClass) {
+            Scope::get($filterClass);
         }
     }
 
@@ -860,7 +846,7 @@ class Restler extends EventDispatcher
             ) {
                 if (isset($info['method'])) {
                         $object = $this->apiClassInstance
-                            = Scope::findOne($o->className);
+                            = Scope::get($o->className);
                     $info ['apiClassInstance'] = $object;
                 }
                 //convert to instance of ValidationInfo
@@ -917,11 +903,7 @@ class Restler extends EventDispatcher
         /**
          * @var iCompose Default Composer
          */
-        $compose = Scope::findOne(
-            Defaults::$composeClass, isset($this->apiMethodInfo->metadata)
-                ? $this->apiMethodInfo->metadata
-                : null
-        );
+        $compose = Scope::get(Defaults::$composeClass);
         $this->responseData = is_null($this->responseData) &&
         Defaults::$emptyBodyForNullResponse
             ? ''
@@ -1030,7 +1012,7 @@ class Restler extends EventDispatcher
         $handled = false;
         foreach ($this->errorClasses as $className) {
             if (method_exists($className, $method)) {
-                $obj = Scope::findOne($className);
+                $obj = Scope::get($className);
                 $obj->$method ();
                 $handled = true;
             }
@@ -1039,17 +1021,13 @@ class Restler extends EventDispatcher
             return;
         }
         if (!isset($this->responseFormat)) {
-            $this->responseFormat = Scope::findOne('JsonFormat');
+            $this->responseFormat = Scope::get('JsonFormat');
         }
         $this->composeHeaders($exception);
         /**
          * @var iCompose Default Composer
          */
-        $compose = Scope::findOne(
-            Defaults::$composeClass, isset($this->apiMethodInfo->metadata)
-                ? $this->apiMethodInfo->metadata
-                : null
-        );
+        $compose = Scope::get(Defaults::$composeClass);
         $this->responseData = $this->responseFormat->encode(
             $compose->message($exception),
             !$this->productionMode
@@ -1336,7 +1314,7 @@ class Restler extends EventDispatcher
 
     /**
      * post call
-     * 
+     *
      * call _post_{methodName}_{extension} if exists with the composed and
      * serialized (applying the repose format) response data
      *
