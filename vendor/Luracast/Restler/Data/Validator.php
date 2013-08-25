@@ -104,6 +104,18 @@ class Validator implements iValidate
                 $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
                     . date("Y-m-d H:i:s") . '`';
                 break;
+            case 'time' :
+            case 'time24' :
+                if (preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/', $input))
+                    return $input;
+                $error .= '. Expecting time in `HH:MM:SS` format, such as `'
+                    . date("H:i:s") . '`';
+                break;
+            case 'time12' :
+                if (preg_match('/^([1-9]|1[0-2]|0[1-9]){1}(:[0-5][0-9])?\s?([aApP][mM]{1})?$/', $input))
+                    return $input;
+                $error .= '. Expecting time in 12 hour format, such as `08:00AM` and `10:05:11`';
+                break;
             case 'timestamp' :
                 if (
                     (string)(int)$input == $input &&
