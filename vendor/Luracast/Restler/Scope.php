@@ -38,6 +38,7 @@ class Scope
         'RestException' => 'Luracast\\Restler\\RestException'
     );
     private static $instances = array();
+    private static $filteredInstances = array();
 
     /**
      * Apply static and non-static properties for the instance of the given
@@ -105,6 +106,50 @@ class Scope
                 (self::$restler->_authenticated);
         }
 
+        return $instance;
+    }
+
+    public static function get($className)
+    {
+        $fullName = $className = ltrim($className, '\\');
+        if (isset(static::$classAliases)) {
+            $fullName = static::$classAliases[$className];
+        }
+        if (isset(self::$instances[$className])) {
+            $instance = self::$instances[$className]['instance'];
+        } else {
+            if (!class_exists($fullName)) {
+                throw new RestException(500, "Class '$fullName' not found");
+            }
+            $instance = new $fullName();
+            $instance->restler = self::$restler;
+            self::$instances[$className] = compact('instance');
+        }
+        if (
+            !isset(self::$instances[$className]['metadata']) &&
+            isset(static::$restler->apiMethodInfo)
+        ) {
+            $m = static::$restler->apiMethodInfo;
+            self::$instances[$className]['metadata'] = true;
+            if (
+                ($properties = Util::nestedValue(
+                    $m, 'class', $className, CommentParser::$embeddedDataName
+                )) ||
+                ($properties = Util::nestedValue(
+                    $m, 'class', $fullName, CommentParser::$embeddedDataName)
+                )
+            ) {
+                $objectVars = get_object_vars($instance);
+                foreach ($properties as $property => $value) {
+                    if (property_exists($className, $property)) {
+                        //if not a static property
+                        array_key_exists($property, $objectVars)
+                            ? $instance->{$property} = $value
+                            : $instance::$$property = $value;
+                    }
+                }
+            }
+        }
         return $instance;
     }
 }
