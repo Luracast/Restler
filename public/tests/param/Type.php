@@ -32,6 +32,26 @@ class Type
     }
 
     /**
+     * time validation
+     *
+     * @param string $time {@from body}{@type time}
+     */
+    function postTime($time)
+    {
+        return $time;
+    }
+
+    /**
+     * time validation in 12 hour format
+     *
+     * @param string $time {@from body}{@type time12}
+     */
+    function postTime12($time12)
+    {
+        return $time12;
+    }
+
+    /**
      * Timestamp validation
      *
      * @param string $timestamp {@from body}{@type timestamp}
@@ -59,6 +79,16 @@ class Type
     function postNumbers(array $numbers)
     {
         return $numbers;
+    }
+
+    /**
+     * Array of time strings
+     *
+     * @param array $timestamp {@from body}{@type time}
+     */
+    function postTimes(array $timestamps)
+    {
+        return $timestamps;
     }
 
     /**
