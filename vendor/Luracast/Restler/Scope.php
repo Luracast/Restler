@@ -112,7 +112,7 @@ class Scope
     public static function get($className)
     {
         $fullName = $className = ltrim($className, '\\');
-        if (isset(static::$classAliases)) {
+        if (isset(static::$classAliases[$className])) {
             $fullName = static::$classAliases[$className];
         }
         if (isset(self::$instances[$className])) {
