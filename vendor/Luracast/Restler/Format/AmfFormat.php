@@ -1,9 +1,15 @@
 <?php
 namespace Luracast\Restler\Format;
 
+use ZendAmf\Parser\Amf3\Deserializer;
+use ZendAmf\Parser\Amf3\Serializer;
+use ZendAmf\Parser\InputStream;
+use ZendAmf\Parser\OutputStream;
+
 /**
  * AMF Binary Format for Restler Framework.
  * Native format supported by Adobe Flash and Adobe AIR
+ *
  * @category   Framework
  * @package    Restler
  * @subpackage format
@@ -13,11 +19,6 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-use ZendAmf\Parser\OutputStream;
-use ZendAmf\Parser\InputStream;
-use ZendAmf\Parser\Amf3\Serializer;
-use ZendAmf\Parser\Amf3\Deserializer;
-
 class AmfFormat extends Format
 {
     const MIME = 'application/x-amf';

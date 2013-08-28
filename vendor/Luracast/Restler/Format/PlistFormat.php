@@ -1,6 +1,10 @@
 <?php
 namespace Luracast\Restler\Format;
 
+use Luracast\Restler\Data\Object;
+use CFPropertyList\CFTypeDetector;
+use CFPropertyList\CFPropertyList;
+
 /**
  * Plist Format for Restler Framework.
  * Plist is the native data exchange format for Apple iOS and Mac platform.
@@ -16,10 +20,6 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-use Luracast\Restler\Data\Object;
-use CFPropertyList\CFTypeDetector;
-use CFPropertyList\CFPropertyList;
-
 class PlistFormat extends MultiFormat
 {
     /**

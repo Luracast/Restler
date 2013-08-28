@@ -8,6 +8,18 @@ use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Util;
 
+/**
+ * Html template format
+ *
+ * @category   Framework
+ * @package    Restler
+ * @subpackage format
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc4
+ */
 class HtmlFormat extends Format
 {
     public static $mime = 'text/html';

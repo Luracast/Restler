@@ -1,6 +1,9 @@
 <?php
 namespace Luracast\Restler\Format;
 
+use Luracast\Restler\Data\Object;
+use Luracast\Restler\RestException;
+
 /**
  * Javascript Object Notation Format
  *
@@ -13,9 +16,6 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-use Luracast\Restler\Data\Object;
-use Luracast\Restler\RestException;
-
 class JsonFormat extends Format
 {
     /**
