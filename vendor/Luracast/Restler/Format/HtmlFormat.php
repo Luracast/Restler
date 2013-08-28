@@ -200,6 +200,13 @@ class HtmlFormat extends Format
     }
 
     /**
+     * @return bool false as HTML format is write only
+     */
+    public function isReadable(){
+        return false;
+    }
+
+    /**
      * Get MIME type => Extension mappings as an associative array
      *
      * @return array list of mime strings for the format
