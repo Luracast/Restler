@@ -97,4 +97,9 @@ class UploadFormat extends Format
         }
     }
 
+    function isWritable()
+    {
+        return false;
+    }
+
 }
