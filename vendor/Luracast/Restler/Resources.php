@@ -363,7 +363,7 @@ class Resources implements iUseAuthentication
         if (!is_null($r))
             $r->models = $this->_models;
         usort(
-           $r->apis,
+            $r->apis,
             function($a, $b){
                 $order = array(
                     'GET' => 1,
@@ -699,6 +699,7 @@ class Resources implements iUseAuthentication
 
                 if (class_exists($type)) {
                     $this->_model($type);
+                    $type = $this->_noNamespace($type);
                 }
             }
 
@@ -717,9 +718,18 @@ class Resources implements iUseAuthentication
                 $properties[$key]['required'] = true;
             }
             if ($type == 'Array') {
-                $itemType = count($value)
-                    ? $this->getType(end($value), true)
-                    : 'string';
+                $itemType = Util::nestedValue(
+                    $propertyMetaData,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                ) ? :
+                    (count($value)
+                        ? $this->getType(end($value), true)
+                        : 'string');
+                if (class_exists($itemType)) {
+                    $this->_model($itemType);
+                    $itemType = $this->_noNamespace($itemType);
+                }
                 $properties[$key]['item'] = array(
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
@@ -859,4 +869,3 @@ class Resources implements iUseAuthentication
         }
     }
 }
-
