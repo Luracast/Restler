@@ -3,6 +3,8 @@
 namespace Luracast\Restler;
 
 
+use Luracast\Restler\Proxy;
+
 class Scope
 {
     /**
@@ -11,34 +13,43 @@ class Scope
     public static $restler;
     public static $classAliases = array(
 
+        //Core
+        'Restler' => 'Luracast\Restler\Restler',
+
         //Format classes
-        'AmfFormat' => 'Luracast\\Restler\\Format\\AmfFormat',
-        'JsFormat' => 'Luracast\\Restler\\Format\\JsFormat',
-        'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
-        'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
-        'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
-        'UploadFormat' => 'Luracast\\Restler\\Format\\UploadFormat',
-        'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
-        'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
-        'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
+        'AmfFormat' => 'Luracast\Restler\Format\AmfFormat',
+        'JsFormat' => 'Luracast\Restler\Format\JsFormat',
+        'JsonFormat' => 'Luracast\Restler\Format\JsonFormat',
+        'HtmlFormat' => 'Luracast\Restler\Format\HtmlFormat',
+        'PlistFormat' => 'Luracast\Restler\Format\PlistFormat',
+        'UploadFormat' => 'Luracast\Restler\Format\UploadFormat',
+        'UrlEncodedFormat' => 'Luracast\Restler\Format\UrlEncodedFormat',
+        'XmlFormat' => 'Luracast\Restler\Format\XmlFormat',
+        'YamlFormat' => 'Luracast\Restler\Format\YamlFormat',
 
         //Filter classes
-        'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
+        'RateLimit' => 'Luracast\Restler\Filter\RateLimit',
 
         //API classes
-        'Resources' => 'Luracast\\Restler\\Resources',
+        'Resources' => 'Luracast\Restler\Resources',
 
         //Cache classes
-        'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
+        'HumanReadableCache' => 'Luracast\Restler\HumanReadableCache',
 
         //Utility classes
-        'Object' => 'Luracast\\Restler\\Data\\Object',
+        'Object' => 'Luracast\Restler\Data\Object',
 
         //Exception
-        'RestException' => 'Luracast\\Restler\\RestException'
+        'RestException' => 'Luracast\Restler\RestException'
     );
     private static $instances = array();
     private static $filteredInstances = array();
+
+    public static function override($className, $method, callable $replacement)
+    {
+        $instance = static::get($className);
+        static::$filteredInstances[$className] = $instance;
+    }
 
     /**
      * Get instance of a class
@@ -70,7 +81,9 @@ class Scope
             }
             $instance = new $fullName();
             $instance->restler = self::$restler;
-            self::$instances[$className] = compact('instance');
+            self::$instances[$className] = array(
+                'instance' => new Proxy($instance)
+            );
         }
         if (
             !isset(self::$instances[$className]['metadata']) &&
@@ -107,5 +120,20 @@ class Scope
                 (self::$restler->_authenticated);
         }
         return $instance;
+    }
+
+    public static function preCall($className, $method, callable $observer)
+    {
+
+    }
+
+    public static function postCall($className, $method, callable $observer)
+    {
+
+    }
+
+    public static function filter($className, $method, callable $filter)
+    {
+
     }
 }
