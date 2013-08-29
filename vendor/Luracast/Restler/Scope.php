@@ -82,8 +82,9 @@ class Scope
             $instance = new $fullName();
             $instance->restler = self::$restler;
             self::$instances[$className] = array(
-                'instance' => new Proxy($instance)
+                'instance' => $instance = new Proxy($instance)
             );
+
         }
         if (
             !isset(self::$instances[$className]['metadata']) &&
