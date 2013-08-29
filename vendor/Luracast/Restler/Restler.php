@@ -8,6 +8,7 @@ use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Format\iFormat;
 use Luracast\Restler\Format\UrlEncodedFormat;
+use Luracast\Restler\Data\Object;
 
 /**
  * REST API Server. It is the server part of the Restler framework.
@@ -319,10 +320,14 @@ class Restler extends EventDispatcher
 
             $obj = Scope::get($className);
 
-            if (!$obj instanceof iFormat)
+            if (!Object::is($obj, 'Luracast\Restler\Format\iFormat'))
                 throw new Exception('Invalid format class; must implement ' .
                 'iFormat interface');
-            if ($throwException && get_class($obj) == get_class($this->requestFormat)) {
+            if (
+                $throwException &&
+                Object::getClass($obj) ==
+                Object::getClass($this->requestFormat)
+            ) {
                 $throwException = false;
             }
 
@@ -761,8 +766,7 @@ class Restler extends EventDispatcher
              * @var iFilter
              */
             $filterObj = Scope::get($filterClass);
-
-            if (!$filterObj instanceof iFilter) {
+            if (!Object::is($filterObj,'Luracast\Restler\iFilter')) {
                 throw new RestException (
                     500, 'Filter Class ' .
                     'should implement iFilter');
@@ -792,7 +796,7 @@ class Restler extends EventDispatcher
                 }
                 foreach ($this->authClasses as $authClass) {
                     $authObj = Scope::get($authClass);
-                    if (!method_exists($authObj,
+                    if (!Object::hasMethod($authObj,
                         Defaults::$authenticationMethod)
                     ) {
                         throw new RestException (
