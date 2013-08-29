@@ -1,5 +1,6 @@
 <?php
 namespace Luracast\Restler\Data;
+use Luracast\Restler\Proxy;
 
 /**
  * Convenience class that converts the given object
@@ -132,6 +133,27 @@ class Object
         }
 
         return $object;
+    }
+
+    public static function is($instance, $className)
+    {
+        return $instance instanceof $className ? :
+            $instance instanceof Proxy &&
+            $instance->getInstance() instanceof $className;
+    }
+
+    public static function getClass($instance)
+    {
+        return $instance instanceof Proxy
+            ? $instance->getClass()
+            : get_class($instance);
+    }
+
+    public static function hasMethod($instance, $method)
+    {
+        return method_exists($instance, $method) ? :
+            $instance instanceof Proxy &&
+            method_exists($instance->getInstance(), $method);
     }
 
     public function __get($name)
