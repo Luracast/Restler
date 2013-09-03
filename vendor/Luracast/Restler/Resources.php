@@ -144,6 +144,7 @@ class Resources implements iUseAuthentication
     {
         $this->currentResource = $resource = 'resources_'.$id;
         if ($this->restler->getProductionMode()
+            && !$this->restler->refreshCache
             && $this->restler->cache->isCached($resource)
         ) {
             //by pass call, compose, postCall stages and directly send response
@@ -834,6 +835,7 @@ class Resources implements iUseAuthentication
     public function _pre_index_json()
     {
         if ($this->restler->getProductionMode()
+            && !$this->restler->refreshCache
             && $this->restler->cache->isCached('resources')
         ) {
             //by pass call, compose, postCall stages and directly send response
