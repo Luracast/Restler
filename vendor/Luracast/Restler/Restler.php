@@ -769,7 +769,10 @@ class Restler extends EventDispatcher
             /**
              * @var iFilter
              */
-            $filterObj = Util::initialize($filterClass);
+            $filterObj = Util::initialize(
+                $filterClass,
+                $this->apiMethodInfo->metadata
+            );
             if (!$filterObj instanceof iFilter) {
                 throw new RestException (
                     500, 'Filter Class ' .
