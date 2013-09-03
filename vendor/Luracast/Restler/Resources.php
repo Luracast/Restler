@@ -790,6 +790,41 @@ class Resources implements iUseAuthentication
     }
 
     /**
+     * pre call for index()
+     *
+     * if cache is present, use cache
+     */
+    public function _json_index()
+    {
+        if ($this->restler->getProductionMode()
+            && $this->restler->cache->isCached('resources')
+        ) {
+            //by pass call, compose, postCall stages and directly send response
+            $this->restler->composeHeaders();
+            die($this->restler->cache->get('resources'));
+        }
+    }
+
+    /**
+     * post call for index()
+     *
+     * create cache if in production mode
+     *
+     * @param $responseData
+     *
+     * @internal param string $data composed json output
+     *
+     * @return string
+     */
+    public function _index_json($responseData)
+    {
+        if ($this->restler->getProductionMode()) {
+            $this->restler->cache->set('resources', $responseData);
+        }
+        return $responseData;
+    }
+
+    /**
      * @access hybrid
      * @return \stdClass
      */
