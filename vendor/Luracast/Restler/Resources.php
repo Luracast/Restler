@@ -140,7 +140,7 @@ class Resources implements iUseAuthentication
      *
      * if cache is present, use cache
      */
-    public function _json_get($id)
+    public function _pre_get_json($id)
     {
         $this->currentResource = $resource = 'resources_'.$id;
         if ($this->restler->getProductionMode()
@@ -163,7 +163,7 @@ class Resources implements iUseAuthentication
      *
      * @return string
      */
-    public function _get_json($responseData)
+    public function _post_get_json($responseData)
     {
         if ($this->restler->getProductionMode()) {
             $this->restler->cache->set($this->currentResource, $responseData);
@@ -831,7 +831,7 @@ class Resources implements iUseAuthentication
      *
      * if cache is present, use cache
      */
-    public function _json_index()
+    public function _pre_index_json()
     {
         if ($this->restler->getProductionMode()
             && $this->restler->cache->isCached('resources')
@@ -853,7 +853,7 @@ class Resources implements iUseAuthentication
      *
      * @return string
      */
-    public function _index_json($responseData)
+    public function _post_index_json($responseData)
     {
         if ($this->restler->getProductionMode()) {
             $this->restler->cache->set('resources', $responseData);
