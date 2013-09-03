@@ -1303,17 +1303,20 @@ class Restler extends EventDispatcher
     }
 
     /**
-     * call _{extension}_{methodName) if exists with the same parameters as the
-     * api method
+     * pre call
      *
-     * @example _json_get
+     * call _pre_{methodName)_{extension} if exists with the same parameters as
+     * the api method
+     *
+     * @example _pre_get_json
      *
      */
     protected function preCall()
     {
         $o = & $this->apiMethodInfo;
-        $preCall = '_' . $this->requestFormat->getExtension() .
-            '_' . $o->methodName;
+        $preCall = '_pre_' . $o->methodName . '_'
+            . $this->requestFormat->getExtension();
+
         if (method_exists($o->className, $preCall)) {
             $this->dispatch('preCall');
             call_user_func_array(array(
@@ -1324,14 +1327,16 @@ class Restler extends EventDispatcher
     }
 
     /**
-     * call _{methodName}_{extension} if exists with the composed and
+     * post call
+     * 
+     * call _post_{methodName}_{extension} if exists with the composed and
      * serialized (applying the repose format) response data
      *
-     * @example _get_json
+     * @example _post_get_json
      */
     protected function postCall()
     {
-        $postCall = '_' . $this->apiMethodInfo->methodName . '_' .
+        $postCall = '_post_' . $this->apiMethodInfo->methodName . '_' .
             $this->responseFormat->getExtension();
         if (method_exists($this->apiClassInstance, $postCall)) {
             $this->dispatch('postCall');
