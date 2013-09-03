@@ -183,12 +183,6 @@ class Restler extends EventDispatcher
      */
     protected $apiClassInstance;
     /**
-     * Name of the api method being called
-     *
-     * @var string
-     */
-    protected $apiMethod;
-    /**
      * @var mixed
      */
     protected $responseData;
@@ -931,7 +925,7 @@ class Restler extends EventDispatcher
             );
     }
 
-    protected function composeHeaders(RestException $e = null)
+    public function composeHeaders(RestException $e = null)
     {
 
         //only GET method should be cached if allowed by API developer
@@ -1337,7 +1331,7 @@ class Restler extends EventDispatcher
      */
     protected function postCall()
     {
-        $postCall = '_' . $this->apiMethod . '_' .
+        $postCall = '_' . $this->apiMethodInfo->methodName . '_' .
             $this->responseFormat->getExtension();
         if (method_exists($this->apiClassInstance, $postCall)) {
             $this->dispatch('postCall');
