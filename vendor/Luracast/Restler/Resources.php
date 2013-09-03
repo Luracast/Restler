@@ -110,6 +110,7 @@ class Resources implements iUseAuthentication
         'delete' => 'remove',
     );
     private $_authenticated = false;
+    private $currentResource = '';
 
     public function __construct()
     {
@@ -132,6 +133,42 @@ class Resources implements iUseAuthentication
     public function __setAuthenticationStatus($isAuthenticated = false)
     {
         $this->_authenticated = $isAuthenticated;
+    }
+
+    /**
+     * pre call for get($id)
+     *
+     * if cache is present, use cache
+     */
+    public function _json_get($id)
+    {
+        $this->currentResource = $resource = 'resources_'.$id;
+        if ($this->restler->getProductionMode()
+            && $this->restler->cache->isCached($resource)
+        ) {
+            //by pass call, compose, postCall stages and directly send response
+            $this->restler->composeHeaders();
+            die($this->restler->cache->get($resource));
+        }
+    }
+
+    /**
+     * post call for get($id)
+     *
+     * create cache if in production mode
+     *
+     * @param $responseData
+     *
+     * @internal param string $data composed json output
+     *
+     * @return string
+     */
+    public function _get_json($responseData)
+    {
+        if ($this->restler->getProductionMode()) {
+            $this->restler->cache->set($this->currentResource, $responseData);
+        }
+        return $responseData;
     }
 
     /**
