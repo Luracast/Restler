@@ -241,35 +241,34 @@ class Util
             $className = get_class($instance);
         } else {
             $className = ltrim($classNameOrInstance, '\\');
-            if (isset(self::$classAliases[$classNameOrInstance])) {
-                $classNameOrInstance = self::$classAliases[$classNameOrInstance];
+            if (isset(self::$classAliases[$className])) {
+                $className = self::$classAliases[$className];
             }
-            if (!class_exists($classNameOrInstance)) {
-                throw new RestException(500, "Class '$classNameOrInstance' not found");
+            if (!class_exists($className)) {
+                throw new RestException(500, "Class '$className' not found");
             }
-            $instance = new $classNameOrInstance();
+            $instance = new $className();
             $instance->restler = self::$restler;
         }
         $shortName = static::getShortName($className);
-        $properties = null;
-        if (isset($metadata['class'][$className][CommentParser::$embeddedDataName])) {
-            $properties = $metadata['class'][$className][CommentParser::$embeddedDataName];
+        $properties =
+            Util::nestedValue(
+                $metadata, 'class', $className, CommentParser::$embeddedDataName
+            ) ? :
+                Util::nestedValue(
+                    $metadata, 'class', $shortName, CommentParser::$embeddedDataName
+                );
 
-        } elseif (isset($metadata['class'][$shortName][CommentParser::$embeddedDataName])) {
-            $properties = $metadata['class'][$shortName][CommentParser::$embeddedDataName];
-        }
-        if (isset($properties)) {
+        if (is_array($properties)) {
 
             $objectVars = get_object_vars($instance);
 
-            if (is_array($properties)) {
-                foreach ($properties as $property => $value) {
-                    if (property_exists($className, $property)) {
-                        //if not a static property
-                        array_key_exists($property, $objectVars)
-                            ? $instance->{$property} = $value
-                            : $instance::$$property = $value;
-                    }
+            foreach ($properties as $property => $value) {
+                if (property_exists($className, $property)) {
+                    //if not a static property
+                    array_key_exists($property, $objectVars)
+                        ? $instance->{$property} = $value
+                        : $instance::$$property = $value;
                 }
             }
         }
@@ -277,7 +276,6 @@ class Util
             $instance->__setAuthenticationStatus
                 (self::$restler->_authenticated);
         }
-
         return $instance;
     }
 
