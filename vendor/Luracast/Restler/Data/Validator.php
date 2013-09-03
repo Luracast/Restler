@@ -18,8 +18,180 @@ use Luracast\Restler\Util;
  */
 class Validator implements iValidate
 {
+    /**
+     * Validate Email
+     *
+     * Check if the given string is a valid email
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function email($input, ValidationInfo $info = null)
+    {
+        $r = filter_var($input, FILTER_VALIDATE_EMAIL);
+        if ($r) {
+            return $r;
+        }
+        throw new Invalid('Expecting email in `name@example.com` format');
+    }
 
-    public static function validate($input, ValidationInfo $info, $full=null)
+    /**
+     * MySQL Date
+     *
+     * Check if the given string is a valid date in YYYY-MM-DD format
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function date($input, ValidationInfo $info = null)
+    {
+        if (
+            preg_match(
+                '#^(?P<year>\d{2}|\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})$#',
+                $input,
+                $date
+            )
+            && checkdate($date['month'], $date['day'], $date['year'])
+        ) {
+            return $input;
+        }
+        throw new Invalid(
+            'Expecting date in `YYYY-MM-DD` format, such as `'
+            . date("Y-m-d") . '`'
+        );
+    }
+
+    /**
+     * MySQL DateTime
+     *
+     * Check if the given string is a valid date and time in YYY-MM-DD HH:MM:SS format
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function datetime($input, ValidationInfo $info = null)
+    {
+        if (
+            preg_match('/^(?<year>19\d\d|20\d\d)\-(?<month>0[1-9]|1[0-2])\-' .
+                '(?<day>0\d|[1-2]\d|3[0-1]) (?<h>0\d|1\d|2[0-3]' .
+                ')\:(?<i>[0-5][0-9])\:(?<s>[0-5][0-9])$/',
+                $input, $date)
+            && checkdate($date['month'], $date['day'], $date['year'])
+        ) {
+            return $input;
+        }
+        throw new Invalid(
+            'Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
+            . date("Y-m-d H:i:s") . '`'
+        );
+    }
+
+    /**
+     * Alias for Time
+     *
+     * Check if the given string is a valid time in HH:MM:SS format
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function time24($input, ValidationInfo $info = null)
+    {
+        return static::time($input, $info);
+    }
+
+    /**
+     * Time
+     *
+     * Check if the given string is a valid time in HH:MM:SS format
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function time($input, ValidationInfo $info = null)
+    {
+        if (preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/', $input)) {
+            return $input;
+        }
+        throw new Invalid(
+            'Expecting time in `HH:MM:SS` format, such as `'
+            . date("H:i:s") . '`'
+        );
+    }
+
+    /**
+     * Time in 12 hour format
+     *
+     * Check if the given string is a valid time 12 hour format
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function time12($input, ValidationInfo $info = null)
+    {
+        if (preg_match(
+            '/^([1-9]|1[0-2]|0[1-9]){1}(:[0-5][0-9])?\s?([aApP][mM]{1})?$/',
+            $input)
+        ) {
+            return $input;
+        }
+        throw new Invalid(
+            'Expecting time in 12 hour format, such as `08:00AM` and `10:05:11`'
+        );
+    }
+
+    /**
+     * Unix Timestamp
+     *
+     * Check if the given value is a valid timestamp
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return int
+     * @throws Invalid
+     */
+    public static function timestamp($input, ValidationInfo $info = null)
+    {
+        if ((string)(int)$input == $input
+            && ($input <= PHP_INT_MAX)
+            && ($input >= ~PHP_INT_MAX)
+        ) {
+            return (int)$input;
+        }
+        throw new Invalid('Expecting unix timestamp, such as ' . time());
+    }
+
+    /**
+     * Validate the given input
+     *
+     * Validates the input and attempts to fix it when fix is requested
+     *
+     * @param mixed          $input
+     * @param ValidationInfo $info
+     * @param null           $full
+     *
+     * @return array|bool|float|int|mixed|null|number|string
+     * @throws \Luracast\Restler\RestException
+     */
+    public static function validate($input, ValidationInfo $info, $full = null)
     {
         if (is_null($input)) {
             if ($info->required) {
@@ -75,57 +247,15 @@ class Validator implements iValidate
             }
         }
 
+        if (method_exists(__CLASS__, $info->type) && $info->type != 'validate') {
+            try {
+                return call_user_func(__CLASS__ . '::' . $info->type, $input, $info);
+            } catch (Invalid $e) {
+                throw new RestException(400, $error . '. ' . $e->getMessage());
+            }
+        }
+
         switch ($info->type) {
-            case 'email' :
-                $r = filter_var($input, FILTER_VALIDATE_EMAIL);
-                if ($r) {
-                    return $r;
-                }
-                $error .= '. Expecting email in `name@example.com` format';
-                break;
-            case 'date' :
-                if (
-                    preg_match('#^(?P<year>\d{2}|\d{4})-(?P<month>\d{1,2})-(?P<day>\d{1,2})$#', $input, $date)
-                    && checkdate($date['month'], $date['day'], $date['year'])
-                ) {
-                    return $input;
-                }
-                $error .= '. Expecting date in `YYYY-MM-DD` format, such as `'
-                    . date("Y-m-d") . '`';
-                break;
-            case 'datetime' :
-                if (
-                    preg_match('/^(?<year>19\d\d|20\d\d)\-(?<month>0[1-9]|1[0-2])\-' .
-                        '(?<day>0\d|[1-2]\d|3[0-1]) (?<h>0\d|1\d|2[0-3]' .
-                        ')\:(?<i>[0-5][0-9])\:(?<s>[0-5][0-9])$/',
-                        $input, $date) && checkdate($date['month'], $date['day'], $date['year'])
-                )
-                    return $input;
-                $error .= '. Expecting date and time in `YYYY-MM-DD HH:MM:SS` format, such as `'
-                    . date("Y-m-d H:i:s") . '`';
-                break;
-            case 'time' :
-            case 'time24' :
-                if (preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/', $input))
-                    return $input;
-                $error .= '. Expecting time in `HH:MM:SS` format, such as `'
-                    . date("H:i:s") . '`';
-                break;
-            case 'time12' :
-                if (preg_match('/^([1-9]|1[0-2]|0[1-9]){1}(:[0-5][0-9])?\s?([aApP][mM]{1})?$/', $input))
-                    return $input;
-                $error .= '. Expecting time in 12 hour format, such as `08:00AM` and `10:05:11`';
-                break;
-            case 'timestamp' :
-                if (
-                    (string)(int)$input == $input &&
-                    ($input <= PHP_INT_MAX) &&
-                    ($input >= ~PHP_INT_MAX)
-                ) {
-                    return (int)$input;
-                }
-                $error .= '. Expecting unix timestamp, such as ' . time();
-                break;
             case 'int' :
             case 'float' :
             case 'number' :
@@ -269,7 +399,7 @@ class Validator implements iValidate
                         );
                     }
                     $class = $info->type;
-                    $instance =  new $class();
+                    $instance = new $class();
                     if (is_array($info->children)) {
                         if (
                             empty($input) ||
