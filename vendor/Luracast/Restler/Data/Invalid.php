@@ -6,9 +6,13 @@ use Exception;
 /**
  * Invalid Exception
  *
- * Used by validators to throw an exception when the given data is invalid
- *
- * @package Luracast\Restler\Data
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc4
  */
 class Invalid extends Exception
 {
