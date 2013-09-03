@@ -106,6 +106,7 @@ class Restler extends EventDispatcher
      * @var boolean
      */
     protected $productionMode = false;
+    public $refreshCache = false;
     /**
      * Caching of url map is enabled or not
      *
@@ -207,6 +208,7 @@ class Restler extends EventDispatcher
                 DIRECTORY_SEPARATOR . 'cache';
         }
         $this->cache = new Defaults::$cacheClass();
+        $this->refreshCache = $refreshCache;
         // use this to rebuild cache every time in production mode
         if ($productionMode && $refreshCache) {
             $this->cached = false;
