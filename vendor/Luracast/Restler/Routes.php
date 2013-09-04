@@ -181,7 +181,7 @@ class Routes
                     $copy = unserialize(serialize($call));
                     foreach ($copy['metadata']['param'] as $i => $p) {
                         if (
-                            $p['from'] == 'path' &&
+                            (!isset($p['from']) || $p['from'] == 'path') &&
                             false === strpos($url, '{' . $p['name'] . '}') &&
                             false === strpos($url, ':' . $p['name'])
                         ) {
