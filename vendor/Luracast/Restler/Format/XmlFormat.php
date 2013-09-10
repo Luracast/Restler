@@ -144,6 +144,10 @@ class XmlFormat extends Format
                 unset($data[$key]);
             } elseif (is_array($value)) {
                 $data[$key] = empty($value) ? null : $this->fix($value);
+            } elseif ($value == 'true') {
+                $data[$key] = $value = true;
+            } elseif ($value == 'false') {
+                $data[$key] = $value = false;
             }
         }
         return $data;
