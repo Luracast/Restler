@@ -113,7 +113,7 @@ class XmlFormat extends Format
             if (static::$parseNamespaces) {
                 static::$nameSpaces = $xml->getDocNamespaces(TRUE);
                 foreach (static::$nameSpaces as $prefix => $ns) {
-                    $data += $this->fixAttributes(
+                    $data += $this->fix(
                         json_decode(json_encode($xml->children($ns, false)), true)
                     );
                 }
@@ -121,7 +121,7 @@ class XmlFormat extends Format
             if (static::$importRootNameAndAttributesFromXml) {
                 static::$rootName = $xml->getName();
             }
-            $data += $this->fixAttributes(json_decode(json_encode($xml), true));
+            $data += $this->fix(json_decode(json_encode($xml), true));
             return $data;
         } catch (\RuntimeException $e) {
             throw new RestException(400,
@@ -129,7 +129,7 @@ class XmlFormat extends Format
         }
     }
 
-    public function fixAttributes($data)
+    public function fix($data)
     {
         foreach ($data as $key => $value) {
             if ($key == '@attributes') {
@@ -139,11 +139,11 @@ class XmlFormat extends Format
                     ) {
                         static::$attributeNames[] = $att;
                     }
-                    $data[$att] = $v;
+                    $data[$att] = empty($v) ? null : $v;
                 }
                 unset($data[$key]);
             } elseif (is_array($value)) {
-                $data[$key] = $this->fixAttributes($value);
+                $data[$key] = empty($value) ? null : $this->fix($value);
             }
         }
         return $data;
