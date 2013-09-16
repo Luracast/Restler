@@ -25,6 +25,7 @@ class XmlFormat extends Format
     public static $parseAttributes = true;
     public static $parseNamespaces = true;
     public static $attributeNames = array('xmlns');
+    public static $nodeValueName = 'nodeValue';
     public static $nameSpaces = array();
     /**
      * Default name for the root node.
@@ -83,7 +84,15 @@ class XmlFormat extends Format
                 $key = static::$defaultTagName;
             if (is_array($value)) {
                 $xml->startElement($key);
-                $this->write($xml, $value);
+                if(isset($value[static::$nodeValueName])) {
+                	$text = $value[static::$nodeValueName];
+                	unset($value[static::$nodeValueName]);
+                	$this->write($xml, $value);
+                	$xml->text($text);
+                }
+                else {
+                	$this->write($xml, $value);
+                }
                 $xml->endElement();
                 continue;
             } elseif (is_bool($value)) {
