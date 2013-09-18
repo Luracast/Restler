@@ -6,7 +6,7 @@ Restler is a simple and effective multi-format Web API Server written in PHP.
 
 Just deal with your business logic in php, restler will take care of the REST!
 
-> if you do not have PHP >= 5.3.7 on your server and wont be able to upgrade you may
+> if you do not have PHP >= 5.3.2 on your server and wont be able to upgrade you may
 > use [Restler 2](https://github.com/Luracast/Restler/tree/v2) instead
 
 ### Restler 3 - *Better APIs by Design*
@@ -85,6 +85,10 @@ Git Repository and the Branches
 
 Installation
 ------------
+
+Make sure PHP 5.3.2 or above (at least 5.3.4 recommended to avoid potential bugs)
+is available on your server
+
 ### 1. Install Composer
 
 Restler uses [Composer](http://getcomposer.org/) to manage its dependencies.
