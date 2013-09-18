@@ -3,6 +3,7 @@ namespace Luracast\Restler\Format;
 
 use Luracast\Restler\Data\Object;
 use Luracast\Restler\RestException;
+use SimpleXMLElement;
 use XMLWriter;
 
 /**
@@ -21,12 +22,34 @@ class XmlFormat extends Format
 {
     const MIME = 'application/xml';
     const EXTENSION = 'xml';
-    public static $importRootNameAndAttributesFromXml = false;
+
+    // ==================================================================
+    //
+    // Properties related to reading/parsing/decoding xml
+    //
+    // ------------------------------------------------------------------
+    public static $importSettingsFromXml = false;
     public static $parseAttributes = true;
     public static $parseNamespaces = true;
-    public static $attributeNames = array('xmlns');
-    public static $nodeValueName = 'nodeValue';
+    public static $parseTextNodeAsProperty = true;
+
+    // ==================================================================
+    //
+    // Properties related to writing/encoding xml
+    //
+    // ------------------------------------------------------------------
+    public static $useTextNodeProperty = true;
+    public static $useNamespaces = true;
+
+    // ==================================================================
+    //
+    // Common Properties
+    //
+    // ------------------------------------------------------------------
+    public static $attributeNames = array();
+    public static $textNodeName = 'text';
     public static $nameSpaces = array();
+    public static $nameSpacedProperties = array();
     /**
      * Default name for the root node.
      *
@@ -52,10 +75,12 @@ class XmlFormat extends Format
         $s .= 'XmlFormat::$parseAttributes = ' .
             (self::$parseAttributes ? 'true' : 'false') . ";\n";
         $s .= 'XmlFormat::$parseNamespaces = ' .
-            (self::$parseNamespaces ? 'true' : 'false') . ";\n\n\n";
+            (self::$parseNamespaces ? 'true' : 'false') . ";\n";
         if (self::$parseNamespaces) {
             $s .= 'XmlFormat::$nameSpaces = ' .
                 (var_export(self::$nameSpaces, true)) . ";\n";
+            $s .= 'XmlFormat::$nameSpacedProperties = ' .
+                (var_export(self::$nameSpacedProperties, true)) . ";\n";
         }
 
         return $s;
@@ -71,7 +96,20 @@ class XmlFormat extends Format
             $xml->setIndent(true);
             $xml->setIndentString('    ');
         }
-        $xml->startElement(static::$rootName);
+        static::$useNamespaces && isset(static::$nameSpacedProperties[static::$rootName])
+            ? $xml->startElementNs(
+            static::$nameSpacedProperties[static::$rootName],
+            static::$rootName,
+            static::$nameSpaces[static::$nameSpacedProperties[static::$rootName]]
+        )
+            : $xml->startElement(static::$rootName);
+        if (static::$useNamespaces) {
+            foreach (static::$nameSpaces as $prefix => $ns) {
+                if (static::$nameSpacedProperties[static::$rootName] == $prefix)
+                    continue;
+                $xml->writeAttribute('xmlns:' . $prefix, $ns);
+            }
+        }
         $this->write($xml, $data);
         $xml->endElement();
         return $xml->outputMemory();
@@ -79,29 +117,62 @@ class XmlFormat extends Format
 
     public function write(XMLWriter $xml, $data)
     {
+        $text = '';
+        if (static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
+            $text = $data[static::$textNodeName];
+            unset($data[static::$textNodeName]);
+        }
         foreach ($data as $key => $value) {
-            if (is_numeric($key))
+            if (is_numeric($key)) {
+                if (is_string($value)) {
+                    $text .= $value;
+                    continue;
+                }
                 $key = static::$defaultTagName;
+            }
             if (is_array($value)) {
-                $xml->startElement($key);
-                if(isset($value[static::$nodeValueName])) {
-                	$text = $value[static::$nodeValueName];
-                	unset($value[static::$nodeValueName]);
-                	$this->write($xml, $value);
-                	$xml->text($text);
-                }
-                else {
-                	$this->write($xml, $value);
-                }
+                static::$useNamespaces
+                && isset(static::$nameSpacedProperties[$key])
+                && false === strpos($key, ':')
+                    ? $xml->startElementNs(
+                    static::$nameSpacedProperties[$key],
+                    $key,
+                    null
+                )
+                    : $xml->startElement($key);
+                $this->write($xml, $value);
                 $xml->endElement();
                 continue;
             } elseif (is_bool($value)) {
                 $value = $value ? 'true' : 'false';
             }
-            in_array($key, static::$attributeNames)
-                ? $xml->writeAttribute($key, $value)
-                : $xml->writeElement($key, $value);
+            if (in_array($key, static::$attributeNames)) {
+                static::$useNamespaces
+                && isset(static::$nameSpacedProperties[$key])
+                && false === strpos($key, ':')
+                    ? $xml->writeAttributeNs(
+                    static::$nameSpacedProperties[$key],
+                    $key,
+                    null,
+                    $value
+                )
+                    : $xml->writeAttribute($key, $value);
+            } else {
+                static::$useNamespaces
+                && isset(static::$nameSpacedProperties[$key])
+                && false === strpos($key, ':')
+                    ? $xml->writeElementNs(
+                    static::$nameSpacedProperties[$key],
+                    $key,
+                    null,
+                    $value
+                )
+                    : $xml->writeElement($key, $value);
 
+            }
+        }
+        if (!empty($text)) {
+            $xml->text($text);
         }
     }
 
@@ -114,23 +185,23 @@ class XmlFormat extends Format
             libxml_use_internal_errors(true);
             $xml = simplexml_load_string($data,
                 "SimpleXMLElement", LIBXML_NOBLANKS | LIBXML_NOCDATA);
-            foreach (libxml_get_errors() as $error) {
-                throw new RestException(400, 'Malformed xml at line ' . $error->line);
+            if (false === $xml) {
+                $error = end(libxml_get_errors());
+                throw new RestException(400, 'Malformed XML. '
+                    . trim($error->message, "\r\n") . ' at line ' . $error->line);
             }
             libxml_clear_errors();
-            $data = array();
-            if (static::$parseNamespaces) {
-                static::$nameSpaces = $xml->getDocNamespaces(TRUE);
-                foreach (static::$nameSpaces as $prefix => $ns) {
-                    $data += $this->fix(
-                        json_decode(json_encode($xml->children($ns, false)), true)
-                    );
+            if (static::$importSettingsFromXml) {
+                static::$attributeNames = array();
+                static::$nameSpacedProperties = array();
+                static::$nameSpaces = array();
+                static::$rootName = $xml->getName();
+                $namespaces = $xml->getNamespaces();
+                if (count($namespaces)) {
+                    static::$nameSpacedProperties[static::$rootName] = end(array_keys($namespaces));
                 }
             }
-            if (static::$importRootNameAndAttributesFromXml) {
-                static::$rootName = $xml->getName();
-            }
-            $data += $this->fix(json_decode(json_encode($xml), true));
+            $data = $this->read($xml);
             return $data;
         } catch (\RuntimeException $e) {
             throw new RestException(400,
@@ -138,28 +209,80 @@ class XmlFormat extends Format
         }
     }
 
-    public function fix($data)
+    public function read(SimpleXMLElement $xml, $namespaces = null)
     {
-        foreach ($data as $key => $value) {
-            if ($key == '@attributes') {
-                foreach ($value as $att => $v) {
-                    if (static::$importRootNameAndAttributesFromXml
-                        && !in_array($att, static::$attributeNames)
-                    ) {
-                        static::$attributeNames[] = $att;
-                    }
-                    $data[$att] = empty($v) ? null : $v;
+        $r = array();
+        $text = (string)$xml;
+
+        if (static::$parseAttributes) {
+            $attributes = $xml->attributes();
+            foreach ($attributes as $key => $value) {
+                if (static::$importSettingsFromXml
+                    && !in_array($key, static::$attributeNames)
+                ) {
+                    static::$attributeNames[] = $key;
                 }
-                unset($data[$key]);
-            } elseif (is_array($value)) {
-                $data[$key] = empty($value) ? null : $this->fix($value);
-            } elseif ($value == 'true') {
-                $data[$key] = $value = true;
-            } elseif ($value == 'false') {
-                $data[$key] = $value = false;
+                $r[$key] = static::setType((string)$value);
             }
         }
-        return $data;
+        $children = $xml->children();
+        foreach ($children as $key => $value) {
+            $r[$key] = $this->read($value);
+        }
+
+        if (static::$parseNamespaces) {
+            if (is_null($namespaces))
+                $namespaces = $xml->getDocNamespaces(true);
+            foreach ($namespaces as $prefix => $ns) {
+                static::$nameSpaces[$prefix] = $ns;
+                if (static::$parseAttributes) {
+                    $attributes = $xml->attributes($ns);
+                    foreach ($attributes as $key => $value) {
+                        if (isset($r[$key])) {
+                            $key = "{$prefix}:$key";
+                        }
+                        if (static::$importSettingsFromXml
+                            && !in_array($key, static::$attributeNames)
+                        ) {
+                            static::$nameSpacedProperties[$key] = $prefix;
+                            static::$attributeNames[] = $key;
+                        }
+                        $r[$key] = static::setType((string)$value);
+                    }
+                }
+                $children = $xml->children($ns);
+                foreach ($children as $key => $value) {
+                    if (isset($r[$key])) {
+                        $key = "{$prefix}:$key";
+                    }
+                    if (static::$importSettingsFromXml)
+                        static::$nameSpacedProperties[$key] = $prefix;
+                    $r[$key] = $this->read($value, $namespaces);
+                }
+            }
+        }
+
+        if (empty($text)) {
+            if (empty($r)) return null;
+        } else {
+            empty($r)
+                ? $r = static::setType($text)
+                : (static::$parseTextNodeAsProperty
+                ? $r[static::$textNodeName] = static::setType($text)
+                : $r[] = static::setType($text));
+        }
+        return $r;
+    }
+
+    public static function setType($value)
+    {
+        if (empty($value))
+            return null;
+        if ($value == 'true')
+            return true;
+        if ($value == 'false')
+            return true;
+        return $value;
     }
 }
 
