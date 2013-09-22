@@ -119,6 +119,7 @@ class XmlFormat extends Format
     {
         $text = '';
         if (static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
+            print_r($data);
             $text = $data[static::$textNodeName];
             unset($data[static::$textNodeName]);
         }
@@ -227,7 +228,16 @@ class XmlFormat extends Format
         }
         $children = $xml->children();
         foreach ($children as $key => $value) {
-            $r[$key] = $this->read($value);
+            if (isset($r[$key])) {
+                if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
+                    $r[$key] = array($r[$key]);
+                } else {
+                    $r[$key] = array($r[$key]);
+                }
+                $r[$key][] = $this->read($value);
+            } else {
+                $r[$key] = $this->read($value);
+            }
         }
 
         if (static::$parseNamespaces) {
@@ -257,7 +267,16 @@ class XmlFormat extends Format
                     }
                     if (static::$importSettingsFromXml)
                         static::$nameSpacedProperties[$key] = $prefix;
-                    $r[$key] = $this->read($value, $namespaces);
+                    if (isset($r[$key])) {
+                        if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
+                            $r[$key] = array($r[$key]);
+                        } else {
+                            $r[$key] = array($r[$key]);
+                        }
+                        $r[$key][] = $this->read($value, $namespaces);
+                    } else {
+                        $r[$key] = $this->read($value, $namespaces);
+                    }
                 }
             }
         }
