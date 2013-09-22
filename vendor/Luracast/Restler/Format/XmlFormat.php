@@ -282,9 +282,6 @@ class XmlFormat extends Format
                 }
                 $children = $xml->children($ns);
                 foreach ($children as $key => $value) {
-                    if (isset($r[$key])) {
-                        $key = "{$prefix}:$key";
-                    }
                     if (static::$importSettingsFromXml)
                         static::$nameSpacedProperties[$key] = $prefix;
                     if (isset($r[$key])) {
