@@ -118,59 +118,78 @@ class XmlFormat extends Format
     public function write(XMLWriter $xml, $data)
     {
         $text = '';
-        if (static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
-            print_r($data);
-            $text = $data[static::$textNodeName];
-            unset($data[static::$textNodeName]);
-        }
-        foreach ($data as $key => $value) {
-            if (is_numeric($key)) {
-                if (is_string($value)) {
-                    $text .= $value;
-                    continue;
+        if (is_array($data)) {
+            if(static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
+                $text = $data[static::$textNodeName];
+                unset($data[static::$textNodeName]);
+            }
+            foreach ($data as $key => $value) {
+                if (is_numeric($key)) {
+                    if (is_string($value)) {
+                        $text .= $value;
+                        continue;
+                    }
+                    $key = static::$defaultTagName;
                 }
-                $key = static::$defaultTagName;
-            }
-            if (is_array($value)) {
-                static::$useNamespaces
-                && isset(static::$nameSpacedProperties[$key])
-                && false === strpos($key, ':')
-                    ? $xml->startElementNs(
-                    static::$nameSpacedProperties[$key],
-                    $key,
-                    null
-                )
-                    : $xml->startElement($key);
-                $this->write($xml, $value);
-                $xml->endElement();
-                continue;
-            } elseif (is_bool($value)) {
-                $value = $value ? 'true' : 'false';
-            }
-            if (in_array($key, static::$attributeNames)) {
-                static::$useNamespaces
-                && isset(static::$nameSpacedProperties[$key])
-                && false === strpos($key, ':')
-                    ? $xml->writeAttributeNs(
-                    static::$nameSpacedProperties[$key],
-                    $key,
-                    null,
-                    $value
-                )
-                    : $xml->writeAttribute($key, $value);
-            } else {
-                static::$useNamespaces
-                && isset(static::$nameSpacedProperties[$key])
-                && false === strpos($key, ':')
-                    ? $xml->writeElementNs(
-                    static::$nameSpacedProperties[$key],
-                    $key,
-                    null,
-                    $value
-                )
-                    : $xml->writeElement($key, $value);
+                if (is_array($value)) {
+                    $useNS = static::$useNamespaces
+                        && isset(static::$nameSpacedProperties[$key])
+                        && false === strpos($key, ':');
+                    if($value==array_values($value)){
+                        //numeric array, create siblings
+                        foreach ($value as $v) {
+                            $useNS
+                                ? $xml->startElementNs(
+                                static::$nameSpacedProperties[$key],
+                                $key,
+                                null
+                            )
+                                : $xml->startElement($key);
+                            $this->write($xml, $v);
+                            $xml->endElement();
+                        }
+                    } else {
+                        $useNS
+                            ? $xml->startElementNs(
+                            static::$nameSpacedProperties[$key],
+                            $key,
+                            null
+                        )
+                            : $xml->startElement($key);
+                        $this->write($xml, $value);
+                        $xml->endElement();
+                    }
+                    continue;
+                } elseif (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                }
+                if (in_array($key, static::$attributeNames)) {
+                    static::$useNamespaces
+                    && isset(static::$nameSpacedProperties[$key])
+                    && false === strpos($key, ':')
+                        ? $xml->writeAttributeNs(
+                        static::$nameSpacedProperties[$key],
+                        $key,
+                        null,
+                        $value
+                    )
+                        : $xml->writeAttribute($key, $value);
+                } else {
+                    static::$useNamespaces
+                    && isset(static::$nameSpacedProperties[$key])
+                    && false === strpos($key, ':')
+                        ? $xml->writeElementNs(
+                        static::$nameSpacedProperties[$key],
+                        $key,
+                        null,
+                        $value
+                    )
+                        : $xml->writeElement($key, $value);
 
+                }
             }
+        } else {
+            $text =  (string) $data;
         }
         if (!empty($text)) {
             $xml->text($text);
