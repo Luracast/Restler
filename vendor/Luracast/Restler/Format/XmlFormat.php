@@ -105,7 +105,8 @@ class XmlFormat extends Format
             : $xml->startElement(static::$rootName);
         if (static::$useNamespaces) {
             foreach (static::$nameSpaces as $prefix => $ns) {
-                if (static::$nameSpacedProperties[static::$rootName] == $prefix)
+                if (isset(static::$nameSpacedProperties[static::$rootName])
+                    && static::$nameSpacedProperties[static::$rootName] == $prefix)
                     continue;
                 $xml->writeAttribute('xmlns:' . $prefix, $ns);
             }
