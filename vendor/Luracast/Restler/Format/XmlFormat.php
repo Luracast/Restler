@@ -48,8 +48,8 @@ class XmlFormat extends Format
     // ------------------------------------------------------------------
     public static $attributeNames = array();
     public static $textNodeName = 'text';
-    public static $nameSpaces = array();
-    public static $nameSpacedProperties = array();
+    public static $namepaces = array();
+    public static $namespacedProperties = array();
     /**
      * Default name for the root node.
      *
@@ -78,9 +78,9 @@ class XmlFormat extends Format
             (self::$parseNamespaces ? 'true' : 'false') . ";\n";
         if (self::$parseNamespaces) {
             $s .= 'XmlFormat::$nameSpaces = ' .
-                (var_export(self::$nameSpaces, true)) . ";\n";
+                (var_export(self::$namepaces, true)) . ";\n";
             $s .= 'XmlFormat::$nameSpacedProperties = ' .
-                (var_export(self::$nameSpacedProperties, true)) . ";\n";
+                (var_export(self::$namespacedProperties, true)) . ";\n";
         }
 
         return $s;
@@ -96,17 +96,18 @@ class XmlFormat extends Format
             $xml->setIndent(true);
             $xml->setIndentString('    ');
         }
-        static::$useNamespaces && isset(static::$nameSpacedProperties[static::$rootName])
+        static::$useNamespaces && isset(static::$namespacedProperties[static::$rootName])
             ? $xml->startElementNs(
-            static::$nameSpacedProperties[static::$rootName],
+            static::$namespacedProperties[static::$rootName],
             static::$rootName,
-            static::$nameSpaces[static::$nameSpacedProperties[static::$rootName]]
+            static::$namepaces[static::$namespacedProperties[static::$rootName]]
         )
             : $xml->startElement(static::$rootName);
         if (static::$useNamespaces) {
-            foreach (static::$nameSpaces as $prefix => $ns) {
-                if (isset(static::$nameSpacedProperties[static::$rootName])
-                    && static::$nameSpacedProperties[static::$rootName] == $prefix)
+            foreach (static::$namepaces as $prefix => $ns) {
+                if (isset(static::$namespacedProperties[static::$rootName])
+                    && static::$namespacedProperties[static::$rootName] == $prefix
+                )
                     continue;
                 $xml->writeAttribute('xmlns:' . $prefix, $ns);
             }
@@ -120,7 +121,7 @@ class XmlFormat extends Format
     {
         $text = '';
         if (is_array($data)) {
-            if(static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
+            if (static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
                 $text = $data[static::$textNodeName];
                 unset($data[static::$textNodeName]);
             }
@@ -133,15 +134,15 @@ class XmlFormat extends Format
                     $key = static::$defaultTagName;
                 }
                 $useNS = static::$useNamespaces
-                    && isset(static::$nameSpacedProperties[$key])
+                    && isset(static::$namespacedProperties[$key])
                     && false === strpos($key, ':');
                 if (is_array($value)) {
-                    if($value==array_values($value)){
+                    if ($value == array_values($value)) {
                         //numeric array, create siblings
                         foreach ($value as $v) {
                             $useNS
                                 ? $xml->startElementNs(
-                                static::$nameSpacedProperties[$key],
+                                static::$namespacedProperties[$key],
                                 $key,
                                 null
                             )
@@ -152,7 +153,7 @@ class XmlFormat extends Format
                     } else {
                         $useNS
                             ? $xml->startElementNs(
-                            static::$nameSpacedProperties[$key],
+                            static::$namespacedProperties[$key],
                             $key,
                             null
                         )
@@ -167,7 +168,7 @@ class XmlFormat extends Format
                 if (in_array($key, static::$attributeNames)) {
                     $useNS
                         ? $xml->writeAttributeNs(
-                        static::$nameSpacedProperties[$key],
+                        static::$namespacedProperties[$key],
                         $key,
                         null,
                         $value
@@ -176,7 +177,7 @@ class XmlFormat extends Format
                 } else {
                     $useNS
                         ? $xml->startElementNs(
-                        static::$nameSpacedProperties[$key],
+                        static::$namespacedProperties[$key],
                         $key,
                         null
                     )
@@ -186,7 +187,7 @@ class XmlFormat extends Format
                 }
             }
         } else {
-            $text =  (string) $data;
+            $text = (string)$data;
         }
         if (!empty($text)) {
             $xml->text($text);
@@ -210,12 +211,12 @@ class XmlFormat extends Format
             libxml_clear_errors();
             if (static::$importSettingsFromXml) {
                 static::$attributeNames = array();
-                static::$nameSpacedProperties = array();
-                static::$nameSpaces = array();
+                static::$namespacedProperties = array();
+                static::$namepaces = array();
                 static::$rootName = $xml->getName();
                 $namespaces = $xml->getNamespaces();
                 if (count($namespaces)) {
-                    static::$nameSpacedProperties[static::$rootName] = end(array_keys($namespaces));
+                    static::$namespacedProperties[static::$rootName] = end(array_keys($namespaces));
                 }
             }
             $data = $this->read($xml);
@@ -260,7 +261,7 @@ class XmlFormat extends Format
             if (is_null($namespaces))
                 $namespaces = $xml->getDocNamespaces(true);
             foreach ($namespaces as $prefix => $ns) {
-                static::$nameSpaces[$prefix] = $ns;
+                static::$namepaces[$prefix] = $ns;
                 if (static::$parseAttributes) {
                     $attributes = $xml->attributes($ns);
                     foreach ($attributes as $key => $value) {
@@ -270,7 +271,7 @@ class XmlFormat extends Format
                         if (static::$importSettingsFromXml
                             && !in_array($key, static::$attributeNames)
                         ) {
-                            static::$nameSpacedProperties[$key] = $prefix;
+                            static::$namespacedProperties[$key] = $prefix;
                             static::$attributeNames[] = $key;
                         }
                         $r[$key] = static::setType((string)$value);
@@ -279,7 +280,7 @@ class XmlFormat extends Format
                 $children = $xml->children($ns);
                 foreach ($children as $key => $value) {
                     if (static::$importSettingsFromXml)
-                        static::$nameSpacedProperties[$key] = $prefix;
+                        static::$namespacedProperties[$key] = $prefix;
                     if (isset($r[$key])) {
                         if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
                             $r[$key] = array($r[$key]);
