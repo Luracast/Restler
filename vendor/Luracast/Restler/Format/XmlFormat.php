@@ -111,12 +111,12 @@ class XmlFormat extends Format
                 $xml->writeAttribute('xmlns:' . $prefix, $ns);
             }
         }
-        $this->write($xml, $data);
+        $this->write($xml, $data, static::$rootName);
         $xml->endElement();
         return $xml->outputMemory();
     }
 
-    public function write(XMLWriter $xml, $data)
+    public function write(XMLWriter $xml, $data, $parent)
     {
         $text = '';
         if (is_array($data)) {
@@ -146,7 +146,7 @@ class XmlFormat extends Format
                                 null
                             )
                                 : $xml->startElement($key);
-                            $this->write($xml, $v);
+                            $this->write($xml, $v, $key);
                             $xml->endElement();
                         }
                     } else {
@@ -157,7 +157,7 @@ class XmlFormat extends Format
                             null
                         )
                             : $xml->startElement($key);
-                        $this->write($xml, $value);
+                        $this->write($xml, $value, $key);
                         $xml->endElement();
                     }
                     continue;
@@ -181,7 +181,7 @@ class XmlFormat extends Format
                         null
                     )
                         : $xml->startElement($key);
-                    $this->write($xml, $value);
+                    $this->write($xml, $value, $key);
                     $xml->endElement();
                 }
             }
