@@ -40,6 +40,7 @@ class XmlFormat extends Format
     // ------------------------------------------------------------------
     public static $useTextNodeProperty = true;
     public static $useNamespaces = true;
+    public static $cdataNames = array();
 
     // ==================================================================
     //
@@ -190,7 +191,9 @@ class XmlFormat extends Format
             $text = (string)$data;
         }
         if (!empty($text)) {
-            $xml->text($text);
+            in_array($parent, static::$cdataNames)
+                ? $xml->writeCdata($text)
+                : $xml->text($text);
         }
     }
 
