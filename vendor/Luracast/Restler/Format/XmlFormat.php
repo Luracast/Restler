@@ -132,10 +132,10 @@ class XmlFormat extends Format
                     }
                     $key = static::$defaultTagName;
                 }
+                $useNS = static::$useNamespaces
+                    && isset(static::$nameSpacedProperties[$key])
+                    && false === strpos($key, ':');
                 if (is_array($value)) {
-                    $useNS = static::$useNamespaces
-                        && isset(static::$nameSpacedProperties[$key])
-                        && false === strpos($key, ':');
                     if($value==array_values($value)){
                         //numeric array, create siblings
                         foreach ($value as $v) {
@@ -165,9 +165,7 @@ class XmlFormat extends Format
                     $value = $value ? 'true' : 'false';
                 }
                 if (in_array($key, static::$attributeNames)) {
-                    static::$useNamespaces
-                    && isset(static::$nameSpacedProperties[$key])
-                    && false === strpos($key, ':')
+                    $useNS
                         ? $xml->writeAttributeNs(
                         static::$nameSpacedProperties[$key],
                         $key,
@@ -176,17 +174,15 @@ class XmlFormat extends Format
                     )
                         : $xml->writeAttribute($key, $value);
                 } else {
-                    static::$useNamespaces
-                    && isset(static::$nameSpacedProperties[$key])
-                    && false === strpos($key, ':')
-                        ? $xml->writeElementNs(
+                    $useNS
+                        ? $xml->startElementNs(
                         static::$nameSpacedProperties[$key],
                         $key,
-                        null,
-                        $value
+                        null
                     )
-                        : $xml->writeElement($key, $value);
-
+                        : $xml->startElement($key);
+                    $this->write($xml, $value);
+                    $xml->endElement();
                 }
             }
         } else {
