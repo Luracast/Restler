@@ -20,6 +20,10 @@ use Luracast\Restler\Util;
 class ValidationInfo implements iValueObject
 {
     /**
+     * @var mixed default value for the parameter
+     */
+    public $default;
+    /**
      * Name of the variable being validated
      *
      * @var string variable name
