@@ -397,12 +397,8 @@ class Restler extends EventDispatcher
             $baseUrl .= $_SERVER['SERVER_NAME'];
         }
 
-        $baseUrl = rtrim($baseUrl
+        $this->baseUrl = rtrim($baseUrl
         . substr($fullPath, 0, strlen($fullPath) - strlen($path)), '/');
-
-        $this->baseUrl = false === strpos($baseUrl, '.')
-            ? $baseUrl
-            : pathinfo($baseUrl, PATHINFO_DIRNAME);
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace(
