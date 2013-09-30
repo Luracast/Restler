@@ -1003,7 +1003,9 @@ class Restler extends EventDispatcher
                 usleep(1e6 * (Defaults::$throttle / 1e3 - $elapsed));
             }
         }
-        die($this->responseData);
+        echo $this->responseData;
+        $this->dispatch('complete');
+        exit;
     }
 
     protected function message(Exception $exception)
