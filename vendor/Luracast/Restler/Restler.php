@@ -389,6 +389,7 @@ class Restler extends EventDispatcher
             $_SERVER['SCRIPT_NAME']
         );
         $baseUrl = $_SERVER['SERVER_PORT'] == '443' ||
+        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
         (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
         if ($_SERVER['SERVER_PORT'] != '80' && $_SERVER['SERVER_PORT'] != '443') {
             $baseUrl .= $_SERVER['SERVER_NAME'] . ':'
