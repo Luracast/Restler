@@ -2,6 +2,7 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ValidationInfo;
+use Luracast\Restler\Tag as T;
 
 /**
  * Utility class to build html forms
@@ -50,44 +51,45 @@ class Forms
         }
         if (!$info)
             throw new RestException(500, 'invalid action path for form');
-        $childIndent = $prefix . $indent;
+
         $m = $info->metadata;
-        $r = $prefix . '<form method="' . $method . '" action="'
-            . Util::$restler->getBaseUrl()
-            . '/' . rtrim($action, '/') . '">' . PHP_EOL;
-        $r .= static::fields($m['param'], $info->parameters, $childIndent);
-        $r .= $childIndent . '<input type="submit"></input>' . PHP_EOL;
-        $r .= $prefix . '</form>' . PHP_EOL;
-        echo $r;
+        $r = static::fields($m['param'], $info->parameters);
+        $r [] = T::input()->type('submit');
+
+        return T::form($r)
+            ->action(Util::$restler->getBaseUrl() . '/' . rtrim($action, '/'))
+            ->method($method)
+            ->toString($prefix, $indent);
     }
 
-    public static function fields(array $params, array $values, $indent = "    ")
+    public static function fields(array $params, array $values)
     {
-        $r = '';
+        $r = array();
         foreach ($params as $k => $p) {
-            $r .= $indent
-                . static::field(
-                    new ValidationInfo($p), Util::nestedValue($values, $k)
-                )
-                . PHP_EOL;
+            $r [] = static::field(
+                new ValidationInfo($p), Util::nestedValue($values, $k)
+            );
         }
-
         return $r;
     }
 
     public static function field(ValidationInfo $p, $value = null)
     {
-        $r = '<' . static::$fieldWrapper . '>' . static::title($p->name)
-            . '<input name="' . $p->name . '"';
+        $t = T::input()->name($p->name);
         if (!is_null($value))
-            $r .= ' value="' . $value . '"';
+            $t->value($value);
         if ($p->required)
-            $r .= ' required';
+            $t->required(true);
         if ($p->default)
-            $r .= ' placeholder="' . $p->default . '"';
-        $r .= '></input>'
-            . '</' . static::$fieldWrapper . '>';
-        return $r;
+            $t->placeholder($p->default);
+        if (static::$fieldWrapper) {
+            $t = call_user_func(
+                'Luracast\Restler\Tag::' . static::$fieldWrapper,
+                static::title($p->name),
+                $t
+            );
+        }
+        return $t;
     }
 
     protected static function title($name)
