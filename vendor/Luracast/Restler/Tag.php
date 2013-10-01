@@ -11,6 +11,19 @@ namespace Luracast\Restler;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
+ *
+ * ============================== magic  methods ===============================
+ * @method Tag name(string $value) name attribute
+ * @method Tag action(string $value) action attribute
+ * @method Tag placeholder(string $value) placeholder attribute
+ * @method Tag value(string $value) value attribute
+ * @method Tag required(boolean $value) required attribute
+ *
+ * =========================== static magic methods ============================
+ * @method static Tag form() creates a html form
+ * @method static Tag input() creates a html input element
+ * @method static Tag button() creates a html button element
+ *
  */
 class Tag
 {
@@ -19,11 +32,11 @@ class Tag
     public $indent = '    ';
     protected $attributes = array();
     protected $children = array();
-    protected $name;
+    protected $tag;
 
-    public function __construct($name, array $children)
+    public function __construct($name, array $children = array())
     {
-        $this->name = $name;
+        $this->tag = $name;
         $this->children = $children;
     }
 
@@ -34,14 +47,34 @@ class Tag
         return $this->__toString();
     }
 
+    /**
+     * @param       $name
+     * @param array $children
+     *
+     * @return Tag
+     */
     public static function __callStatic($name, array $children)
     {
+        if (isset($children[0]) && is_array($children[0]))
+            $children = $children[0];
         return new static($name, $children);
     }
 
+    /**
+     * @param $attribute
+     * @param $value
+     *
+     * @return Tag
+     */
     public function __call($attribute, $value)
     {
-        $this->attributes[$attribute] = $value[0];
+        $value = $value[0];
+        if (is_bool($value)) {
+
+        }
+        $this->attributes[$attribute] = is_bool($value)
+            ? ($value ? 'true' : 'false')
+            : (string)$value;
         return $this;
     }
 
@@ -71,11 +104,11 @@ class Tag
 
         if (count($this->children))
             return static::$humanReadable
-                ? "$this->prefix<{$this->name}{$attributes}>"
+                ? "$this->prefix<{$this->tag}{$attributes}>"
                 . "$children"
-                . "</{$this->name}>"
-                : "<{$this->name}{$attributes}>$children</{$this->name}>";
+                . "</{$this->tag}>"
+                : "<{$this->tag}{$attributes}>$children</{$this->tag}>";
 
-        return "<{$this->name}{$attributes} />";
+        return "$this->prefix<{$this->tag}{$attributes}/>";
     }
 } 
