@@ -33,6 +33,7 @@ class Tag
     protected $attributes = array();
     protected $children = array();
     protected $tag;
+    protected static $instances = array();
 
     public function __construct($name, array $children = array())
     {
@@ -58,6 +59,22 @@ class Tag
         if (isset($children[0]) && is_array($children[0]))
             $children = $children[0];
         return new static($name, $children);
+    }
+
+    /**
+     * Set the id attribute of the current tag
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function id($value)
+    {
+        $this->attributes['id'] = isset($value)
+            ? (string)$value
+            : Util::nestedValue($this->attributes, 'name');
+        static::$instances[$value] = $this;
+        return $this;
     }
 
     /**
