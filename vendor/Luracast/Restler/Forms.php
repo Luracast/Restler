@@ -2,7 +2,7 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ValidationInfo;
-use Luracast\Restler\Tag as T;
+use Luracast\Restler\Tags as T;
 
 /**
  * Utility class to build html forms
