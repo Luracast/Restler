@@ -13,19 +13,19 @@ namespace Luracast\Restler;
  * @version    3.0.0rc5
  *
  * ============================== magic  methods ===============================
- * @method Tag name(string $value) name attribute
- * @method Tag action(string $value) action attribute
- * @method Tag placeholder(string $value) placeholder attribute
- * @method Tag value(string $value) value attribute
- * @method Tag required(boolean $value) required attribute
+ * @method Tags name(string $value) name attribute
+ * @method Tags action(string $value) action attribute
+ * @method Tags placeholder(string $value) placeholder attribute
+ * @method Tags value(string $value) value attribute
+ * @method Tags required(boolean $value) required attribute
  *
  * =========================== static magic methods ============================
- * @method static Tag form() creates a html form
- * @method static Tag input() creates a html input element
- * @method static Tag button() creates a html button element
+ * @method static Tags form() creates a html form
+ * @method static Tags input() creates a html input element
+ * @method static Tags button() creates a html button element
  *
  */
-class Tag
+class Tags
 {
     public static $humanReadable = true;
     public $prefix = '';
@@ -48,7 +48,7 @@ class Tag
      *
      * @param string $id
      *
-     * @return Tag|null
+     * @return Tags|null
      */
     public static function byId($id)
     {
@@ -66,7 +66,7 @@ class Tag
      * @param       $name
      * @param array $children
      *
-     * @return Tag
+     * @return Tags
      */
     public static function __callStatic($name, array $children)
     {
@@ -95,7 +95,7 @@ class Tag
      * @param $attribute
      * @param $value
      *
-     * @return Tag
+     * @return Tags
      */
     public function __call($attribute, $value)
     {
