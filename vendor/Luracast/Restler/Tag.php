@@ -41,6 +41,20 @@ class Tag
         $this->children = $children;
     }
 
+    /**
+     * Get Tag by id
+     *
+     * Retrieve a tag by its id attribute
+     *
+     * @param string $id
+     *
+     * @return Tag|null
+     */
+    public static function byId($id)
+    {
+        return Util::nestedValue(static::$instances, $id);
+    }
+
     public function toString($prefix = '', $indent = '    ')
     {
         $this->prefix = $prefix;
