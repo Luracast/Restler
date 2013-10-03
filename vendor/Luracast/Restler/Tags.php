@@ -32,7 +32,7 @@ class Tags
     public $indent = '    ';
     protected $attributes = array();
     protected $children = array();
-    protected $tag;
+    public $tag;
     protected static $instances = array();
 
     public function __construct($name, array $children = array())
@@ -89,6 +89,13 @@ class Tags
             : Util::nestedValue($this->attributes, 'name');
         static::$instances[$value] = $this;
         return $this;
+    }
+
+    public function __get($name)
+    {
+        if (isset($this->attributes[$name]))
+            return $this->attributes[$name];
+        return;
     }
 
     /**
