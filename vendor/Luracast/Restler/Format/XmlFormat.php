@@ -190,7 +190,7 @@ class XmlFormat extends Format
         } else {
             $text = (string)$data;
         }
-        if (!empty($text) or $text == 0) {
+        if (!empty($text) || $text == 0) {
             in_array($parent, static::$cdataNames)
                 ? $xml->writeCdata($text)
                 : $xml->text($text);
