@@ -17,6 +17,45 @@ use Luracast\Restler\Tags as T;
  */
 class Forms
 {
+    protected static $fieldPresets = array(
+        '*' => array(
+            'value' => '$value',
+            'required' => '$required',
+            'name' => '$name',
+        ),
+        'input' => array(
+            'placeholder' => '$default',
+            'pattern' => '$pattern',
+            'class' => 'input-small',
+        )
+    );
+
+    protected static $inputTypes = array(
+        'password',
+        'button',
+        'image',
+        'file',
+        'reset',
+        'submit',
+        'search',
+        'checkbox',
+        'email',
+        'text',
+        'color',
+        'date',
+        'datetime',
+        'datetime-local',
+        'email',
+        'month',
+        'number',
+        'range',
+        'search',
+        'tel',
+        'time',
+        'url',
+        'week',
+    );
+
     public static $fieldWrapper = 'label';
 
     /**
@@ -43,7 +82,7 @@ class Forms
                     Util::$restler->requestMethod == $method
                     && Util::$restler->url == $action
                         ? Util::$restler->getRequestData()
-                        : null
+                        : array()
                 );
         } catch (RestException $e) {
             echo $e->getErrorMessage();
@@ -75,19 +114,46 @@ class Forms
 
     public static function field(ValidationInfo $p, $value = null)
     {
-        $t = T::input()->name($p->name);
-        if (!is_null($value))
-            $t->value($value);
-        if ($p->required)
-            $t->required(true);
-        if ($p->default)
-            $t->placeholder($p->default);
+        if ($p->choice) {
+            $options = array();
+            foreach ($p->choice as $option) {
+                $options[] = T::option($option);
+            }
+            $t = static::initTag(T::select($options), $p);
+        } else {
+            $t = static::initTag(T::input(), $p);
+            if (in_array($p->type, static::$inputTypes)) {
+                $t->type($p->type);
+            } elseif ($t->name == 'password') {
+                $t->type('password');
+            } elseif ($t->type == 'bool') {
+                $t->type('checkbox');
+            } else {
+                $t->type('text');
+            }
+        }
         if (static::$fieldWrapper) {
             $t = call_user_func(
-                'Luracast\Restler\Tag::' . static::$fieldWrapper,
+                'Luracast\Restler\Tags::' . static::$fieldWrapper,
                 static::title($p->name),
                 $t
             );
+        }
+        return $t;
+    }
+
+    protected static function initTag(Tags $t, ValidationInfo $p, $customPresets = array())
+    {
+        $presets = static::$fieldPresets['*']
+            + $customPresets
+            + (Util::nestedValue(static::$fieldPresets, $t->tag) ? : array());
+        foreach ($presets as $k => $v) {
+            if ($v{0} == '$') {
+                //variable substitution
+                $v = Util::nestedValue($p, substr($v, 1));
+            }
+            if (!is_null($v))
+                $t->{$k}($v);
         }
         return $t;
     }
