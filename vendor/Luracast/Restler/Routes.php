@@ -63,7 +63,7 @@ class Routes
             $defaults = array();
             $params = $method->getParameters();
             $position = 0;
-            $ignorePathTill = false;
+            $pathParams = array();
             $allowAmbiguity
                 = (isset($metadata['smart-auto-routing'])
                 && $metadata['smart-auto-routing'] != 'true')
@@ -134,8 +134,8 @@ class Routes
                 }
                 $m['from'] = $from;
 
-                if (!$allowAmbiguity && $from == 'path') {
-                    $ignorePathTill = $position + 1;
+                if ($allowAmbiguity || $from == 'path') {
+                    $pathParams [$position] = true;
                 }
                 $position++;
             }
@@ -222,37 +222,31 @@ class Routes
                 }
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
-                if (!$ignorePathTill) {
+                if (empty($pathParams)) {
                     static::addPath($url, $call, $httpMethod);
                 }
-                $position = 0;
-                foreach ($params as $param) {
+                $lastPathParam = end(array_keys($pathParams));
+                for ($position = 0; $position < count($params); $position++) {
                     $from = $metadata['param'][$position]['from'];
 
                     if ($from == 'body' && ($httpMethod == 'GET' ||
-                        $httpMethod == 'DELETE')
+                            $httpMethod == 'DELETE')
                     ) {
                         $from = $metadata['param'][$position]['from']
                             = 'query';
                     }
-
-                    if (!$allowAmbiguity && $from != 'path') {
-                        break;
-                    }
-                    if (!empty($url)) {
+                    if (!isset($pathParams[$position]))
+                        continue;
+                    if (!empty($url))
                         $url .= '/';
-                    }
-                    //$call['metadata']['url'] = "$httpMethod $url{"
-                    //. $param->getName() . '}';
                     $url .= '{' .
                         static::typeChar(isset($call['metadata']['param'][$position]['type'])
                             ? $call['metadata']['param'][$position]['type']
                             : null)
                         . $position . '}';
-                    if ($allowAmbiguity || $position == $ignorePathTill-1) {
+                    if ($allowAmbiguity || $position == $lastPathParam) {
                         static::addPath($url, $call, $httpMethod);
                     }
-                    $position++;
                 }
             }
         }
