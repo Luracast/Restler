@@ -469,17 +469,20 @@ class Restler extends EventDispatcher
     /**
      * Parses the request data and returns it
      *
+     * @param bool $includeQueryParameters
+     *
      * @return array php data
      */
     public function getRequestData($includeQueryParameters = true)
     {
+        $get = UrlEncodedFormat::decoderTypeFix($_GET);
         if ($this->requestMethod == 'PUT'
             || $this->requestMethod == 'PATCH'
             || $this->requestMethod == 'POST'
         ) {
             if (!empty($this->requestData)) {
                 return $includeQueryParameters
-                    ? array_merge($this->requestData, $_GET)
+                    ? array_merge($this->requestData, $get)
                     : $this->requestData;
             }
 
@@ -492,10 +495,10 @@ class Restler extends EventDispatcher
                 ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
                 : array(Defaults::$fullRequestDataName => $r);
             return $includeQueryParameters
-                ? array_merge($r, $_GET)
+                ? array_merge($r, $get)
                 : $r;
         }
-        return $includeQueryParameters ? $_GET : array(); //no body
+        return $includeQueryParameters ? $get : array(); //no body
     }
 
     /**
