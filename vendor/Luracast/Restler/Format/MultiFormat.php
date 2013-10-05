@@ -120,6 +120,22 @@ abstract class MultiFormat implements iFormat
         return static::$extension;
     }
 
+    /**
+     * @return boolean is parsing the request supported?
+     */
+    public function isReadable()
+    {
+        return true;
+    }
+
+    /**
+     * @return boolean is composing response supported?
+     */
+    public function isWritable()
+    {
+        return true;
+    }
+
     public function __toString()
     {
         return $this->getExtension();

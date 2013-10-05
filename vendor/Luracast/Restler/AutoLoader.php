@@ -143,9 +143,13 @@ class AutoLoader
                 if (false !== $path = stream_resolve_include_path(
                         implode($slash, $includePath)
                     ))
-                    if ('composer' == end($includePath)) {
-                        static::seen(static::loadFile(
+                    if ('composer' == end($includePath) &&
+                        false !== $classmapPath = stream_resolve_include_path(
                             "$path{$slash}autoload_classmap.php"
+                        )
+                    ) {
+                        static::seen(static::loadFile(
+                            $classmapPath
                         ));
                         $paths = array_merge(
                             $paths,

@@ -19,7 +19,7 @@ class Authors
      * @cache max-age={expires}, max-stale=3000, must-revalidate
      * @expires 30
      * @throttle 200
-     * @class RateLimit {@unit second} {@$usagePerUnit 1}
+     * @class RateLimit {@unit second} {@usagePerUnit 1}
      * @return array
      */
     function index()

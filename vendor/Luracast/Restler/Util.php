@@ -57,6 +57,14 @@ class Util
      */
     public static function isObjectOrArray($type)
     {
+        if (is_array($type)) {
+            foreach ($type as $t) {
+                if (static::isObjectOrArray($t)) {
+                    return true;
+                }
+            }
+            return false;
+        }
         return !(boolean)strpos('|bool|boolean|int|float|string|', $type);
     }
 
@@ -73,7 +81,7 @@ class Util
      * @param array  $from   array to extract the value from
      * @param string $key... pass more to go deeply inside the array
      *
-     * @return bool|mixed false when not found, value otherwise
+     * @return null|mixed null when not found, value otherwise
      */
     public static function arrayValue($from, $key /**, $key2 ... $key`n` */)
     {
@@ -84,7 +92,7 @@ class Util
                 $from = $from[$key];
                 continue;
             }
-            return false;
+            return null;
         }
         return $from;
     }
@@ -225,35 +233,34 @@ class Util
             $className = get_class($instance);
         } else {
             $className = ltrim($classNameOrInstance, '\\');
-            if (isset(self::$classAliases[$classNameOrInstance])) {
-                $classNameOrInstance = self::$classAliases[$classNameOrInstance];
+            if (isset(self::$classAliases[$className])) {
+                $className = self::$classAliases[$className];
             }
-            if (!class_exists($classNameOrInstance)) {
-                throw new RestException(500, "Class '$classNameOrInstance' not found");
+            if (!class_exists($className)) {
+                throw new RestException(500, "Class '$className' not found");
             }
-            $instance = new $classNameOrInstance();
+            $instance = new $className();
             $instance->restler = self::$restler;
         }
         $shortName = static::getShortName($className);
-        $properties = null;
-        if (isset($metadata['class'][$className][CommentParser::$embeddedDataName])) {
-            $properties = $metadata['class'][$className][CommentParser::$embeddedDataName];
+        $properties =
+            Util::nestedValue(
+                $metadata, 'class', $className, CommentParser::$embeddedDataName
+            ) ? :
+                Util::nestedValue(
+                    $metadata, 'class', $shortName, CommentParser::$embeddedDataName
+                );
 
-        } elseif (isset($metadata['class'][$shortName][CommentParser::$embeddedDataName])) {
-            $properties = $metadata['class'][$shortName][CommentParser::$embeddedDataName];
-        }
-        if (isset($properties)) {
+        if (is_array($properties)) {
 
             $objectVars = get_object_vars($instance);
 
-            if (is_array($properties)) {
-                foreach ($properties as $property => $value) {
-                    if (property_exists($className, $property)) {
-                        //if not a static property
-                        array_key_exists($property, $objectVars)
-                            ? $instance->{$property} = $value
-                            : $instance::$$property = $value;
-                    }
+            foreach ($properties as $property => $value) {
+                if (property_exists($className, $property)) {
+                    //if not a static property
+                    array_key_exists($property, $objectVars)
+                        ? $instance->{$property} = $value
+                        : $instance::$$property = $value;
                 }
             }
         }
@@ -261,7 +268,6 @@ class Util
             $instance->__setAuthenticationStatus
                 (self::$restler->_authenticated);
         }
-
         return $instance;
     }
 

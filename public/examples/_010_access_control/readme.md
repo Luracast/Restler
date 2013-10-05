@@ -1,11 +1,6 @@
-Access Control <requires>PHP >= 5.3</requires>
---------------
+## Access Control 
 
- <tag>access-control</tag>
- <tag>acl</tag>
- <tag>secure</tag>
- <tag>authentication</tag>
- <tag>authorization</tag>
+ This example requires `PHP >= 5.3` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 This example shows how you can extend the authentication system to create
@@ -31,12 +26,11 @@ Try it out yourself [here](explorer/index.html#!/v1)
 
 This API Server exposes the following URIs
 
-    GET admin                     ⇠ Access::admin()
-    GET all                       ⇠ Access::all()
-    GET resources                 ⇠ Luracast\Restler\Resources::index()
-    GET resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
-    GET user                      ⇠ Access::user()
+    GET admin          ⇠ Access::admin()
+    GET all            ⇠ Access::all()
+    GET resources      ⇠ Luracast\Restler\Resources::index()
+    GET resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET user           ⇠ Access::user()
 
 
 

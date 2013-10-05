@@ -37,6 +37,10 @@ class RateLimit implements iFilter, iUseAuthentication
      */
     public static $unit = 'hour';
     /**
+     * @var string group the current api belongs to
+     */
+    public static $group = 'common';
+    /**
      * @var string name of the class that implements iUser interface
      */
     public static $userClass = 'Luracast\\Restler\\User';
@@ -88,7 +92,7 @@ class RateLimit implements iFilter, iUseAuthentication
         if (!isset(static::$units[$unit]))
             throw new \InvalidArgumentException(
                 'Rate Limit time unit should be '
-                    . implode('|', array_keys(static::$units)) . '.'
+                . implode('|', array_keys(static::$units)) . '.'
             );
     }
 
@@ -101,25 +105,30 @@ class RateLimit implements iFilter, iUseAuthentication
             : static::$usagePerUnit;
         $user = static::$userClass;
         if(!is_subclass_of($user, 'Luracast\\Restler\\iUser')){
-           throw new \UnexpectedValueException('`Ratelimit::$userClass` must implement iUser interface');
+            throw new \UnexpectedValueException('`Ratelimit::$userClass` must implement iUser interface');
         }
-        $id = "RateLimit_" . $user::getUniqueId();
+        $id = "RateLimit_" . $maxPerUnit . '_per_' . static::$unit
+            . '_for_' . static::$group
+            . '_' . $user::getUniqueId();
         $lastRequest = $this->restler->cache->get($id, true)
             ? : array('time' => 0, 'used' => 0);
-        $diff = time() - $lastRequest['time']; # in seconds
+        $time = $lastRequest['time'];
+        $diff = time() - $time; # in seconds
         $used = $lastRequest['used'];
 
         header("X-RateLimit-Limit: $maxPerUnit per ".static::$unit);
         if ($diff >= $timeUnit) {
-            $used = 0;
+            $used = 1;
+            $time = time();
         } elseif ($used >= $maxPerUnit) {
             header("X-RateLimit-Remaining: 0");
-            $wait = $timeUnit - ($diff % $timeUnit);
+            $wait = $timeUnit - $diff;
             sleep(1);
             throw new RestException(429,
-                'Rate limit of ' . $maxPerUnit . ' requests per '
-                    . static::$unit . ' exceeded. Please wait for '
-                    . static::duration($wait) . '.'
+                'Rate limit of ' . $maxPerUnit . ' request' .
+                ($maxPerUnit > 1 ? 's' : '') . ' per '
+                . static::$unit . ' exceeded. Please wait for '
+                . static::duration($wait) . '.'
             );
         } else {
             $used++;
@@ -127,7 +136,7 @@ class RateLimit implements iFilter, iUseAuthentication
         $remainingPerUnit = $maxPerUnit - $used;
         header("X-RateLimit-Remaining: $remainingPerUnit");
         $this->restler->cache->set($id,
-            array('time' => time(), 'used' => $used));
+            array('time' => $time, 'used' => $used));
         return true;
     }
 

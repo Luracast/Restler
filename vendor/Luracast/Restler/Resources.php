@@ -40,12 +40,19 @@ class Resources implements iUseAuthentication
      */
     public static $placeFormatExtensionBeforeDynamicParts = true;
     /**
+     * @var bool should we group all the operations with the same url or not
+     */
+    public static $groupOperations = false;
+    /**
      * @var null|callable if the api methods are under access control mechanism
      * you can attach a function here that returns true or false to determine
      * visibility of a protected api method. this function will receive method
      * info as the only parameter.
      */
     public static $accessControlFunction = null;
+    /**
+     * @var array type mapping for converting data types to javascript / swagger
+     */
     public static $dataTypeAlias = array(
         'string' => 'string',
         'int' => 'int',
@@ -58,20 +65,52 @@ class Resources implements iUseAuthentication
         'object' => 'Object',
         'stdClass' => 'Object',
         'mixed' => 'string',
-		'DateTime' => 'Date'
+        'DateTime' => 'Date'
     );
+    /**
+     * @var array configurable symbols to differentiate public, hybrid and
+     * protected api
+     */
+    public static $apiDescriptionSuffixSymbols = array(
+        0 => '&nbsp; <i class="icon-unlock-alt icon-large"></i>', //public api
+        1 => '&nbsp; <i class="icon-adjust icon-large"></i>', //hybrid api
+        2 => '&nbsp; <i class="icon-lock icon-large"></i>', //protected api
+    );
+
     /**
      * Injected at runtime
      *
      * @var Restler instance of restler
      */
     public $restler;
+    /**
+     * @var string when format is not used as the extension this property is
+     * used to set the extension manually
+     */
     public $formatString = '';
     private $_models;
     private $_bodyParam;
-    private $crud = array('POST' => 'create', 'GET' => 'retrieve',
-        'PUT' => 'update', 'DELETE' => 'delete', 'PATCH' => 'partial update');
+    /**
+     * @var bool|stdClass
+     */
+    private $_fullDataRequested = false;
+    private $crud = array(
+        'POST' => 'create',
+        'GET' => 'retrieve',
+        'PUT' => 'update',
+        'DELETE' => 'delete',
+        'PATCH' => 'partial update'
+    );
+    private static $prefixes = array(
+        'get' => 'retrieve',
+        'index' => 'list',
+        'post' => 'create',
+        'put' => 'update',
+        'patch' => 'modify',
+        'delete' => 'remove',
+    );
     private $_authenticated = false;
+    private $currentResource = '';
 
     public function __construct()
     {
@@ -97,21 +136,68 @@ class Resources implements iUseAuthentication
     }
 
     /**
+     * pre call for get($id)
+     *
+     * if cache is present, use cache
+     */
+    public function _pre_get_json($id)
+    {
+        $this->currentResource = $resource = 'resources_'.$id;
+        if ($this->restler->getProductionMode()
+            && !$this->restler->refreshCache
+            && $this->restler->cache->isCached($resource)
+        ) {
+            //by pass call, compose, postCall stages and directly send response
+            $this->restler->composeHeaders();
+            die($this->restler->cache->get($resource));
+        }
+    }
+
+    /**
+     * post call for get($id)
+     *
+     * create cache if in production mode
+     *
+     * @param $responseData
+     *
+     * @internal param string $data composed json output
+     *
+     * @return string
+     */
+    public function _post_get_json($responseData)
+    {
+        if ($this->restler->getProductionMode()) {
+            $this->restler->cache->set($this->currentResource, $responseData);
+        }
+        return $responseData;
+    }
+
+    /**
      * @access hybrid
      *
-     * @param int    $version
      * @param string $id
      *
      * @throws RestException
      * @return null|stdClass
      *
-     * @url    GET {id}-v{version}
-     * @url    GET v{version}
+     * @url    GET {id}
      */
-    public function get($version, $id = '')
+    public function get($id = '')
     {
+        $version = 1;
+        if (empty($id)) {
+            //do nothing
+        } elseif (false !== ($pos = strpos($id, '-'))) {
+            $version = intval(substr($id, $pos + 2));
+            $id = substr($id, 0, $pos);
+        } elseif ($id{0} == 'v' && is_numeric($v = substr($id, 1))) {
+            $id = '';
+            $version = $v;
+        } elseif ($id == 'root' || $id == 'index') {
+            $id = '';
+        }
         if (!Defaults::$useUrlBasedVersioning
-            && $version != $this->restler->_requestedApiVersion
+            && $version != $this->restler->getRequestedApiVersion()
         ) {
             throw new RestException(404);
         }
@@ -119,9 +205,14 @@ class Resources implements iUseAuthentication
         $r = null;
         $count = 0;
 
+        $tSlash = !empty($id);
         $target = empty($id) ? "v$version" : "v$version/$id";
+        $tLen = strlen($target);
+
+        $filter = array();
 
         $routes = Routes::toArray();
+
         foreach ($routes as $value) {
             foreach ($value as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
@@ -131,9 +222,14 @@ class Resources implements iUseAuthentication
                 if (0 !== strpos($fullPath, $target)) {
                     continue;
                 }
-                if (strlen($fullPath) != strlen($target) &&
-                    0 !== strpos($fullPath, $target . '/')
+                $fLen = strlen($fullPath);
+                if ($fLen != $tLen &&  0 !== strpos($fullPath, $target . '/')
                 ) {
+                    continue;
+                }
+                if (!$tSlash && $fLen > $tLen + 1 && $fullPath{$tLen + 1} != '{') {
+                    //when mapped to root exclude paths that have static parts
+                    //they are listed else where under that static part name
                     continue;
                 }
                 if (
@@ -159,6 +255,15 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
+                if (isset($filter[$httpMethod][$fullPath])) {
+                    continue;
+                }
+                $filter[$httpMethod][$fullPath] = true;
+                // reset body params
+                $this->_bodyParam = array(
+                    'required' => false,
+                    'description' => array()
+                );
                 $count++;
                 $className = $this->_noNamespace($route['className']);
                 if (!$r) {
@@ -181,7 +286,7 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                $nickname = $this->generateNickname((array) $route);
+                $nickname = $this->_nickname($route);
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 // $parts[0] .= $this->formatString; //".{format}";
@@ -194,7 +299,7 @@ class Resources implements iUseAuthentication
                     ? $m['classDescription']
                     : $className . ' API';
                 if (empty($m['description'])) {
-                    $m['description'] = $this->restler->_productionMode
+                    $m['description'] = $this->restler->getProductionMode()
                         ? ''
                         : 'routes to <mark>'
                         . $route['className']
@@ -202,7 +307,7 @@ class Resources implements iUseAuthentication
                         . $route['methodName'] . '();</mark>';
                 }
                 if (empty($m['longDescription'])) {
-                    $m['longDescription'] = $this->restler->_productionMode
+                    $m['longDescription'] = $this->restler->getProductionMode()
                         ? ''
                         : 'Add PHPDoc long description to '
                         . "<mark>$className::"
@@ -212,7 +317,11 @@ class Resources implements iUseAuthentication
                 $operation = $this->_operation(
                     $nickname,
                     $httpMethod,
-                    $m['description'],
+                    $m['description'] .
+                    ($route['accessLevel'] > 2
+                        ? static::$apiDescriptionSuffixSymbols[2]
+                        : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
+                    ),
                     $m['longDescription']
                 );
                 if (isset($m['throws'])) {
@@ -233,7 +342,14 @@ class Resources implements iUseAuthentication
                         }
                     }
                 }
-                if (count($this->_bodyParam['description'])) {
+                if (
+                    count($this->_bodyParam['description']) ||
+                    (
+                        $this->_fullDataRequested &&
+                        $httpMethod != 'GET' &&
+                        $httpMethod != 'DELETE'
+                    )
+                ) {
                     $operation->parameters[] = $this->_getBody();
                 }
                 if (isset($m['return']['type'])) {
@@ -261,16 +377,21 @@ class Resources implements iUseAuthentication
                     }
                 }
                 $api = false;
-                foreach ($r->apis as $a) {
-                    if ($a->path == "/$fullPath") {
-                        $api = $a;
-                        break;
+
+                if(static::$groupOperations){
+                    foreach ($r->apis as $a) {
+                        if ($a->path == "/$fullPath") {
+                            $api = $a;
+                            break;
+                        }
                     }
                 }
+
                 if (!$api) {
                     $api = $this->_api("/$fullPath", $description);
                     $r->apis[] = $api;
                 }
+
                 $api->operations[] = $operation;
             }
         }
@@ -279,12 +400,47 @@ class Resources implements iUseAuthentication
         }
         if (!is_null($r))
             $r->models = $this->_models;
+        usort(
+            $r->apis,
+            function($a, $b){
+                $order = array(
+                    'GET' => 1,
+                    'POST' => 2,
+                    'PUT' => 3,
+                    'PATCH' => 4,
+                    'DELETE' => 5
+                );
+                return
+                    $a->operations[0]->httpMethod ==
+                    $b->operations[0]->httpMethod
+                        ? $a->path > $b->path
+                        : $order[$a->operations[0]->httpMethod] >
+                        $order[$b->operations[0]->httpMethod];
+
+            }
+        );
         return $r;
     }
 
-    protected function generateNickname(array $route)
+    protected function _nickname(array $route)
     {
-        return $route['methodName'];
+        static $hash = array();
+        $method = $route['methodName'];
+        if(isset(self::$prefixes[$method])){
+            $method = self::$prefixes[$method];
+        } else {
+            $method = str_replace(
+                array_keys(self::$prefixes),
+                array_values(self::$prefixes),
+                $method
+            );
+        }
+        while (isset($hash[$method]) && $route['url'] != $hash[$method]) {
+            //create another one
+            $method .= '_';
+        }
+        $hash[$method] = $route['url'];
+        return $method;
     }
 
     private function _noNamespace($className)
@@ -304,9 +460,9 @@ class Resources implements iUseAuthentication
     private function _resourceListing()
     {
         $r = new stdClass();
-        $r->apiVersion = (string)$this->restler->_apiVersion;
+        $r->apiVersion = (string)$this->restler->getApiVersion();
         $r->swaggerVersion = "1.1";
-        $r->basePath = $this->restler->_baseUrl;
+        $r->basePath = $this->restler->getBaseUrl();
         $r->apis = array();
         return $r;
     }
@@ -316,7 +472,7 @@ class Resources implements iUseAuthentication
         $r = new stdClass();
         $r->path = $path;
         $r->description =
-            empty($description) && $this->restler->_productionMode
+            empty($description) && $this->restler->getProductionMode()
                 ? 'Use PHPDoc comment to describe here'
                 : $description;
         $r->operations = array();
@@ -357,7 +513,7 @@ class Resources implements iUseAuthentication
         $r->name = $param['name'];
         $r->description = !empty($param['description'])
             ? $param['description'] . '.'
-            : ($this->restler->_productionMode
+            : ($this->restler->getProductionMode()
                 ? ''
                 : 'add <mark>@param {type} $' . $r->name
                 . ' {comment}</mark> to describe here');
@@ -377,9 +533,31 @@ class Resources implements iUseAuthentication
             if (is_array($type)) {
                 $type = array_shift($type);
             }
-            $type = isset(static::$dataTypeAlias[$type])
-                ? static::$dataTypeAlias[$type]
-                : $type;
+            if($type == 'array') {
+                $contentType = Util::nestedValue(
+                    $param,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                );
+                if($contentType){
+                    if ($contentType == 'indexed') {
+                        $type = 'Array';
+                    } elseif ($contentType == 'associative') {
+                        $type = 'Object';
+                    } else {
+                        $type = "Array[$contentType]";
+                    }
+                    if(Util::isObjectOrArray($contentType)){
+                        $this->_model($contentType);
+                    }
+                } elseif (isset(static::$dataTypeAlias[$type])) {
+                    $type = static::$dataTypeAlias[$type];
+                }
+            } elseif (Util::isObjectOrArray($type)) {
+                $this->_model($type);
+            } elseif (isset(static::$dataTypeAlias[$type])) {
+                $type = static::$dataTypeAlias[$type];
+            }
         }
         $r->dataType = $type;
         if (isset($param[CommentParser::$embeddedDataName])) {
@@ -402,79 +580,165 @@ class Resources implements iUseAuthentication
 
     private function _appendToBody($p)
     {
-        if ($p->name === Defaults::$fullRequestDataName)
+        if ($p->name === Defaults::$fullRequestDataName) {
+            $this->_fullDataRequested = $p;
+            unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
             return;
+        }
         $this->_bodyParam['description'][$p->name]
-            = "<mark>$p->name</mark>"
-            . ($p->required ? ' <i>(required)</i>: ' : ': ')
+            = "$p->name"
+            . ' : <tag>' . $p->dataType. '</tag> '
+            . ($p->required ? ' <i>(required)</i> - ' : ' - ')
             . $p->description;
         $this->_bodyParam['required'] = $p->required
             || $this->_bodyParam['required'];
-        $this->_bodyParam['names'][$p->name] = true;
+        $this->_bodyParam['names'][$p->name] = $p;
     }
 
     private function _getBody()
     {
         $r = new stdClass();
-        $r->name = 'REQUEST_BODY';
+        $n = isset($this->_bodyParam['names'])
+            ? array_values($this->_bodyParam['names'])
+            : array();
+        if(count($n)==1){
+            if (isset($this->_models->{$n[0]->dataType})) {
+                // ============ custom class ===================
+                $r = $n[0];
+                $c = $this->_models->{$r->dataType};
+                $a = $c->properties;
+                $r->description = "Paste JSON data here";
+                if (count($a)) {
+                    $r->description .= " with the following"
+                        . (count($a) > 1 ? ' properties.' : ' property.');
+                    foreach ($a as $k => $v) {
+                        $r->description .= "<hr/>$k : <tag>"
+                            . $v['type'] . '</tag> '
+                            . (isset($v['required']) ? '(required)' : '')
+                            . ' - ' . $v['description'];
+                    }
+                }
+                $r->defaultValue = "{\n    \""
+                    . implode("\": \"\",\n    \"",
+                        array_keys($c->properties))
+                    . "\": \"\"\n}";
+                return $r;
+            } elseif (false !== ($p = strpos($n[0]->dataType, '['))) {
+                // ============ array of custom class ===============
+                $r = $n[0];
+                $t = substr($r->dataType, $p + 1, -1);
+                if($c = Util::nestedValue($this->_models,$t)){
+                    $a = $c->properties;
+                    $r->description = "Paste JSON data here";
+                    if (count($a)) {
+                        $r->description .= " with an array of objects with the following"
+                            . (count($a) > 1 ? ' properties.' : ' property.');
+                        foreach ($a as $k => $v) {
+                            $r->description .= "<hr/>$k : <tag>"
+                                . $v['type'] . '</tag> '
+                                . (isset($v['required']) ? '(required)' : '')
+                                . ' - ' . $v['description'];
+                        }
+                    }
+                    $r->defaultValue = "[\n    {\n        \""
+                        . implode("\": \"\",\n        \"",
+                            array_keys($c->properties))
+                        . "\": \"\"\n    }\n]";
+                    return $r;
+                } else {
+                    $r->description = "Paste JSON data here with an array of $t values.";
+                    $r->defaultValue = "[ ]";
+                    return $r;
+                }
+            } elseif ($n[0]->dataType == 'Array') {
+                // ============ array ===============================
+                $r = $n[0];
+                $r->description = "Paste JSON array data here"
+                    . ($r->required ? ' (required) . ' : '. ')
+                    . "<br/>$r->description";
+                $r->defaultValue = "[\n    {\n        \""
+                    . "property\" : \"\"\n    }\n]";
+                return $r;
+            } elseif ($n[0]->dataType == 'Object') {
+                // ============ object ==============================
+                $r = $n[0];
+                $r->description = "Paste JSON object data here"
+                    . ($r->required ? ' (required) . ' : '. ')
+                    . "<br/>$r->description";
+                $r->defaultValue = "{\n    \""
+                    . "property\" : \"\"\n}";
+                return $r;
+            }
+        }
         $p = array_values($this->_bodyParam['description']);
+        $r->name = 'REQUEST_BODY';
         $r->description = "Paste JSON data here";
-        if (count($p) == 1
-            && isset(
-            $this->_bodyParam['description'][Defaults::$fullRequestDataName])
-        ) {
-
+        if (count($p)==0 && $this->_fullDataRequested) {
+            $r->required = $this->_fullDataRequested->required;
+            $r->defaultValue = "{\n    \"property\" : \"\"\n}";
         } else {
             $r->description .= " with the following"
                 . (count($p) > 1 ? ' properties.' : ' property.')
                 . '<hr/>'
                 . implode("<hr/>", $p);
+            $r->required = $this->_bodyParam['required'];
+            $r->defaultValue = "{\n    \""
+                . implode("\": \"\",\n    \"",
+                    array_keys($this->_bodyParam['names']))
+                . "\": \"\"\n}";
         }
         $r->paramType = 'body';
-        $r->required = $this->_bodyParam['required'];
         $r->allowMultiple = false;
         $r->dataType = 'Object';
-        unset($this->_bodyParam['names'][Defaults::$fullRequestDataName]);
-        $r->defaultValue = "{\n    \""
-            . implode("\": \"\",\n    \"", array_keys($this->_bodyParam['names']))
-            . "\": \"\"\n}";
         return $r;
     }
 
     private function _model($className, $instance = null)
     {
+        $id = $this->_noNamespace($className);
+        if(isset($this->_models->{$id})){
+            return;
+        }
         $properties = array();
-        $reflectionClass = new \ReflectionClass($className);
         if (!$instance) {
+            if(!class_exists($className))
+                return;
             $instance = new $className();
         }
         $data = get_object_vars($instance);
+        $reflectionClass = new \ReflectionClass($className);
         foreach ($data as $key => $value) {
 
             $propertyMetaData = null;
 
             try {
                 $property = $reflectionClass->getProperty($key);
-
                 if ($c = $property->getDocComment()) {
-                    $propertyMetaData = CommentParser::parse($c);
+                    $propertyMetaData = Util::nestedValue(
+                        CommentParser::parse($c),
+                        'var'
+                    );
                 }
             } catch (\ReflectionException $e) {
             }
 
-            if ($propertyMetaData !== null) {
-                $type = isset($propertyMetaData['var']) ? $propertyMetaData['var'] : 'string';
-                $description = @$propertyMetaData['description'] ? : '';
-
-				$type = explode(" ", $type);
-				$type = array_shift($type);
+            if (is_null($propertyMetaData)) {
+                $type = $this->getType($value, true);
+                $description = '';
+            } else {
+                $type = Util::nestedValue(
+                    $propertyMetaData,
+                    'type'
+                ) ? : $this->getType($value, true);
+                $description = Util::nestedValue(
+                    $propertyMetaData,
+                    'description'
+                ) ? : '';
 
                 if (class_exists($type)) {
                     $this->_model($type);
+                    $type = $this->_noNamespace($type);
                 }
-            } else {
-                $type = $this->getType($value, true);
-                $description = '';
             }
 
             if (isset(static::$dataTypeAlias[$type])) {
@@ -484,10 +748,26 @@ class Resources implements iUseAuthentication
                 'type' => $type,
                 'description' => $description
             );
+            if(Util::nestedValue(
+                $propertyMetaData,
+                CommentParser::$embeddedDataName,
+                'required'
+            )){
+                $properties[$key]['required'] = true;
+            }
             if ($type == 'Array') {
-                $itemType = count($value)
-                    ? $this->getType($value[0], true)
-                    : 'string';
+                $itemType = Util::nestedValue(
+                    $propertyMetaData,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                ) ? :
+                    (count($value)
+                        ? $this->getType(end($value), true)
+                        : 'string');
+                if (class_exists($itemType)) {
+                    $this->_model($itemType);
+                    $itemType = $this->_noNamespace($itemType);
+                }
                 $properties[$key]['item'] = array(
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
@@ -503,7 +783,6 @@ class Resources implements iUseAuthentication
             }
         }
         if (!empty($properties)) {
-            $id = $this->_noNamespace($className);
             $model = new stdClass();
             $model->id = $id;
             $model->properties = $properties;
@@ -549,6 +828,42 @@ class Resources implements iUseAuthentication
     }
 
     /**
+     * pre call for index()
+     *
+     * if cache is present, use cache
+     */
+    public function _pre_index_json()
+    {
+        if ($this->restler->getProductionMode()
+            && !$this->restler->refreshCache
+            && $this->restler->cache->isCached('resources')
+        ) {
+            //by pass call, compose, postCall stages and directly send response
+            $this->restler->composeHeaders();
+            die($this->restler->cache->get('resources'));
+        }
+    }
+
+    /**
+     * post call for index()
+     *
+     * create cache if in production mode
+     *
+     * @param $responseData
+     *
+     * @internal param string $data composed json output
+     *
+     * @return string
+     */
+    public function _post_index_json($responseData)
+    {
+        if ($this->restler->getProductionMode()) {
+            $this->restler->cache->set('resources', $responseData);
+        }
+        return $responseData;
+    }
+
+    /**
      * @access hybrid
      * @return \stdClass
      */
@@ -563,11 +878,13 @@ class Resources implements iUseAuthentication
         }
         $this->_mapResources($allRoutes, $map);
         foreach ($map as $path => $description) {
-            //add id
-            $r->apis[] = array(
-                'path' => "/resources/{$path}$this->formatString",
-                'description' => $description
-            );
+            if(false === strpos($path,'{')){
+                //add id
+                $r->apis[] = array(
+                    'path' => "/resources/{$path}$this->formatString",
+                    'description' => $description
+                );
+            }
         }
         return $r;
     }
@@ -594,7 +911,7 @@ class Resources implements iUseAuthentication
 
                 if ($resource == 'resources'
                     || (!Defaults::$useUrlBasedVersioning
-                        && $version != $this->restler->_requestedApiVersion)
+                        && $version != $this->restler->getRequestedApiVersion())
                 ) {
                     continue;
                 }
@@ -613,7 +930,9 @@ class Resources implements iUseAuthentication
                     continue;
                 }
 
-                $resource = $resource ? $resource . "-v$version" : "v$version";
+                $resource = $resource
+                    ? ($version == 1 ? $resource : "$resource-v$version")
+                    : ($version == 1 ? 'root' : "root-v$version");
 
                 if (empty($map[$resource])) {
                     $map[$resource] = isset(
@@ -624,4 +943,3 @@ class Resources implements iUseAuthentication
         }
     }
 }
-

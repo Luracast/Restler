@@ -1,7 +1,7 @@
 <?php
 /*
 Title: Documentation
-Tagline: Commenting the classes can be more rewarding
+Tagline: Commenting can be more rewarding
 Tags: create, retrieve, read, update, delete, post, get, put, routing, doc, production, debug
 Requires: PHP >= 5.3
 Description: How to document and let your users explore your API.

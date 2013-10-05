@@ -1,6 +1,4 @@
-### *vendor* - dependency library folder
+# vendor
+### dependency library folder
 
-The vendor folder is where dependencies are installed.
-To install dependencies run the following using the terminal from the parent folder:
-
-    make composer-install
+The vendor folder is where dependencies are installed. To install and manage dependencies use [composer](http://getcomposer.org)

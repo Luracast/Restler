@@ -1,8 +1,14 @@
 <?php
 namespace Luracast\Restler\Format;
 
+use Luracast\Restler\Data\Object;
+use Luracast\Restler\RestException;
+use SimpleXMLElement;
+use XMLWriter;
+
 /**
  * XML Markup Format for Restler Framework
+ *
  * @category   Framework
  * @package    Restler
  * @subpackage format
@@ -12,18 +18,39 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-use Luracast\Restler\Data\Object;
-use Luracast\Restler\Exception;
-use Luracast\Restler\RestException;
-use SimpleXMLElement;
-
 class XmlFormat extends Format
 {
-    public static $importRootNameAndAttributesFromXml = false;
+    const MIME = 'application/xml';
+    const EXTENSION = 'xml';
+
+    // ==================================================================
+    //
+    // Properties related to reading/parsing/decoding xml
+    //
+    // ------------------------------------------------------------------
+    public static $importSettingsFromXml = false;
     public static $parseAttributes = true;
-    public static $parseNamespaces = false;
-    public static $attributeNames = array('xmlns');
-    public static $nameSpaces = array();
+    public static $parseNamespaces = true;
+    public static $parseTextNodeAsProperty = true;
+
+    // ==================================================================
+    //
+    // Properties related to writing/encoding xml
+    //
+    // ------------------------------------------------------------------
+    public static $useTextNodeProperty = true;
+    public static $useNamespaces = true;
+    public static $cdataNames = array();
+
+    // ==================================================================
+    //
+    // Common Properties
+    //
+    // ------------------------------------------------------------------
+    public static $attributeNames = array();
+    public static $textNodeName = 'text';
+    public static $namepaces = array();
+    public static $namespacedProperties = array();
     /**
      * Default name for the root node.
      *
@@ -31,269 +58,6 @@ class XmlFormat extends Format
      */
     public static $rootName = 'response';
     public static $defaultTagName = 'item';
-    const MIME = 'application/xml';
-    const EXTENSION = 'xml';
-
-      public function encode($data, $humanReadable = false)
-    {
-        return $this->toXML(
-                Object::toArray($data, false),
-                self::$rootName, $humanReadable
-        );
-    }
-
-    public function decode($data)
-    {
-        try {
-            if ($data == '') {
-                return array();
-            }
-            return $this->toArray($data);
-        } catch (\RuntimeException $e) {
-            throw new RestException(400,
-                    "Error decoding request. " . $e->getMessage());
-        }
-    }
-
-    /**
-     * determine if a variable is an associative array
-     */
-    public function isAssoc($array)
-    {
-        return is_array($array) && 0 !== count(
-            array_diff_key($array, array_keys(array_keys($array)))
-        );
-    }
-
-    /**
-     * The main function for converting to an XML document.
-     * Pass in a multi dimensional array and this recursively loops through
-     * and builds up an XML document.
-     *
-     * @param array  $data
-     * @param string $rootNodeName
-     *            - what you want the root node to be
-     *            - defaults to data.
-     * @param SimpleXMLElement $xml
-     *            - should only be used recursively
-     * @return string XML
-     * @link http://bit.ly/n85yLi
-     */
-    public function toXML($data,
-                          $rootNodeName = 'result',
-                          $humanReadable = false,
-                          &$xml = null)
-    {
-        // turn off compatibility mode as simple xml
-        // throws a wobbly if you don't.
-        if (ini_get('zend.ze1_compatibility_mode') == 1) {
-            ini_set('zend.ze1_compatibility_mode', 0);
-        }
-        if (is_null($xml)) {
-            if (empty(self::$nameSpaces)) {
-                $xml = @simplexml_load_string("<$rootNodeName/>");
-            } else {
-                $str = "<$rootNodeName";
-                foreach (self::$nameSpaces as $kn => $vn) {
-                    $str .= ' ' . $kn . '="' . $vn . '"';
-                }
-                $str .= '/>';
-                $xml = @simplexml_load_string($str);
-            }
-        }
-        if (is_array($data)) {
-            $numeric = 0;
-            // loop through the data passed in.
-            foreach ($data as $key => $value) {
-                // no numeric keys in our xml please!
-                if (is_numeric($key)) {
-                    $numeric = 1;
-                    if (self::$rootName == $rootNodeName) {
-                        $key = self::$defaultTagName;
-                    } else {
-                        $key = $rootNodeName;
-                    }
-                }
-                // delete any char not allowed in XML element names
-                $key = preg_replace('/[^a-z0-9\-\_\.\:]/i', '', $key);
-                // if there is another array found recursively
-                // call this function
-                if (is_array($value)) {
-                    $node = $this->isAssoc($value) || $numeric
-                            ? $xml->addChild($key)
-                            : $xml;
-                    // reclusive call.
-                    if ($numeric) {
-                        $key = 'anon';
-                    }
-                    $this->toXML($value, $key, $humanReadable, $node);
-                } else {
-                    // add single node or attribute
-                    $value = htmlspecialchars($value);
-                    if (in_array($key, self::$attributeNames)) {
-                        $xml->addAttribute($key, $value);
-                    } else {
-                        $xml->addChild($key, $value);
-                    }
-                }
-            }
-        } else {
-            // if given data is a string or number
-            // simply wrap it as text node to root
-            if (is_bool($data)) {
-                $data = $data ? 'true' : 'false';
-            }
-            $xml = @simplexml_load_string("<$rootNodeName>" .
-                        htmlspecialchars($data) . "</$rootNodeName>");
-            // $xml->{0} = $data;
-        }
-        if (!$humanReadable) {
-            if (is_object($xml))
-                return $xml->asXML();
-            return $xml;
-        } else {
-            $dom = dom_import_simplexml($xml)->ownerDocument;
-            $dom->formatOutput = true;
-
-            return $dom->saveXML();
-        }
-    }
-
-    /**
-     * Convert an XML document to a multi dimensional array
-     * Pass in an XML document (or SimpleXMLElement object) and this
-     * recursively loops through and builds a representative array
-     *
-     * @param string $xml
-     *            - XML document
-     *            - can optionally be a SimpleXMLElement object
-     * @return array ARRAY
-     * @link http://bit.ly/n85yLi
-     */
-    public function toArray($xml, $ns = null, $firstCall = true)
-    {
-        try {
-            $xml = new SimpleXMLElement($xml);
-        } catch (\Exception $e) {
-            return (string) $xml;
-        }
-        $hasChildren = false;
-        if ($xml->children()) {
-            $hasChildren = true;
-        } elseif (is_array($ns)) {
-            foreach ($ns as $namespace => $uri) {
-                if ($xml->children($uri)->count()) {
-                    $hasChildren = true;
-                    break;
-                }
-            }
-        }
-        if (!$hasChildren) {
-            $r = (string) $xml;
-            if ($r == 'true' || $r == 'false') {
-                $r = $r == 'true';
-            }
-
-            return $r;
-        }
-        $arr = array();
-        if ($firstCall) {
-            if(self::$importRootNameAndAttributesFromXml){
-                // reset the attribute names list
-                self::$attributeNames = array();
-                self::$rootName = $xml->getName();
-            }
-            if (self::$parseNamespaces) {
-                foreach ($xml->getDocNamespaces(true) as $namespace => $uri) {
-                    if ($namespace == '') {
-                        self::$nameSpaces [''] = (string) $uri;
-                        // $arr['xmlns'] = (string) $uri;
-                    } else {
-                        self::$nameSpaces [$namespace] = (string) $uri;
-                        // $arr['xmlns:' . $namespace] = (string) $uri;
-                    }
-                }
-                $ns = self::$nameSpaces;
-            }
-        }
-        if (self::$parseAttributes) {
-            foreach ($ns as $namespace => $uri) {
-                if ($namespace == '') {
-                    continue;
-                }
-                foreach ($xml->attributes($uri) as $attName => $attValue) {
-                    //echo "ATTRIB " . $attName . " of NAME " . $xml->getName() . PHP_EOL;
-                    $attName = "_{$namespace}_{$attName}";
-                    $arr [$attName] = (string) $attValue;
-                    // add to attribute list for round trip support
-                    self::$attributeNames [] = $attName;
-                }
-            }
-            foreach ($xml->attributes() as $attName => $attValue) {
-                //echo "ATTRIB " . $attName . " of NAME " . $xml . PHP_EOL;
-                $arr [$attName] = (string) $attValue;
-                // add to attribute list for round trip support
-                self::$attributeNames [] = $attName;
-            }
-        }
-        $children = $xml->children();
-        foreach ($children as $key => $node) {
-            //echo "NAME " . $key . PHP_EOL;
-            $node = $this->toArray($node, $ns, false);
-            if (is_string($node)) {
-                // echo "NAME ".$key.PHP_EOL;
-                // echo $node;
-                // print_r($arr[$key]);
-                // echo PHP_EOL;
-            }
-            // support for 'anon' non-associative arrays
-            if ($key == 'anon') {
-                $key = count($arr);
-            }
-            // if the node is already set, put it into an array
-            if (isset($arr [$key])) {
-                if (!is_array($arr [$key]) || @$arr [$key] [0] == null) {
-                    $arr [$key] = array(
-                            $arr [$key]
-                    );
-                }
-                $arr [$key] [] = $node;
-            } else {
-                $arr [$key] = $node;
-            }
-        }
-        if (is_array($ns)) {
-            foreach ($ns as $namespace => $uri) {
-                if ($namespace == '') {
-                    continue;
-                }
-                $children = $xml->children($uri);
-                foreach ($children as $key => $node) {
-                    //echo "NAME " . $key . PHP_EOL;
-                    $node = $this->toArray($node, $ns, false);
-                    // support for 'anon' non-associative arrays
-                    if ($key == 'anon') {
-                        $key = count($arr);
-                    }
-                    $key = "_{$namespace}_{$key}";
-                    // if the node is already set, put it into an array
-                    if (isset($arr [$key])) {
-                        if (!is_array($arr [$key])
-                                || @$arr [$key] [0] == null) {
-                            $arr [$key] = array(
-                                    $arr [$key]
-                            );
-                        }
-                        $arr [$key] [] = $node;
-                    } else {
-                        $arr [$key] = $node;
-                    }
-                }
-            }
-        }
-
-        return $arr;
-    }
 
     /**
      * When you decode an XML its structure is copied to the static vars
@@ -312,14 +76,249 @@ class XmlFormat extends Format
         $s .= 'XmlFormat::$parseAttributes = ' .
             (self::$parseAttributes ? 'true' : 'false') . ";\n";
         $s .= 'XmlFormat::$parseNamespaces = ' .
-            (self::$parseNamespaces ? 'true' : 'false') . ";\n\n\n";
+            (self::$parseNamespaces ? 'true' : 'false') . ";\n";
         if (self::$parseNamespaces) {
             $s .= 'XmlFormat::$nameSpaces = ' .
-            (var_export(self::$nameSpaces, true)) . ";\n";
+                (var_export(self::$namepaces, true)) . ";\n";
+            $s .= 'XmlFormat::$nameSpacedProperties = ' .
+                (var_export(self::$namespacedProperties, true)) . ";\n";
         }
 
         return $s;
     }
 
+    public function encode($data, $humanReadable = false)
+    {
+        $data = Object::toArray($data);
+        $xml = new XMLWriter();
+        $xml->openMemory();
+        $xml->startDocument('1.0', $this->charset);
+        if ($humanReadable) {
+            $xml->setIndent(true);
+            $xml->setIndentString('    ');
+        }
+        static::$useNamespaces && isset(static::$namespacedProperties[static::$rootName])
+            ? $xml->startElementNs(
+            static::$namespacedProperties[static::$rootName],
+            static::$rootName,
+            static::$namepaces[static::$namespacedProperties[static::$rootName]]
+        )
+            : $xml->startElement(static::$rootName);
+        if (static::$useNamespaces) {
+            foreach (static::$namepaces as $prefix => $ns) {
+                if (isset(static::$namespacedProperties[static::$rootName])
+                    && static::$namespacedProperties[static::$rootName] == $prefix
+                )
+                    continue;
+                $xml->writeAttribute('xmlns:' . $prefix, $ns);
+            }
+        }
+        $this->write($xml, $data, static::$rootName);
+        $xml->endElement();
+        return $xml->outputMemory();
+    }
+
+    public function write(XMLWriter $xml, $data, $parent)
+    {
+        $text = '';
+        if (is_array($data)) {
+            if (static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
+                $text = $data[static::$textNodeName];
+                unset($data[static::$textNodeName]);
+            }
+            foreach ($data as $key => $value) {
+                if (is_numeric($key)) {
+                    if (is_string($value)) {
+                        $text .= $value;
+                        continue;
+                    }
+                    $key = static::$defaultTagName;
+                }
+                $useNS = static::$useNamespaces
+                    && isset(static::$namespacedProperties[$key])
+                    && false === strpos($key, ':');
+                if (is_array($value)) {
+                    if ($value == array_values($value)) {
+                        //numeric array, create siblings
+                        foreach ($value as $v) {
+                            $useNS
+                                ? $xml->startElementNs(
+                                static::$namespacedProperties[$key],
+                                $key,
+                                null
+                            )
+                                : $xml->startElement($key);
+                            $this->write($xml, $v, $key);
+                            $xml->endElement();
+                        }
+                    } else {
+                        $useNS
+                            ? $xml->startElementNs(
+                            static::$namespacedProperties[$key],
+                            $key,
+                            null
+                        )
+                            : $xml->startElement($key);
+                        $this->write($xml, $value, $key);
+                        $xml->endElement();
+                    }
+                    continue;
+                } elseif (is_bool($value)) {
+                    $value = $value ? 'true' : 'false';
+                }
+                if (in_array($key, static::$attributeNames)) {
+                    $useNS
+                        ? $xml->writeAttributeNs(
+                        static::$namespacedProperties[$key],
+                        $key,
+                        null,
+                        $value
+                    )
+                        : $xml->writeAttribute($key, $value);
+                } else {
+                    $useNS
+                        ? $xml->startElementNs(
+                        static::$namespacedProperties[$key],
+                        $key,
+                        null
+                    )
+                        : $xml->startElement($key);
+                    $this->write($xml, $value, $key);
+                    $xml->endElement();
+                }
+            }
+        } else {
+            $text = (string)$data;
+        }
+        if (!empty($text) || $text == 0) {
+            in_array($parent, static::$cdataNames)
+                ? $xml->writeCdata($text)
+                : $xml->text($text);
+        }
+    }
+
+    public function decode($data)
+    {
+        try {
+            if ($data == '') {
+                return array();
+            }
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string($data,
+                "SimpleXMLElement", LIBXML_NOBLANKS | LIBXML_NOCDATA);
+            if (false === $xml) {
+                $error = end(libxml_get_errors());
+                throw new RestException(400, 'Malformed XML. '
+                    . trim($error->message, "\r\n") . ' at line ' . $error->line);
+            }
+            libxml_clear_errors();
+            if (static::$importSettingsFromXml) {
+                static::$attributeNames = array();
+                static::$namespacedProperties = array();
+                static::$namepaces = array();
+                static::$rootName = $xml->getName();
+                $namespaces = $xml->getNamespaces();
+                if (count($namespaces)) {
+                    static::$namespacedProperties[static::$rootName] = end(array_keys($namespaces));
+                }
+            }
+            $data = $this->read($xml);
+            return $data;
+        } catch (\RuntimeException $e) {
+            throw new RestException(400,
+                "Error decoding request. " . $e->getMessage());
+        }
+    }
+
+    public function read(SimpleXMLElement $xml, $namespaces = null)
+    {
+        $r = array();
+        $text = (string)$xml;
+
+        if (static::$parseAttributes) {
+            $attributes = $xml->attributes();
+            foreach ($attributes as $key => $value) {
+                if (static::$importSettingsFromXml
+                    && !in_array($key, static::$attributeNames)
+                ) {
+                    static::$attributeNames[] = $key;
+                }
+                $r[$key] = static::setType((string)$value);
+            }
+        }
+        $children = $xml->children();
+        foreach ($children as $key => $value) {
+            if (isset($r[$key])) {
+                if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
+                    $r[$key] = array($r[$key]);
+                } else {
+                    $r[$key] = array($r[$key]);
+                }
+                $r[$key][] = $this->read($value);
+            } else {
+                $r[$key] = $this->read($value);
+            }
+        }
+
+        if (static::$parseNamespaces) {
+            if (is_null($namespaces))
+                $namespaces = $xml->getDocNamespaces(true);
+            foreach ($namespaces as $prefix => $ns) {
+                static::$namepaces[$prefix] = $ns;
+                if (static::$parseAttributes) {
+                    $attributes = $xml->attributes($ns);
+                    foreach ($attributes as $key => $value) {
+                        if (isset($r[$key])) {
+                            $key = "{$prefix}:$key";
+                        }
+                        if (static::$importSettingsFromXml
+                            && !in_array($key, static::$attributeNames)
+                        ) {
+                            static::$namespacedProperties[$key] = $prefix;
+                            static::$attributeNames[] = $key;
+                        }
+                        $r[$key] = static::setType((string)$value);
+                    }
+                }
+                $children = $xml->children($ns);
+                foreach ($children as $key => $value) {
+                    if (static::$importSettingsFromXml)
+                        static::$namespacedProperties[$key] = $prefix;
+                    if (isset($r[$key])) {
+                        if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
+                            $r[$key] = array($r[$key]);
+                        } else {
+                            $r[$key] = array($r[$key]);
+                        }
+                        $r[$key][] = $this->read($value, $namespaces);
+                    } else {
+                        $r[$key] = $this->read($value, $namespaces);
+                    }
+                }
+            }
+        }
+
+        if (empty($text)) {
+            if (empty($r)) return null;
+        } else {
+            empty($r)
+                ? $r = static::setType($text)
+                : (static::$parseTextNodeAsProperty
+                ? $r[static::$textNodeName] = static::setType($text)
+                : $r[] = static::setType($text));
+        }
+        return $r;
+    }
+
+    public static function setType($value)
+    {
+        if (empty($value))
+            return null;
+        if ($value == 'true')
+            return true;
+        if ($value == 'false')
+            return true;
+        return $value;
+    }
 }
 

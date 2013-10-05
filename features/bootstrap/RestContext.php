@@ -1,6 +1,6 @@
 <?php
 use Behat\Behat\Context\BehatContext;
-use Symfony\Component\Yaml\Yaml;
+use Behat\Gherkin\Node\PyStringNode;
 
 /**
  * Rest context.
@@ -76,6 +76,68 @@ class RestContext extends BehatContext
         }
     }
 
+    /**
+     * ============ json array ===================
+     * @Given /^that I send (\[[^]]*\])$/
+     *
+     * ============ json object ==================
+     * @Given /^that I send (\{(?>[^\{\}]+|(?1))*\})$/
+     *
+     * ============ json string ==================
+     * @Given /^that I send ("[^"]*")$/
+     *
+     * ============ json int =====================
+     * @Given /^that I send ([-+]?[0-9]*\.?[0-9]+)$/
+     *
+     * ============ json null or boolean =========
+     * @Given /^that I send (null|true|false)$/
+     */
+    public function thatISend($data)
+    {
+        $this->_restObject = json_decode($data);
+        $this->_restObjectMethod = 'post';
+    }
+
+    /**
+     * @Given /^that I send:/
+     * @param PyStringNode $data
+     */
+    public function thatISendPyString(PyStringNode $data) {
+        $this->thatISend($data);
+    }
+
+    /**
+     * ============ json array ===================
+     * @Given /^the response equals (\[[^]]*\])$/
+     *
+     * ============ json object ==================
+     * @Given /^the response equals (\{(?>[^\{\}]+|(?1))*\})$/
+     *
+     * ============ json string ==================
+     * @Given /^the response equals ("[^"]*")$/
+     *
+     * ============ json int =====================
+     * @Given /^the response equals ([-+]?[0-9]*\.?[0-9]+)$/
+     *
+     * ============ json null or boolean =========
+     * @Given /^the response equals (null|true|false)$/
+     */
+    public function theResponseEquals($response)
+    {
+        $data = json_encode($this->_data);
+        if ($data !== $response)
+            throw new Exception("Response value does not match '$response'\n\n"
+            . $this->echoLastResponse());
+    }
+
+    /**
+     * @Given /^the response equals:/
+     * @param PyStringNode $data
+     */
+    public function theResponseEqualsPyString(PyStringNode $response)
+    {
+        $this->theResponseEquals($response);
+    }
     /**
      * @Given /^that I want to make a new "([^"]*)"$/
      */
@@ -176,11 +238,16 @@ class RestContext extends BehatContext
 
     /**
      * @Given /^the request is sent as JSON$/
+     * @Given /^the request is sent as Json$/
      */
     public function theRequestIsSentAsJson()
     {
         $this->_headers['Content-Type'] = 'application/json; charset=utf-8';
-        $this->_requestBody = json_encode((array)$this->_restObject);
+        $this->_requestBody = json_encode(
+            is_object($this->_restObject)
+            ? (array)$this->_restObject
+            : $this->_restObject
+        );
     }
 
     /**
@@ -208,7 +275,9 @@ class RestContext extends BehatContext
                 $this->_response = $this->_request->send();
                 break;
             case 'POST':
-                $postFields = (array)$this->_restObject;
+                $postFields = is_object($this->_restObject)
+                    ? (array)$this->_restObject
+                    : $this->_restObject;
                 $this->_request = $this->_client
                     ->post($url, $this->_headers,
                     (empty($this->_requestBody) ? $postFields :
@@ -216,7 +285,9 @@ class RestContext extends BehatContext
                 $this->_response = $this->_request->send();
                 break;
             case 'PUT' :
-                $putFields = (array)$this->_restObject;
+                $putFields = is_object($this->_restObject)
+                    ? (array)$this->_restObject
+                    : $this->_restObject;
                 $this->_request = $this->_client
                     ->put($url, $this->_headers,
                     (empty($this->_requestBody) ? $putFields :
@@ -224,7 +295,9 @@ class RestContext extends BehatContext
                 $this->_response = $this->_request->send();
                 break;
             case 'PATCH' :
-                $putFields = (array)$this->_restObject;
+                $putFields = is_object($this->_restObject)
+                    ? (array)$this->_restObject
+                    : $this->_restObject;
                 $this->_request = $this->_client
                     ->patch($url, $this->_headers,
                     (empty($this->_requestBody) ? $putFields :

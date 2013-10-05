@@ -1,6 +1,9 @@
 <?php
 namespace Luracast\Restler\Format;
 
+use Symfony\Component\Yaml\Yaml;
+use Luracast\Restler\Data\Object;
+
 /**
  * YAML Format for Restler Framework
  *
@@ -13,9 +16,6 @@ namespace Luracast\Restler\Format;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc4
  */
-use Symfony\Component\Yaml\Yaml;
-use Luracast\Restler\Data\Object;
-
 class YamlFormat extends Format
 {
     const MIME = 'text/plain';

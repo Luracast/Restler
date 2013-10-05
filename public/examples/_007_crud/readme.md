@@ -1,15 +1,6 @@
-CRUD <requires>PHP >= 5.3</requires>
-----
+## CRUD 
 
- <tag>create</tag>
- <tag>retrieve</tag>
- <tag>read</tag>
- <tag>update</tag>
- <tag>delete</tag>
- <tag>post</tag>
- <tag>get</tag>
- <tag>put</tag>
- <tag>routing</tag>
+ This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
 
 
 Create, Retrieve, Update and Delete using

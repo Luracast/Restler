@@ -16,18 +16,28 @@ use Closure;
 class EventDispatcher
 {
     private $listeners = array();
+    protected static $_waitList = array();
 
     public static $self;
     protected $events = array();
 
     public function __construct() {
         static::$self = $this;
+        if (!empty(static::$_waitList)) {
+            foreach (static::$_waitList as $param) {
+                call_user_func_array(array($this,$param[0]), $param[1]);
+            }
+        }
     }
 
     public static function __callStatic($eventName, $params)
     {
         if (0 === strpos($eventName, 'on')) {
-            return call_user_func_array(array(static::$self, $eventName), $params);
+            if(static::$self){
+                return call_user_func_array(array(static::$self, $eventName), $params);
+            }
+            static::$_waitList[] = func_get_args();
+            return false;
         }
     }
 
@@ -78,7 +88,7 @@ class EventDispatcher
     {
         $this->events[] = $eventName;
         $params = func_get_args();
-        $eventName = array_shift($params);
+        $eventName = 'on'.ucfirst(array_shift($params));
         if (isset($this->listeners[$eventName]))
             foreach ($this->listeners[$eventName] as $callback)
                 call_user_func_array($callback, $params);

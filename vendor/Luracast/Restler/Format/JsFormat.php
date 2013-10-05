@@ -40,4 +40,9 @@ class JsFormat extends JsonFormat
         return static::$callbackMethodName . '('
             . parent::encode($r, $human_readable) . ');';
     }
+
+    public function isReadable()
+    {
+        return false;
+    }
 }

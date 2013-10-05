@@ -37,13 +37,15 @@ class Object
      *
      * For example
      *
+     * when Object::$separatorChar = '.';
+     *
      * array('my.object'=>true) will result in
      *
      * array(
      *    'my'=>array('object'=>true)
      * );
      */
-    public static $separatorChar = '.';
+    public static $separatorChar = null;
     /**
      * @var bool set it to true when empty arrays, blank strings, null values
      * to be automatically removed from response
@@ -97,7 +99,10 @@ class Object
             $count = 0;
             $array = array();
             foreach ($object as $key => $value) {
-                if (false !== strpos($key, self::$separatorChar)) {
+                if (
+                    is_string(self::$separatorChar) &&
+                    false !== strpos($key, self::$separatorChar)
+                ) {
                     list($key, $obj) = explode(self::$separatorChar, $key, 2);
                     $object[$key][$obj] = $value;
                     $value = $object[$key];

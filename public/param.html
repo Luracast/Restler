@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Luracast Restler  Param</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="examples/resources/highlight.css">
+<link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+<script src="examples/resources/highlight.pack.js"></script>
+<script type="text/javascript" src="examples/resources/jquery-1.7.2.min.js"></script>
+
+<script type="text/javascript">
+  hljs.initHighlightingOnLoad();
+</script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-23777019-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+</head>
+<body>
+<nav class="floating-menu">
+<ul>
+<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="examples/resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a class="active" title="Getting Started with Restler" href="index.html#luracast-restler"><img src="examples/resources/quickstart.png" width="16" height="16"/> Start</a></li>
+<li><a href="examples/index.html"><img src="examples/resources/examples.png" width="16" height="16"/> Examples</a></li>
+<li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="examples/resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
+<li><a title="Contribute and Fork Restler on GitHub" target="_blank" href="http://bit.ly/LuracastRestler"><img src="examples/resources/github.png" width="16" height="16"/> Source</a></li>
+<li><a title="Get updated on Twitter" target="_blank" href="http://twitter.com/Luracast"><img src="examples/resources/twitter.png" width="16" height="16"/> Update</a></li>
+<li><a title="Keep in touch on Facebook" target="_blank" href="https://www.facebook.com/Luracast"><img src="examples/resources/facebook.png" width="16" height="16"/> Connect</a></li>
+</ul>
+</nav>
+<nav id="left">
+        <img src="examples/resources/Restler3.gif" width="126"
+            height="126" title="Luracast Restler " />
+        <h3>
+            <a href="index.html#luracast-restler">Quick Start</a>
+        </h3>
+        <ul>
+            <li><a href="index.html#features" title="Feature List">Features</a></li>
+            <li><a href="index.html#git-repository-and-the-branches" title="Git Repository and the Branches">Branches</a></li>
+            <li><a href="index.html#installation" title="Install">Installation</a></li>
+            <li><a href="index.html#quick-start-guide" title="Quick Start">Getting Started</a></li>
+            <li><a href="index.html#change-log" title="What has changed?">Change Log</a></li>
+            <li><a href="annotations.html#supported-annotations" title="Supported Annotations">Annotations</a>
+                <ul><li><a href="annotations.html#url" title="Annotations - @url">@url</a></li></ul>
+                <ul><li><a href="annotations.html#access" title="Annotations - @access">@access</a></li></ul>
+                <ul><li><a href="annotations.html#smart-auto-routing" title="Annotations - @smart-auto-routing">@smart-auto...</a></li></ul>
+                <ul><li><a href="annotations.html#class" title="Annotations - @class">@class</a></li></ul>
+                <ul><li><a href="annotations.html#cache" title="Annotations - @cache">@cache</a></li></ul>
+                <ul><li><a href="annotations.html#expires" title="Annotations - @expires">@expires</a></li></ul>
+                <ul><li><a href="annotations.html#throttle" title="Annotations - @throttle">@throttle</a></li></ul>
+                <ul><li><a href="annotations.html#status" title="Annotations - @status">@status</a></li></ul>
+                <ul><li><a href="annotations.html#header" title="Annotations - @header">@header</a></li></ul>
+                <ul><li><a href="annotations.html#param" title="Annotations - @param">@param</a></li></ul>
+                <ul><li><a href="annotations.html#throws" title="Annotations - @throws">@throws</a></li></ul>
+                <ul><li><a href="annotations.html#return" title="Annotations - @return">@return</a></li></ul>
+                <ul><li><a href="annotations.html#var" title="Annotations - @var">@var</a></li></ul>
+            </li>
+            <li><a href="param.html#param-and--var" title="@param and @var">Param</a>
+                <ul><li><a href="param.html#from" title="Param - @from">@from</a></li></ul>
+                <ul><li><a href="param.html#type" title="Param - @type">@type</a></li></ul>
+                <ul><li><a href="param.html#choice" title="Param - @choice">@choice</a></li></ul>
+                <ul><li><a href="param.html#min----max" title="Param - @min & @max">@min & @max</a></li></ul>
+                <ul><li><a href="param.html#fix" title="Param - @fix">@fix</a></li></ul>
+            </li>
+
+        </ul>
+    </nav>
+<article>
+
+<p><a id="param-and--var" class="anchor"></a></p>
+<h1>@param and @var</h1>
+
+<p>Following attributes can be used with <code>@param</code>, they also apply for <code>@var</code> comment
+that is added to model class properties.</p>
+
+<p>Just replace</p>
+
+<pre><code>@param [type] $name ...
+</code></pre>
+
+<p>with</p>
+
+<pre><code>@var [type] ...
+</code></pre>
+
+<p>in the examples below</p>
+
+<p><a id="from" class="anchor"></a></p>
+<h2>@from</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param [type] $name [Description] {@from url|body|query|head}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param string $name user name {@from body}
+</code></pre>
+
+<p>Overrides the parameter mapping, defines where to expect the parameter from.
+Value should be one of the following</p>
+
+<ul>
+<li>
+<strong>path</strong> as part of url</li>
+<li>
+<strong>query</strong> as part of the query string</li>
+<li>
+<strong>body</strong> as part of the body of the request</li>
+<li>
+<strong>head</strong> as part of the http header</li>
+</ul>
+<p>Please note that unlike path and head other values are only suggestive and
+primarily used by API Explorer to build the interface</p>
+
+<p><a id="type" class="anchor"></a></p>
+<h2>@type</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<p>string</p>
+
+<pre><code>@param string $name [Description] {@type email|date|datetime|timestamp}
+</code></pre>
+
+<p>array</p>
+
+<pre><code>@param array  $name [Description] {@type className}
+</code></pre>
+
+<p><strong>Examples:</strong></p>
+
+<pre><code>@param string $email email id {@type email}
+</code></pre>
+
+<p>Sub types for validation and documentation purpose. Email will validate the
+given string as email. Date and datetime will be validated as standard mysql
+date formats respectively. Timestamp will be validated as Unix timestamp.</p>
+
+<pre><code>@param array $author array of Authors {@type Author}
+</code></pre>
+
+<p>States that the given array of Author instances.</p>
+
+<strong>Code:</strong><p>Following api class shows various usage examples</p>
+<pre><code class="php">&lt;?php
+class Type
+{
+    /**
+     * Email validation
+     *
+     * @param string $email {@from body}{@type email}
+     */
+    function postEmail($email)
+    {
+        return $email;
+    }
+
+    /**
+     * Date validation
+     *
+     * @param string $date {@from body}{@type date}
+     */
+    function postDate($date)
+    {
+        return $date;
+    }
+
+    /**
+     * DateTime validation
+     *
+     * @param string $datetime {@from body}{@type datetime}
+     */
+    function postDatetime($datetime)
+    {
+        return $datetime;
+    }
+
+    /**
+     * time validation
+     *
+     * @param string $time {@from body}{@type time}
+     */
+    function postTime($time)
+    {
+        return $time;
+    }
+
+    /**
+     * time validation in 12 hour format
+     *
+     * @param string $time {@from body}{@type time12}
+     */
+    function postTime12($time12)
+    {
+        return $time12;
+    }
+
+    /**
+     * Timestamp validation
+     *
+     * @param string $timestamp {@from body}{@type timestamp}
+     */
+    function postTimestamp($timestamp)
+    {
+        return $timestamp;
+    }
+
+    /**
+     * Integer validation
+     *
+     * @param array $integers {@type int}
+     */
+    function postIntegers(array $integers)
+    {
+        return $integers;
+    }
+
+    /**
+     * Array of numbers
+     *
+     * @param array $numbers {@type float}
+     */
+    function postNumbers(array $numbers)
+    {
+        return $numbers;
+    }
+
+    /**
+     * Array of time strings
+     *
+     * @param array $timestamp {@from body}{@type time}
+     */
+    function postTimes(array $timestamps)
+    {
+        return $timestamps;
+    }
+
+    /**
+     * Array of timestamps
+     *
+     * @param array $timestamp {@from body}{@type timestamp}
+     */
+    function postTimestamps(array $timestamps)
+    {
+        return $timestamps;
+    }
+
+    /**
+     * Custom class parameter
+     *
+     * @param Author $author
+     *
+     * @return Author
+     */
+    function postAuthor(Author $author)
+    {
+        return $author;
+    }
+
+    /**
+     * Array of authors
+     *
+     * @param array $authors {@type Author}
+     *
+     * @return mixed
+     */
+    function postAuthors(array $authors)
+    {
+        return $authors;
+    }
+
+    /**
+     * An associative array
+     *
+     * @param array $object {@type associative}
+     *
+     * @return array
+     */
+    function postObject(array $object)
+    {
+        return $object;
+    }
+
+    /**
+     * An indexed array
+     *
+     * @param array $array {@type indexed}
+     *
+     * @return array
+     */
+    function postArray(array $array)
+    {
+        return $array;
+    }
+
+    /**
+     * An array indexed or associative
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    function postArrayOrObject(array $array)
+    {
+        return $array;
+    }
+}
+
+class Author
+{
+    /**
+     * @var string {@from body} {@min 3}{@max 100}
+     * name of the Author {@required true}
+     */
+    public $name = 'Name';
+    /**
+     * @var string {@type email} {@from body}
+     * email id of the Author
+     */
+    public $email = 'name@domain.com';
+}</code></pre>
+<strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
+<pre><code class="bash">bin/behat  features/tests/param/type.feature</code></pre>
+<p>Will test the above api for the following features</p>
+<pre><code class="gherkin">@param @type
+Feature: Type Attribute
+
+  Scenario Outline: Email
+    Given that I send {"email":&lt;email&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/email"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;email&gt;
+
+  Examples:
+    | email                 |
+    | "$A12345@example.com" |
+    | "!def!xyz%abc@my.co"  |
+    | "sane@h.io"           |
+
+  Scenario Outline: Email as the only body
+    Given that I send &lt;email&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/email"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;email&gt;
+
+  Examples:
+    | email                 |
+    | "$A12345@example.com" |
+    | "!def!xyz%abc@my.co"  |
+    | "sane@h.io"           |
+
+  Scenario Outline: Invalid Email
+    Given that I send {"email":&lt;email&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/email"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | email              |
+    | "some.thing@wrong" |
+    | "missing@dot"      |
+    | "missing.at"       |
+
+  Scenario Outline: Invalid Email as the only body
+    Given that I send &lt;email&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/email"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | email              |
+    | "some.thing@wrong" |
+    | "missing@dot"      |
+    | "missing.at"       |
+
+  Scenario Outline: Date
+    Given that I send {"date":&lt;date&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/date"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;date&gt;
+
+  Examples:
+    | date         |
+    | "2013-08-10" |
+    | "1974-03-30" |
+    | "1600-12-17" |
+
+  Scenario Outline: Date as the only body
+    Given that I send &lt;date&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/date"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;date&gt;
+
+  Examples:
+    | date         |
+    | "2013-08-10" |
+    | "1974-03-30" |
+    | "1600-12-17" |
+
+  Scenario Outline: Invalid Date
+    Given that I send {"date":&lt;date&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/date"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | date         |
+    | "YYY-MM-DD"  |
+    | "10-08-2013" |
+    | "2013-13-10" |
+    | "2013-02-30" |
+    | "2013/08/10" |
+
+  Scenario Outline: Invalid Date as the only body
+    Given that I send &lt;date&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/date"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | date         |
+    | "YYY-MM-DD"  |
+    | "10-08-2013" |
+    | "2013-13-10" |
+    | "2013-02-30" |
+    | "2013/08/10" |
+
+  Scenario Outline: Date and Time
+    Given that I send {"datetime":&lt;datetime&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/datetime"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;datetime&gt;
+
+  Examples:
+    | datetime              |
+    | "2013-08-10 00:34:18" |
+
+  Scenario Outline: Invalid Date and Time
+    Given that I send {"datetime":&lt;datetime&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/datetime"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | datetime              |
+    | "2013-08-10"          |
+    | "2013-08-10 25:70:11" |
+    | "2013/08/10 00:34:18" |
+
+  Scenario Outline: Time Stamp
+    Given that I send {"timestamp":&lt;timestamp&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/timestamp"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | timestamp    | expected   |
+    | "1376094488" | 1376094488 |
+    | 1376094488   | 1376094488 |
+    | "0123"       | 123        |
+    | 123.0        | 123        |
+    | 1            | 1          |
+    | 0            | 0          |
+
+  Scenario Outline: Time Stamp as the only body
+    Given that I send &lt;timestamp&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/timestamp"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | timestamp    | expected   |
+    | "1376094488" | 1376094488 |
+    | 1376094488   | 1376094488 |
+    | "0123"       | 123        |
+    | 123.0        | 123        |
+    | 1            | 1          |
+
+  Scenario Outline: Invalid Time Stamp
+    Given that I send {"timestamp":&lt;timestamp&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/timestamp"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | timestamp             |
+    | "2013-08-10"          |
+    | "2013-08-10 00:34:18" |
+    | "0xFF"                |
+    | 1.1                   |
+
+  Scenario Outline: Invalid Time Stamp as the only body
+    Given that I send &lt;timestamp&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/timestamp"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | timestamp             |
+    | "2013-08-10"          |
+    | "2013-08-10 00:34:18" |
+    | "0xFF"                |
+    | 1.1                   |
+
+  Scenario Outline: An Array of Integers
+    Given that I send {"integers":&lt;integers&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/integers"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | integers          | expected          |
+    | []                | []                |
+    | {}                | []                |
+    | [1,3298473984,23] | [1,3298473984,23] |
+    | [0]               | [0]               |
+
+  Scenario Outline: An Array of Integers as the only body
+    Given that I send &lt;integers&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/integers"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | integers          | expected          |
+    | []                | []                |
+    | {}                | []                |
+    | [1,3298473984,23] | [1,3298473984,23] |
+    | [0]               | [0]               |
+
+  Scenario Outline: Invalid Array of Integers
+    Given that I send {"integers":&lt;integers&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/integers"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | integers        |
+    | ""              |
+    | [true,false]    |
+    | [null]          |
+    | [1.34]          |
+    | {"key":"value"} |
+
+  Scenario Outline: Invalid Array of Integers as the only body
+    Given that I send &lt;integers&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/integers"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | integers        |
+    | ""              |
+    | [true,false]    |
+    | [null]          |
+    | [1.34]          |
+    | {"key":"value"} |
+
+  Scenario Outline: An Array of Floating Points
+    Given that I send {"numbers":&lt;numbers&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/numbers"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | numbers            | expected           |
+    | []                 | []                 |
+    | {}                 | []                 |
+    | [1,329.8473984,23] | [1,329.8473984,23] |
+    | [0.00001]          | [1.0e-5]           |
+
+  Scenario Outline: An Array of Floating Points as the only body
+    Given that I send &lt;numbers&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/numbers"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | numbers            | expected           |
+    | []                 | []                 |
+    | {}                 | []                 |
+    | [1,329.8473984,23] | [1,329.8473984,23] |
+    | [0.00001]          | [1.0e-5]           |
+    | [0.10e-4]          | [1.0e-5]           |
+
+  Scenario Outline: Invalid Array of Floats as the only body
+    Given that I send &lt;numbers&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/numbers"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | numbers         |
+    | ""              |
+    | [true,false]    |
+    | [null]          |
+    | {"key":"value"} |
+
+  Scenario Outline: Custom Class
+    Given that I send &lt;author&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/author"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | author                                      | expected                                    |
+    | {"name":"Arul"}                             | {"name":"Arul","email":null}                |
+    | {"name":"Arul","email":"arul@luracast.com"} | {"name":"Arul","email":"arul@luracast.com"} |
+    | {"name":"name","email":"a@b.c"}             | {"name":"name","email":"a@b.c"}             |
+
+  Scenario Outline: Invalid data for Custom Class
+    Given that I send &lt;author&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/author"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | author                         |
+    | ""                             |
+    | [true,false]                   |
+    | [null]                         |
+    | {"key":"value"}                |
+    | {"name":"12","email":"a@b.c"}  |
+    | {"email":"a@b.c"}              |
+    | {"email":"ab.c","name":"1234"} |
+
+  Scenario Outline: Array of Custom Class objects
+    Given that I send &lt;authors&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/authors"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | authors                                       | expected                                      |
+    | [{"name":"Arul"}]                             | [{"name":"Arul","email":null}]                |
+    | [{"name":"Arul","email":"arul@luracast.com"}] | [{"name":"Arul","email":"arul@luracast.com"}] |
+    | [{"name":"name","email":"a@b.c"}]             | [{"name":"name","email":"a@b.c"}]             |
+
+  Scenario Outline: Invalid data for array of Custom Class objects
+    Given that I send &lt;authors&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/type/authors"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | authors                        |
+    | ""                             |
+    | [true,false]                   |
+    | [null]                         |
+    | {"key":"value"}                |
+    | {"name":"12","email":"a@b.c"}  |
+    | {"email":"a@b.c"}              |
+    | {"email":"ab.c","name":"1234"} |</code></pre>
+
+<p><a id="choice" class="anchor"></a></p>
+<h2>@choice</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param string $name [Description] {@choice option1,option2...}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param string $gender {@choice male,female,third}
+</code></pre>
+
+<p>Value for the parameter should match one of the choices, used for validation.</p>
+
+<p><a id="min----max" class="anchor"></a></p>
+<h2>@min &amp; @max</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param string|int|float|array $name [Description] {@min value}{@max value}
+</code></pre>
+
+<p><strong>Examples:</strong></p>
+
+<p>string</p>
+
+<pre><code>@param string $name 3 to 10 characters in length {@min 3}{@max 10}
+</code></pre>
+
+<p>array</p>
+
+<pre><code>@param array $items at least one item is needed  {@min 1}
+</code></pre>
+
+<p>integer</p>
+
+<pre><code>@param int $age valid age should be 18 or above  {@min 18}
+</code></pre>
+
+<p>Minimum and maximum values for a parameter. For string and array parameters
+it is applied to the length. For numeric parameters it sets the range for the
+value.</p>
+
+<strong>Code:</strong><p>Following api class shows various usage examples</p>
+<pre><code class="php">&lt;?php
+/**
+ * Class MinMax provides an api to check min and max
+ * attributes for array, int, and string
+ */
+class MinMax
+{
+
+    /**
+     * Restrict the number of items in an array
+     *
+     * @param array $array {@min 2}{@max 5}
+     *
+     * @return array
+     */
+    function postArray(array $array)
+    {
+        return $array;
+    }
+
+    /**
+     * Restrict the value
+     *
+     * @param int $int {@min 2}{@max 5}
+     *
+     * @return int
+     */
+    function getInt($int)
+    {
+        return $int;
+    }
+
+    /**
+     * Restrict the length of the string
+     *
+     * @param string $string {@min 2}{@max 5}
+     *
+     * @return string
+     */
+    function getString($string)
+    {
+        return $string;
+    }
+}</code></pre>
+<strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
+<pre><code class="bash">bin/behat  features/tests/param/minmax.feature</code></pre>
+<p>Will test the above api for the following features</p>
+<pre><code class="gherkin">@param @min @max
+Feature: Minimum and Maximum
+
+  Scenario Outline: Int
+    When I request "/tests/param/minmax/int/&lt;number&gt;"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "int"
+    And the value equals &lt;number&gt;
+
+    Examples:
+      | number |
+      |   2    |
+      |   3    |
+      |   4    |
+      |   5    |
+
+  Scenario: Int lower than the minimum
+    When I request "/tests/param/minmax/int/1"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Scenario: Int higher than maximum
+    When I request "/tests/param/minmax/int/6"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Scenario: String
+    When I request "/tests/param/minmax/string/me"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "me"
+
+  Scenario: Short String
+    When I request "/tests/param/minmax/string/i"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Scenario: Lengthy String
+    When I request "/tests/param/minmax/string/arulkumaran"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Scenario Outline: Array
+    Given that I send &lt;data&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/minmax/array"
+    Then the response status code should be 200
+    And the response is JSON
+
+    Examples:
+       |  data       |
+       | [1,2]       |
+       | [1,2,3]     |
+       | [1,2,3,4]   |
+       | [1,2,3,4,5] |
+
+  Scenario Outline: Array out of range
+    Given that I send &lt;data&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/minmax/array"
+    Then the response status code should be 400
+    And the response is JSON
+
+    Examples:
+       |  data             |
+       | []                |
+       | [1]               |
+       | [1,2,3,4,5,6]     |
+       | [1,2,3,4,5,6,7]   |
+       | [1,2,3,4,5,6,7,8] |
+</code></pre>
+
+<p><a id="fix" class="anchor"></a></p>
+<h2>@fix</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param string|int|float|array $name [Description] {@fix true}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param string $name 3 to 10 characters in length {@max 10}{@fix true}
+</code></pre>
+
+<p>Suggests the validator to attempt fixing the validation problem. In the above
+example Validator will trim off the excess characters instead of throwing an
+exception</p>
+
+<strong>Code:</strong><p>Following api class shows various usage examples</p>
+<pre><code class="php">&lt;?php
+/**
+ * Class MinMax provides an api to check min and max
+ * attributes for array, int, and string
+ */
+class MinMaxFix
+{
+
+    /**
+     * Restrict the number of items in an array
+     *
+     * @param array $array {@min 2}{@max 5}{@fix true}
+     *
+     * @return array
+     */
+    function postArray(array $array)
+    {
+        return $array;
+    }
+
+    /**
+     * Restrict the value
+     *
+     * @param int $int {@min 2}{@max 5}{@fix true}
+     *
+     * @return int
+     */
+    function getInt($int)
+    {
+        return $int;
+    }
+
+    /**
+     * Restrict the length of the string
+     *
+     * @param string $string {@min 2}{@max 5}{@fix true}{@from body}
+     *
+     * @return string
+     */
+    function postString($string)
+    {
+        return $string;
+    }
+}</code></pre>
+<strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
+<pre><code class="bash">bin/behat  features/tests/param/minmaxfix.feature</code></pre>
+<p>Will test the above api for the following features</p>
+<pre><code class="gherkin">@param @min @max @fix
+Feature: Minimum and Maximum with Fix
+
+  Scenario Outline: Int
+    When I request "/tests/param/minmaxfix/int/&lt;number&gt;"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "int"
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | number | expected |
+    | 0      | 2        |
+    | 1      | 2        |
+    | 2      | 2        |
+    | 3      | 3        |
+    | 4      | 4        |
+    | 5      | 5        |
+    | 6      | 5        |
+    | 7      | 5        |
+
+  Scenario Outline: String
+    Given that I send {"string":&lt;string&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/minmaxfix/string"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | string    | expected |
+    | "a"       | "aa"     |
+    | "ab"      | "ab"     |
+    | "abc"     | "abc"    |
+    | "abcd"    | "abcd"   |
+    | "abcde"   | "abcde"  |
+    | "abcdef"  | "abcde"  |
+    | "abcdefg" | "abcde"  |
+    | "abcdefh" | "abcde"  |
+
+
+  Scenario Outline: Array out of maximum range
+    Given that I send &lt;array&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/minmaxfix/array"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response equals &lt;expected&gt;
+
+  Examples:
+    | array             | expected    |
+    | [1,2]             | [1,2]       |
+    | [1,2,3]           | [1,2,3]     |
+    | [1,2,3,4]         | [1,2,3,4]   |
+    | [1,2,3,4,5]       | [1,2,3,4,5] |
+    | [1,2,3,4,5,6]     | [1,2,3,4,5] |
+    | [1,2,3,4,5,6,7]   | [1,2,3,4,5] |
+    | [1,2,3,4,5,6,7,8] | [1,2,3,4,5] |
+
+  Scenario Outline: Array short of minimum is not expected
+    Given that I send &lt;array&gt;
+    And the request is sent as JSON
+    When I request "/tests/param/minmaxfix/array"
+    Then the response status code should be 400
+    And the response is JSON
+
+  Examples:
+    | array |
+    | []    |
+    | [1]   |
+</code></pre>
+
+<hr>
+<p>More to follow...</p>
+
+</article>
+</body>
+</html>

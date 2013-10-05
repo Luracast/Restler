@@ -1,17 +1,6 @@
-Rate Limiting <requires>PHP >= 5.3</requires>
--------------
+## Rate Limiting 
 
- <tag>create</tag>
- <tag>retrieve</tag>
- <tag>read</tag>
- <tag>update</tag>
- <tag>delete</tag>
- <tag>post</tag>
- <tag>get</tag>
- <tag>put</tag>
- <tag>filter</tag>
- <tag>throttle</tag>
- <tag>rate-limiting</tag>
+ This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `filter` `throttle` `rate-limiting`
 
 
 How to Rate Limit API access using a Filter class that implements
@@ -54,15 +43,14 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 
 This API Server exposes the following URIs
 
-    GET    authors                   ⇠ ratelimited\Authors::index()
-    POST   authors                   ⇠ ratelimited\Authors::post()
-    DELETE authors/{id}              ⇠ ratelimited\Authors::delete()
-    PATCH  authors/{id}              ⇠ ratelimited\Authors::patch()
-    PUT    authors/{id}              ⇠ ratelimited\Authors::put()
-    GET    authors/{id}              ⇠ ratelimited\Authors::get()
-    GET    resources                 ⇠ Luracast\Restler\Resources::index()
-    GET    resources/v{version}      ⇠ Luracast\Restler\Resources::get()
-    GET    resources/{id}-v{version} ⇠ Luracast\Restler\Resources::get()
+    GET    authors        ⇠ ratelimited\Authors::index()
+    POST   authors        ⇠ ratelimited\Authors::post()
+    PATCH  authors/{id}   ⇠ ratelimited\Authors::patch()
+    DELETE authors/{id}   ⇠ ratelimited\Authors::delete()
+    PUT    authors/{id}   ⇠ ratelimited\Authors::put()
+    GET    authors/{id}   ⇠ ratelimited\Authors::get()
+    GET    resources      ⇠ Luracast\Restler\Resources::index()
+    GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
 
 
 

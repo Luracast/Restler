@@ -8,6 +8,18 @@ use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Util;
 
+/**
+ * Html template format
+ *
+ * @category   Framework
+ * @package    Restler
+ * @subpackage format
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc4
+ */
 class HtmlFormat extends Format
 {
     public static $mime = 'text/html';
@@ -113,6 +125,9 @@ class HtmlFormat extends Format
                     $template($view);
                     break;
                 case 'twig':
+                    if (!class_exists('\Twig_Environment', true))
+                        throw new RestException(500,
+                            'Twig templates require twig classes to be installed using `composer install`');
                     $loader = new \Twig_Loader_Filesystem(static::$viewPath);
                     $twig = new \Twig_Environment($loader, array(
                         'cache' => Defaults::$cacheDirectory,
@@ -122,6 +137,9 @@ class HtmlFormat extends Format
                     return $template->render($data);
                 case 'handlebar':
                 case 'mustache':
+                    if (!class_exists('\Mustache_Engine', true))
+                        throw new RestException(500,
+                            'Mustache/Handlebar templates require mustache classes to be installed using `composer install`');
                     $view = self::$viewPath . DIRECTORY_SEPARATOR .
                         self::$view;
                     $m = new \Mustache_Engine;
@@ -150,6 +168,13 @@ class HtmlFormat extends Format
     public function decode($data)
     {
         throw new RestException(500, 'HtmlFormat is write only');
+    }
+
+    /**
+     * @return bool false as HTML format is write only
+     */
+    public function isReadable(){
+        return false;
     }
 
     /**

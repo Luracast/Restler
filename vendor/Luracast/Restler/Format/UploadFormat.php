@@ -65,10 +65,10 @@ class UploadFormat extends Format
                     foreach ($file as $property => $value) {
                         $innerFile[$property] = $value[$i];
                     }
-                    static::checkFile($innerFile, $doMimeCheck, $doSizeCheck);
+                    if ($innerFile['name']) static::checkFile($innerFile, $doMimeCheck, $doSizeCheck);
                 }
             } else {
-                static::checkFile($file, $doMimeCheck, $doSizeCheck);
+                if ($file['name']) static::checkFile($file, $doMimeCheck, $doSizeCheck);
             }
         }
         //sort file order if needed;
@@ -95,6 +95,11 @@ class UploadFormat extends Format
                 throw new RestException(403, "File ({$file['name']}) is not supported.");
             }
         }
+    }
+
+    function isWritable()
+    {
+        return false;
     }
 
 }

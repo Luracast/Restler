@@ -4,6 +4,7 @@ namespace Luracast\Restler;
 use Luracast\Restler\Data\ApiMethodInfo;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionProperty;
 
 /**
  * Router class that routes the urls to api methods along with parameters
@@ -62,7 +63,7 @@ class Routes
             $defaults = array();
             $params = $method->getParameters();
             $position = 0;
-            $ignorePathTill = false;
+            $pathParams = array();
             $allowAmbiguity
                 = (isset($metadata['smart-auto-routing'])
                 && $metadata['smart-auto-routing'] != 'true')
@@ -78,12 +79,10 @@ class Routes
             if (!isset($metadata['param'])) {
                 $metadata['param'] = array();
             }
+            $children = array();
             foreach ($params as $param) {
                 $type =
                     $param->isArray() ? 'array' : $param->getClass();
-                if ($type instanceof ReflectionClass) {
-                    $type = $type->getName();
-                }
                 $arguments[$param->getName()] = $position;
                 $defaults[$position] = $param->isDefaultValueAvailable() ?
                     $param->getDefaultValue() : null;
@@ -91,20 +90,42 @@ class Routes
                     $metadata['param'][$position] = array();
                 }
                 $m = & $metadata ['param'] [$position];
+                $m ['name'] = $param->getName();
+                $m ['default'] = $defaults [$position];
+                $m ['required'] = !$param->isOptional();
+                if(is_null($type) && isset($m['type'])) {
+                    $type = $m['type'];
+                }
+                $contentType = Util::nestedValue(
+                    $m,
+                    CommentParser::$embeddedDataName,
+                    'type'
+                );
+                if($contentType && class_exists($contentType)){
+                    list($contentType,$children) = static::getTypeAndModel(
+                        new ReflectionClass($contentType)
+                    );
+                }
+                if ($type instanceof ReflectionClass) {
+                    list($type, $children) = static::getTypeAndModel($type);
+                }
                 if (isset($type)) {
                     $m['type'] = $type;
                 }
-                $m ['name'] = trim($param->getName(), '$ ');
-                $m ['default'] = $defaults [$position];
-                $m ['required'] = !$param->isOptional();
+                $m ['children'] = $children;
 
-                if (isset($m[CommentParser::$embeddedDataName]['from'])) {
+                if ($m['name']==Defaults::$fullRequestDataName) {
+                    $from = 'body';
+                    unset($m[CommentParser::$embeddedDataName]['from']);
+                } elseif (isset($m[CommentParser::$embeddedDataName]['from'])) {
                     $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
                     if ((isset($type) && Util::isObjectOrArray($type))
-                        || $param->getName() == Defaults::$fullRequestDataName
                     ) {
                         $from = 'body';
+                        if(!isset($type)){
+                            $type = $m['type'] = 'array';
+                        }
                     } elseif ($m['required']) {
                         $from = 'path';
                     } else {
@@ -113,8 +134,8 @@ class Routes
                 }
                 $m['from'] = $from;
 
-                if (!$allowAmbiguity && $from == 'path') {
-                    $ignorePathTill = $position + 1;
+                if ($allowAmbiguity || $from == 'path') {
+                    $pathParams [$position] = true;
                 }
                 $position++;
             }
@@ -156,17 +177,33 @@ class Routes
                 foreach ($matches as $match) {
                     $httpMethod = $match[1];
                     $url = rtrim($resourcePath . $match[2], '/');
+                    //deep copy the call, as it may change for each @url
+                    $copy = unserialize(serialize($call));
+                    foreach ($copy['metadata']['param'] as $i => $p) {
+                        if (
+                            (!isset($p['from']) || $p['from'] == 'path') &&
+                            false === strpos($url, '{' . $p['name'] . '}') &&
+                            false === strpos($url, ':' . $p['name'])
+                        ) {
+                            $copy['metadata']['param'][$i]['from'] =
+                                $httpMethod == 'GET' ||
+                                $httpMethod == 'DELETE'
+                                    ? 'query'
+                                    : 'body';
+                        }
+                    }
                     $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
                         function ($matches) use ($call) {
                             $match = trim($matches[0], '{}:');
                             $index = $call['arguments'][$match];
                             return '{' .
-                                Routes::typeChar(isset($call['metadata']['param'][$index]['type'])
-                                    ? $call['metadata']['param'][$index]['type']
-                                    : null)
-                                . $index . '}';
+                            Routes::typeChar(isset(
+                            $call['metadata']['param'][$index]['type'])
+                                ? $call['metadata']['param'][$index]['type']
+                                : null)
+                            . $index . '}';
                         }, $url);
-                    static::addPath($url, $call, $httpMethod);
+                    static::addPath($url, $copy, $httpMethod);
                 }
                 //if auto route enabled, do so
             } elseif (Defaults::$autoRoutingEnabled) {
@@ -185,37 +222,31 @@ class Routes
                 }
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
-                if (!$ignorePathTill) {
+                if (empty($pathParams)) {
                     static::addPath($url, $call, $httpMethod);
                 }
-                $position = 1;
-                foreach ($params as $param) {
-                    $from = $metadata ['param'] [$position - 1] ['from'];
+                $lastPathParam = end(array_keys($pathParams));
+                for ($position = 0; $position < count($params); $position++) {
+                    $from = $metadata['param'][$position]['from'];
 
                     if ($from == 'body' && ($httpMethod == 'GET' ||
-                        $httpMethod == 'DELETE')
+                            $httpMethod == 'DELETE')
                     ) {
-                        $from = $metadata ['param'] [$position - 1] ['from']
+                        $from = $metadata['param'][$position]['from']
                             = 'query';
                     }
-
-                    if (!$allowAmbiguity && $from != 'path') {
-                        break;
-                    }
-                    if (!empty($url)) {
+                    if (!isset($pathParams[$position]))
+                        continue;
+                    if (!empty($url))
                         $url .= '/';
-                    }
-                    //$call['metadata']['url'] = "$httpMethod $url{"
-                    //. $param->getName() . '}';
                     $url .= '{' .
-                        static::typeChar(isset($call['metadata']['param'][$position - 1]['type'])
-                            ? $call['metadata']['param'][$position - 1]['type']
+                        static::typeChar(isset($call['metadata']['param'][$position]['type'])
+                            ? $call['metadata']['param'][$position]['type']
                             : null)
-                        . ($position - 1) . '}';
-                    if ($allowAmbiguity || $position == $ignorePathTill) {
+                        . $position . '}';
+                    if ($allowAmbiguity || $position == $lastPathParam) {
                         static::addPath($url, $call, $httpMethod);
                     }
-                    $position++;
                 }
             }
         }
@@ -242,7 +273,8 @@ class Routes
         $call['url'] = preg_replace_callback(
             "/\{\S(\d+)\}/",
             function ($matches) use ($call) {
-                return '{' . $call['metadata']['param'][$matches[1]]['name'] . '}';
+                return '{' .
+                $call['metadata']['param'][$matches[1]]['name'] . '}';
             },
             $path
         );
@@ -252,6 +284,9 @@ class Routes
             static::$routes['*'][$path][$httpMethod] = $call;
         } else {
             static::$routes[$path][$httpMethod] = $call;
+            //create an alias with index if the method name is index
+            if ($call['methodName'] == 'index')
+                static::$routes["$path/index"][$httpMethod] = $call;
         }
     }
 
@@ -272,10 +307,10 @@ class Routes
         $message = null;
         $methods = array();
         if (isset($p[$path][$httpMethod])) {
-            //static route
+            //================== static routes ==========================
             return static::populate($p[$path][$httpMethod], $data);
         } elseif (isset($p['*'])) {
-            //wildcard routes
+            //================== wildcard routes ========================
             uksort($p['*'], function ($a, $b) {
                 return strlen($b) - strlen($a);
             });
@@ -284,12 +319,19 @@ class Routes
                     //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
                     $call = ApiMethodInfo::__set_state($value[$httpMethod]);
-                    $call->parameters = empty($path) ? array() : explode('/', $path);
+                    $call->parameters = empty($path)
+                        ? array()
+                        : explode('/', $path);
                     return $call;
                 }
             }
         }
-        //dynamic route
+        //================== dynamic routes =============================
+        //add newline char if trailing slash is found
+        if(substr($path,-1)=='/')
+            $path .= PHP_EOL;
+        //if double slash is found fill in newline char;
+        $path = str_replace('//', '/' . PHP_EOL . '/', $path);
         ksort($p);
         foreach ($p as $key => $value) {
             if (!isset($value[$httpMethod])) {
@@ -308,10 +350,12 @@ class Routes
                     $index = intval(substr($k, 1));
                     $details = $value[$httpMethod]['metadata']['param'][$index];
                     if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
-                        $data[$details['name']] = $v;
+                        //remove the newlines
+                        $data[$details['name']] = trim($v, PHP_EOL);
                     } else {
                         $status = 400;
-                        $message = 'invalid value specified for `' . $details['name'] . '`';
+                        $message = 'invalid value specified for `'
+                            . $details['name'] . '`';
                         $found = false;
                         break;
                     }
@@ -347,9 +391,38 @@ class Routes
     protected static function populate(array $call, $data)
     {
         $call['parameters'] = $call['defaults'];
+        $p = & $call['parameters'];
         foreach ($data as $key => $value) {
             if (isset($call['arguments'][$key])) {
-                $call['parameters'][$call['arguments'][$key]] = $value;
+                $p[$call['arguments'][$key]] = $value;
+            }
+        }
+        if (
+            count($p) == 1 &&
+            ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
+            !array_key_exists($m['name'], $data) &&
+            array_key_exists(Defaults::$fullRequestDataName, $data) &&
+            !is_null($d = $data[Defaults::$fullRequestDataName])
+        ) {
+            $p[0] = $d;
+        } else {
+            $bodyParamCount = 0;
+            $lastBodyParamIndex = -1;
+            $lastM = null;
+            foreach ($call['metadata']['param'] as $k => $m) {
+                if ($m['from'] == 'body') {
+                    $bodyParamCount++;
+                    $lastBodyParamIndex = $k;
+                    $lastM = $m;
+                }
+            }
+            if (
+                $bodyParamCount == 1 &&
+                !array_key_exists($lastM['name'], $data) &&
+                array_key_exists(Defaults::$fullRequestDataName, $data) &&
+                !is_null($d = $data[Defaults::$fullRequestDataName])
+            ) {
+                $p[$lastBodyParamIndex] = $d;
             }
         }
         return ApiMethodInfo::__set_state($call);
@@ -367,6 +440,32 @@ class Routes
             return 'b';
         }
         return 's';
+    }
+
+    /**
+     * @param ReflectionClass $class
+     *
+     * @return array
+     *
+     * @access protected
+     */
+    protected static function getTypeAndModel(ReflectionClass $class)
+    {
+        $children = array();
+        $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+        foreach ($props as $prop) {
+            if ($c = $prop->getDocComment()) {
+                $children[$prop->getName()] = array_merge(
+                    array('name' => $prop->getName()),
+                    Util::nestedValue(
+                        CommentParser::parse($c),
+                        'var'
+                    ),
+                    array('type' => 'string')
+                );
+            }
+        }
+        return array($class->getName(), $children);
     }
 
     /**

@@ -142,6 +142,11 @@ class Defaults
     public static $language = 'en';
 
     /**
+     * @var bool when set to true, it will exclude the response body
+     */
+    public static $emptyBodyForNullResponse = true;
+
+    /**
      * @var bool enables CORS support
      */
     public static $crossOriginResourceSharing = false;
@@ -212,7 +217,7 @@ class Defaults
 
     // ==================================================================
     //
-    // API User Options
+    // Overrides for API User
     //
     // ------------------------------------------------------------------
 
@@ -249,7 +254,7 @@ class Defaults
 
     // ==================================================================
     //
-    // API Developer Options
+    // Overrides API Developer
     //
     // ------------------------------------------------------------------
 

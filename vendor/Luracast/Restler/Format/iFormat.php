@@ -95,5 +95,15 @@ interface iFormat
      * @return array associative array of the parsed data
      */
     public function decode($data);
+
+    /**
+     * @return boolean is parsing the request supported?
+     */
+    public function isReadable();
+
+    /**
+     * @return boolean is composing response supported?
+     */
+    public function isWritable();
 }
 

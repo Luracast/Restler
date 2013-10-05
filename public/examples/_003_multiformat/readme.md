@@ -1,8 +1,6 @@
-Multi-format <requires>PHP >= 5.3</requires>
-------------
+## Multi-format 
 
- <tag>json</tag>
- <tag>xml</tag>
+ This example requires `PHP >= 5.3` and taggeed under `json` `xml`
 
 
 This BMI calculator service shows how you can serve data in different
