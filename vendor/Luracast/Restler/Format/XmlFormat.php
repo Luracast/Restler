@@ -120,16 +120,16 @@ class XmlFormat extends Format
 
     public function write(XMLWriter $xml, $data, $parent)
     {
-        $text = '';
+        $text = array();
         if (is_array($data)) {
             if (static::$useTextNodeProperty && isset($data[static::$textNodeName])) {
-                $text = $data[static::$textNodeName];
+                $text [] = $data[static::$textNodeName];
                 unset($data[static::$textNodeName]);
             }
             foreach ($data as $key => $value) {
                 if (is_numeric($key)) {
-                    if (is_string($value)) {
-                        $text .= $value;
+                    if (!is_array($value)) {
+                        $text [] = $value;
                         continue;
                     }
                     $key = static::$defaultTagName;
@@ -188,12 +188,18 @@ class XmlFormat extends Format
                 }
             }
         } else {
-            $text = (string)$data;
+            $text [] = (string)$data;
         }
-        if (!empty($text) || $text == 0) {
-            in_array($parent, static::$cdataNames)
-                ? $xml->writeCdata($text)
-                : $xml->text($text);
+        if (!empty($text)) {
+            if (count($text) == 1) {
+                in_array($parent, static::$cdataNames)
+                    ? $xml->writeCdata(implode('', $text))
+                    : $xml->text(implode('', $text));
+            } else {
+                foreach ($text as $t) {
+                    $xml->writeElement(static::$textNodeName, $t);
+                }
+            }
         }
     }
 
@@ -219,10 +225,12 @@ class XmlFormat extends Format
                 static::$rootName = $xml->getName();
                 $namespaces = $xml->getNamespaces();
                 if (count($namespaces)) {
-                    static::$namespacedProperties[static::$rootName] = end(array_keys($namespaces));
+                    static::$namespacedProperties[static::$rootName] = @end(@array_keys($namespaces));
                 }
             }
             $data = $this->read($xml);
+            if (count($data) == 1 && isset($data[static::$textNodeName]))
+                $data = $data[static::$textNodeName];
             return $data;
         } catch (\RuntimeException $e) {
             throw new RestException(400,
@@ -249,12 +257,13 @@ class XmlFormat extends Format
         $children = $xml->children();
         foreach ($children as $key => $value) {
             if (isset($r[$key])) {
-                if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
-                    $r[$key] = array($r[$key]);
+                if (is_array($r[$key])) {
+                    if ($r[$key] != array_values($r[$key]))
+                        $r[$key] = array($r[$key]);
                 } else {
                     $r[$key] = array($r[$key]);
                 }
-                $r[$key][] = $this->read($value);
+                $r[$key][] = $this->read($value, $namespaces);
             } else {
                 $r[$key] = $this->read($value);
             }
@@ -285,8 +294,9 @@ class XmlFormat extends Format
                     if (static::$importSettingsFromXml)
                         static::$namespacedProperties[$key] = $prefix;
                     if (isset($r[$key])) {
-                        if (is_array($r[$key]) && $r[$key] != array_values($r[$key])) {
-                            $r[$key] = array($r[$key]);
+                        if (is_array($r[$key])) {
+                            if ($r[$key] != array_values($r[$key]))
+                                $r[$key] = array($r[$key]);
                         } else {
                             $r[$key] = array($r[$key]);
                         }
@@ -298,21 +308,23 @@ class XmlFormat extends Format
             }
         }
 
-        if (empty($text)) {
+        if (empty($text) && $text !== '0') {
             if (empty($r)) return null;
         } else {
             empty($r)
                 ? $r = static::setType($text)
-                : (static::$parseTextNodeAsProperty
+                : (
+            static::$parseTextNodeAsProperty
                 ? $r[static::$textNodeName] = static::setType($text)
-                : $r[] = static::setType($text));
+                : $r[] = static::setType($text)
+            );
         }
         return $r;
     }
 
     public static function setType($value)
     {
-        if (empty($value))
+        if (empty($value) && $value !== '0')
             return null;
         if ($value == 'true')
             return true;
