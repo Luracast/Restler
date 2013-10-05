@@ -225,7 +225,8 @@ class Routes
                 if (empty($pathParams)) {
                     static::addPath($url, $call, $httpMethod);
                 }
-                $lastPathParam = end(array_keys($pathParams));
+                $lastPathParam = array_keys($pathParams);
+                $lastPathParam = end($lastPathParam);
                 for ($position = 0; $position < count($params); $position++) {
                     $from = $metadata['param'][$position]['from'];
 
