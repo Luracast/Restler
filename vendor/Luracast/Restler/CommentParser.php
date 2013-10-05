@@ -318,12 +318,11 @@ class CommentParser
                 && !empty ($matches[1])
             ) {
                 $extension = $matches[1];
-                $formatMap =  $this->restler->getFormatMap();
-                if (isset ($formatMap[$extension])) {
+                if (isset ($this->restler->_formatMap[$extension])) {
                     /**
                      * @var \Luracast\Restler\Format\iFormat
                      */
-                    $format = $formatMap[$extension];
+                    $format = $this->restler->_formatMap[$extension];
                     $format = new $format();
                     $data = $format->decode($str);
                 }
