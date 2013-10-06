@@ -126,8 +126,9 @@ class Forms
                 $t->type($p->type);
             } elseif ($t->name == 'password') {
                 $t->type('password');
-            } elseif ($t->type == 'bool') {
+            } elseif ($p->type == 'bool' || $p->type == 'boolean') {
                 $t->type('checkbox');
+                $t->value('true');
             } else {
                 $t->type('text');
             }
