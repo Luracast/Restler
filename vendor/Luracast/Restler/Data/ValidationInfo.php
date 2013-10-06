@@ -20,6 +20,10 @@ use Luracast\Restler\Util;
 class ValidationInfo implements iValueObject
 {
     /**
+     * @var mixed given value for the parameter
+     */
+    public $value;
+    /**
      * @var mixed default value for the parameter
      */
     public $default;
@@ -171,7 +175,7 @@ class ValidationInfo implements iValueObject
         );
     }
 
-    public static function stringValue($value, $glue=',')
+    public static function stringValue($value, $glue = ',')
     {
         return is_array($value)
             ? implode($glue, $value)
