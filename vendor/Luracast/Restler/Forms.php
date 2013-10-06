@@ -16,6 +16,8 @@ class Forms
             'placeholder' => '$default',
             'pattern' => '$pattern',
             'class' => 'input-small',
+            'min' => '$min',
+            'max' => '$max',
         )
     );
 
@@ -109,6 +111,8 @@ class Forms
                 $options[] = T::option($option);
             }
             $t = static::initTag(T::select($options), $p);
+        } elseif ($p->min && $p->min > 50 || $p->max && $p->max > 50) {
+            $t = static::initTag(T::textarea("\r"), $p);
         } else {
             $t = static::initTag(T::input(), $p);
             if (in_array($p->type, static::$inputTypes)) {
@@ -118,6 +122,12 @@ class Forms
             } elseif ($p->type == 'bool' || $p->type == 'boolean') {
                 $t->type('checkbox');
                 $t->value('true');
+            } elseif ($p->type == 'int' || $p->type == 'integer') {
+                $t->type('number');
+                $t->step(1);
+            } elseif ($p->type == 'float' || $p->type == 'number') {
+                $t->type('number');
+                $t->step(0.1);
             } else {
                 $t->type('text');
             }
