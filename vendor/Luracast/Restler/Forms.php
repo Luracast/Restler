@@ -18,18 +18,37 @@ use Luracast\Restler\Tags as T;
 class Forms
 {
     protected static $fieldPresets = array(
-        '*' => array(
+        '*' => array(),
+        'input' => array(
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
-        ),
-        'input' => array(
             'placeholder' => '$default',
             'pattern' => '$pattern',
             'class' => 'input-small',
             'min' => '$min',
             'max' => '$max',
-        )
+        ),
+        'textarea' => array(
+            'value' => '$value',
+            'required' => '$required',
+            'name' => '$name',
+            'placeholder' => '$default',
+            'class' => 'input-small',
+            'min' => '$min',
+            'max' => '$max',
+        ),
+        'select' => array(
+            'value' => '$value',
+            'required' => '$required',
+            'name' => '$name',
+        ),
+        'label' => array(
+            'style' => 'display: block;'
+        ),
+        'span' => array(
+            'style' => 'display: inline-block; width: 100px; text-align: right;'
+        ),
     );
 
     protected static $inputTypes = array(
@@ -119,13 +138,20 @@ class Forms
         if ($p->choice) {
             $options = array();
             foreach ($p->choice as $option) {
-                $options[] = T::option($option);
+                $options[] = static::initTag(
+                    T::option($option),
+                    $p,
+                    $option == $value ? array('selected' => true) : array()
+                );
             }
             $t = static::initTag(T::select($options), $p);
         } elseif ($p->min && $p->min > 50 || $p->max && $p->max > 50) {
-            $t = static::initTag(T::textarea("\r"), $p);
+            $t = static::initTag(T::textarea($value ? $value : "\r"), $p);
         } else {
             $t = static::initTag(T::input(), $p);
+            if ($value) {
+                $t->value($value);
+            }
             if (in_array($p->type, static::$inputTypes)) {
                 $t->type($p->type);
             } elseif ($t->name == 'password') {
@@ -133,6 +159,9 @@ class Forms
             } elseif ($p->type == 'bool' || $p->type == 'boolean') {
                 $t->type('checkbox');
                 $t->value('true');
+                if ($value) {
+                    $t->checked(true);
+                }
             } elseif ($p->type == 'int' || $p->type == 'integer') {
                 $t->type('number');
                 $t->step(1);
@@ -146,9 +175,10 @@ class Forms
         if (static::$fieldWrapper) {
             $t = call_user_func(
                 'Luracast\Restler\Tags::' . static::$fieldWrapper,
-                static::title($p->name),
+                static::initTag(T::span(static::title($p->name)), $p),
                 $t
             );
+            $t = static::initTag($t, $p);
         }
         return $t;
     }
