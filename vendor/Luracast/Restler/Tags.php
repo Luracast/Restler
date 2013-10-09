@@ -73,9 +73,13 @@ class Tags
      */
     public static function __callStatic($name, array $children)
     {
-        if (isset($children[0]) && is_array($children[0]))
-            $children = $children[0];
-        return new static($name, $children);
+        $array = array();
+        foreach ($children as $child) {
+            is_array($child)
+                ? $array = array_merge($array, $child)
+                : $array [] = $child;
+        }
+        return new static($name, $array);
     }
 
     /**
