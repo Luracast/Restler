@@ -34,11 +34,14 @@ class Tags
     protected $children = array();
     public $tag;
     protected static $instances = array();
+    public static $initializer = null;
 
     public function __construct($name, array $children = array())
     {
         $this->tag = $name;
         $this->children = $children;
+        if (static::$initializer)
+            call_user_func(static::$initializer, &$this, $this);
     }
 
     /**
