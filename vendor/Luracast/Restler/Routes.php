@@ -180,11 +180,12 @@ class Routes
                     //deep copy the call, as it may change for each @url
                     $copy = unserialize(serialize($call));
                     foreach ($copy['metadata']['param'] as $i => $p) {
-                        if (
-                            (!isset($p['from']) || $p['from'] == 'path') &&
-                            false === strpos($url, '{' . $p['name'] . '}') &&
-                            false === strpos($url, ':' . $p['name'])
-                        ) {
+                        $inPath =
+                            strpos($url, '{' . $p['name'] . '}') ||
+                            strpos($url, ':' . $p['name']);
+                        if ($inPath) {
+                            $copy['metadata']['param'][$i]['from'] = 'path';
+                        } elseif ((!isset($p['from']) || $p['from'] == 'path')) {
                             $copy['metadata']['param'][$i]['from'] =
                                 $httpMethod == 'GET' ||
                                 $httpMethod == 'DELETE'
