@@ -19,6 +19,9 @@ class Forms
 {
     protected static $fieldPresets = array(
         '*' => array(),
+        'form' => array(
+            'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd;'
+        ),
         'input' => array(
             'value' => '$value',
             'required' => '$required',
@@ -122,7 +125,15 @@ class Forms
         T::$initializer = __CLASS__ . '::' . 'tagInit';
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
-        $r [] = T::input()->type('submit');
+        $s = T::input()->type('submit');
+        if (static::$fieldWrapper) {
+            $s = call_user_func(
+                'Luracast\Restler\Tags::' . static::$fieldWrapper,
+                T::span(''),
+                $s
+            );
+        }
+        $r [] = $s;
         $t = T::form($r)
             ->action(Util::$restler->getBaseUrl() . '/' . rtrim($action, '/'))
             ->method($method);
@@ -136,33 +147,42 @@ class Forms
     {
         $r = array();
         foreach ($params as $k => $p) {
+            $p['value'] = Util::nestedValue($values, $k);
             static::$validationInfo = $v = new ValidationInfo($p);
-            $r [] = static::field(
-                $v, Util::nestedValue($values, $k)
-            );
+            $r [] = static::field($v);
             static::$validationInfo = null;
         }
         return $r;
     }
 
-    public static function field(ValidationInfo $p, $value = null)
+    public static function field(ValidationInfo $p)
     {
         if ($p->choice) {
             $options = array();
             foreach ($p->choice as $option) {
-                if ($option == $value) {
+                if ($option == $p->value) {
                     static::$presets = array('selected' => true);
                 }
                 $options[] = T::option($option);
             }
             $t = T::select($options);
-        } elseif ($p->min && $p->min > 50 || $p->max && $p->max > 50) {
+        } elseif ($p->field == 'textarea') {
             $t = T::textarea($value ? $value : "\r");
+        } elseif (in_array($p->field, static::$inputTypes)) {
+            $t = T::input();
+            $t->type($p->field);
+            if ($p->type == 'checkbox') {
+                $t->value('true');
+                if ($p->value) {
+                    $t->checked(true);
+                }
+            } elseif ($p->type == 'number') {
+                $t->step($p->type == 'float' || $p->type == 'number' ? 0.1 : 1);
+            }
+        } elseif ($p->field) {
+            $t = call_user_func('Luracast\Restler\Tags::' . $p->field);
         } else {
             $t = T::input();
-            if ($value) {
-                $t->value($value);
-            }
             if (in_array($p->type, static::$inputTypes)) {
                 $t->type($p->type);
             } elseif ($t->name == 'password') {
@@ -170,7 +190,7 @@ class Forms
             } elseif ($p->type == 'bool' || $p->type == 'boolean') {
                 $t->type('checkbox');
                 $t->value('true');
-                if ($value) {
+                if ($p->value) {
                     $t->checked(true);
                 }
             } elseif ($p->type == 'int' || $p->type == 'integer') {
@@ -186,7 +206,7 @@ class Forms
         if (static::$fieldWrapper) {
             $t = call_user_func(
                 'Luracast\Restler\Tags::' . static::$fieldWrapper,
-                T::span(static::title($p->name)),
+                T::span($p->label ? : static::title($p->name)),
                 $t
             );
         }
