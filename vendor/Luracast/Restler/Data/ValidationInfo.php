@@ -24,6 +24,15 @@ class ValidationInfo implements iValueObject
      */
     public $value;
     /**
+     * @var string proper name for given parameter
+     */
+    public $label;
+    /**
+     * @var string html element that can be used to represent the parameter for
+     *             input
+     */
+    public $field;
+    /**
      * @var mixed default value for the parameter
      */
     public $default;
