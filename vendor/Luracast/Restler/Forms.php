@@ -63,6 +63,7 @@ class Forms
         'submit',
         'search',
         'checkbox',
+        'radio',
         'email',
         'text',
         'color',
@@ -158,26 +159,51 @@ class Forms
     public static function field(ValidationInfo $p)
     {
         if ($p->choice) {
-            $options = array();
-            foreach ($p->choice as $option) {
-                if ($option == $p->value) {
-                    static::$presets = array('selected' => true);
+            if ($p->field == 'radio') {
+                $a = array();
+                foreach ($p->choice as $option) {
+                    if ($option == $p->value) {
+                        static::$presets = array('checked' => true);
+                    }
+                    $t = T::input()->type('radio')->value($option);
+                    $a[] = T::caption($t, $option);
                 }
-                $options[] = T::option($option);
+                $t = $a;
+            } else {
+                $options = array();
+                foreach ($p->choice as $option) {
+                    if ($option == $p->value) {
+                        static::$presets = array('selected' => true);
+                    }
+                    $options[] = T::option($option);
+                }
+                $t = T::select($options);
             }
-            $t = T::select($options);
         } elseif ($p->field == 'textarea') {
             $t = T::textarea($value ? $value : "\r");
         } elseif (in_array($p->field, static::$inputTypes)) {
             $t = T::input();
             $t->type($p->field);
-            if ($p->type == 'checkbox') {
+            if ($p->field == 'checkbox') {
                 $t->value('true');
                 if ($p->value) {
                     $t->checked(true);
                 }
-            } elseif ($p->type == 'number') {
+            } elseif ($p->field == 'number') {
                 $t->step($p->type == 'float' || $p->type == 'number' ? 0.1 : 1);
+            } elseif ($p->field == 'radio') {
+                $a = array();
+                if ($p->type == 'bool' || $p->type == 'boolean') {
+                    $t->value('true');
+                    if ($p->value)
+                        $t->checked(true);
+                    $a[] = T::caption($t, 'Yes');
+                    $t = T::input()->type('radio')->value('false');
+                    if (!$p->value)
+                        $t->checked(true);
+                    $a[] = T::caption($t, 'No');
+                }
+                $t = $a;
             }
         } elseif ($p->field) {
             $t = call_user_func('Luracast\Restler\Tags::' . $p->field);
