@@ -80,6 +80,12 @@ class Forms
     public static $fieldWrapper = 'label';
 
     /**
+     * @var ValidationInfo
+     */
+    private static $validationInfo = null;
+    private static $presets = array();
+
+    /**
      * Get the form
      *
      * @param string $method http method to submit the form
@@ -112,23 +118,29 @@ class Forms
         if (!$info)
             throw new RestException(500, 'invalid action path for form');
 
+        $oldInitializer = T::$initializer;
+        T::$initializer = __CLASS__ . '::' . 'tagInit';
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
         $r [] = T::input()->type('submit');
-
-        return T::form($r)
+        $t = T::form($r)
             ->action(Util::$restler->getBaseUrl() . '/' . rtrim($action, '/'))
-            ->method($method)
-            ->toString($prefix, $indent);
+            ->method($method);
+        $t->prefix = $prefix;
+        $t->indent = $indent;
+        T::$initializer = $oldInitializer;
+        return $t;
     }
 
     public static function fields(array $params, array $values)
     {
         $r = array();
         foreach ($params as $k => $p) {
+            static::$validationInfo = $v = new ValidationInfo($p);
             $r [] = static::field(
-                new ValidationInfo($p), Util::nestedValue($values, $k)
+                $v, Util::nestedValue($values, $k)
             );
+            static::$validationInfo = null;
         }
         return $r;
     }
@@ -138,17 +150,16 @@ class Forms
         if ($p->choice) {
             $options = array();
             foreach ($p->choice as $option) {
-                $options[] = static::initTag(
-                    T::option($option),
-                    $p,
-                    $option == $value ? array('selected' => true) : array()
-                );
+                if ($option == $value) {
+                    static::$presets = array('selected' => true);
+                }
+                $options[] = T::option($option);
             }
-            $t = static::initTag(T::select($options), $p);
+            $t = T::select($options);
         } elseif ($p->min && $p->min > 50 || $p->max && $p->max > 50) {
-            $t = static::initTag(T::textarea($value ? $value : "\r"), $p);
+            $t = T::textarea($value ? $value : "\r");
         } else {
-            $t = static::initTag(T::input(), $p);
+            $t = T::input();
             if ($value) {
                 $t->value($value);
             }
@@ -175,27 +186,28 @@ class Forms
         if (static::$fieldWrapper) {
             $t = call_user_func(
                 'Luracast\Restler\Tags::' . static::$fieldWrapper,
-                static::initTag(T::span(static::title($p->name)), $p),
+                T::span(static::title($p->name)),
                 $t
             );
-            $t = static::initTag($t, $p);
         }
         return $t;
     }
 
-    protected static function initTag(Tags $t, ValidationInfo $p, $customPresets = array())
+    public static function tagInit(T & $t)
     {
         $presets = static::$fieldPresets['*']
-            + $customPresets
+            + static::$presets
             + (Util::nestedValue(static::$fieldPresets, $t->tag) ? : array());
         foreach ($presets as $k => $v) {
             if ($v{0} == '$') {
                 //variable substitution
-                $v = Util::nestedValue($p, substr($v, 1));
+                $v = Util::nestedValue(static::$validationInfo, substr($v, 1));
             }
             if (!is_null($v))
                 $t->{$k}($v);
         }
+        //reset custom presets
+        static::$presets = array();
         return $t;
     }
 
