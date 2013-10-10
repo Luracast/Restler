@@ -18,9 +18,10 @@ use Luracast\Restler\Tags as T;
 class Forms
 {
     protected static $fieldPresets = array(
+        'wrapper' => array('span', 'label'),
         '*' => array(),
         'form' => array(
-            'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd;'
+            'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd; width: 400px;'
         ),
         'input' => array(
             'value' => '$value',
@@ -50,7 +51,7 @@ class Forms
             'style' => 'display: block;'
         ),
         'span' => array(
-            'style' => 'display: inline-block; width: 100px; text-align: right;'
+            'style' => 'display: inline-block; width: 80px; text-align: right;'
         ),
     );
 
@@ -80,8 +81,6 @@ class Forms
         'url',
         'week',
     );
-
-    public static $fieldWrapper = 'label';
 
     /**
      * @var ValidationInfo
@@ -127,12 +126,9 @@ class Forms
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
         $s = T::input()->type('submit');
-        if (static::$fieldWrapper) {
-            $s = call_user_func(
-                'Luracast\Restler\Tags::' . static::$fieldWrapper,
-                T::span(''),
-                $s
-            );
+        $with = Util::nestedValue(static::$fieldPresets, 'wrapper');
+        if (is_array($with)) {
+            $s = static::wrap($s, $with);
         }
         $r [] = $s;
         $t = T::form($r)
@@ -229,12 +225,35 @@ class Forms
                 $t->type('text');
             }
         }
-        if (static::$fieldWrapper) {
-            $t = call_user_func(
-                'Luracast\Restler\Tags::' . static::$fieldWrapper,
-                T::span($p->label ? : static::title($p->name)),
-                $t
-            );
+        if (isset(static::$fieldPresets['wrapper'])) {
+            $t = static::wrap($t, static::$fieldPresets['wrapper']);
+        }
+        return $t;
+    }
+
+    /**
+     * @param Tags|array $t
+     * @param array      $with an array of strings
+     *
+     * @return array|Tags
+     */
+    public static function wrap($t, array $with)
+    {
+        foreach ($with as $i => $wrapper) {
+            if ($i == 0) {
+                $w = call_user_func(
+                    'Luracast\Restler\Tags::' . $wrapper,
+                    static::$validationInfo ? (static::$validationInfo->label
+                        ? : static::title(static::$validationInfo->name))
+                        : ''
+                );
+                $t = is_array($t) ? array_merge(array($w), $t) : array($w, $t);
+            } else {
+                $t = call_user_func(
+                    'Luracast\Restler\Tags::' . $wrapper,
+                    $t
+                );
+            }
         }
         return $t;
     }
