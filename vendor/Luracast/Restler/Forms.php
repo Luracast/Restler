@@ -18,7 +18,7 @@ use Luracast\Restler\Tags as T;
  */
 class Forms
 {
-    protected static $style;
+    public static $style;
 
     protected static $inputTypes = array(
         'password',
@@ -93,7 +93,10 @@ class Forms
         T::$initializer = __CLASS__ . '::' . 'tagInit';
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
-        $s = T::input()->type('submit');
+        $s = T::button(
+            Util::nestedValue($m, CommentParser::$embeddedDataName, 'submit')
+                ? : 'Submit'
+        )->type('submit');
         $with = Util::nestedValue(static::$style, 'wrapper');
         if (is_array($with)) {
             $s = static::wrap($s, $with);
@@ -114,27 +117,38 @@ class Forms
         foreach ($params as $k => $p) {
             $p['value'] = Util::nestedValue($values, $k);
             static::$validationInfo = $v = new ValidationInfo($p);
-            $r [] = static::field($v);
+            $f = static::field($v);
+            is_array($f) ? $r = array_merge($r, $f) : $r [] = $f;
             static::$validationInfo = null;
         }
         return $r;
     }
 
+    /**
+     * @param ValidationInfo $p
+     *
+     * @return array|Tags
+     */
     public static function field(ValidationInfo $p)
     {
+        $outerWrapper = null;
         if ($p->choice) {
             if ($p->field == 'radio') {
                 $a = array();
-                $with = Util::nestedValue(static::$style, 'radio')
+                $with = Util::nestedValue(static::$style, 'radio', 'wrapper')
                     ? : array('label');
-                $wrapFirst = $with[0] == 'label';
+                $wrapFirst = reset($with) == 'label' || key($with) == 'label';
+                $outerWrapper = Util::nestedValue(static::$style, 'radio', 'outerWrapper');
                 foreach ($p->choice as $option) {
                     if ($option == $p->value) {
                         static::$presets = array('checked' => true);
                     }
+                    if ($style = Util::nestedValue(static::$style, 'radio', 'style'))
+                        static::$presets = is_array(static::$presets)
+                            ? array_merge(static::$presets, $style)
+                            : $style;
                     $t = T::input()->type('radio')->value($option);
-
-                    $a[] = static::wrap($t, $with, $option, false, $wrapFirst);
+                    $a[] = static::wrap($t, $with, " $option", false, $wrapFirst);
                 }
                 $t = $a;
             } else {
@@ -148,7 +162,7 @@ class Forms
                 $t = T::select($options);
             }
         } elseif ($p->field == 'textarea') {
-            $t = T::textarea($value ? $value : "\r");
+            $t = T::textarea($p->value ? $p->value : "\r");
         } elseif (in_array($p->field, static::$inputTypes)) {
             $t = T::input();
             $t->type($p->field);
@@ -161,18 +175,23 @@ class Forms
                 $t->step($p->type == 'float' || $p->type == 'number' ? 0.1 : 1);
             } elseif ($p->field == 'radio') {
                 $a = array();
-                $with = Util::nestedValue(static::$style, 'radio')
+                $with = Util::nestedValue(static::$style, 'radio', 'wrapper')
                     ? : array('label');
-                $wrapFirst = $with[0] == 'label';
+                $wrapFirst = reset($with) == 'label' || key($with) == 'label';
+                $outerWrapper = Util::nestedValue(static::$style, 'radio', 'outerWrapper');
                 if ($p->type == 'bool' || $p->type == 'boolean') {
-                    $t->value('true');
+                    if ($style = Util::nestedValue(static::$style, 'radio', 'style'))
+                        static::$presets = $style;
+                    $t = T::input()->type('radio')->value('true');
                     if ($p->value)
                         $t->checked(true);
-                    $a[] = static::wrap($t, $with, 'Yes', false, $wrapFirst);
+                    $a[] = static::wrap($t, $with, ' Yes', false, $wrapFirst);
+                    if ($style)
+                        static::$presets = $style;
                     $t = T::input()->type('radio')->value('false');
                     if (!$p->value)
                         $t->checked(true);
-                    $a[] = static::wrap($t, $with, 'No', false, $wrapFirst);
+                    $a[] = static::wrap($t, $with, ' No', false, $wrapFirst);
                 }
                 $t = $a;
             }
@@ -200,10 +219,16 @@ class Forms
                 $t->type('text');
             }
         }
-        if (isset(static::$style['wrapper'])) {
+        $wrapFirst = false;
+        if (is_array($outerWrapper)) {
+            $wrapFirst = true;
+        } elseif (false !== $outerWrapper && isset(static::$style['wrapper'])) {
+            $outerWrapper = static::$style['wrapper'];
+        }
+        if (is_array($outerWrapper)) {
             $text = static::$validationInfo->label
                 ? : static::title(static::$validationInfo->name);
-            $t = static::wrap($t, static::$style['wrapper'], $text);
+            $t = static::wrap($t, $outerWrapper, " $text ", true, $wrapFirst);
         }
         return $t;
     }
@@ -219,7 +244,13 @@ class Forms
      */
     public static function wrap($t, array $with, $text = '', $prefixText = true, $wrapFirst = false)
     {
+        $counter = 0;
         foreach ($with as $i => $wrapper) {
+            if (is_string($i)) {
+                static::$presets = $wrapper;
+                $wrapper = $i;
+                $i = $counter;
+            }
             if ($i == 0) {
                 if ($wrapFirst) {
                     if ($prefixText) {
@@ -241,6 +272,7 @@ class Forms
                     $t
                 );
             }
+            $counter++;
         }
         return $t;
     }
