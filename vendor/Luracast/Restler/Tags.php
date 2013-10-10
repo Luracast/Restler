@@ -114,8 +114,9 @@ class Tags
     public function __call($attribute, $value)
     {
         $value = $value[0];
-        if (is_bool($value)) {
-
+        if (is_null($value)) {
+            unset($this->attributes[$attribute]);
+            return $this;
         }
         $this->attributes[$attribute] = is_bool($value)
             ? ($value ? 'true' : 'false')
