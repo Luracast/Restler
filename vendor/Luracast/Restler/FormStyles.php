@@ -16,7 +16,7 @@ class FormStyles
 {
     public static $html5 = array(
         'wrapper' => array('span', 'label', 'div'),
-        'radio' => array('label'),
+        'radio' => array('wrapper' => array('label')),
         '*' => array(),
         'form' => array(
             'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd; width: 400px;'
@@ -50,6 +50,61 @@ class FormStyles
         ),
         'span' => array(
             'style' => 'display: inline-block; width: 80px; text-align: right;'
+        ),
+    );
+
+    public static $bootstrap3 = array(
+        'wrapper' => array('label', 'div'),
+        'radio' => array(
+            'outerWrapper' => array(
+                'label' => array(
+                    'class' => 'form-group'
+                ),
+            ),
+            'style' => array(
+                'class' => null
+            ),
+            'wrapper' => array(
+                'label' => array(
+                    'class' => 'radio-inline'
+                ),
+            )
+        ),
+        '*' => array(),
+        'form' => array(
+            'role' => 'form',
+        ),
+        'input' => array(
+            'value' => '$value',
+            'required' => '$required',
+            'name' => '$name',
+            'placeholder' => '$default',
+            'pattern' => '$pattern',
+            'min' => '$min',
+            'max' => '$max',
+            'class' => 'form-control',
+        ),
+        'textarea' => array(
+            'value' => '$value',
+            'required' => '$required',
+            'name' => '$name',
+            'placeholder' => '$default',
+            'min' => '$min',
+            'max' => '$max',
+            'class' => 'form-control',
+            'rows' => 3,
+        ),
+        'select' => array(
+            'value' => '$value',
+            'required' => '$required',
+            'name' => '$name',
+            'class' => 'form-control',
+        ),
+        'div' => array(
+            'class' => 'form-group'
+        ),
+        'button' => array(
+            'class' => 'btn btn-primary btn-lg',
         ),
     );
 
