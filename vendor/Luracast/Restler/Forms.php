@@ -5,7 +5,8 @@ use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Tags as T;
 
 /**
- * Utility class to build html forms
+ * Utility class for automatically generating forms for the given http method
+ * and api url
  *
  * @category   Framework
  * @package    Restler
@@ -17,44 +18,7 @@ use Luracast\Restler\Tags as T;
  */
 class Forms
 {
-    protected static $fieldPresets = array(
-        'wrapper' => array('span', 'label', 'div'),
-        'radio' => array('label'),
-        '*' => array(),
-        'form' => array(
-            'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd; width: 400px;'
-        ),
-        'input' => array(
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'placeholder' => '$default',
-            'pattern' => '$pattern',
-            'class' => 'input-small',
-            'min' => '$min',
-            'max' => '$max',
-        ),
-        'textarea' => array(
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'placeholder' => '$default',
-            'class' => 'input-small',
-            'min' => '$min',
-            'max' => '$max',
-        ),
-        'select' => array(
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-        ),
-        'div' => array(
-            'style' => 'display: block;'
-        ),
-        'span' => array(
-            'style' => 'display: inline-block; width: 80px; text-align: right;'
-        ),
-    );
+    protected static $style;
 
     protected static $inputTypes = array(
         'password',
@@ -103,6 +67,9 @@ class Forms
      */
     public static function get($method = 'POST', $action = null, $prefix = '', $indent = '    ')
     {
+        if (!static::$style) {
+            static::$style = FormStyles::$html5;
+        }
         try {
             $info = is_null($action)
                 ? Util::$restler->apiMethodInfo
@@ -127,7 +94,7 @@ class Forms
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
         $s = T::input()->type('submit');
-        $with = Util::nestedValue(static::$fieldPresets, 'wrapper');
+        $with = Util::nestedValue(static::$style, 'wrapper');
         if (is_array($with)) {
             $s = static::wrap($s, $with);
         }
@@ -158,7 +125,7 @@ class Forms
         if ($p->choice) {
             if ($p->field == 'radio') {
                 $a = array();
-                $with = Util::nestedValue(static::$fieldPresets, 'radio')
+                $with = Util::nestedValue(static::$style, 'radio')
                     ? : array('label');
                 $wrapFirst = $with[0] == 'label';
                 foreach ($p->choice as $option) {
@@ -194,7 +161,7 @@ class Forms
                 $t->step($p->type == 'float' || $p->type == 'number' ? 0.1 : 1);
             } elseif ($p->field == 'radio') {
                 $a = array();
-                $with = Util::nestedValue(static::$fieldPresets, 'radio')
+                $with = Util::nestedValue(static::$style, 'radio')
                     ? : array('label');
                 $wrapFirst = $with[0] == 'label';
                 if ($p->type == 'bool' || $p->type == 'boolean') {
@@ -233,10 +200,10 @@ class Forms
                 $t->type('text');
             }
         }
-        if (isset(static::$fieldPresets['wrapper'])) {
+        if (isset(static::$style['wrapper'])) {
             $text = static::$validationInfo->label
                 ? : static::title(static::$validationInfo->name);
-            $t = static::wrap($t, static::$fieldPresets['wrapper'], $text);
+            $t = static::wrap($t, static::$style['wrapper'], $text);
         }
         return $t;
     }
@@ -280,9 +247,9 @@ class Forms
 
     public static function tagInit(T & $t)
     {
-        $presets = static::$fieldPresets['*']
+        $presets = static::$style['*']
             + static::$presets
-            + (Util::nestedValue(static::$fieldPresets, $t->tag) ? : array());
+            + (Util::nestedValue(static::$style, $t->tag) ? : array());
         foreach ($presets as $k => $v) {
             if ($v{0} == '$') {
                 //variable substitution
