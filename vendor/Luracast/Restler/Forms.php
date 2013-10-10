@@ -18,7 +18,8 @@ use Luracast\Restler\Tags as T;
 class Forms
 {
     protected static $fieldPresets = array(
-        'wrapper' => array('span', 'label'),
+        'wrapper' => array('span', 'label', 'div'),
+        'radio' => array('label'),
         '*' => array(),
         'form' => array(
             'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd; width: 400px;'
@@ -47,7 +48,7 @@ class Forms
             'required' => '$required',
             'name' => '$name',
         ),
-        'label' => array(
+        'div' => array(
             'style' => 'display: block;'
         ),
         'span' => array(
@@ -157,12 +158,16 @@ class Forms
         if ($p->choice) {
             if ($p->field == 'radio') {
                 $a = array();
+                $with = Util::nestedValue(static::$fieldPresets, 'radio')
+                    ? : array('label');
+                $wrapFirst = $with[0] == 'label';
                 foreach ($p->choice as $option) {
                     if ($option == $p->value) {
                         static::$presets = array('checked' => true);
                     }
                     $t = T::input()->type('radio')->value($option);
-                    $a[] = T::caption($t, $option);
+
+                    $a[] = static::wrap($t, $with, $option, false, $wrapFirst);
                 }
                 $t = $a;
             } else {
@@ -189,15 +194,18 @@ class Forms
                 $t->step($p->type == 'float' || $p->type == 'number' ? 0.1 : 1);
             } elseif ($p->field == 'radio') {
                 $a = array();
+                $with = Util::nestedValue(static::$fieldPresets, 'radio')
+                    ? : array('label');
+                $wrapFirst = $with[0] == 'label';
                 if ($p->type == 'bool' || $p->type == 'boolean') {
                     $t->value('true');
                     if ($p->value)
                         $t->checked(true);
-                    $a[] = T::caption($t, 'Yes');
+                    $a[] = static::wrap($t, $with, 'Yes', false, $wrapFirst);
                     $t = T::input()->type('radio')->value('false');
                     if (!$p->value)
                         $t->checked(true);
-                    $a[] = T::caption($t, 'No');
+                    $a[] = static::wrap($t, $with, 'No', false, $wrapFirst);
                 }
                 $t = $a;
             }
@@ -226,28 +234,40 @@ class Forms
             }
         }
         if (isset(static::$fieldPresets['wrapper'])) {
-            $t = static::wrap($t, static::$fieldPresets['wrapper']);
+            $text = static::$validationInfo->label
+                ? : static::title(static::$validationInfo->name);
+            $t = static::wrap($t, static::$fieldPresets['wrapper'], $text);
         }
         return $t;
     }
 
     /**
      * @param Tags|array $t
-     * @param array      $with an array of strings
+     * @param array      $with       an array of strings
+     * @param string     $text       label text
+     * @param bool       $prefixText text to prefix or suffix fields
+     * @param bool       $wrapFirst
      *
      * @return array|Tags
      */
-    public static function wrap($t, array $with)
+    public static function wrap($t, array $with, $text = '', $prefixText = true, $wrapFirst = false)
     {
         foreach ($with as $i => $wrapper) {
             if ($i == 0) {
-                $w = call_user_func(
-                    'Luracast\Restler\Tags::' . $wrapper,
-                    static::$validationInfo ? (static::$validationInfo->label
-                        ? : static::title(static::$validationInfo->name))
-                        : ''
-                );
-                $t = is_array($t) ? array_merge(array($w), $t) : array($w, $t);
+                if ($wrapFirst) {
+                    if ($prefixText) {
+                        $t = call_user_func('Luracast\Restler\Tags::' . $wrapper, $text, $t);
+                    } else { //text last
+                        $t = call_user_func('Luracast\Restler\Tags::' . $wrapper, $t, $text);
+                    }
+                } else {
+                    $w = call_user_func('Luracast\Restler\Tags::' . $wrapper, $text);
+                    if ($prefixText) {
+                        $t = is_array($t) ? array_merge(array($w), $t) : array($w, $t);
+                    } else { //text last
+                        $t = is_array($t) ? array_merge($t, array($w)) : array($t, $w);
+                    }
+                }
             } else {
                 $t = call_user_func(
                     'Luracast\Restler\Tags::' . $wrapper,
