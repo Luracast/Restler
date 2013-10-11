@@ -33,6 +33,7 @@ class Scope
 
         //Filter classes
         'RateLimit' => 'Luracast\Restler\Filter\RateLimit',
+        'Forms' => 'Luracast\Restler\Forms',
 
         //API classes
         'Resources' => 'Luracast\Restler\Resources',
