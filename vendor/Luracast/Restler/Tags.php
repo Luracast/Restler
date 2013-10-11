@@ -113,6 +113,11 @@ class Tags
      */
     public function __call($attribute, $value)
     {
+        if (is_null($value)) {
+            return isset($this->attributes[$attribute])
+                ? $this->attributes[$attribute]
+                : null;
+        }
         $value = $value[0];
         if (is_null($value)) {
             unset($this->attributes[$attribute]);
