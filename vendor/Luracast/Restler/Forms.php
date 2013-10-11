@@ -16,7 +16,7 @@ use Luracast\Restler\Tags as T;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  */
-class Forms
+class Forms implements iFilter
 {
     public static $style;
 
@@ -52,6 +52,7 @@ class Forms
      */
     private static $validationInfo = null;
     private static $presets = array();
+    private static $key = null;
 
     /**
      * Get the form
@@ -93,6 +94,9 @@ class Forms
         T::$initializer = __CLASS__ . '::' . 'tagInit';
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
+        if (session_id() != '') {
+            $r[] = static::formKey();
+        }
         $s = T::button(
             Util::nestedValue($m, CommentParser::$embeddedDataName, 'submit')
                 ? : 'Submit'
@@ -295,9 +299,42 @@ class Forms
         return $t;
     }
 
+    protected static function formKey()
+    {
+        if (!static::$key)
+            static::$key = md5(User::getIpAddress() . uniqid(mt_rand(), true));
+        $_SESSION['form_key'] = static::$key;
+        return T::input()->name('form_key')->type('hidden')->value(static::$key)->class(null);
+    }
+
     protected static function title($name)
     {
         return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
-} 
+    /**
+     * Access verification method.
+     *
+     * API access will be denied when this method returns false
+     *
+     * @return boolean true when api access is allowed false otherwise
+     *
+     * @throws RestException 403 security violation
+     */
+    public function __isAllowed()
+    {
+        if (session_id() == '') {
+            session_start();
+        }
+        if (!empty($_POST)) {
+            if (isset($_POST['form_key'])
+                && isset($_SESSION['form_key'])
+                && $_POST['form_key'] == $_SESSION['form_key']
+            ) {
+                return true;
+            }
+            throw new RestException(403, 'possibility of cross-site request forgery detected');
+        }
+        return true;
+    }
+}
