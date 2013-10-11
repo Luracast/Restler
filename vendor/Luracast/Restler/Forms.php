@@ -68,6 +68,18 @@ class Forms implements iFilter
      */
     public static function get($method = 'POST', $action = null, $prefix = '', $indent = '    ')
     {
+
+        if (isset(Util::$restler) && Util::$restler->getProductionMode()) {
+            $name = 'form_' . strtolower($method) . '_' . str_replace('/', '_', $action);
+            if (Util::$restler->cache->isCached($name)) {
+                $txt = Util::$restler->cache->get($name);
+                if (session_id() != '') {
+                    static::generateKey();
+                    $txt = str_replace('{form_key}', static::$key, $txt);
+                }
+            }
+        }
+
         if (!static::$style) {
             static::$style = FormStyles::$html5;
         }
@@ -84,7 +96,7 @@ class Forms implements iFilter
                         : array()
                 );
         } catch (RestException $e) {
-            echo $e->getErrorMessage();
+            //echo $e->getErrorMessage();
             $info = false;
         }
         if (!$info)
@@ -104,11 +116,19 @@ class Forms implements iFilter
             $r[] = T::input()
                 ->name(Defaults::$httpMethodOverrideProperty)
                 ->value($method)
-                ->type('hidden');
+                ->type('hidden')
+                ->class(null);
+
             $method = 'POST';
         }
         if (session_id() != '') {
-            $r[] = static::formKey();
+            static::generateKey();
+            $key = T::input()
+                ->name('form_key')
+                ->type('hidden')
+                ->value(static::$key)
+                ->class(null);
+            $r[] = & $key;
         }
         $s = T::button(
             Util::nestedValue($m, CommentParser::$embeddedDataName, 'submit')
@@ -125,6 +145,14 @@ class Forms implements iFilter
         $t->prefix = $prefix;
         $t->indent = $indent;
         T::$initializer = $oldInitializer;
+        if (isset($name)) {
+            if (isset($key))
+                $key->value('{form_key}');
+            Util::$restler->cache->set($name, (string)$t);
+            if (isset($key))
+                $key->value(static::$key);
+
+        }
         return $t;
     }
 
@@ -312,12 +340,11 @@ class Forms implements iFilter
         return $t;
     }
 
-    protected static function formKey()
+    protected static function generateKey()
     {
         if (!static::$key)
             static::$key = md5(User::getIpAddress() . uniqid(mt_rand(), true));
         $_SESSION['form_key'] = static::$key;
-        return T::input()->name('form_key')->type('hidden')->value(static::$key)->class(null);
     }
 
     protected static function title($name)
@@ -346,7 +373,7 @@ class Forms implements iFilter
             ) {
                 return true;
             }
-            throw new RestException(403, 'possibility of cross-site request forgery detected');
+            throw new RestException(403, 'Insecure form submission');
         }
         return true;
     }
