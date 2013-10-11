@@ -50,16 +50,16 @@ class Util
      * When the deeply nested property is found its value is returned, otherwise
      * false is returned.
      *
-     * @param array         $from   array to extract the value from
-     * @param string|array  $key... pass more to go deeply inside the array
+     * @param array        $from    array to extract the value from
+     * @param string|array $key     ... pass more to go deeply inside the array
      *                              alternatively you can pass a single array
      *
      * @return null|mixed null when not found, value otherwise
      */
-    public static function nestedValue($from, $key /**, $key2 ... $key`n` */)
+    public static function nestedValue($from, $key/**, $key2 ... $key`n` */)
     {
-        if(is_array($key)){
-            $keys =  $key;
+        if (is_array($key)) {
+            $keys = $key;
         } else {
             $keys = func_get_args();
             array_shift($keys);
@@ -143,9 +143,12 @@ class Util
         $method = $_SERVER['REQUEST_METHOD'];
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
             $method = $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
-        } elseif (isset($_GET['method'])) {
+        } elseif (
+            !empty(Defaults::$httpMethodOverrideProperty)
+            && isset($_REQUEST[Defaults::$httpMethodOverrideProperty])
+        ) {
             // support for exceptional clients who can't set the header
-            $m = strtoupper($_GET['method']);
+            $m = strtoupper($_REQUEST[Defaults::$httpMethodOverrideProperty]);
             if ($m == 'PUT' || $m == 'DELETE' ||
                 $m == 'POST' || $m == 'PATCH'
             ) {
