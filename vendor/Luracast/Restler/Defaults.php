@@ -108,13 +108,21 @@ class Defaults
 
     /**
      * @var string name to be used for the method parameter to capture the
-     * entire request data
+     *             entire request data
      */
     public static $fullRequestDataName = 'request_data';
 
     /**
+     * @var string name of the property that can sent through $_GET or $_POST to
+     *             override the http method of the request. Set it to null or
+     *             blank string to disable http method override through request
+     *             parameters.
+     */
+    public static $httpMethodOverrideProperty = 'http_method';
+
+    /**
      * @var bool should auto validating api parameters should be enabled by
-     * default or not. Set this to false to avoid validation.
+     *           default or not. Set this to false to avoid validation.
      */
     public static $autoValidationEnabled = true;
 
