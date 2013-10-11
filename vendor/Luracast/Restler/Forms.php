@@ -94,6 +94,19 @@ class Forms implements iFilter
         T::$initializer = __CLASS__ . '::' . 'tagInit';
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters);
+        if ($method != 'GET' && $method != 'POST') {
+            if (empty(Defaults::$httpMethodOverrideProperty))
+                throw new RestException(
+                    500,
+                    'Forms require `Defaults::\$httpMethodOverrideProperty`' .
+                    "for supporting HTTP $method"
+                );
+            $r[] = T::input()
+                ->name(Defaults::$httpMethodOverrideProperty)
+                ->value($method)
+                ->type('hidden');
+            $method = 'POST';
+        }
         if (session_id() != '') {
             $r[] = static::formKey();
         }
