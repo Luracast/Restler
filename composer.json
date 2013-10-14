@@ -64,10 +64,6 @@
             }
         }
     ],
-    "config":{
-        "bin-dir":"bin/"
-    },
-    "bin":["vendor/restler.php"],
     "autoload":{
         "psr-0":{
             "Luracast\\Restler":"vendor/"
