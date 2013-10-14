@@ -27,7 +27,6 @@ use Luracast\Restler\Util;
 class Forms implements iFilter
 {
     public static $style;
-
     protected static $inputTypes = array(
         'password',
         'button',
@@ -54,7 +53,6 @@ class Forms implements iFilter
         'url',
         'week',
     );
-
     /**
      * @var ValidationInfo
      */
@@ -164,6 +162,13 @@ class Forms implements iFilter
         return $t;
     }
 
+    protected static function generateKey()
+    {
+        if (!static::$key)
+            static::$key = md5(User::getIpAddress() . uniqid(mt_rand(), true));
+        $_SESSION['form_key'] = static::$key;
+    }
+
     public static function fields(array $params, array $values)
     {
         $r = array();
@@ -249,7 +254,7 @@ class Forms implements iFilter
                 $t = $a;
             }
         } elseif ($p->field) {
-            $t = call_user_func('Luracast\Restler\Tags::' . $p->field);
+            $t = new T($p->field);
         } else {
             $t = T::input();
             if (in_array($p->type, static::$inputTypes)) {
@@ -308,12 +313,12 @@ class Forms implements iFilter
             if ($i == 0) {
                 if ($wrapFirst) {
                     if ($prefixText) {
-                        $t = call_user_func($T . $wrapper, $text, $t);
+                        $t = new T($wrapper, array($text, $t));
                     } else { //text last
-                        $t = call_user_func($T . $wrapper, $t, $text);
+                        $t = new T($wrapper, array($t, $text));
                     }
                 } else {
-                    $w = call_user_func($T . $wrapper, $text);
+                    $w = new T($wrapper, array($text));
                     if ($prefixText) {
                         $t = is_array($t) ? array_merge(array($w), $t) : array($w, $t);
                     } else { //text last
@@ -321,14 +326,16 @@ class Forms implements iFilter
                     }
                 }
             } else {
-                $t = call_user_func(
-                    $T . $wrapper,
-                    $t
-                );
+                $t = new T($wrapper, array($t));
             }
             $counter++;
         }
         return $t;
+    }
+
+    protected static function title($name)
+    {
+        return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
     public static function tagInit(T & $t)
@@ -347,18 +354,6 @@ class Forms implements iFilter
         //reset custom presets
         static::$presets = array();
         return $t;
-    }
-
-    protected static function generateKey()
-    {
-        if (!static::$key)
-            static::$key = md5(User::getIpAddress() . uniqid(mt_rand(), true));
-        $_SESSION['form_key'] = static::$key;
-    }
-
-    protected static function title($name)
-    {
-        return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
     /**
