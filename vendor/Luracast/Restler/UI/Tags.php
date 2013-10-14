@@ -1,5 +1,5 @@
 <?php
-namespace Luracast\Restler;
+namespace Luracast\Restler\UI;
 
 /**
  * Utility class for generating html tags in an object oriented way
