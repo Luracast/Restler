@@ -1,5 +1,5 @@
 <?php
-namespace Luracast\Restler;
+namespace Luracast\Restler\UI;
 
 /**
  * Utility class for providing preset styles for html forms
