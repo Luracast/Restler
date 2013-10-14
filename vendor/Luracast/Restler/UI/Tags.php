@@ -1,5 +1,6 @@
 <?php
 namespace Luracast\Restler\UI;
+
 use Luracast\Restler\Util;
 
 /**
@@ -29,13 +30,13 @@ use Luracast\Restler\Util;
 class Tags
 {
     public static $humanReadable = true;
+    public static $initializer = null;
+    protected static $instances = array();
     public $prefix = '';
     public $indent = '    ';
+    public $tag;
     protected $attributes = array();
     protected $children = array();
-    public $tag;
-    protected static $instances = array();
-    public static $initializer = null;
 
     public function __construct($name, array $children = array())
     {
@@ -65,13 +66,6 @@ class Tags
         return Util::nestedValue(static::$instances, $id);
     }
 
-    public function toString($prefix = '', $indent = '    ')
-    {
-        $this->prefix = $prefix;
-        $this->indent = $indent;
-        return $this->__toString();
-    }
-
     /**
      * @param       $name
      * @param array $children
@@ -81,6 +75,47 @@ class Tags
     public static function __callStatic($name, array $children)
     {
         return new static($name, $children);
+    }
+
+    public function toString($prefix = '', $indent = '    ')
+    {
+        $this->prefix = $prefix;
+        $this->indent = $indent;
+        return $this->__toString();
+    }
+
+    public function __toString()
+    {
+        $children = '';
+        if (static::$humanReadable) {
+            $lineBreak = false;
+            foreach ($this->children as $key => $child) {
+                if ($child instanceof $this) {
+                    $child->prefix = $this->prefix . $this->indent;
+                    $child->indent = $this->indent;
+                    $children .= PHP_EOL . $child;
+                    $lineBreak = true;
+                } else {
+                    $children .= $child;
+                }
+            }
+            if ($lineBreak)
+                $children .= PHP_EOL . $this->prefix;
+        } else {
+            $children = implode('', $this->children);
+        }
+        $attributes = '';
+        foreach ($this->attributes as $attribute => &$value)
+            $attributes .= " $attribute=\"$value\"";
+
+        if (count($this->children))
+            return static::$humanReadable
+                ? "$this->prefix<{$this->tag}{$attributes}>"
+                . "$children"
+                . "</{$this->tag}>"
+                : "<{$this->tag}{$attributes}>$children</{$this->tag}>";
+
+        return "$this->prefix<{$this->tag}{$attributes}/>";
     }
 
     /**
@@ -128,39 +163,5 @@ class Tags
             ? ($value ? 'true' : 'false')
             : (string)$value;
         return $this;
-    }
-
-    public function __toString()
-    {
-        $children = '';
-        if (static::$humanReadable) {
-            $lineBreak = false;
-            foreach ($this->children as $key => $child) {
-                if ($child instanceof $this) {
-                    $child->prefix = $this->prefix . $this->indent;
-                    $child->indent = $this->indent;
-                    $children .= PHP_EOL . $child;
-                    $lineBreak = true;
-                } else {
-                    $children .= $child;
-                }
-            }
-            if ($lineBreak)
-                $children .= PHP_EOL . $this->prefix;
-        } else {
-            $children = implode('', $this->children);
-        }
-        $attributes = '';
-        foreach ($this->attributes as $attribute => &$value)
-            $attributes .= " $attribute=\"$value\"";
-
-        if (count($this->children))
-            return static::$humanReadable
-                ? "$this->prefix<{$this->tag}{$attributes}>"
-                . "$children"
-                . "</{$this->tag}>"
-                : "<{$this->tag}{$attributes}>$children</{$this->tag}>";
-
-        return "$this->prefix<{$this->tag}{$attributes}/>";
     }
 } 
