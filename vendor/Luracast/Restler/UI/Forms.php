@@ -1,8 +1,16 @@
 <?php
-namespace Luracast\Restler;
+namespace Luracast\Restler\UI;
 
+use Luracast\Restler\CommentParser;
 use Luracast\Restler\Data\ValidationInfo;
-use Luracast\Restler\Tags as T;
+use Luracast\Restler\Defaults;
+use Luracast\Restler\iFilter;
+use Luracast\Restler\RestException;
+use Luracast\Restler\Routes;
+use Luracast\Restler\UI\Tags as T;
+use Luracast\Restler\User;
+use Luracast\Restler\Util;
+
 
 /**
  * Utility class for automatically generating forms for the given http method
@@ -290,6 +298,7 @@ class Forms implements iFilter
     public static function wrap($t, array $with, $text = '', $prefixText = true, $wrapFirst = false)
     {
         $counter = 0;
+        $T = 'Luracast\Restler\UI\Tags::';
         foreach ($with as $i => $wrapper) {
             if (is_string($i)) {
                 static::$presets = $wrapper;
@@ -299,12 +308,12 @@ class Forms implements iFilter
             if ($i == 0) {
                 if ($wrapFirst) {
                     if ($prefixText) {
-                        $t = call_user_func('Luracast\Restler\Tags::' . $wrapper, $text, $t);
+                        $t = call_user_func($T . $wrapper, $text, $t);
                     } else { //text last
-                        $t = call_user_func('Luracast\Restler\Tags::' . $wrapper, $t, $text);
+                        $t = call_user_func($T . $wrapper, $t, $text);
                     }
                 } else {
-                    $w = call_user_func('Luracast\Restler\Tags::' . $wrapper, $text);
+                    $w = call_user_func($T . $wrapper, $text);
                     if ($prefixText) {
                         $t = is_array($t) ? array_merge(array($w), $t) : array($w, $t);
                     } else { //text last
@@ -313,7 +322,7 @@ class Forms implements iFilter
                 }
             } else {
                 $t = call_user_func(
-                    'Luracast\Restler\Tags::' . $wrapper,
+                    $T . $wrapper,
                     $t
                 );
             }
