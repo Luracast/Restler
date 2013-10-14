@@ -1,5 +1,6 @@
 <?php
 namespace Luracast\Restler\UI;
+use Luracast\Restler\Util;
 
 /**
  * Utility class for generating html tags in an object oriented way
@@ -39,7 +40,13 @@ class Tags
     public function __construct($name, array $children = array())
     {
         $this->tag = $name;
-        $this->children = $children;
+        $c = array();
+        foreach ($children as $child) {
+            is_array($child)
+                ? $c = array_merge($c, $child)
+                : $c [] = $child;
+        }
+        $this->children = $c;
         if (static::$initializer)
             call_user_func(static::$initializer, &$this, $this);
     }
@@ -73,13 +80,7 @@ class Tags
      */
     public static function __callStatic($name, array $children)
     {
-        $array = array();
-        foreach ($children as $child) {
-            is_array($child)
-                ? $array = array_merge($array, $child)
-                : $array [] = $child;
-        }
-        return new static($name, $array);
+        return new static($name, $children);
     }
 
     /**
