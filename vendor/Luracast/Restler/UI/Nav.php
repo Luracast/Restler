@@ -20,6 +20,7 @@ use Luracast\Restler\Util;
  */
 class Nav
 {
+    public static $root = 'home';
     /**
      * @var null|callable if the api methods are under access control mechanism
      * you can attach a function here that returns true or false to determine
@@ -43,8 +44,8 @@ class Nav
             $activeUrl = Util::$restler->url;
         }
         $tree = array();
-        foreach (static::$includePaths as $url => $text) {
-            static::build($tree, $url, $text, $activeUrl);
+        foreach (static::$includePaths as $path => $text) {
+            static::build($tree, $path, null, $text, $activeUrl);
         }
         $routes = Routes::toArray();
         foreach ($routes as $value) {
@@ -52,17 +53,18 @@ class Nav
                 if ($httpMethod != 'GET') {
                     continue;
                 }
-                $url = $route['url'];
-                if (false !== strpos($url, '{'))
+                $path = $route['url'];
+                if (false !== strpos($path, '{'))
                     continue;
                 $v = 'v' . Util::$restler->getRequestedApiVersion();
-                if (0 !== strpos($url, $v))
+                if (0 !== strpos($path, $v))
                     continue;
                 if ($route['accessLevel'] && !Util::$restler->_authenticated)
                     continue;
-                $url = ltrim(str_replace($v, '', $url), '/');
+                $path = ltrim(str_replace($v, '', $path), '/');
+
                 foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($url, $exclude)) {
+                    if (0 === strpos($path, $exclude)) {
                         continue 2;
                     }
                 }
@@ -79,15 +81,16 @@ class Nav
                     CommentParser::$embeddedDataName,
                     'label'
                 );
-                static::build($tree, $url, $text, $activeUrl);
+                static::build($tree, $path, null, $text, $activeUrl);
             }
         }
         return $tree;
     }
 
-    protected function build(&$tree, $url, $text = null, $activeUrl = null)
+    protected function build(&$tree, $path,
+                             $url = null, $text = null, $activeUrl = null)
     {
-        $parts = explode('/', $url);
+        $parts = explode('/', $path);
         $p = & $tree;
         $end = end($parts);
         foreach ($parts as $part) {
@@ -99,8 +102,13 @@ class Nav
                 if ($part == $end) {
                     if ($text)
                         $p[$part]['text'] = $text;
-                    $p[$part]['href'] = $url;
-                    if ($url == $activeUrl) {
+                    if (is_null($url)) {
+                        $p[$part]['href'] = Util::$restler->getBaseUrl()
+                            . '/' . $path;
+                    } else {
+                        $p[$part]['href'] = $url;
+                    }
+                    if ($path == $activeUrl) {
                         $p[$part]['active'] = true;
                     }
                 }
@@ -114,6 +122,9 @@ class Nav
 
     protected static function title($name)
     {
+        if (empty($name)) {
+            $name = static::$root;
+        }
         return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
