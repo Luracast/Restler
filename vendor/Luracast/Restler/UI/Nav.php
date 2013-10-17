@@ -34,18 +34,38 @@ class Nav
      */
     public static $excludedPaths = array();
     /**
-     * @var array add additional menu items with $url => $text here
+     * @var array prefix additional menu items with one of the following syntax
+     *            [$path => $text]
+     *            [$path]
+     *            [$path => ['text' => $text, 'url' => $url]]
      */
-    public static $includePaths = array();
+    public static $prepends = array();
+    /**
+     * @var array suffix additional menu items with one of the following syntax
+     *            [$path => $text]
+     *            [$path]
+     *            [$path => ['text' => $text, 'url' => $url]]
+     */
+    public static $appends = array();
 
     public static function get($activeUrl = null)
     {
         if (is_null($activeUrl)) {
             $activeUrl = Util::$restler->url;
         }
+
         $tree = array();
-        foreach (static::$includePaths as $path => $text) {
-            static::build($tree, $path, null, $text, $activeUrl);
+        foreach (static::$prepends as $path => $text) {
+            $url = null;
+            if (is_array($text)) {
+                $url = $text['url'];
+                $text = $text['text'];
+            }
+            if (is_numeric($path)) {
+                $path = $text;
+                $text = null;
+            }
+            static::build($tree, $path, $url, $text, $activeUrl);
         }
         $routes = Routes::toArray();
         foreach ($routes as $value) {
@@ -83,6 +103,18 @@ class Nav
                 );
                 static::build($tree, $path, null, $text, $activeUrl);
             }
+        }
+        foreach (static::$appends as $path => $text) {
+            $url = null;
+            if (is_array($text)) {
+                $url = $text['url'];
+                $text = $text['text'];
+            }
+            if (is_numeric($path)) {
+                $path = $text;
+                $text = null;
+            }
+            static::build($tree, $path, $url, $text, $activeUrl);
         }
         return $tree;
     }
