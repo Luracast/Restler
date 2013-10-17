@@ -189,7 +189,7 @@ class HtmlFormat extends Format
                     $twig->addFunction(
                         new \Twig_SimpleFunction(
                             'form',
-                            'Luracast\Restler\UI\Nav::get',
+                            'Luracast\Restler\UI\Forms::get',
                             array('is_safe' => array('html'))
                         )
                     );
