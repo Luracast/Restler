@@ -27,7 +27,6 @@ class HtmlFormat extends Format
     public static $view = 'debug';
     public static $errorView = 'debug.php';
     public static $format = 'php';
-    protected static $parseViewMetadata = true;
     /**
      * @var array global key value pair to be supplied to the templates. All
      * keys added here will be available as a variable inside the template
@@ -38,6 +37,7 @@ class HtmlFormat extends Format
      * views folder which is same level as vendor directory.
      */
     public static $viewPath;
+    protected static $parseViewMetadata = true;
     /**
      * @var Restler;
      */
@@ -99,10 +99,10 @@ class HtmlFormat extends Format
                 }
             }
             $data['request']['parameters'] = $params;
-            $inner =  null;
-            if(!$data['success'] && !is_null(static::$errorView)) {
+            $inner = null;
+            if (!$data['success'] && !is_null(static::$errorView)) {
                 self::$view = static::$errorView;
-            }elseif (static::$parseViewMetadata && isset($metadata['view'])) {
+            } elseif (static::$parseViewMetadata && isset($metadata['view'])) {
                 if (is_array($metadata['view'])) {
                     self::$view = $metadata['view']['description'];
                     if (($value = Util::nestedValue($metadata['view'], 'properties', 'value'))) {
@@ -130,23 +130,23 @@ class HtmlFormat extends Format
                         );
                     }
 
-                    $data = $inner ? Util::nestedValue($data,$inner): $data;
+                    $data = $inner ? Util::nestedValue($data, $inner) : $data;
 
-                        $template = function ($view) use ($data) {
-                        $_ = function () use ($data){
+                    $template = function ($view) use ($data) {
+                        $_ = function () use ($data) {
                             extract($data);
                             $args = func_get_args();
                             $task = array_shift($args);
                             switch ($task) {
                                 case 'require':
                                 case 'include':
-                                    $file = HtmlFormat::$viewPath.DIRECTORY_SEPARATOR.$args[0];
-                                    if(is_readable($file)){
-                                        if(isset($args[1]) && ($arrays  = Util::nestedValue($data,$args[1]))){
+                                    $file = HtmlFormat::$viewPath . DIRECTORY_SEPARATOR . $args[0];
+                                    if (is_readable($file)) {
+                                        if (isset($args[1]) && ($arrays = Util::nestedValue($data, $args[1]))) {
                                             $str = '';
-                                            foreach($arrays as $arr){
+                                            foreach ($arrays as $arr) {
                                                 extract($arr);
-                                                $str.= include $file;
+                                                $str .= include $file;
                                             }
                                             return $str;
                                         } else {
@@ -169,7 +169,7 @@ class HtmlFormat extends Format
                         return @include $view;
                     };
                     $value = $template($view);
-                    if(is_string($value))
+                    if (is_string($value))
                         echo $value;
                     break;
                 case 'twig':
@@ -177,10 +177,42 @@ class HtmlFormat extends Format
                         throw new RestException(500,
                             'Twig templates require twig classes to be installed using `composer install`');
                     $loader = new \Twig_Loader_Filesystem(static::$viewPath);
+                    $debugMode = !$this->restler->getProductionMode();
                     $twig = new \Twig_Environment($loader, array(
                         'cache' => Defaults::$cacheDirectory,
-                        'debug' => true,
+                        'debug' => $debugMode,
+                        'use_strict_variables' => $debugMode,
                     ));
+                    if ($debugMode)
+                        $twig->addExtension(new \Twig_Extension_Debug());
+
+                    $twig->addFunction(
+                        new \Twig_SimpleFunction(
+                            'form',
+                            'Luracast\Restler\UI\Nav::get',
+                            array('is_safe' => array('html'))
+                        )
+                    );
+                    $twig->addFunction(
+                        new \Twig_SimpleFunction(
+                            'nav',
+                            'Luracast\Restler\UI\Nav::get'
+                        )
+                    );
+
+                    $twig->registerUndefinedFunctionCallback(function ($name) {
+                        if (
+                            isset(HtmlFormat::$data[$name]) &&
+                            is_callable(HtmlFormat::$data[$name])
+                        ) {
+                            return new \Twig_SimpleFunction(
+                                $name,
+                                HtmlFormat::$data[$name]
+                            );
+                        }
+                        return false;
+                    });
+
                     $template = $twig->loadTemplate(self::$view);
                     return $template->render($data);
                 case 'handlebar':
@@ -202,6 +234,14 @@ class HtmlFormat extends Format
         }
     }
 
+    private function reset()
+    {
+        static::$mime = 'text/html';
+        static::$extension = 'html';
+        static::$view = 'debug';
+        static::$format = 'php';
+    }
+
     /**
      * Decode the given data from the format
      *
@@ -221,7 +261,8 @@ class HtmlFormat extends Format
     /**
      * @return bool false as HTML format is write only
      */
-    public function isReadable(){
+    public function isReadable()
+    {
         return false;
     }
 
@@ -274,13 +315,5 @@ class HtmlFormat extends Format
     public function setExtension($extension)
     {
         static::$extension = $extension;
-    }
-
-    private function reset()
-    {
-        static::$mime = 'text/html';
-        static::$extension = 'html';
-        static::$view = 'debug';
-        static::$format = 'php';
     }
 }
