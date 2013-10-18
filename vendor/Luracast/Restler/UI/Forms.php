@@ -212,11 +212,13 @@ class Forms implements iFilter
                 $t = $a;
             } else {
                 $options = array();
-                foreach ($p->choice as $option) {
+                foreach ($p->choice as $i => $option) {
                     if ($option == $p->value) {
                         static::$presets = array('selected' => true);
                     }
-                    $options[] = T::option($option);
+                    $options[] = T::option(
+                        Util::nestedValue($p->rules, 'select', $i) ? : $option
+                    )->value($option);
                 }
                 $t = T::select($options);
             }
