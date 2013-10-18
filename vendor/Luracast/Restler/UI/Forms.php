@@ -97,8 +97,9 @@ class Forms implements iFilter
                     'v' . Util::$restler->getRequestedApiVersion()
                     . (empty($action) ? '' : "/$action"),
                     $method,
-                    Util::$restler->requestMethod == $method
-                    && static::$preFill || Util::$restler->url == $action
+                    static::$preFill ||
+                    (Util::$restler->requestMethod == $method &&
+                        Util::$restler->url == $action)
                         ? Util::$restler->getRequestData()
                         : array()
                 );
