@@ -27,6 +27,7 @@ use Luracast\Restler\Util;
 class Forms implements iFilter
 {
     public static $style;
+    public static $preFill = true;
     protected static $inputTypes = array(
         'password',
         'button',
@@ -97,7 +98,7 @@ class Forms implements iFilter
                     . (empty($action) ? '' : "/$action"),
                     $method,
                     Util::$restler->requestMethod == $method
-                    && Util::$restler->url == $action
+                    && static::$preFill || Util::$restler->url == $action
                         ? Util::$restler->getRequestData()
                         : array()
                 );
