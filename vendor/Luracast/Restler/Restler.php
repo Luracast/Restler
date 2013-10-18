@@ -482,7 +482,7 @@ class Restler extends EventDispatcher
         ) {
             if (!empty($this->requestData)) {
                 return $includeQueryParameters
-                    ? array_merge($this->requestData, $get)
+                    ? $this->requestData + $get
                     : $this->requestData;
             }
 
@@ -495,7 +495,7 @@ class Restler extends EventDispatcher
                 ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
                 : array(Defaults::$fullRequestDataName => $r);
             return $includeQueryParameters
-                ? array_merge($r, $get)
+                ? $r + $get
                 : $r;
         }
         return $includeQueryParameters ? $get : array(); //no body
