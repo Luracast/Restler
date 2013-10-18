@@ -198,7 +198,7 @@ class Forms implements iFilter
                     ? : array('label');
                 $wrapFirst = reset($with) == 'label' || key($with) == 'label';
                 $outerWrapper = Util::nestedValue(static::$style, 'radio', 'outerWrapper');
-                foreach ($p->choice as $option) {
+                foreach ($p->choice as $i => $option) {
                     if ($option == $p->value) {
                         static::$presets = array('checked' => true);
                     }
@@ -207,7 +207,13 @@ class Forms implements iFilter
                             ? array_merge(static::$presets, $style)
                             : $style;
                     $t = T::input()->type('radio')->value($option);
-                    $a[] = static::wrap($t, $with, " $option", false, $wrapFirst);
+                    $a[] = static::wrap(
+                        $t,
+                        $with,
+                        Util::nestedValue($p->rules, 'select', $i) ? : $option,
+                        false,
+                        $wrapFirst
+                    );
                 }
                 $t = $a;
             } else {
