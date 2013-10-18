@@ -217,7 +217,7 @@ class Forms implements iFilter
                 }
                 $t = $a;
             } else {
-                $options = array();
+                $options = array(T::option('')->value(''));
                 foreach ($p->choice as $i => $option) {
                     if ($option == $p->value) {
                         static::$presets = array('selected' => true);
