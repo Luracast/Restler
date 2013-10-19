@@ -58,7 +58,7 @@ This calls the list template with key value pairs defined at the response array
 directly accessible as the variable and value inside the template
 
 This example also show cases the heredoc syntax based simple templating system
-which is Supported with out any external dependencies
+which is Supported without any external dependencies
 
 Just to show that it is possible to come up with API as well as an App using the
 same resource and url, you can try the json version of the tasks api using the
@@ -67,6 +67,10 @@ API Explorer [here](explorer/index.html)
 */
 require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
+use Luracast\Restler\Format\HtmlFormat;
+
+//un-comment the following line to try mustache/handlebar templates instead of php
+//HtmlFormat::$format = 'handlebar';
 
 $r = new Restler();
 $r->setSupportedFormats('JsonFormat','HtmlFormat');
