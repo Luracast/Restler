@@ -7,6 +7,8 @@ use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Util;
+use Luracast\Restler\UI\Forms;
+use Luracast\Restler\UI\Nav;
 
 /**
  * Html template format
@@ -51,6 +53,164 @@ class HtmlFormat extends Format
         }
     }
 
+    public static function twig(array $data, $debug = true)
+    {
+        if (!class_exists('\Twig_Environment', true))
+            throw new RestException(500,
+                'Twig templates require twig classes to be installed using `composer install`');
+        $loader = new \Twig_Loader_Filesystem(static::$viewPath);
+        $twig = new \Twig_Environment($loader, array(
+            'cache' => Defaults::$cacheDirectory,
+            'debug' => $debug,
+            'use_strict_variables' => $debug,
+        ));
+        if ($debug)
+            $twig->addExtension(new \Twig_Extension_Debug());
+
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
+                'form',
+                'Luracast\Restler\UI\Forms::get',
+                array('is_safe' => array('html'))
+            )
+        );
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
+                'nav',
+                'Luracast\Restler\UI\Nav::get'
+            )
+        );
+
+        $twig->registerUndefinedFunctionCallback(function ($name) {
+            if (
+                isset(HtmlFormat::$data[$name]) &&
+                is_callable(HtmlFormat::$data[$name])
+            ) {
+                return new \Twig_SimpleFunction(
+                    $name,
+                    HtmlFormat::$data[$name]
+                );
+            }
+            return false;
+        });
+
+        $template = $twig->loadTemplate(self::$view);
+        return $template->render($data);
+    }
+
+    public static function handlebar(array $data, $debug = true)
+    {
+        return static::mustache($data, $debug);
+    }
+
+    public static function mustache(array $data, $debug = true)
+    {
+        if (!class_exists('\Mustache_Engine', true))
+            throw new RestException(
+                500,
+                'Mustache/Handlebar templates require mustache classes ' .
+                'to be installed using `composer install`'
+            );
+        if (!isset($data['nav']))
+            $data['nav'] = array_values(Nav::get());
+        $options = array(
+            'loader' => new \Mustache_Loader_FilesystemLoader(
+                    static::$viewPath,
+                    array('extension' => static::$format)
+                ),
+            'helpers' => array(
+                'form' => function ($text, \Mustache_LambdaHelper $m) {
+                        $params = explode(',', $m->render($text));
+                        return call_user_func_array(
+                            'Luracast\Restler\UI\Forms::get',
+                            $params
+                        );
+                    },
+            )
+        );
+        if (!$debug)
+            $options['cache'] = Defaults::$cacheDirectory;
+        $m = new \Mustache_Engine($options);
+        return $m->render(self::$view, $data);
+    }
+
+    public static function php(array $data, $debug = true)
+    {
+        $view = self::$viewPath . DIRECTORY_SEPARATOR .
+            self::$view;
+
+        if (!is_readable($view)) {
+            throw new RestException(
+                500,
+                "view file `$view` is not readable. " .
+                'Check for file presence and file permissions'
+            );
+        }
+
+        $path = static::$viewPath . DIRECTORY_SEPARATOR;
+        $template = function ($view) use ($data, $path) {
+            $form = function () {
+                return call_user_func_array(
+                    'Luracast\Restler\UI\Forms::get',
+                    func_get_args()
+                );
+            };
+            if (!isset($data['form']))
+                $data['form'] = $form;
+            $nav = function () {
+                return call_user_func_array(
+                    'Luracast\Restler\UI\Nav::get',
+                    func_get_args()
+                );
+            };
+            if (!isset($data['nav']))
+                $data['nav'] = $nav;
+
+            $_ = function () use ($data, $path) {
+                extract($data);
+                $args = func_get_args();
+                $task = array_shift($args);
+                switch ($task) {
+                    case 'require':
+                    case 'include':
+                        $file = $path . $args[0];
+                        if (is_readable($file)) {
+                            if (
+                                isset($args[1]) &&
+                                ($arrays = Util::nestedValue($data, $args[1]))
+                            ) {
+                                $str = '';
+                                foreach ($arrays as $arr) {
+                                    extract($arr);
+                                    $str .= include $file;
+                                }
+                                return $str;
+                            } else {
+                                return include $file;
+                            }
+                        }
+                        break;
+                    case 'if':
+                        if (count($args) < 2)
+                            $args[1] = '';
+                        if (count($args) < 3)
+                            $args[2] = '';
+                        return $args[0] ? $args[1] : $args[2];
+                        break;
+                    default:
+                        if (isset($data[$task]) && is_callable($data[$task]))
+                            return call_user_func_array($data[$task], $args);
+                }
+                return '';
+            };
+            extract($data);
+            return @include $view;
+        };
+        $value = $template($view);
+        if (is_string($value))
+            return $value;
+    }
+
     /**
      * Encode the given data in the format
      *
@@ -76,157 +236,59 @@ class HtmlFormat extends Format
         static::$data['baseUrl'] = $this->restler->getBaseUrl();
 
         try {
-            $events = $this->restler->getEvents();
-            $data = array_merge(
-                array(
-                    'response' => Object::toArray($data),
-                    'stages' => $events,
-                    'success' => end($events) != 'message',
-                ),
-                static::$data
+            $success = is_null($this->restler->exception);
+            $data = array(
+                'response' => Object::toArray($data),
+                'stages' => $this->restler->getEvents(),
+                'success' => $success,
             );
-            $params = array();
-            //print_r($this->restler);
-            if (isset($this->restler->apiMethodInfo->metadata)) {
-                $info = $data['api'] = $this->restler->apiMethodInfo;
-                $metadata = $info->metadata;
-                $params = $metadata['param'];
-            }
-            foreach ($params as $index => &$param) {
-                $index = intval($index);
-                if (is_numeric($index)) {
-                    $param['value'] = $this->restler->apiMethodInfo->parameters[$index];
-                }
-            }
-            $data['request']['parameters'] = $params;
-            $inner = null;
-            if (!$data['success'] && !is_null(static::$errorView)) {
-                self::$view = static::$errorView;
-            } elseif (static::$parseViewMetadata && isset($metadata['view'])) {
-                if (is_array($metadata['view'])) {
-                    self::$view = $metadata['view']['description'];
-                    if (($value = Util::nestedValue($metadata['view'], 'properties', 'value'))) {
-                        $inner = explode('.', $value);
+            $info = $data['api'] = $this->restler->apiMethodInfo;
+            $metadata = Util::nestedValue(
+                $this->restler, 'apiMethodInfo', 'metadata'
+            );
+            if ($success && static::$parseViewMetadata) {
+                $value = false;
+                if (isset($metadata['view'])) {
+                    if (is_array($metadata['view'])) {
+                        self::$view = $metadata['view']['description'];
+                        $value = Util::nestedValue(
+                            $metadata['view'], 'properties', 'value'
+                        );
+                    } else {
+                        self::$view = $metadata['view'];
                     }
-                } else {
-                    self::$view = $metadata['view'];
                 }
+                if (!$value || 0 === strpos($value, 'request')) {
+                    $params = array();
+                    $params = $metadata['param'];
+                    foreach ($params as $index => &$param) {
+                        $index = intval($index);
+                        if (is_numeric($index)) {
+                            $param['value'] = $this
+                                ->restler
+                                ->apiMethodInfo
+                                ->parameters[$index];
+                        }
+                    }
+                    $data['request']['parameters'] = $params;
+                }
+                if ($value) {
+                    $data = Util::nestedValue($data, explode('.', $value));
+                }
+            } else {
+                self::$view = static::$errorView;
             }
+            $data += static::$data;
             if (false === ($i = strpos(self::$view, '.'))) {
                 $extension = self::$format;
                 self::$view .= '.' . $extension;
             } else {
                 $extension = substr(self::$view, $i + 1);
             }
-            switch ($extension) {
-                case 'php':
-                    $view = self::$viewPath . DIRECTORY_SEPARATOR .
-                        self::$view;
-
-                    if (!is_readable($view)) {
-                        throw new RestException(
-                            500,
-                            "view file `$view` is not readable. Check for file presence and file permissions"
-                        );
-                    }
-
-                    $data = $inner ? Util::nestedValue($data, $inner) : $data;
-
-                    $template = function ($view) use ($data) {
-                        $_ = function () use ($data) {
-                            extract($data);
-                            $args = func_get_args();
-                            $task = array_shift($args);
-                            switch ($task) {
-                                case 'require':
-                                case 'include':
-                                    $file = HtmlFormat::$viewPath . DIRECTORY_SEPARATOR . $args[0];
-                                    if (is_readable($file)) {
-                                        if (isset($args[1]) && ($arrays = Util::nestedValue($data, $args[1]))) {
-                                            $str = '';
-                                            foreach ($arrays as $arr) {
-                                                extract($arr);
-                                                $str .= include $file;
-                                            }
-                                            return $str;
-                                        } else {
-                                            return include $file;
-                                        }
-                                    }
-                                    break;
-                                case 'if':
-                                    if (count($args) < 2)
-                                        $args[1] = '';
-                                    if (count($args) < 3)
-                                        $args[2] = '';
-                                    return $args[0] ? $args[1] : $args[2];
-                                    break;
-                                default:
-                                    return call_user_func_array($task, $args);
-                            }
-                        };
-                        extract($data);
-                        return @include $view;
-                    };
-                    $value = $template($view);
-                    if (is_string($value))
-                        echo $value;
-                    break;
-                case 'twig':
-                    if (!class_exists('\Twig_Environment', true))
-                        throw new RestException(500,
-                            'Twig templates require twig classes to be installed using `composer install`');
-                    $loader = new \Twig_Loader_Filesystem(static::$viewPath);
-                    $debugMode = !$this->restler->getProductionMode();
-                    $twig = new \Twig_Environment($loader, array(
-                        'cache' => Defaults::$cacheDirectory,
-                        'debug' => $debugMode,
-                        'use_strict_variables' => $debugMode,
-                    ));
-                    if ($debugMode)
-                        $twig->addExtension(new \Twig_Extension_Debug());
-
-                    $twig->addFunction(
-                        new \Twig_SimpleFunction(
-                            'form',
-                            'Luracast\Restler\UI\Forms::get',
-                            array('is_safe' => array('html'))
-                        )
-                    );
-                    $twig->addFunction(
-                        new \Twig_SimpleFunction(
-                            'nav',
-                            'Luracast\Restler\UI\Nav::get'
-                        )
-                    );
-
-                    $twig->registerUndefinedFunctionCallback(function ($name) {
-                        if (
-                            isset(HtmlFormat::$data[$name]) &&
-                            is_callable(HtmlFormat::$data[$name])
-                        ) {
-                            return new \Twig_SimpleFunction(
-                                $name,
-                                HtmlFormat::$data[$name]
-                            );
-                        }
-                        return false;
-                    });
-
-                    $template = $twig->loadTemplate(self::$view);
-                    return $template->render($data);
-                case 'handlebar':
-                case 'mustache':
-                    if (!class_exists('\Mustache_Engine', true))
-                        throw new RestException(500,
-                            'Mustache/Handlebar templates require mustache classes to be installed using `composer install`');
-                    $view = self::$viewPath . DIRECTORY_SEPARATOR .
-                        self::$view;
-                    $m = new \Mustache_Engine;
-                    return $m->render(file_get_contents($view), $data);
-                default:
-                    throw new RestException(500, "Unsupported template system `$extension`");
+            if (method_exists(__CLASS__, $extension)) {
+                return call_user_func(__CLASS__ . '::' . $extension, $data, $humanReadable);
             }
+            throw new RestException(500, "Unsupported template system `$extension`");
         } catch (Exception $e) {
             static::$parseViewMetadata = false;
             $this->reset();
