@@ -357,7 +357,11 @@ class Forms implements iFilter
         foreach ($presets as $k => $v) {
             if ($v{0} == '$') {
                 //variable substitution
-                $v = Util::nestedValue(static::$validationInfo, substr($v, 1));
+                $var = substr($v, 1);
+                $v = Util::nestedValue(static::$validationInfo, $var);
+                if (is_null($v)) {
+                    $v = Util::nestedValue(static::$validationInfo, 'rules', $var);
+                }
             }
             if (!is_null($v))
                 $t->{$k}($v);
