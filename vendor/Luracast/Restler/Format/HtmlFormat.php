@@ -262,7 +262,10 @@ class HtmlFormat extends Format
             } elseif (!self::$view) {
                 self::$view = static::$errorView;
             }
-            if (!$value || 0 === strpos($value, 'request')) {
+            if (
+                isset($metadata['param'])
+                && (!$value || 0 === strpos($value, 'request'))
+            ) {
                 $params = $metadata['param'];
                 foreach ($params as $index => &$param) {
                     $index = intval($index);
