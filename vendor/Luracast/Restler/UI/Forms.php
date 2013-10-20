@@ -92,6 +92,7 @@ class Forms implements iFilter
         }
         try {
             $info = is_null($action)
+            || (Util::$restler->url == $action && Util::getRequestMethod() == $method)
                 ? Util::$restler->apiMethodInfo
                 : Routes::find(
                     'v' . Util::$restler->getRequestedApiVersion()
