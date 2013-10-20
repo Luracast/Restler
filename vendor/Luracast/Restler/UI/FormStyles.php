@@ -22,6 +22,7 @@ class FormStyles
             'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd; width: 400px;'
         ),
         'input' => array(
+            'autofocus' => '$autofocus',
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
@@ -32,6 +33,7 @@ class FormStyles
             'max' => '$max',
         ),
         'textarea' => array(
+            'autofocus' => '$autofocus',
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
@@ -41,6 +43,7 @@ class FormStyles
             'max' => '$max',
         ),
         'select' => array(
+            'autofocus' => '$autofocus',
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
@@ -75,6 +78,7 @@ class FormStyles
             'role' => 'form',
         ),
         'input' => array(
+            'autofocus' => '$autofocus',
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
@@ -85,6 +89,7 @@ class FormStyles
             'class' => 'form-control',
         ),
         'textarea' => array(
+            'autofocus' => '$autofocus',
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
@@ -95,6 +100,7 @@ class FormStyles
             'rows' => 3,
         ),
         'select' => array(
+            'autofocus' => '$autofocus',
             'value' => '$value',
             'required' => '$required',
             'name' => '$name',
