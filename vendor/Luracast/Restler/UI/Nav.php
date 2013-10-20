@@ -156,6 +156,8 @@ class Nav
     {
         if (empty($name)) {
             $name = static::$root;
+        } else {
+            $name = ltrim($name, '#');
         }
         return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
