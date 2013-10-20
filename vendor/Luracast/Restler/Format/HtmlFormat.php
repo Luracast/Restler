@@ -6,9 +6,8 @@ use Luracast\Restler\Data\Object;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
-use Luracast\Restler\Util;
-use Luracast\Restler\UI\Forms;
 use Luracast\Restler\UI\Nav;
+use Luracast\Restler\Util;
 
 /**
  * Html template format
@@ -26,7 +25,7 @@ class HtmlFormat extends Format
 {
     public static $mime = 'text/html';
     public static $extension = 'html';
-    public static $view = 'debug';
+    public static $view;
     public static $errorView = 'debug.php';
     public static $format = 'php';
     /**
@@ -246,37 +245,35 @@ class HtmlFormat extends Format
             $metadata = Util::nestedValue(
                 $this->restler, 'apiMethodInfo', 'metadata'
             );
-            if ($success && static::$parseViewMetadata) {
-                $value = false;
-                if (isset($metadata['view'])) {
-                    if (is_array($metadata['view'])) {
-                        self::$view = $metadata['view']['description'];
-                        $value = Util::nestedValue(
-                            $metadata['view'], 'properties', 'value'
-                        );
-                    } else {
-                        self::$view = $metadata['view'];
-                    }
+            $view = $success ? 'view' : 'errorView';
+            $value = false;
+            if (static::$parseViewMetadata && isset($metadata[$view])) {
+                if (is_array($metadata[$view])) {
+                    self::$view = $metadata[$view]['description'];
+                    $value = Util::nestedValue(
+                        $metadata[$view], 'properties', 'value'
+                    );
+                } else {
+                    self::$view = $metadata[$view];
                 }
-                if (!$value || 0 === strpos($value, 'request')) {
-                    $params = array();
-                    $params = $metadata['param'];
-                    foreach ($params as $index => &$param) {
-                        $index = intval($index);
-                        if (is_numeric($index)) {
-                            $param['value'] = $this
-                                ->restler
-                                ->apiMethodInfo
-                                ->parameters[$index];
-                        }
-                    }
-                    $data['request']['parameters'] = $params;
-                }
-                if ($value) {
-                    $data = Util::nestedValue($data, explode('.', $value));
-                }
-            } else {
+            } elseif (!self::$view) {
                 self::$view = static::$errorView;
+            }
+            if (!$value || 0 === strpos($value, 'request')) {
+                $params = $metadata['param'];
+                foreach ($params as $index => &$param) {
+                    $index = intval($index);
+                    if (is_numeric($index)) {
+                        $param['value'] = $this
+                            ->restler
+                            ->apiMethodInfo
+                            ->parameters[$index];
+                    }
+                }
+                $data['request']['parameters'] = $params;
+            }
+            if ($value) {
+                $data = Util::nestedValue($data, explode('.', $value));
             }
             $data += static::$data;
             if (false === ($i = strpos(self::$view, '.'))) {
