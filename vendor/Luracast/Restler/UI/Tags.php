@@ -49,7 +49,7 @@ class Tags
         }
         $this->children = $c;
         if (static::$initializer)
-            call_user_func(static::$initializer, $this, $this);
+            call_user_func_array(static::$initializer, array(& $this));
     }
 
     /**
