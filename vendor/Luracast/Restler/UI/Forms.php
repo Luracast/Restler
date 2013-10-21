@@ -91,19 +91,24 @@ class Forms implements iFilter
             static::$style = FormStyles::$html5;
         }
         try {
-            $info = is_null($action)
-            || (Util::$restler->url == $action && Util::getRequestMethod() == $method)
-                ? Util::$restler->apiMethodInfo
-                : Routes::find(
-                    'v' . Util::$restler->getRequestedApiVersion()
-                    . (empty($action) ? '' : "/$action"),
-                    $method,
-                    static::$preFill ||
-                    (Util::$restler->requestMethod == $method &&
-                        Util::$restler->url == $action)
-                        ? Util::$restler->getRequestData()
-                        : array()
-                );
+            if (is_null($action)) {
+                $action = Util::$restler->url;
+                $info = Util::$restler->apiMethodInfo;
+            } else {
+                $info = Util::$restler->url == $action
+                && Util::getRequestMethod() == $method
+                    ? Util::$restler->apiMethodInfo
+                    : Routes::find(
+                        'v' . Util::$restler->getRequestedApiVersion()
+                        . (empty($action) ? '' : "/$action"),
+                        $method,
+                        static::$preFill ||
+                        (Util::$restler->requestMethod == $method &&
+                            Util::$restler->url == $action)
+                            ? Util::$restler->getRequestData()
+                            : array()
+                    );
+            }
         } catch (RestException $e) {
             //echo $e->getErrorMessage();
             $info = false;
