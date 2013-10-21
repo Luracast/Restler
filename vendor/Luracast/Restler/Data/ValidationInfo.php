@@ -221,13 +221,12 @@ class ValidationInfo implements iValueObject
     private function getProperty(array &$from, $property)
     {
         $p = Util::nestedValue($from, $property);
-        if ($p) {
-            unset($from[$property]);
-        }
-        $p2 = Util::nestedValue($from, 'properties', $property);
-        if ($p2) {
-            unset($from['properties'][$property]);
-        }
+        unset($from[$property]);
+        $p2 = Util::nestedValue(
+            $from, CommentParser::$embeddedDataName, $property
+        );
+        unset($from[CommentParser::$embeddedDataName][$property]);
+
         if ($property == 'type' && $p == 'array' && $p2) {
             $this->contentType = $p2;
             return $p;
@@ -254,7 +253,8 @@ class ValidationInfo implements iValueObject
         foreach ($properties as $property => $value) {
             $this->{$property} = $this->getProperty($info, $property);
         }
-        $this->rules = Util::nestedValue($info, 'properties') ? : $info;
+        $inner = Util::nestedValue($info, 'properties');
+        $this->rules = !empty($inner) ? $inner + $info : $info;
         unset($this->rules['properties']);
         if (is_string($this->type) && $this->type == 'integer') {
             $this->type = 'int';
