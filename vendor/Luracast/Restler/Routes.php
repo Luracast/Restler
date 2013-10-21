@@ -402,34 +402,35 @@ class Routes
                 $p[$call['arguments'][$key]] = $value;
             }
         }
-        if (
-            count($p) == 1 &&
-            ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
-            !array_key_exists($m['name'], $data) &&
-            array_key_exists(Defaults::$fullRequestDataName, $data) &&
-            !is_null($d = $data[Defaults::$fullRequestDataName]) &&
-            static::typeMatch($m['type'], $d)
-        ) {
-            $p[0] = $d;
-        } else {
-            $bodyParamCount = 0;
-            $lastBodyParamIndex = -1;
-            $lastM = null;
-            foreach ($call['metadata']['param'] as $k => $m) {
-                if ($m['from'] == 'body') {
-                    $bodyParamCount++;
-                    $lastBodyParamIndex = $k;
-                    $lastM = $m;
-                }
-            }
+        if ('post' != (string)Util::$restler->requestFormat) {
             if (
-                $bodyParamCount == 1 &&
-                !array_key_exists($lastM['name'], $data) &&
+                count($p) == 1 &&
+                ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
+                !array_key_exists($m['name'], $data) &&
                 array_key_exists(Defaults::$fullRequestDataName, $data) &&
                 !is_null($d = $data[Defaults::$fullRequestDataName]) &&
-                static::typeMatch($lastM['type'], $d)
+                static::typeMatch($m['type'], $d)
             ) {
-                $p[$lastBodyParamIndex] = $d;
+                $p[0] = $d;
+            } else {
+                $bodyParamCount = 0;
+                $lastBodyParamIndex = -1;
+                $lastM = null;
+                foreach ($call['metadata']['param'] as $k => $m) {
+                    if ($m['from'] == 'body') {
+                        $bodyParamCount++;
+                        $lastBodyParamIndex = $k;
+                        $lastM = $m;
+                    }
+                }
+                if (
+                    $bodyParamCount == 1 &&
+                    !array_key_exists($lastM['name'], $data) &&
+                    array_key_exists(Defaults::$fullRequestDataName, $data) &&
+                    !is_null($d = $data[Defaults::$fullRequestDataName])
+                ) {
+                    $p[$lastBodyParamIndex] = $d;
+                }
             }
         }
         return ApiMethodInfo::__set_state($call);
