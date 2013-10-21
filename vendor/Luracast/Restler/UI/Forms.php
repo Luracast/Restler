@@ -178,6 +178,8 @@ class Forms implements iFilter
         foreach ($params as $k => $p) {
             $p['value'] = Util::nestedValue($values, $k);
             static::$validationInfo = $v = new ValidationInfo($p);
+            if ($v->from == 'path')
+                continue;
             $f = static::field($v);
             is_array($f) ? $r = array_merge($r, $f) : $r [] = $f;
             static::$validationInfo = null;
