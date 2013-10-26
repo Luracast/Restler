@@ -227,11 +227,11 @@ class CommentParser
                 list ($param, $value) = $this->formatClass($value);
                 break;
             case 'access' :
-                $value = $value [0];
+                $value = reset($value);
                 break;
             case 'expires' :
             case 'status' :
-                $value = intval($value[0]);
+                $value = intval(reset($value));
                 break;
             case 'throws' :
                 $value = $this->formatThrows($value);
