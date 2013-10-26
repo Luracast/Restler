@@ -434,3 +434,8 @@ icon:after {
     left: 2px;
 
 }
+
+li > strong {
+    min-width: 80px;
+    display: inline-block;
+}
