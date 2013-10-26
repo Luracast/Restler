@@ -48,7 +48,7 @@ class Nav
      */
     public static $appends = array();
 
-    public static function get($activeUrl = null)
+    public static function get($for = '', $activeUrl = null)
     {
         if (is_null($activeUrl)) {
             $activeUrl = Util::$restler->url;
@@ -65,7 +65,8 @@ class Nav
                 $path = $text;
                 $text = null;
             }
-            static::build($tree, $path, $url, $text, $activeUrl);
+            if (0 === strpos($path, $for))
+                static::build($tree, $path, $url, $text, $activeUrl);
         }
         $routes = Routes::toArray();
         foreach ($routes as $value) {
@@ -101,7 +102,8 @@ class Nav
                     CommentParser::$embeddedDataName,
                     'label'
                 );
-                static::build($tree, $path, null, $text, $activeUrl);
+                if (0 === strpos($path, $for))
+                    static::build($tree, $path, null, $text, $activeUrl);
             }
         }
         foreach (static::$appends as $path => $text) {
@@ -114,7 +116,8 @@ class Nav
                 $path = $text;
                 $text = null;
             }
-            static::build($tree, $path, $url, $text, $activeUrl);
+            if (0 === strpos($path, $for))
+                static::build($tree, $path, $url, $text, $activeUrl);
         }
         return $tree;
     }
