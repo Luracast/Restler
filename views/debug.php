@@ -2,6 +2,15 @@
 use Luracast\Restler\Restler;
 use Luracast\Restler\Util;
 
+$template_vars = $data;//get_defined_vars();
+
+unset($template_vars['response']);
+unset($template_vars['api']);
+unset($template_vars['request']);
+unset($template_vars['stages']);
+$template_vars['request'] = $data['request'];
+$template_vars['stages'] = $data['stages'];
+
 $call_trace = '';
 
 function exceptions()
@@ -152,6 +161,8 @@ $responseHeaders .= Util::$restler->responseCode.' '.\Luracast\Restler\RestExcep
     <h2>Response:<right><?php echo $icon;?></right></h2>
     <pre class="header"><?php echo $responseHeaders ?></pre>
     <?php echo render($response); ?>
+    <h2>Additional Template Data:</h2>
+    <?php echo render($template_vars); ?>
     <p>Restler v<?php echo Restler::VERSION?></p>
 </article>
 </body>
