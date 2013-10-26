@@ -65,7 +65,7 @@ class Nav
                 $path = $text;
                 $text = null;
             }
-            if (0 === strpos($path, $for))
+            if (empty($for) || 0 === strpos($path, $for))
                 static::build($tree, $path, $url, $text, $activeUrl);
         }
         $routes = Routes::toArray();
@@ -102,7 +102,7 @@ class Nav
                     CommentParser::$embeddedDataName,
                     'label'
                 );
-                if (0 === strpos($path, $for))
+                if (empty($for) || 0 === strpos($path, $for))
                     static::build($tree, $path, null, $text, $activeUrl);
             }
         }
@@ -116,7 +116,7 @@ class Nav
                 $path = $text;
                 $text = null;
             }
-            if (0 === strpos($path, $for))
+            if (empty($for) || 0 === strpos($path, $for))
                 static::build($tree, $path, $url, $text, $activeUrl);
         }
         return $tree;
