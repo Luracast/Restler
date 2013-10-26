@@ -81,7 +81,7 @@ function render($data, $shadow=true)
         foreach ($data as $key => $value) {
             $r .= '<li>';
             $r .= is_numeric($key)
-                ? "[<strong>$key</strong>] "
+                ? "<strong>[$key]</strong> "
                 : "<strong>$key: </strong>";
             $r .= '<span>';
             if (is_array($value)) {
