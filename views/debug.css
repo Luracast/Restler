@@ -20,7 +20,7 @@ body {
 
 article {
     left: 20px;
-    right: 300px;
+    right: 20px;
     position: absolute;
     overflow: auto;
 }
