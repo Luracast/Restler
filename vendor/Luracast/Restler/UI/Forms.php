@@ -28,6 +28,10 @@ class Forms implements iFilter
 {
     public static $style;
     public static $preFill = true;
+    /**
+     * @var ValidationInfo
+     */
+    public static $validationInfo = null;
     protected static $inputTypes = array(
         'password',
         'button',
@@ -54,10 +58,6 @@ class Forms implements iFilter
         'url',
         'week',
     );
-    /**
-     * @var ValidationInfo
-     */
-    private static $validationInfo = null;
     private static $presets = array();
     private static $key = null;
 
@@ -294,6 +294,10 @@ class Forms implements iFilter
             } else {
                 $t->type('text');
             }
+        }
+        //remove value from password fields
+        if ('password' == $t->type) {
+            $t->value(null);
         }
         $wrapFirst = false;
         if (is_array($outerWrapper)) {
