@@ -296,7 +296,7 @@ class Forms implements iFilter
             }
         }
         //remove value from password fields
-        if ('password' == $t->type) {
+        if (isset($t->type) && 'password' == $t->type) {
             $t->value(null);
         }
         $wrapFirst = false;
