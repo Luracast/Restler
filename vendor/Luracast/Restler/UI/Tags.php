@@ -141,6 +141,11 @@ class Tags
         return;
     }
 
+    public function __isset($name)
+    {
+        return isset($this->attributes[$name]);
+    }
+
     /**
      * @param $attribute
      * @param $value
