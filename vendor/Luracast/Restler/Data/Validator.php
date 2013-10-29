@@ -32,7 +32,7 @@ class Validator implements iValidate
      */
     public static function tel($input, ValidationInfo $info = null)
     {
-        if (is_numeric($input)) {
+        if (is_numeric($input) && '-' != substr($input, 0, 1)) {
             return $input;
         }
         throw new Invalid('Expecting phone number, a numeric value ' .
