@@ -19,6 +19,27 @@ use Luracast\Restler\Util;
 class Validator implements iValidate
 {
     /**
+     * Validate Telephone number
+     *
+     * Check if the given value is numeric with or without a `+` prefix
+     *
+     * @param                $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     *
+     * @throws Invalid
+     */
+    public static function tel($input, ValidationInfo $info = null)
+    {
+        if (is_numeric($input)) {
+            return $input;
+        }
+        throw new Invalid('Expecting phone number, a numeric value ' .
+            'with optional `+` prefix');
+    }
+
+    /**
      * Validate Email
      *
      * Check if the given string is a valid email
