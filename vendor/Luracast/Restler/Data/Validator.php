@@ -315,6 +315,10 @@ class Validator implements iValidate
                 return $r;
 
             case 'string' :
+                if (!is_string($input)) {
+                    $error .= '. Expecting string value';
+                    break;
+                }
                 $r = strlen($input);
                 if (isset ($info->min) && $r < $info->min) {
                     if ($info->fix) {
