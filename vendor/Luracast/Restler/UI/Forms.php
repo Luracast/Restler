@@ -58,6 +58,7 @@ class Forms implements iFilter
         'url',
         'week',
     );
+    protected static $fileUpload = false;
     private static $presets = array();
     private static $key = null;
 
@@ -166,6 +167,10 @@ class Forms implements iFilter
             if (isset($key))
                 $key->value(static::$key);
 
+        }
+        if (static::$fileUpload) {
+            static::$fileUpload = false;
+            $t->enctype('multipart/form-data');
         }
         return $t;
     }
@@ -295,9 +300,14 @@ class Forms implements iFilter
                 $t->type('text');
             }
         }
-        //remove value from password fields
-        if (isset($t->type) && 'password' == $t->type) {
-            $t->value(null);
+        if (isset($t->type)) {
+            if ('password' == $t->type) {
+                //remove value from password fields
+                $t->value(null);
+            } elseif ('file' == $t->type) {
+                //set enc type properly
+                static::$fileUpload = true;
+            }
         }
         $wrapFirst = false;
         if (is_array($outerWrapper)) {
