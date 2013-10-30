@@ -166,7 +166,7 @@ class Tags
         }
         $this->attributes[$attribute] = is_bool($value)
             ? ($value ? 'true' : 'false')
-            : (string)$value;
+            : @(string)$value;
         return $this;
     }
 } 
