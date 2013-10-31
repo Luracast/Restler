@@ -40,7 +40,7 @@ class Tags implements ArrayAccess
     protected $attributes = array();
     protected $children = array();
 
-    public function __construct($name, array $children = array())
+    public function __construct($name = null, array $children = array())
     {
         $this->tag = $name;
         $c = array();
@@ -106,6 +106,8 @@ class Tags implements ArrayAccess
         } else {
             $children = implode('', $this->children);
         }
+        if (is_null($this->tag))
+            return $children;
         $attributes = '';
         foreach ($this->attributes as $attribute => &$value)
             $attributes .= " $attribute=\"$value\"";
