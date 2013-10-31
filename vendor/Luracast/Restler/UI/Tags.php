@@ -20,6 +20,7 @@ use Luracast\Restler\Util;
  * @method Tags placeholder(string $value) placeholder attribute
  * @method Tags value(string $value) value attribute
  * @method Tags required(boolean $value) required attribute
+ * @method Tags class(string $value) required attribute
  *
  * =========================== static magic methods ============================
  * @method static Tags form() creates a html form
