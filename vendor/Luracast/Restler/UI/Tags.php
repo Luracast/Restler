@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler\UI;
 
+use ArrayAccess;
 use Luracast\Restler\Util;
 
 /**
@@ -28,7 +29,7 @@ use Luracast\Restler\Util;
  * @method static Tags button() creates a html button element
  *
  */
-class Tags
+class Tags implements ArrayAccess
 {
     public static $humanReadable = true;
     public static $initializer = null;
@@ -170,4 +171,39 @@ class Tags
             : @(string)$value;
         return $this;
     }
-} 
+
+    public function offsetGet($index)
+    {
+        if ($this->offsetExists($index)) {
+            return $this->children[$index];
+        }
+        return false;
+    }
+
+    public function offsetExists($index)
+    {
+        return isset($this->children[$index]);
+    }
+
+    public function offsetSet($index, $value)
+    {
+        if ($index) {
+            $this->children[$index] = $value;
+        } else {
+            $this->children[] = $value;
+        }
+        return true;
+
+    }
+
+    public function offsetUnset($index)
+    {
+        unset($this->children[$index]);
+        return true;
+    }
+
+    public function getContents()
+    {
+        return $this->children;
+    }
+}
