@@ -26,7 +26,13 @@ class Emmet
             switch (array_shift($tokens)) {
                 //attributes
                 case '.':
-                    $tag->class(array_shift($tokens));
+                    $e = $tag->class;
+                    $tag->class(
+                        empty($e)
+                            ? array_shift($tokens)
+                            : $e . ' ' . array_shift($tokens)
+                    );
+                    break;
                     break;
                 case '#':
                     $tag->id(array_shift($tokens));
