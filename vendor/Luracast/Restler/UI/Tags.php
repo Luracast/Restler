@@ -15,6 +15,8 @@ use Luracast\Restler\Util;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  *
+ * ============================ magic  properties ==============================
+ * @property Tags parent parent tag
  * ============================== magic  methods ===============================
  * @method Tags name(string $value) name attribute
  * @method Tags action(string $value) action attribute
@@ -39,6 +41,7 @@ class Tags implements ArrayAccess
     public $tag;
     protected $attributes = array();
     protected $children = array();
+    protected $_parent;
 
     public function __construct($name = null, array $children = array())
     {
@@ -50,6 +53,13 @@ class Tags implements ArrayAccess
                 : $c [] = $child;
         }
         $this->children = $c;
+        foreach ($this->children as $child) {
+            if ($child->_parent) {
+                //remove from current parent
+                unset($child->_parent[array_search($child, $child->_parent->children)]);
+            }
+            $child->_parent = $this;
+        }
         if (static::$initializer)
             call_user_func_array(static::$initializer, array(& $this));
     }
@@ -92,8 +102,11 @@ class Tags implements ArrayAccess
         if (static::$humanReadable) {
             $lineBreak = false;
             foreach ($this->children as $key => $child) {
+                $prefix = $this->prefix;
+                if (!is_null($this->tag))
+                    $prefix .= $this->indent;
                 if ($child instanceof $this) {
-                    $child->prefix = $this->prefix . $this->indent;
+                    $child->prefix = $prefix;
                     $child->indent = $this->indent;
                     $children .= PHP_EOL . $child;
                     $lineBreak = true;
@@ -140,6 +153,8 @@ class Tags implements ArrayAccess
 
     public function __get($name)
     {
+        if ('parent' == $name)
+            return $this->_parent;
         if (isset($this->attributes[$name]))
             return $this->attributes[$name];
         return;
@@ -194,12 +209,14 @@ class Tags implements ArrayAccess
         } else {
             $this->children[] = $value;
         }
+        $value->parent = $this;
         return true;
 
     }
 
     public function offsetUnset($index)
     {
+        $this->children[$index]->parent = null;
         unset($this->children[$index]);
         return true;
     }
