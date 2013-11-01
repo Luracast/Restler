@@ -32,17 +32,28 @@ class Emmet
                     $tag->id(array_shift($tokens));
                     break;
                 //child
+                case '{':
+                    $tag[] = array_shift($tokens);
+                    $t = array_shift($tokens);
+                    //TODO: see if $t is not `}`
+                    break;
                 case '>':
-                    $child = new T(array_shift($tokens));
+                    $child = new T();
                     $tag[] = $child;
                     $tag = $child;
                     break;
                 //sibling
                 case '+':
-                    $child = new T(array_shift($tokens));
-                    $tag = $tag->parent;
-                    $tag[] = $child;
-                    $tag = $child;
+                    if ('{' == ($t = array_shift($tokens))) {
+                        $tag = $tag->parent;
+                        $tag[] = array_shift($tokens);
+                        array_shift($tokens);
+                    } else {
+                        $child = new T($t);
+                        $tag = $tag->parent;
+                        $tag[] = $child;
+                        $tag = $child;
+                    }
                     break;
                 //sibling of parent
                 case '^':
@@ -65,20 +76,6 @@ class Emmet
                     break;
             }
         }
-
-        /*
-        [0] => div
-        [1] => .
-        [2] => row
-        [3] => *
-        [4] => 3
-        [5] => >
-        [6] => div
-        [7] => .
-        [8] => col
-        [9] => *
-        [10] => 4
-         */
         return $root;
     }
 
@@ -103,5 +100,18 @@ class Emmet
             $r[] = $f;
         } while (false != ($f = strtok(static::DELIMITERS)));
         return $r;
+        /* sample output produced by ".row*3>.col*3"
+        [0] => div
+        [1] => .
+        [2] => row
+        [3] => *
+        [4] => 3
+        [5] => >
+        [6] => div
+        [7] => .
+        [8] => col
+        [9] => *
+        [10] => 4
+         */
     }
 }
