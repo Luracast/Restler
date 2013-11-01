@@ -5,7 +5,7 @@ use Luracast\Restler\UI\Tags as T;
 
 class Emmet
 {
-    const DELIMITERS = '.#*>+^[]{}$';
+    const DELIMITERS = '.#*>+^[=" ]{}$';
 
     /**
      * @param $string
@@ -22,6 +22,40 @@ class Emmet
         $tag = new T(array_shift($tokens));
         $root = new T;
         $root[] = $tag;
+        $parseAttributes = function (Callable $self) use (& $tokens, & $tag) {
+            $a = array_shift($tokens);
+            if ('=' == ($v = array_shift($tokens))) {
+                //value
+                if ('"' == ($v = array_shift($tokens))) {
+                    $va = '';
+                    while ('"' != ($v = array_shift($tokens))) {
+                        $va .= $v;
+                    }
+                    $tag->$a($va);
+                } else {
+                    $va = $v;
+                    while (' ' != ($v = array_shift($tokens)) && ']' != $v) {
+                        $va .= $v;
+                    }
+                    $tag->$a($va);
+                }
+                if (']' == $v) {
+                    //end
+                    return;
+                } elseif (' ' == $v) {
+                    $self($self);
+                    return;
+                }
+            } elseif (']' == $v) {
+                //end
+                $tag->$a('');
+                return;
+            } elseif (' ' == $v) {
+                $tag->$a('');
+                $self($self);
+                return;
+            }
+        };
         while ($tokens) {
             switch (array_shift($tokens)) {
                 //attributes
@@ -33,9 +67,11 @@ class Emmet
                             : $e . ' ' . array_shift($tokens)
                     );
                     break;
-                    break;
                 case '#':
                     $tag->id(array_shift($tokens));
+                    break;
+                case '[':
+                    $parseAttributes($parseAttributes);
                     break;
                 //child
                 case '{':
@@ -87,7 +123,6 @@ class Emmet
 
     public static function tokenize($string)
     {
-        $token = '.#*>^[]{}$';
         $r = array();
         $f = strtok($string, static::DELIMITERS);
         $pos = 0;
@@ -97,7 +132,7 @@ class Emmet
             $tokens = array();
             for ($i = $start; $i < $pos; $i++) {
                 $token = $string{$i};
-                if (!empty($token) && '.' == $token) {
+                if ('.' == $token && (!empty($tokens) || $i == 0)) {
                     $r[] = 'div';
                 }
                 $r[] = $tokens[] = $token;
@@ -105,6 +140,10 @@ class Emmet
             $pos += strlen($f);
             $r[] = $f;
         } while (false != ($f = strtok(static::DELIMITERS)));
+        for ($i = $pos; $i < strlen($string); $i++) {
+            $token = $string{$i};
+            $r[] = $tokens[] = $token;
+        }
         return $r;
         /* sample output produced by ".row*3>.col*3"
         [0] => div
