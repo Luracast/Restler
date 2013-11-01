@@ -54,6 +54,8 @@ class Tags implements ArrayAccess
         }
         $this->children = $c;
         foreach ($this->children as $child) {
+            if(is_string($child))
+                continue;
             if ($child->_parent) {
                 //remove from current parent
                 unset($child->_parent[array_search($child, $child->_parent->children)]);
@@ -209,7 +211,8 @@ class Tags implements ArrayAccess
         } else {
             $this->children[] = $value;
         }
-        $value->parent = $this;
+        if ($value instanceof $this)
+            $value->parent = $this;
         return true;
 
     }
