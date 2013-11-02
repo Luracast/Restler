@@ -75,14 +75,23 @@ class Emmet
                     break;
                 //child
                 case '{':
-                    $tag[] = array_shift($tokens);
-                    $t = array_shift($tokens);
-                    //TODO: see if $t is not `}`
+                    $text = '';
+                    while ('}' != ($t = array_shift($tokens))) {
+                        $text .= $t;
+                    }
+                    $tag[] = $text;
                     break;
                 case '>':
-                    $child = new T();
-                    $tag[] = $child;
-                    $tag = $child;
+                    if ('{' == ($t = array_shift($tokens))) {
+                        array_unshift($tokens, $t);
+                        $child = new T();
+                        $tag[] = $child;
+                        $tag = $child;
+                    } else {
+                        $child = new T($t);
+                        $tag[] = $child;
+                        $tag = $child;
+                    }
                     break;
                 //sibling
                 case '+':
@@ -132,7 +141,7 @@ class Emmet
             $tokens = array();
             for ($i = $start; $i < $pos; $i++) {
                 $token = $string{$i};
-                if ('.' == $token && (!empty($tokens) || $i == 0)) {
+                if (('#' == $token || '.' == $token) && (!empty($tokens) || $i == 0)) {
                     $r[] = 'div';
                 }
                 $r[] = $tokens[] = $token;
