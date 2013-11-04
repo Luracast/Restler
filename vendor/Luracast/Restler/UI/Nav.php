@@ -147,6 +147,7 @@ class Nav
                     'text' => static::title($part)
                 );
                 if ($part == $end) {
+                    $p[$part]['class'] = $part;
                     if ($text)
                         $p[$part]['text'] = $text;
                     if (is_null($url)) {
