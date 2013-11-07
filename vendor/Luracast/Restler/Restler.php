@@ -1306,12 +1306,13 @@ class Restler extends EventDispatcher
      */
     protected function postCall()
     {
-        $postCall = '_post_' . $this->apiMethodInfo->methodName . '_' .
+        $o = & $this->apiMethodInfo;
+        $postCall = '_post_' . $o->methodName . '_' .
             $this->responseFormat->getExtension();
-        if (method_exists($this->apiClassInstance, $postCall)) {
+        if (method_exists($o->className, $postCall)) {
             $this->dispatch('postCall');
             $this->responseData = call_user_func(array(
-                Scope::get($this->apiMethodInfo->className),
+                Scope::get($o->className),
                 $postCall
             ), $this->responseData);
         }
