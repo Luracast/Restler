@@ -15,45 +15,49 @@ namespace Luracast\Restler;
  */
 class Scope
 {
-    /**
-     * @var Restler instance injected at runtime
-     */
-    public static $restler;
-    public static $properties = array();
     public static $classAliases = array(
 
+        //Core
+        'Restler' => 'Luracast\Restler\Restler',
+
         //Format classes
-        'AmfFormat' => 'Luracast\\Restler\\Format\\AmfFormat',
-        'JsFormat' => 'Luracast\\Restler\\Format\\JsFormat',
-        'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
-        'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
-        'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
-        'UploadFormat' => 'Luracast\\Restler\\Format\\UploadFormat',
-        'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
-        'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
-        'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
+        'AmfFormat' => 'Luracast\Restler\Format\AmfFormat',
+        'JsFormat' => 'Luracast\Restler\Format\JsFormat',
+        'JsonFormat' => 'Luracast\Restler\Format\JsonFormat',
+        'HtmlFormat' => 'Luracast\Restler\Format\HtmlFormat',
+        'PlistFormat' => 'Luracast\Restler\Format\PlistFormat',
+        'UploadFormat' => 'Luracast\Restler\Format\UploadFormat',
+        'UrlEncodedFormat' => 'Luracast\Restler\Format\UrlEncodedFormat',
+        'XmlFormat' => 'Luracast\Restler\Format\XmlFormat',
+        'YamlFormat' => 'Luracast\Restler\Format\YamlFormat',
 
         //Filter classes
-        'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
+        'RateLimit' => 'Luracast\Restler\Filter\RateLimit',
 
         //API classes
-        'Resources' => 'Luracast\\Restler\\Resources',
+        'Resources' => 'Luracast\Restler\Resources',
 
         //Cache classes
-        'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
+        'HumanReadableCache' => 'Luracast\Restler\HumanReadableCache',
 
         //Utility classes
-        'Object' => 'Luracast\\Restler\\Data\\Object',
+        'Object' => 'Luracast\Restler\Data\Object',
 
         //Exception
-        'RestException' => 'Luracast\\Restler\\RestException'
+        'RestException' => 'Luracast\Restler\RestException'
     );
+    public static $properties = array();
     protected static $instances = array();
     protected static $registry = array();
 
     public static function register($name, Callable $function, $singleton = true)
     {
         static::$registry[$name] = (object)compact('function', 'singleton');
+    }
+
+    public static function set($name, $instance)
+    {
+        static::$instances[$name] = (object)array('instance' => $instance);
     }
 
     public static function get($name)
@@ -77,28 +81,30 @@ class Scope
             if (class_exists($fullName)) {
                 $r = new $fullName();
                 static::$instances[$name] = (object)array('instance' => $r);
-                $r->restler = static::$restler;
-                if ($m = static::$restler->apiMethodInfo) {
-                    $properties = Util::nestedValue(
-                        $m, 'class', $name,
-                        CommentParser::$embeddedDataName
-                    ) ? : array();
-                } else {
-                    static::$instances[$name]->initPending = true;
+                if ($name != 'Restler') {
+                    $r->restler = static::get('Restler');
+                    if ($m = $r->restler->apiMethodInfo) {
+                        $properties = Util::nestedValue(
+                            $m, 'class', $name,
+                            CommentParser::$embeddedDataName
+                        ) ? : array();
+                    } else {
+                        static::$instances[$name]->initPending = true;
+                    }
                 }
             }
         }
         if (
             $r instanceof iUseAuthentication &&
-            static::$restler->_authVerified &&
+            static::get('Restler')->_authVerified &&
             !isset(static::$instances[$name]->authVerified)
         ) {
             static::$instances[$name]->authVerified = true;
             $r->__setAuthenticationStatus
-                (static::$restler->_authenticated);
+                (static::get('Restler')->_authenticated);
         }
         if (isset(static::$instances[$name]->initPending) &&
-            $m = static::$restler->apiMethodInfo
+            $m = static::get('Restler')->apiMethodInfo
         ) {
             $properties = Util::nestedValue(
                 $m, 'class', $name,
@@ -122,5 +128,4 @@ class Scope
         }
         return $r;
     }
-
 }
