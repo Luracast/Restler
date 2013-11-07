@@ -178,12 +178,6 @@ class Restler extends EventDispatcher
     protected $authenticated = false;
     protected $authVerified = false;
     /**
-     * Instance of the current api service class
-     *
-     * @var object
-     */
-    protected $apiClassInstance;
-    /**
      * @var mixed
      */
     protected $responseData;
@@ -246,10 +240,6 @@ class Restler extends EventDispatcher
             $this->authenticate();
             $this->postAuthFilter();
             $this->validate();
-            if(!$this->apiClassInstance) {
-                $this->apiClassInstance
-                    = Scope::get($this->apiMethodInfo->className);
-            }
             $this->preCall();
             $this->call();
             $this->compose();
@@ -871,7 +861,7 @@ class Restler extends EventDispatcher
         $o = & $this->apiMethodInfo;
         $accessLevel = max(Defaults::$apiAccessLevel,
             $o->accessLevel);
-        $object =  $this->apiClassInstance;
+        $object =  Scope::get($o->className);
         switch ($accessLevel) {
             case 3 : //protected method
                 $reflectionMethod = new \ReflectionMethod(
@@ -912,7 +902,6 @@ class Restler extends EventDispatcher
 
     public function composeHeaders(RestException $e = null)
     {
-
         //only GET method should be cached if allowed by API developer
         $expires = $this->requestMethod == 'GET' ? Defaults::$headerExpires : 0;
         $cacheControl = Defaults::$headerCacheControl[0];
@@ -1303,7 +1292,7 @@ class Restler extends EventDispatcher
         if (method_exists($o->className, $preCall)) {
             $this->dispatch('preCall');
             call_user_func_array(array(
-                $this->apiClassInstance,
+                Scope::get($o->className),
                 $preCall
             ), $o->parameters);
         }
@@ -1324,7 +1313,7 @@ class Restler extends EventDispatcher
         if (method_exists($this->apiClassInstance, $postCall)) {
             $this->dispatch('postCall');
             $this->responseData = call_user_func(array(
-                $this->apiClassInstance,
+                Scope::get($this->apiMethodInfo->className),
                 $postCall
             ), $this->responseData);
         }
