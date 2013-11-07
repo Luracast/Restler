@@ -17,34 +17,6 @@ class Util
      * @var Restler instance injected at runtime
      */
     public static $restler;
-    public static $classAliases = array(
-
-        //Format classes
-        'AmfFormat' => 'Luracast\\Restler\\Format\\AmfFormat',
-        'JsFormat' => 'Luracast\\Restler\\Format\\JsFormat',
-        'JsonFormat' => 'Luracast\\Restler\\Format\\JsonFormat',
-        'HtmlFormat' => 'Luracast\\Restler\\Format\\HtmlFormat',
-        'PlistFormat' => 'Luracast\\Restler\\Format\\PlistFormat',
-        'UploadFormat' => 'Luracast\\Restler\\Format\\UploadFormat',
-        'UrlEncodedFormat' => 'Luracast\\Restler\\Format\\UrlEncodedFormat',
-        'XmlFormat' => 'Luracast\\Restler\\Format\\XmlFormat',
-        'YamlFormat' => 'Luracast\\Restler\\Format\\YamlFormat',
-
-        //Filter classes
-        'RateLimit' => 'Luracast\\Restler\\Filter\\RateLimit',
-
-        //API classes
-        'Resources' => 'Luracast\\Restler\\Resources',
-
-        //Cache classes
-        'HumanReadableCache' => 'Luracast\\Restler\\HumanReadableCache',
-
-        //Utility classes
-        'Object' => 'Luracast\\Restler\\Data\\Object',
-
-        //Exception
-        'RestException' => 'Luracast\\Restler\\RestException'
-    );
 
     /**
      * verify if the given data type string is scalar or not
@@ -215,68 +187,6 @@ class Util
         }
         arsort($acceptList);
         return $acceptList;
-    }
-
-    /**
-     * Apply static and non-static properties for the instance of the given
-     * class name using the method information metadata annotation provided,
-     * creating new instance when the given instance is null
-     *
-     * @static
-     *
-     * @param string $classNameOrInstance      name or instance of the class
-     *                                         to apply properties to
-     * @param array  $metadata                 properties as key value pairs
-     *
-     * @throws RestException
-     * @internal param null|object $instance new instance is crated if set to null
-     *
-     * @return object instance of the specified class with properties applied
-     */
-    public static function initialize($classNameOrInstance, array $metadata = null)
-    {
-        if (is_object($classNameOrInstance)) {
-            $instance = $classNameOrInstance;
-            $instance->restler = self::$restler;
-            $className = get_class($instance);
-        } else {
-            $className = ltrim($classNameOrInstance, '\\');
-            if (isset(self::$classAliases[$className])) {
-                $className = self::$classAliases[$className];
-            }
-            if (!class_exists($className)) {
-                throw new RestException(500, "Class '$className' not found");
-            }
-            $instance = new $className();
-            $instance->restler = self::$restler;
-        }
-        $shortName = static::getShortName($className);
-        $properties =
-            Util::nestedValue(
-                $metadata, 'class', $className, CommentParser::$embeddedDataName
-            ) ? :
-                Util::nestedValue(
-                    $metadata, 'class', $shortName, CommentParser::$embeddedDataName
-                );
-
-        if (is_array($properties)) {
-
-            $objectVars = get_object_vars($instance);
-
-            foreach ($properties as $property => $value) {
-                if (property_exists($className, $property)) {
-                    //if not a static property
-                    array_key_exists($property, $objectVars)
-                        ? $instance->{$property} = $value
-                        : $instance::$$property = $value;
-                }
-            }
-        }
-        if ($instance instanceof iUseAuthentication && self::$restler->_authVerified) {
-            $instance->__setAuthenticationStatus
-                (self::$restler->_authenticated);
-        }
-        return $instance;
     }
 
     public static function getShortName($className)
