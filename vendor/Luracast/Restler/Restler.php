@@ -832,9 +832,7 @@ class Restler extends EventDispatcher
                 || $info['validate'] != false
             ) {
                 if (isset($info['method'])) {
-                        $object = $this->apiClassInstance
-                            = Scope::get($o->className);
-                    $info ['apiClassInstance'] = $object;
+                    $info ['apiClassInstance'] = Scope::get($o->className);
                 }
                 //convert to instance of ValidationInfo
                 $info = new ValidationInfo($param);
