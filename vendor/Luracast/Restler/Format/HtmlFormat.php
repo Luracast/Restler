@@ -48,15 +48,7 @@ class HtmlFormat extends Format
         if (!static::$viewPath) {
             $array = explode('vendor', __DIR__, 2);
             static::$viewPath = $array[0] . 'views';
-            if (!is_readable(static::$viewPath)) {
-                throw new \Exception(
-                    'The views directory `'
-                    . self::$viewPath . '` should exist with read permission.'
-                );
-            }
         }
-        static::$data['basePath'] = dirname($_SERVER['SCRIPT_NAME']);
-        static::$data['baseUrl'] = Util::$restler->_baseUrl;
     }
 
     /**
@@ -74,6 +66,15 @@ class HtmlFormat extends Format
      */
     public function encode($data, $humanReadable = false)
     {
+        if (!is_readable(static::$viewPath)) {
+            throw new \Exception(
+                'The views directory `'
+                . self::$viewPath . '` should exist with read permission.'
+            );
+        }
+        static::$data['basePath'] = dirname($_SERVER['SCRIPT_NAME']);
+        static::$data['baseUrl'] = $this->restler->getBaseUrl();
+
         try {
             $events = $this->restler->getEvents();
             $data = array_merge(
