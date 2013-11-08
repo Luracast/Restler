@@ -224,6 +224,8 @@ class Restler extends EventDispatcher
                 try {
                     $this->get();
                 } catch (Exception $e) {
+                    $this->requestData
+                        = array(Defaults::$fullRequestDataName => array());
                     if (!$e instanceof RestException) {
                         $e = new RestException(
                             500,
