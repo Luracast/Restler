@@ -221,7 +221,12 @@ class Restler extends EventDispatcher
     {
         try {
             try {
-                $this->get();
+                try {
+                    $this->get();
+                } catch (Exception $e) {
+                    $this->route();
+                    throw $e;
+                }
                 $this->route();
             } catch (Exception $e) {
                 $this->negotiate();
