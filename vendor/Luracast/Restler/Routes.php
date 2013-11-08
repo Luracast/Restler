@@ -433,7 +433,15 @@ class Routes
                 }
             }
         }
-        return ApiMethodInfo::__set_state($call);
+        $r = ApiMethodInfo::__set_state($call);
+        $modifier = "_modify_{$r->methodName}_api";
+        if (method_exists($r->className, $modifier)) {
+            $stage = end(Scope::get('Restler')->getEvents());
+            if (empty($stage))
+                $stage = 'setup';
+            $r = Scope::get($r->className)->$modifier($r, $stage) ? : $r;
+        }
+        return $r;
     }
 
     /**
