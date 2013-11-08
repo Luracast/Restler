@@ -845,10 +845,14 @@ class Restler extends EventDispatcher
                         '`Defaults::$validatorClass` must implement `iValidate` interface'
                     );
                 }
+                $valid = $o->parameters[$index];
+                $o->parameters[$index] = null;
+                $o->metadata['param'][$index]['autofocus'] = true;
                 $valid = $validator::validate(
-                    $o->parameters[$index], $info
+                    $valid, $info
                 );
                 $o->parameters[$index] = $valid;
+                unset($o->metadata['param'][$index]['autofocus']);
             }
         }
     }
