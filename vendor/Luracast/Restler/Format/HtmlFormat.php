@@ -233,6 +233,7 @@ class HtmlFormat extends Format
         }
         static::$data['basePath'] = dirname($_SERVER['SCRIPT_NAME']);
         static::$data['baseUrl'] = $this->restler->getBaseUrl();
+        static::$data['currentPath'] = $this->restler->url;
 
         try {
             $exception = $this->restler->exception;
