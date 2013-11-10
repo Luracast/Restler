@@ -5,14 +5,18 @@ use Luracast\Restler\UI\Tags as T;
 
 class Emmet
 {
-    const DELIMITERS = '.#*>+^[=" ]{$@-}';
+    const DELIMITERS = '.#*>+^[=" ]{$@-#}';
 
     /**
-     * @param $string
+     * Create the needed tag hierarchy from emmet string
+     *
+     * @param string       $string
+     *
+     * @param array|string $data
      *
      * @return array|T
      */
-    public static function make($string)
+    public static function make($string, $data = null)
     {
         if (!strlen($string))
             return array();
@@ -46,18 +50,24 @@ class Emmet
             }
         };
 
-        $parseClassOrId = function ($text, $round, $total) use (& $tokens, & $tag) {
+        $parseText = function (
+            $text, $round, $total, $data, $delimiter = null
+        )
+        use (
+            & $tokens, & $tag
+        ) {
             $digits = 0;
-            $delimiter = array(
-                '.' => true,
-                '#' => true,
-                '*' => true,
-                '>' => true,
-                '+' => true,
-                '^' => true,
-                '[' => true,
-                '=' => true,
-            );
+            if ($delimiter == null)
+                $delimiter = array(
+                    '.' => true,
+                    '#' => true,
+                    '*' => true,
+                    '>' => true,
+                    '+' => true,
+                    '^' => true,
+                    '[' => true,
+                    '=' => true,
+                );
             while (!empty($tokens) && !isset($delimiter[$t = array_shift($tokens)])) {
                 while ('$' === $t) {
                     $digits++;
@@ -77,6 +87,13 @@ class Emmet
                         } else {
                             array_unshift($tokens, $t);
                         }
+                    } elseif ('' == $t && '#' == ($t = array_shift($tokens))) {
+                        if (is_numeric($data)) {
+                            $text .= sprintf("%0{$digits}d", (int)$data);
+                        } elseif (is_string($data)) {
+                            $text .= $data;
+                        }
+                        continue;
                     } else {
                         array_unshift($tokens, $t);
                     }
@@ -133,10 +150,11 @@ class Emmet
         $tokens = static::tokenize($string);
         $tag = new T(array_shift($tokens));
         $parent = $root = new T;
+
         $parse = function (Callable $self, $round = 1, $total = 1)
         use (
-            & $tokens, & $parent, & $tag,
-            $parseAttributes, $implicitTag, $parseClassOrId
+            & $tokens, & $parent, & $tag, & $data,
+            $parseAttributes, $implicitTag, $parseText
         ) {
             $offsetTokens = null;
             $parent[] = $tag;
@@ -149,13 +167,13 @@ class Emmet
                         $implicitTag();
                         $e = $tag->class;
                         $text = empty($e) ? '' : "$e ";
-                        $tag->class($parseClassOrId($text, $round, $total));
+                        $tag->class($parseText($text, $round, $total, $data));
                         break;
                     case '#':
                         $offsetTokens = array_values($tokens);
                         array_unshift($offsetTokens, '#');
                         $implicitTag();
-                        $tag->id($parseClassOrId(array_shift($tokens), $round, $total));
+                        $tag->id($parseText(array_shift($tokens), $round, $total, $data));
                         break;
                     case '[':
                         $implicitTag();
@@ -164,41 +182,7 @@ class Emmet
                     //child
                     case '{':
                         $text = '';
-                        $digits = 0;
-                        while (!empty($tokens) && '}' !== ($t = array_shift($tokens))) {
-                            while ('$' === $t) {
-                                $digits++;
-                                $t = array_shift($tokens);
-                            }
-                            if ($digits) {
-                                $negative = false;
-                                $offset = 0;
-                                if ('@' == $t) {
-                                    if ('-' == ($t = array_shift($tokens))) {
-                                        $negative = true;
-                                        if (is_numeric(reset($tokens))) {
-                                            $offset = array_shift($tokens);
-                                        }
-                                    } elseif (is_numeric($t)) {
-                                        $offset = $t;
-                                    } else {
-                                        array_unshift($tokens, $t);
-                                    }
-                                } else {
-                                    array_unshift($tokens, $t);
-                                }
-                                if ($negative) {
-                                    $n = $total + 1 - $round + $offset;
-                                } else {
-                                    $n = $round + $offset;
-                                }
-                                $text .= sprintf("%0{$digits}d", $n);
-                                $digits = 0;
-                            } else {
-                                $text .= $t;
-                            }
-                        }
-                        $tag[] = $text;
+                        $tag[] = $parseText($text, $round, $total, $data, array('}' => true));
                         break;
                     case '>':
                         $offsetTokens = null;
@@ -257,6 +241,12 @@ class Emmet
                     //clone
                     case '*':
                         $times = array_shift($tokens);
+                        $removeCount = 2;
+                        if (!is_numeric($times)) {
+                            array_unshift($tokens, $times);
+                            $times = is_array($data) ? count($data) : 1;
+                            $removeCount = 1;
+                        }
                         $source = $tag;
                         if (!empty($offsetTokens)) {
                             if (false !== strpos($source->class, ' ')) {
@@ -268,16 +258,20 @@ class Emmet
                             }
                             $tag->class($class);
                             $star = array_search('*', $offsetTokens);
-                            array_splice($offsetTokens, $star, 2);
+                            array_splice($offsetTokens, $star, $removeCount);
                             $remainingTokens = $offsetTokens;
                         } else {
                             $remainingTokens = $tokens;
                         }
                         $source->parent = null;
+                        $sourceData = $data;
                         $currentParent = $parent;
                         for ($i = 1; $i <= $times; $i++) {
                             $tag = clone $source;
                             $parent = $currentParent;
+                            $data = is_array($sourceData) && isset($sourceData[$i - 1])
+                                ? $sourceData[$i - 1]
+                                : (string)$sourceData;
                             $tokens = array_values($remainingTokens);
                             $self($self, $i, $times);
                         }
