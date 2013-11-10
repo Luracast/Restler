@@ -17,6 +17,84 @@ class Emmet
         if (!strlen($string))
             return array();
 
+        $implicitTag = function () use (& $tag) {
+            if (empty($tag->tag)) {
+                switch ($tag->parent->tag) {
+                    case 'ul':
+                    case 'ol':
+                        $tag->tag = 'li';
+                        break;
+                    case 'em':
+                        $tag->tag = 'span';
+                        break;
+                    case 'table':
+                    case 'tbody':
+                    case 'thead':
+                    case 'tfoot':
+                        $tag->tag = 'tr';
+                        break;
+                    case 'tr':
+                        $tag->tag = 'td';
+                        break;
+                    case 'select':
+                    case 'optgroup':
+                        $tag->tag = 'option';
+                        break;
+                    default:
+                        $tag->tag = 'div';
+                }
+            }
+        };
+
+        $parseClassOrId = function ($text, $round, $total) use (& $tokens, & $tag) {
+            $digits = 0;
+            $delimiter = array(
+                '.' => true,
+                '#' => true,
+                '*' => true,
+                '>' => true,
+                '+' => true,
+                '^' => true,
+                '[' => true,
+                '=' => true,
+            );
+            while (!empty($tokens) && !isset($delimiter[$t = array_shift($tokens)])) {
+                while ('$' === $t) {
+                    $digits++;
+                    $t = array_shift($tokens);
+                }
+                if ($digits) {
+                    $negative = false;
+                    $offset = 0;
+                    if ('@' == $t) {
+                        if ('-' == ($t = array_shift($tokens))) {
+                            $negative = true;
+                            if (is_numeric(reset($tokens))) {
+                                $offset = array_shift($tokens);
+                            }
+                        } elseif (is_numeric($t)) {
+                            $offset = $t;
+                        } else {
+                            array_unshift($tokens, $t);
+                        }
+                    } else {
+                        array_unshift($tokens, $t);
+                    }
+                    if ($negative) {
+                        $n = $total + 1 - $round + $offset;
+                    } else {
+                        $n = $round + $offset;
+                    }
+                    $text .= sprintf("%0{$digits}d", $n);
+                    $digits = 0;
+                } else {
+                    $text .= $t;
+                }
+            }
+            array_unshift($tokens, $t);
+            return $text;
+        };
+
         $parseAttributes = function (Callable $self) use (& $tokens, & $tag) {
             $a = array_shift($tokens);
             if ('=' == ($v = array_shift($tokens))) {
@@ -56,7 +134,10 @@ class Emmet
         $tag = new T(array_shift($tokens));
         $parent = $root = new T;
         $parse = function (Callable $self, $round = 1, $total = 1)
-        use (& $tokens, & $parent, & $tag, $parseAttributes) {
+        use (
+            & $tokens, & $parent, & $tag,
+            $parseAttributes, $implicitTag, $parseClassOrId
+        ) {
             $offsetTokens = null;
             $parent[] = $tag;
             while ($tokens) {
@@ -65,59 +146,19 @@ class Emmet
                     case '.':
                         $offsetTokens = array_values($tokens);
                         array_unshift($offsetTokens, '.');
+                        $implicitTag();
                         $e = $tag->class;
-                        $digits = 0;
                         $text = empty($e) ? '' : "$e ";
-                        $delimiter = array(
-                            '.' => true,
-                            '#' => true,
-                            '*' => true,
-                            '>' => true,
-                            '+' => true,
-                            '^' => true,
-                            '[' => true,
-                            '=' => true,
-                        );
-                        while (!empty($tokens) && !isset($delimiter[$t = array_shift($tokens)])) {
-                            while ('$' === $t) {
-                                $digits++;
-                                $t = array_shift($tokens);
-                            }
-                            if ($digits) {
-                                $negative = false;
-                                $offset = 0;
-                                if ('@' == $t) {
-                                    if ('-' == ($t = array_shift($tokens))) {
-                                        $negative = true;
-                                        if (is_numeric(reset($tokens))) {
-                                            $offset = array_shift($tokens);
-                                        }
-                                    } elseif (is_numeric($t)) {
-                                        $offset = $t;
-                                    } else {
-                                        array_unshift($tokens, $t);
-                                    }
-                                } else {
-                                    array_unshift($tokens, $t);
-                                }
-                                if ($negative) {
-                                    $n = $total + 1 - $round + $offset;
-                                } else {
-                                    $n = $round + $offset;
-                                }
-                                $text .= sprintf("%0{$digits}d", $n);
-                                $digits = 0;
-                            } else {
-                                $text .= $t;
-                            }
-                        }
-                        $tag->class($text);
-                        array_unshift($tokens, $t);
+                        $tag->class($parseClassOrId($text, $round, $total));
                         break;
                     case '#':
-                        $tag->id(array_shift($tokens));
+                        $offsetTokens = array_values($tokens);
+                        array_unshift($offsetTokens, '#');
+                        $implicitTag();
+                        $tag->id($parseClassOrId(array_shift($tokens), $round, $total));
                         break;
                     case '[':
+                        $implicitTag();
                         $parseAttributes($parseAttributes);
                         break;
                     //child
@@ -160,12 +201,15 @@ class Emmet
                         $tag[] = $text;
                         break;
                     case '>':
+                        $offsetTokens = null;
                         if ('{' == ($t = array_shift($tokens))) {
                             array_unshift($tokens, $t);
                             $child = new T();
                             $tag[] = $child;
                             $parent = $tag;
                             $tag = $child;
+                        } elseif ('[' == $t) {
+                            array_unshift($tokens, $t);
                         } else {
                             $child = new T($t);
                             $tag[] = $child;
@@ -175,33 +219,33 @@ class Emmet
                         break;
                     //sibling
                     case '+':
+                        $offsetTokens = null;
+                        if ($round != $total) {
+                            $tokens = array();
+                            break;
+                        }
                         if ('{' == ($t = array_shift($tokens))) {
                             $tag = $tag->parent;
-                            $tag[] = array_shift($tokens);
-                            array_shift($tokens);
-                        } elseif ($round == 1) {
+                            array_unshift($tokens, $t);
+                            break;
+                        } elseif ('[' == $t) {
+                            array_unshift($tokens, $t);
+                        } else {
                             $child = new T($t);
                             $tag = $tag->parent;
                             $tag[] = $child;
                             $tag = $child;
-                        } else {
-                            $delimiter = array(
-                                '.' => true,
-                                '#' => true,
-                                '*' => true,
-                                '>' => true,
-                                '+' => true,
-                                '^' => true,
-                            );
-                            while (!empty($tokens) && !isset($delimiter[$t = array_shift($tokens)])) {
-                                //keep removing until clean
-                            }
-                            array_unshift($tokens, $t);
                         }
                         break;
                     //sibling of parent
                     case '^':
-                        $tag = $tag->parent->parent;
+                        if ($round != $total) {
+                            $tokens = array();
+                            break;
+                        }
+                        $tag = $tag->parent;
+                        if ($tag->parent)
+                            $tag = $tag->parent;
                         while ('^' == ($t = array_shift($tokens))) {
                             if ($tag->parent)
                                 $tag = $tag->parent;
@@ -229,16 +273,18 @@ class Emmet
                         } else {
                             $remainingTokens = $tokens;
                         }
-                        for ($i = 2; $i <= $times; $i++) {
+                        $source->parent = null;
+                        $currentParent = $parent;
+                        for ($i = 1; $i <= $times; $i++) {
                             $tag = clone $source;
-                            $tag->parent = null;
+                            $parent = $currentParent;
                             $tokens = array_values($remainingTokens);
                             $self($self, $i, $times);
                         }
                         $round = 1;
                         $offsetTokens = null;
                         $tag = $source;
-                        $tokens = $remainingTokens;
+                        $tokens = array(); //$remainingTokens;
                         break;
                 }
             }
@@ -259,7 +305,7 @@ class Emmet
             for ($i = $start; $i < $pos; $i++) {
                 $token = $string{$i};
                 if (('#' == $token || '.' == $token) && (!empty($tokens) || $i == 0)) {
-                    $r[] = 'div';
+                    $r[] = '';
                 }
                 $r[] = $tokens[] = $token;
             }
