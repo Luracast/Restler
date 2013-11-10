@@ -54,7 +54,7 @@ class Tags implements ArrayAccess
         }
         $this->children = $c;
         foreach ($this->children as $child) {
-            if(is_string($child))
+            if (is_string($child))
                 continue;
             if ($child->_parent) {
                 //remove from current parent
@@ -162,6 +162,18 @@ class Tags implements ArrayAccess
         return;
     }
 
+    public function __set($name, $value)
+    {
+        if ('parent' == $name) {
+            if ($this->_parent) {
+                unset($this->_parent[array_search($this, $this->_parent->children)]);
+            }
+            if (!empty($value)) {
+                $value[] = $this;
+            }
+        }
+    }
+
     public function __isset($name)
     {
         return isset($this->attributes[$name]);
@@ -212,14 +224,14 @@ class Tags implements ArrayAccess
             $this->children[] = $value;
         }
         if ($value instanceof $this)
-            $value->parent = $this;
+            $value->_parent = $this;
         return true;
 
     }
 
     public function offsetUnset($index)
     {
-        $this->children[$index]->parent = null;
+        $this->children[$index]->_parent = null;
         unset($this->children[$index]);
         return true;
     }
