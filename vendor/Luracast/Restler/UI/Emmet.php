@@ -69,6 +69,7 @@ class Emmet
                         '+' => true,
                         '^' => true,
                         '[' => true,
+                        ']' => true,
                         '=' => true,
                     );
                 while (!empty($tokens) &&
@@ -93,9 +94,9 @@ class Emmet
                             }
                         } elseif ('#' == ($h = array_shift($tokens))) {
                             if (!empty($t)) {
-                                $data = Util::nestedValue($data, $t)?:false;
-                                if(false==$data){
-                                    return false;
+                                $data = Util::nestedValue($data, $t);
+                                if (is_null($data)) {
+                                    return null;
                                 }
                             }
                             if (is_numeric($data)) {
@@ -119,7 +120,8 @@ class Emmet
                         $text .= $t;
                     }
                 }
-                array_unshift($tokens, $t);
+                if (isset($t))
+                    array_unshift($tokens, $t);
                 return $text;
             };
 
@@ -129,7 +131,7 @@ class Emmet
                 $a = $parseText(
                     '', $round, $total, $data
                 );
-                if(false == $a)
+                if (is_null($a))
                     return;
                 if ('=' == ($v = array_shift($tokens))) {
                     //value
@@ -200,6 +202,8 @@ class Emmet
                             break;
                         //attributes
                         case '[':
+                            $offsetTokens = array_values($tokens);
+                            array_unshift($offsetTokens, '[');
                             $implicitTag();
                             $parseAttributes(
                                 $parseAttributes, $round, $total, $data
@@ -270,9 +274,28 @@ class Emmet
                         case '*':
                             $times = array_shift($tokens);
                             $removeCount = 2;
+                            $delimiter = array(
+                                '.' => true,
+                                '#' => true,
+                                '*' => true,
+                                '>' => true,
+                                '+' => true,
+                                '^' => true,
+                                '[' => true,
+                                '=' => true,
+                            );
                             if (!is_numeric($times)) {
-                                array_unshift($tokens, $times);
-                                $times = is_array($data) ? count($data) : 1;
+                                if (is_string($times)) {
+                                    if (!isset($delimiter[$times])) {
+                                        $data = Util::nestedValue($data, $times)
+                                            ? : $data;
+                                    } else {
+                                        array_unshift($tokens, $times);
+                                    }
+                                }
+                                $indexed = array_values($data);
+                                $times = is_array($data) && $indexed == $data
+                                    ? count($data) : 0;
                                 $removeCount = 1;
                             }
                             $source = $tag;
@@ -300,7 +323,7 @@ class Emmet
                                 $data = is_array($sourceData)
                                 && isset($sourceData[$i - 1])
                                     ? $sourceData[$i - 1]
-                                    : (string)$sourceData;
+                                    : @(string)$sourceData;
                                 $tokens = array_values($remainingTokens);
                                 $self($self, $i, $times);
                             }
