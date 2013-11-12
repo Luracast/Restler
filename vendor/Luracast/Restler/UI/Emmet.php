@@ -176,6 +176,7 @@ class Emmet
             ) {
                 $offsetTokens = null;
                 $parent[] = $tag;
+                $isInChild = false;
                 while ($tokens) {
                     switch (array_shift($tokens)) {
                         //class
@@ -217,6 +218,7 @@ class Emmet
                             );
                             break;
                         case '>':
+                            $isInChild = true;
                             $offsetTokens = null;
                             if ('{' == ($t = array_shift($tokens))) {
                                 array_unshift($tokens, $t);
@@ -236,7 +238,7 @@ class Emmet
                         //sibling
                         case '+':
                             $offsetTokens = null;
-                            if ($round != $total) {
+                            if (!$isInChild && $round != $total) {
                                 $tokens = array();
                                 break;
                             }
@@ -282,6 +284,7 @@ class Emmet
                                 '+' => true,
                                 '^' => true,
                                 '[' => true,
+                                ']' => true,
                                 '=' => true,
                             );
                             if (!is_numeric($times)) {
@@ -291,12 +294,12 @@ class Emmet
                                             ? : $data;
                                     } else {
                                         array_unshift($tokens, $times);
+                                        $removeCount = 1;
                                     }
                                 }
                                 $indexed = array_values($data);
                                 $times = is_array($data) && $indexed == $data
                                     ? count($data) : 0;
-                                $removeCount = 1;
                             }
                             $source = $tag;
                             if (!empty($offsetTokens)) {
