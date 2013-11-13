@@ -184,11 +184,9 @@ class Emmet
                             $offsetTokens = array_values($tokens);
                             array_unshift($offsetTokens, '.');
                             $implicitTag();
-                            $e = $tag->class;
-                            $text = empty($e) ? '' : "$e ";
-                            $tag->class(
-                                $parseText($text, $round, $total, $data)
-                            );
+                            $e = explode(' ', $tag->class);
+                            $e[] = $parseText('', $round, $total, $data);
+                            $tag->class(implode(' ', array_unique($e)));
                             break;
                         //id
                         case '#':
