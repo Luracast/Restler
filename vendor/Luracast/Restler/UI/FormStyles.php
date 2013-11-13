@@ -14,104 +14,20 @@ namespace Luracast\Restler\UI;
  */
 class FormStyles
 {
-    public static $html5 = array(
-        'wrapper' => array('span', 'label', 'div'),
-        'radio' => array('wrapper' => array('label')),
-        '*' => array(),
-        'form' => array(
-            'style' => 'padding: 10px; background-color: #eee; border:2px solid #ddd; width: 400px;'
-        ),
-        'input' => array(
-            'autofocus' => '$autofocus',
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'placeholder' => '$default',
-            'pattern' => '$pattern',
-            'class' => 'input-small',
-            'min' => '$min',
-            'max' => '$max',
-        ),
-        'textarea' => array(
-            'autofocus' => '$autofocus',
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'placeholder' => '$default',
-            'class' => 'input-small',
-            'min' => '$min',
-            'max' => '$max',
-        ),
-        'select' => array(
-            'autofocus' => '$autofocus',
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-        ),
-        'div' => array(
-            'style' => 'display: block;'
-        ),
-        'span' => array(
-            'style' => 'display: inline-block; width: 80px; text-align: right;'
-        ),
+    public static $html = array(
+        'form' => 'form[role=form id=$id# name=$name# method=$method# action=$action# enctype=$enctype# style="padding: 10px; background-color: #eee; border:2px solid #ddd; width:600px;"]',
+        'input' => 'div[style="display: block;"]>span[style="display: inline-block; width: 280px; text-align: right;"]>label{$label#}^input[name=$name# value=$value# type=$type# required=$required# autofocus=$autofocus# placeholder=$default#]',
+        'textarea' => 'div[style="display: block;"]>span[style="display: inline-block; width: 280px; text-align: right;"]>label{$label#}^textarea[name=$name# value=$value# required=$required# autofocus=$autofocus# placeholder=$default# rows=3]',
+        'radio' => 'div[style="display: block;"]>span[style="display: inline-block; width: 280px; text-align: right;"]>label{$label#}^span>label*options>input[name=$name# value=$value# type=radio checked=$selected# required=$required#]+{ $text#}',
+        'select' => 'div[style="display: block;"]>span[style="display: inline-block; width: 280px; text-align: right;"]>label{$label#}^select[name=$name# required=$required#]>option[value]+option[value=$value# selected=$selected#]{$text#}*options',
+        'submit' => 'div[style="display: block;"]>span[style="display: inline-block; width: 280px;"]>label{ &nbsp; }^button.btn.btn-primary[type=submit]{$label#}',
     );
-
     public static $bootstrap3 = array(
-        'wrapper' => array('label', 'div'),
-        'radio' => array(
-            'outerWrapper' => array(
-                'label' => array(
-                    'class' => 'form-group'
-                ),
-            ),
-            'style' => array(
-                'class' => null
-            ),
-            'wrapper' => array(
-                'label' => array(
-                    'class' => 'radio-inline'
-                ),
-            )
-        ),
-        '*' => array(),
-        'form' => array(
-            'role' => 'form',
-        ),
-        'input' => array(
-            'autofocus' => '$autofocus',
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'placeholder' => '$default',
-            'pattern' => '$pattern',
-            'min' => '$min',
-            'max' => '$max',
-            'class' => 'form-control',
-        ),
-        'textarea' => array(
-            'autofocus' => '$autofocus',
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'placeholder' => '$default',
-            'min' => '$min',
-            'max' => '$max',
-            'class' => 'form-control',
-            'rows' => 3,
-        ),
-        'select' => array(
-            'autofocus' => '$autofocus',
-            'value' => '$value',
-            'required' => '$required',
-            'name' => '$name',
-            'class' => 'form-control',
-        ),
-        'div' => array(
-            'class' => 'form-group'
-        ),
-        'button' => array(
-            'class' => 'btn btn-primary btn-lg',
-        ),
+        'form' => 'form[role=form id=$id# name=$name# method=$method# action=$action# enctype=$enctype#]',
+        'input' => '.form-group>label{$label#}+input.form-control[name=$name# value=$value# type=$type# required=$required# autofocus=$autofocus# placeholder=$default#]',
+        'textarea' => '.form-group>label{$label#}+textarea.form-control[name=$name# value=$value# required=$required# autofocus=$autofocus# placeholder=$default# rows=3]',
+        'radio' => '.form-group>label{$label# : &nbsp;}+label.radio-inline*options>input.radio[name=$name# value=$value# type=radio checked=$selected# required=$required#]+{$text#}',
+        'select' => '.form-group>label{$label#}+select.form-control[name=$name# required=$required#]>option[value]+option[value=$value# selected=$selected#]{$text#}*options',
+        'submit' => 'button.btn.btn-primary[type=submit]{$label#}',
     );
-
 }
