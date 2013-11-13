@@ -337,7 +337,7 @@ class Emmet
                 }
             };
         $parse($parse);
-        return $root;
+        return count($root) == 1 ? $root[0] : $root;
     }
 
     public static function tokenize($string)
