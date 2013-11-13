@@ -52,18 +52,28 @@ class Tags implements ArrayAccess
                 ? $c = array_merge($c, $child)
                 : $c [] = $child;
         }
+        $this->markAsChildren($c);
         $this->children = $c;
-        foreach ($this->children as $child) {
+        if (static::$initializer)
+            call_user_func_array(static::$initializer, array(& $this));
+    }
+
+    private function markAsChildren(& $children)
+    {
+        foreach ($children as $i => $child) {
             if (is_string($child))
                 continue;
-            if ($child->_parent) {
+            if (!is_object($child)) {
+                unset($children[$i]);
+                continue;
+            }
+            //echo $child;
+            if (isset($child->_parent) && $child->_parent != $this) {
                 //remove from current parent
                 unset($child->_parent[array_search($child, $child->_parent->children)]);
             }
             $child->_parent = $this;
         }
-        if (static::$initializer)
-            call_user_func_array(static::$initializer, array(& $this));
     }
 
     /**
@@ -220,13 +230,21 @@ class Tags implements ArrayAccess
     {
         if ($index) {
             $this->children[$index] = $value;
+        } elseif (is_array($value)) {
+            $c = array();
+            foreach ($value as $child) {
+                is_array($child)
+                    ? $c = array_merge($c, $child)
+                    : $c [] = $child;
+            }
+            $this->markAsChildren($c);
+            $this->children += $c;
         } else {
+            $c = array($value);
+            $this->markAsChildren($c);
             $this->children[] = $value;
         }
-        if ($value instanceof $this)
-            $value->_parent = $this;
         return true;
-
     }
 
     public function offsetUnset($index)
