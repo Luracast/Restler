@@ -457,14 +457,10 @@ class Routes
         $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($props as $prop) {
             if ($c = $prop->getDocComment()) {
-                $children[$prop->getName()] = array_merge(
-                    array('name' => $prop->getName()),
-                    Util::nestedValue(
-                        CommentParser::parse($c),
-                        'var'
-                    ),
-                    array('type' => 'string')
-                );
+                $children[$prop->getName()] =
+                    array('name' => $prop->getName()) +
+                    Util::nestedValue(CommentParser::parse($c), 'var') +
+                    array('type' => 'string');
             }
         }
         return array($class->getName(), $children);
