@@ -237,13 +237,14 @@ class Forms implements iFilter
         $r = array(
             'tag' => $tag,
             'name' => $p->name,
-            'required' => $p->required,
             'type' => $type,
             'label' => $p->label ? : static::title($p->name),
             'value' => $p->value,
             'default' => $p->default,
             'options' => $options,
         );
+        if ($p->required)
+            $r['required'] = true;
         if (isset($p->rules['autofocus']))
             $r['autofocus'] = true;
         /*
