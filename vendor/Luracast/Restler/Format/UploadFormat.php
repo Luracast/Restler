@@ -47,6 +47,43 @@ class UploadFormat extends Format
      * @var Callable
      */
     public static $customValidationFunction;
+    /**
+     * Since exceptions are triggered way before at the `get` stage
+     *
+     * @var bool
+     */
+    public static $suppressExceptionsAsError = false;
+
+    protected static function checkFile(& $file, $doMimeCheck = false, $doSizeCheck = false)
+    {
+        try {
+            if ($file['error']) {
+                //server is throwing an error
+                //assume that the error is due to maximum size limit
+                throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
+            }
+            if ($doMimeCheck && !in_array($file['type'],
+                    self::$allowedMimeTypes)
+            ) {
+                throw new RestException(403, "File type ({$file['type']}) is not supported.");
+            }
+            if ($doSizeCheck && $file['size'] > self::$maximumFileSize) {
+                throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
+            }
+            if (self::$customValidationFunction) {
+                if (!call_user_func(self::$customValidationFunction, $file)) {
+                    throw new RestException(403, "File ({$file['name']}) is not supported.");
+                }
+            }
+        } catch (RestException $e) {
+            if (static::$suppressExceptionsAsError) {
+                $file['error'] = true;
+                $file['exception'] = $e;
+            } else {
+                throw $e;
+            }
+        }
+    }
 
     public function encode($data, $humanReadable = false)
     {
@@ -58,43 +95,31 @@ class UploadFormat extends Format
         $doMimeCheck = !empty(self::$allowedMimeTypes);
         $doSizeCheck = self::$maximumFileSize ? TRUE : FALSE;
         //validate
-        foreach ($_FILES as $file) {
+        foreach ($_FILES as & $file) {
             if (is_array($file['error'])) {
                 foreach ($file['error'] as $i => $error) {
                     $innerFile = array();
                     foreach ($file as $property => $value) {
                         $innerFile[$property] = $value[$i];
                     }
-                    if ($innerFile['name']) static::checkFile($innerFile, $doMimeCheck, $doSizeCheck);
+                    if ($innerFile['name'])
+                        static::checkFile($innerFile, $doMimeCheck, $doSizeCheck);
+                    if (isset($innerFile['exception'])) {
+                        $file['error'] = true;
+                        $file['exception'] = $innerFile['exception'];
+                        break;
+                    }
                 }
             } else {
-                if ($file['name']) static::checkFile($file, $doMimeCheck, $doSizeCheck);
+                if ($file['name'])
+                    static::checkFile($file, $doMimeCheck, $doSizeCheck);
+                if (isset($innerFile['exception'])) {
+                    break;
+                }
             }
         }
         //sort file order if needed;
         return $_FILES + $_POST;
-    }
-
-    protected static function checkFile($file, $doMimeCheck = false, $doSizeCheck = false)
-    {
-        if ($file['error']) {
-            //server is throwing an error
-            //assume that the error is due to maximum size limit
-            throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
-        }
-        if ($doMimeCheck && !in_array($file['type'],
-                self::$allowedMimeTypes)
-        ) {
-            throw new RestException(403, "File type ({$file['type']}) is not supported.");
-        }
-        if ($doSizeCheck && $file['size'] > self::$maximumFileSize) {
-            throw new RestException(413, "Uploaded file ({$file['name']}) is too big.");
-        }
-        if (self::$customValidationFunction) {
-            if (!call_user_func(self::$customValidationFunction, $file)) {
-                throw new RestException(403, "File ({$file['name']}) is not supported.");
-            }
-        }
     }
 
     function isWritable()
