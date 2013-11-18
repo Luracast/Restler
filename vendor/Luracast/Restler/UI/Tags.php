@@ -130,6 +130,21 @@ class Tags implements ArrayAccess, Countable
         return "$this->prefix<{$this->tag}{$attributes}/>";
     }
 
+    public function toArray()
+    {
+        $r = array();
+        $r['attributes'] = $this->attributes;
+        $r['tag'] = $this->tag;
+        $children = array();
+        foreach ($this->children as $key => $child) {
+            $children[$key] = $child instanceof $this
+                ? $child->toArray()
+                : $child;
+        }
+        $r['children'] = $children;
+        return $r;
+    }
+
     /**
      * Set the id attribute of the current tag
      *
