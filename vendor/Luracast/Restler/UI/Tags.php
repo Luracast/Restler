@@ -2,6 +2,7 @@
 namespace Luracast\Restler\UI;
 
 use ArrayAccess;
+use Countable;
 use Luracast\Restler\Util;
 
 /**
@@ -31,7 +32,7 @@ use Luracast\Restler\Util;
  * @method static Tags button() creates a html button element
  *
  */
-class Tags implements ArrayAccess
+class Tags implements ArrayAccess, Countable
 {
     public static $humanReadable = true;
     public static $initializer = null;
@@ -56,24 +57,6 @@ class Tags implements ArrayAccess
         $this->children = $c;
         if (static::$initializer)
             call_user_func_array(static::$initializer, array(& $this));
-    }
-
-    private function markAsChildren(& $children)
-    {
-        foreach ($children as $i => $child) {
-            if (is_string($child))
-                continue;
-            if (!is_object($child)) {
-                unset($children[$i]);
-                continue;
-            }
-            //echo $child;
-            if (isset($child->_parent) && $child->_parent != $this) {
-                //remove from current parent
-                unset($child->_parent[array_search($child, $child->_parent->children)]);
-            }
-            $child->_parent = $this;
-        }
     }
 
     /**
@@ -257,5 +240,28 @@ class Tags implements ArrayAccess
     public function getContents()
     {
         return $this->children;
+    }
+
+    public function count()
+    {
+        return count($this->children);
+    }
+
+    private function markAsChildren(& $children)
+    {
+        foreach ($children as $i => $child) {
+            if (is_string($child))
+                continue;
+            if (!is_object($child)) {
+                unset($children[$i]);
+                continue;
+            }
+            //echo $child;
+            if (isset($child->_parent) && $child->_parent != $this) {
+                //remove from current parent
+                unset($child->_parent[array_search($child, $child->_parent->children)]);
+            }
+            $child->_parent = $this;
+        }
     }
 }
