@@ -262,13 +262,13 @@ class Forms implements iFilter
         return $t;
     }
 
-    protected static function guessFieldType(ValidationInfo $p)
+    protected static function guessFieldType(ValidationInfo $p, $type = 'type')
     {
-        if (in_array($p->type, static::$inputTypes))
-            return $p->type;
+        if (in_array($p->$type, static::$inputTypes))
+            return $p->$type;
         if ($p->choice)
             return 'select';
-        switch ($p->type) {
+        switch ($p->$type) {
             case 'boolean':
                 return 'radio';
             case 'int':
@@ -278,6 +278,7 @@ class Forms implements iFilter
             case 'array':
                 if ($p->choice)
                     return 'checkbox';
+                return static::guessFieldType($p, 'contentType');
         }
         if ($p->name == 'password')
             return 'password';
