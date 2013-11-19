@@ -257,6 +257,8 @@ class Forms implements iFilter
         */
         if ($dataOnly)
             return $r;
+        if (isset($p->rules['form']))
+            return Emmet::make($p->rules['form'], $r);
         $t = Emmet::make(
             isset(static::$style[$type])
                 ? static::$style[$type]
