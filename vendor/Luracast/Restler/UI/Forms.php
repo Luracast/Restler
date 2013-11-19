@@ -213,6 +213,7 @@ class Forms implements iFilter
         $tag = in_array($type, static::$inputTypes)
             ? 'input' : $type;
         $options = array();
+        $name = $p->name;
         if ($p->choice) {
             foreach ($p->choice as $i => $choice) {
                 $option = array('name' => $p->name, 'value' => $choice);
@@ -223,6 +224,8 @@ class Forms implements iFilter
                     $option['selected'] = true;
                 $options[] = $option;
             }
+        } elseif ($p->type == 'array' && $p->contentType != 'associative') {
+            $name .= '[]';
         }
         if ($type == 'radio' && empty($options)) {
             $options[] = array('name' => $p->name, 'text' => ' Yes ',
@@ -236,7 +239,7 @@ class Forms implements iFilter
         }
         $r = array(
             'tag' => $tag,
-            'name' => $p->name,
+            'name' => $name,
             'type' => $type,
             'label' => $p->label ? : static::title($p->name),
             'value' => $p->value,
