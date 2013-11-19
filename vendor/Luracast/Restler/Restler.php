@@ -862,7 +862,8 @@ class Restler extends EventDispatcher
                 }
                 $valid = $o->parameters[$index];
                 $o->parameters[$index] = null;
-                $o->metadata['param'][$index]['autofocus'] = true;
+                if (empty(Validator::$exceptions))
+                    $o->metadata['param'][$index]['autofocus'] = true;
                 $valid = $validator::validate(
                     $valid, $info
                 );
