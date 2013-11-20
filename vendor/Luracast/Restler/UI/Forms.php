@@ -4,6 +4,7 @@ namespace Luracast\Restler\UI;
 use Luracast\Restler\CommentParser;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Defaults;
+use Luracast\Restler\Format\UploadFormat;
 use Luracast\Restler\iFilter;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Routes;
@@ -227,6 +228,15 @@ class Forms implements iFilter
         } elseif ($p->type == 'array' && $p->contentType != 'associative') {
             $name .= '[]';
         }
+        $r = array(
+            'tag' => $tag,
+            'name' => $name,
+            'type' => $type,
+            'label' => $p->label ? : static::title($p->name),
+            'value' => $p->value,
+            'default' => $p->default,
+            'options' => & $options,
+        );
         if ($type == 'radio' && empty($options)) {
             $options[] = array('name' => $p->name, 'text' => ' Yes ',
                 'value' => 'true');
@@ -236,16 +246,9 @@ class Forms implements iFilter
                 $options[0]['selected'] = true;
         } elseif ($type == 'file') {
             static::$fileUpload = true;
+            $r['accept'] = implode(', ', UploadFormat::$allowedMimeTypes);
         }
-        $r = array(
-            'tag' => $tag,
-            'name' => $name,
-            'type' => $type,
-            'label' => $p->label ? : static::title($p->name),
-            'value' => $p->value,
-            'default' => $p->default,
-            'options' => $options,
-        );
+
         if ($p->required)
             $r['required'] = true;
         if (isset($p->rules['autofocus']))
