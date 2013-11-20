@@ -119,7 +119,7 @@ class UploadFormat extends Format
             }
         }
         //sort file order if needed;
-        return $_FILES + $_POST;
+        return UrlEncodedFormat::decoderTypeFix($_FILES + $_POST);
     }
 
     function isWritable()
