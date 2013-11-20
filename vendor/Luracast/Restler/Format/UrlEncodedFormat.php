@@ -44,8 +44,8 @@ class UrlEncodedFormat extends Format
     public static function decoderTypeFix(array $data)
     {
         foreach ($data as $k => $v) {
-            if ($v == 'true' || $v == 'false') {
-                $data[$k] = $v = $v == 'true';
+            if ($v === 'true' || $v === 'false') {
+                $data[$k] = $v = $v === 'true';
             } elseif (is_array($v)) {
                 $data[$k] = $v = static::decoderTypeFix($v);
             } elseif (empty($v) && $v != 0) {
