@@ -81,9 +81,9 @@ class Validator implements iValidate
     public static function datetime($input, ValidationInfo $info = null)
     {
         if (
-            preg_match('/^(?<year>19\d\d|20\d\d)\-(?<month>0[1-9]|1[0-2])\-' .
-                '(?<day>0\d|[1-2]\d|3[0-1]) (?<h>0\d|1\d|2[0-3]' .
-                ')\:(?<i>[0-5][0-9])\:(?<s>[0-5][0-9])$/',
+            preg_match('/^(?P<year>19\d\d|20\d\d)\-(?P<month>0[1-9]|1[0-2])\-' .
+                '(?P<day>0\d|[1-2]\d|3[0-1]) (?P<h>0\d|1\d|2[0-3]' .
+                ')\:(?P<i>[0-5][0-9])\:(?P<s>[0-5][0-9])$/',
                 $input, $date)
             && checkdate($date['month'], $date['day'], $date['year'])
         ) {
