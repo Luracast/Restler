@@ -108,6 +108,9 @@ class Routes
                 }
                 if ($type instanceof ReflectionClass) {
                     list($type, $children) = static::getTypeAndModel($type);
+                } elseif($type && class_exists($type)) {
+                    list($type, $children)
+                        = static::getTypeAndModel(new ReflectionClass($type));
                 }
                 if (isset($type)) {
                     $m['type'] = $type;
