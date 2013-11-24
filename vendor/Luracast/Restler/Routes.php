@@ -441,7 +441,7 @@ class Routes
         if (is_numeric($var)) {
             return 'n';
         }
-        if ($var == 'true' || $var == 'false') {
+        if ($var === 'true' || $var === 'false') {
             return 'b';
         }
         return 's';
