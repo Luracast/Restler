@@ -19,7 +19,6 @@ class Compose implements iCompose
      * be checked to include the debug information on error response
      */
     public static $includeDebugInfo = true;
-
     /**
      * Current Restler instance
      * Injected at runtime
@@ -53,17 +52,17 @@ class Compose implements iCompose
     public function message(RestException $exception)
     {
         //TODO: check Defaults::language and change result accordingly
-        $r =  array(
+        $r = array(
             'error' => array(
-                'code' => $exception->getCode(),
-                'message' => $exception->getErrorMessage(),
-            ) + $exception->getDetails()
+                    'code' => $exception->getCode(),
+                    'message' => $exception->getErrorMessage(),
+                ) + $exception->getDetails()
         );
-        if(!Util::$restler->_productionMode && self::$includeDebugInfo){
+        if (!Scope::get('Restler')->getProductionMode() && self::$includeDebugInfo) {
             $r += array(
                 'debug' => array(
                     'source' => $exception->getSource(),
-                    'stages' =>$exception->getStages(),
+                    'stages' => $exception->getStages(),
                 )
             );
         }
