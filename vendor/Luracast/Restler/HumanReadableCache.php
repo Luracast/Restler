@@ -1,8 +1,6 @@
 <?php
 namespace Luracast\Restler;
 
-use Luracast\Restler\Util;
-
 /**
  * Default Cache that writes/reads human readable files for caching purpose
  *
@@ -26,7 +24,10 @@ class HumanReadableCache implements iCache
         if (is_null(self::$cacheDir)) {
             self::$cacheDir = Defaults::$cacheDirectory;
         }
-        if (Util::$restler->_production_mode && !is_writable(self::$cacheDir)) {
+        if (
+            Scope::get('Restler')->getProductionMode() &&
+            !is_writable(self::$cacheDir)
+        ) {
             $this->throwException();
         }
     }
@@ -80,8 +81,8 @@ class HumanReadableCache implements iCache
     /**
      * retrieve data from the cache
      *
-     * @param string     $name
-     * @param bool       $ignoreErrors
+     * @param string $name
+     * @param bool   $ignoreErrors
      *
      * @return mixed
      */
@@ -89,15 +90,15 @@ class HumanReadableCache implements iCache
     {
         $file = $this->_file($name);
         if (file_exists($file)) {
-            return include ($file);
+            return include($file);
         }
     }
 
     /**
      * delete data from the cache
      *
-     * @param string     $name
-     * @param bool       $ignoreErrors
+     * @param string $name
+     * @param bool   $ignoreErrors
      *
      * @return boolean true if successful
      */
@@ -127,7 +128,7 @@ class HumanReadableCache implements iCache
     {
         throw new \Exception(
             'The cache directory `'
-                . self::$cacheDir . '` should exist with write permission.'
+            . self::$cacheDir . '` should exist with write permission.'
         );
     }
 }
