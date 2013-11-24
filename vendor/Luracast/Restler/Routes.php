@@ -407,7 +407,8 @@ class Routes
             ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
             !array_key_exists($m['name'], $data) &&
             array_key_exists(Defaults::$fullRequestDataName, $data) &&
-            !is_null($d = $data[Defaults::$fullRequestDataName])
+            !is_null($d = $data[Defaults::$fullRequestDataName]) &&
+            static::typeMatch($m['type'], $d)
         ) {
             $p[0] = $d;
         } else {
@@ -425,7 +426,8 @@ class Routes
                 $bodyParamCount == 1 &&
                 !array_key_exists($lastM['name'], $data) &&
                 array_key_exists(Defaults::$fullRequestDataName, $data) &&
-                !is_null($d = $data[Defaults::$fullRequestDataName])
+                !is_null($d = $data[Defaults::$fullRequestDataName]) &&
+                static::typeMatch($lastM['type'], $d)
             ) {
                 $p[$lastBodyParamIndex] = $d;
             }
@@ -445,6 +447,25 @@ class Routes
             return 'b';
         }
         return 's';
+    }
+
+    protected static function typeMatch($type, $var)
+    {
+        switch ($type) {
+            case 'boolean':
+            case 'bool':
+                return is_bool($var);
+            case 'array':
+            case 'object':
+                return is_array($var);
+            case 'string':
+            case 'int':
+            case 'integer':
+            case 'float':
+            case 'number':
+                return is_scalar($var);
+        }
+        return true;
     }
 
     /**
