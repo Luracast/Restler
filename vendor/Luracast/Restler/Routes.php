@@ -354,7 +354,7 @@ class Routes
                     }
                     $index = intval(substr($k, 1));
                     $details = $value[$httpMethod]['metadata']['param'][$index];
-                    if ($k{0} == 's' || strpos($k, static::typeOf($v)) === 0) {
+                    if ($k{0} == 's' || strpos($k, static::pathVarTypeOf($v)) === 0) {
                         //remove the newlines
                         $data[$details['name']] = trim($v, PHP_EOL);
                     } else {
@@ -436,7 +436,7 @@ class Routes
     /**
      * @access private
      */
-    protected static function typeOf($var)
+    protected static function pathVarTypeOf($var)
     {
         if (is_numeric($var)) {
             return 'n';
@@ -480,7 +480,7 @@ class Routes
     }
 
     /**
-     * Export current routes for caching
+     * Export current routes for cache
      *
      * @return array
      */
