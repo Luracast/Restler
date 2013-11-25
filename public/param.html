@@ -176,6 +176,16 @@ class Type
     }
 
     /**
+     * Array of dates
+     *
+     * @param array $dates Dates array{@from body}{@type date}
+     */
+    function postDates(array $dates)
+    {
+        return $dates;
+    }
+
+    /**
      * DateTime validation
      *
      * @param string $datetime {@from body}{@type datetime}

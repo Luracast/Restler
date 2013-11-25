@@ -456,12 +456,13 @@ $r-&gt;handle(); //serve the response
 <p><a id="7--start-production" class="anchor"></a></p>
 <h3>7. Start Production</h3>
 
-<p>By default Restler runs in debug more more fine tuned for API developer, by
+<p>By default Restler runs in debug mode more fine tuned for API developer, by
 showing detailed error messages and prettifying the api result to human readbale
 form</p>
 
 <p>By turning on production mode you will gain some performance boost as it will
-cache the routes and avoid giving out debug information</p>
+cache the routes (comment parsing happens only once instead of every api call),
+few other files and avoid giving out debug information</p>
 
 <pre><code class="php">&lt;?php
 require_once '../../../vendor/restler.php';
