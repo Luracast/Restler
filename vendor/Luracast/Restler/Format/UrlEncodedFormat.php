@@ -48,7 +48,7 @@ class UrlEncodedFormat extends Format
                 $data[$k] = $v = $v == 'true';
             } elseif (is_array($v)) {
                 $data[$k] = $v = static::decoderTypeFix($v);
-            } elseif (empty($v) && $v !== 0) {
+            } elseif (empty($v) && $v != 0) {
                 unset($data[$k]);
             }
         }
