@@ -164,6 +164,12 @@ class Restler extends EventDispatcher
      */
     protected $requestData = array();
     /**
+     * Raw Data sent to the service
+     *
+     * @var string
+     */
+    protected $requestRawData = '';
+    /**
      * list of authentication classes
      *
      * @var array
@@ -486,11 +492,11 @@ class Restler extends EventDispatcher
                     : $this->requestData;
             }
 
-            $r = file_get_contents('php://input');
-            if (is_null($r)) {
+            $this->requestRawData = file_get_contents('php://input');
+            if (is_null($this->requestRawData)) {
                 return array(); //no body
             }
-            $r = $this->requestFormat->decode($r);
+            $r = $this->requestFormat->decode($this->requestRawData);
             $r = is_array($r)
                 ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
                 : array(Defaults::$fullRequestDataName => $r);
@@ -500,7 +506,17 @@ class Restler extends EventDispatcher
         }
         return $includeQueryParameters ? $get : array(); //no body
     }
-
+    
+    /**
+     * Returns the raw request data without being parsed
+     *
+     * @return string
+     */
+    public function getRequestRawData()
+    {
+        return $this->requestRawData;
+    }
+    
     /**
      * Find the api method to execute for the requested Url
      */
