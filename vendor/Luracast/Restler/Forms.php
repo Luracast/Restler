@@ -3,6 +3,17 @@ namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ValidationInfo;
 
+/**
+ * Utility class to build html forms
+ *
+ * @category   Framework
+ * @package    Restler
+ * @author     R.Arul Kumaran <arul@luracast.com>
+ * @copyright  2010 Luracast
+ * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
+ * @link       http://luracast.com/products/restler/
+ * @version    3.0.0rc5
+ */
 class Forms
 {
     public static $fieldWrapper = 'label';
