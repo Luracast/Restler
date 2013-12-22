@@ -503,18 +503,11 @@ class Restler extends EventDispatcher
             }
 
             $stream = $this->getRequestStream();
-            if($this->requestFormat instanceof iDecodeStream) {
-                $r = $this->requestFormat->decodeStream($stream);
-                if (is_null($r)) {
-                    return array(); //no body
-                }
-            } else {
-                $r = stream_get_contents($stream);
-                if (is_null($r)) {
-                    return array(); //no body
-                }
-                $r = $this->requestFormat->decode($r);
-            }
+            if($stream === FALSE)
+                return array();
+            $r = $this->requestFormat instanceof iDecodeStream
+                ? $this->requestFormat->decodeStream($stream)
+                : $this->requestFormat->decode(stream_get_contents($stream));
 
             $r = is_array($r)
                 ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
