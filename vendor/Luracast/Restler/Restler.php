@@ -7,6 +7,7 @@ use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Format\iFormat;
+use Luracast\Restler\Format\iDecodeStream;
 use Luracast\Restler\Format\UrlEncodedFormat;
 
 /**
@@ -501,11 +502,20 @@ class Restler extends EventDispatcher
                     : $this->requestData;
             }
 
-            $r = stream_get_contents($this->getRequestStream());
-            if (is_null($r)) {
-                return array(); //no body
+            $stream = $this->getRequestStream();
+            if($this->requestFormat instanceof iDecodeStream) {
+                $r = $this->requestFormat->decodeStream($stream);
+                if (is_null($r)) {
+                    return array(); //no body
+                }
+            } else {
+                $r = stream_get_contents($stream);
+                if (is_null($r)) {
+                    return array(); //no body
+                }
+                $r = $this->requestFormat->decode($r);
             }
-            $r = $this->requestFormat->decode($r);
+
             $r = is_array($r)
                 ? array_merge($r, array(Defaults::$fullRequestDataName => $r))
                 : array(Defaults::$fullRequestDataName => $r);
