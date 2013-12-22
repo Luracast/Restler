@@ -30,6 +30,7 @@ class Scope
         'UrlEncodedFormat' => 'Luracast\Restler\Format\UrlEncodedFormat',
         'XmlFormat' => 'Luracast\Restler\Format\XmlFormat',
         'YamlFormat' => 'Luracast\Restler\Format\YamlFormat',
+        'CsvFormat' => 'Luracast\Restler\Format\CsvFormat',
 
         //Filter classes
         'RateLimit' => 'Luracast\Restler\Filter\RateLimit',
