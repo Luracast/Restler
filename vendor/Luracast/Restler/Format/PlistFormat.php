@@ -18,7 +18,7 @@ use CFPropertyList\CFPropertyList;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc4
+ * @version    3.0.0rc5
  */
 class PlistFormat extends MultiFormat
 {
