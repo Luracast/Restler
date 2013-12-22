@@ -472,6 +472,15 @@ class Restler extends EventDispatcher
         return $format;
     }
 
+    public function getRequestStream()
+    {
+        $rawInput = fopen('php://input', 'r');
+        $tempStream = fopen('php://temp', 'r+');
+        stream_copy_to_stream($rawInput, $tempStream);
+        rewind($tempStream);
+        return $tempStream;
+    }
+
     /**
      * Parses the request data and returns it
      *
@@ -492,7 +501,7 @@ class Restler extends EventDispatcher
                     : $this->requestData;
             }
 
-            $r = file_get_contents('php://input');
+            $r = stream_get_contents($this->getRequestStream());
             if (is_null($r)) {
                 return array(); //no body
             }
