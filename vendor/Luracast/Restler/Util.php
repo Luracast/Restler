@@ -119,7 +119,7 @@ class Util
         $fromPath = explode($char, $fromPath);
         $usingPath = explode($char, $usingPath);
         while (count($usingPath)) {
-            if ($fromPath[0] == $usingPath[0]) {
+            if (count($fromPath) && $fromPath[0] == $usingPath[0]) {
                 array_shift($fromPath);
             } else {
                 break;
