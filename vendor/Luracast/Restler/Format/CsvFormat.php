@@ -17,7 +17,7 @@ use Luracast\Restler\RestException;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  */
-class CsvFormat extends Format
+class CsvFormat extends Format implements iDecodeStream
 {
 
     const MIME = 'text/csv';
@@ -145,5 +145,37 @@ class CsvFormat extends Format
             }
         }
         return $row;
+    }
+
+    /**
+     * Decode the given data stream
+     *
+     * @param string $stream A stream resource with data
+     *                       sent from client to the api
+     *                       in the given format.
+     *
+     * @return array associative array of the parsed data
+     */
+    public function decodeStream($stream)
+    {
+        $decoded = array();
+
+        $keys = false;
+        $row = static::getRow(stream_get_line($stream, 0, PHP_EOL));
+        if (is_null(static::$haveHeaders)) {
+            //try to guess with the given data
+            static::$haveHeaders = !count(array_filter($row, 'is_numeric'));
+        }
+
+        static::$haveHeaders ? $keys = $row : $decoded[] = $row;
+
+        while (($row = static::getRow(stream_get_line($stream, 0, PHP_EOL), $keys)) !== FALSE)
+            $decoded [] = $row;
+
+        $char = Object::$separatorChar;
+        Object::$separatorChar = false;
+        $decoded = Object::toArray($decoded);
+        Object::$separatorChar = $char;
+        return $decoded;
     }
 }
