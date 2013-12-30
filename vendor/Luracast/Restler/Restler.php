@@ -802,7 +802,10 @@ class Restler extends EventDispatcher
             if ($accessLevel || count($this->postAuthFilterClasses)) {
                 $this->dispatch('authenticate');
                 if (!count($this->authClasses)) {
-                    throw new RestException(401);
+                    throw new RestException(
+                        403,
+                        'at least one Authentication Class is required'
+                    );
                 }
                 foreach ($this->authClasses as $authClass) {
                     $authObj = Scope::get($authClass);
