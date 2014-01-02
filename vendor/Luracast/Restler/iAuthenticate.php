@@ -15,5 +15,11 @@ namespace Luracast\Restler;
  */
 interface iAuthenticate extends iFilter
 {
+    /**
+     * @return string string to be used with WWW-Authenticate header
+     * @example Basic
+     * @example Digest
+     * @example OAuth
+     */
+    public function __getWWWAuthenticateString();
 }
-
