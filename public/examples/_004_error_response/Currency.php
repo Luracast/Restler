@@ -1,4 +1,6 @@
 <?php
+use Luracast\Restler\RestException;
+
 class Currency
 {
     function format($number = NULL)
