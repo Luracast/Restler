@@ -10,6 +10,11 @@ class SimpleAuth implements iAuthenticate
         return isset($_GET['key']) && $_GET['key'] == SimpleAuth::KEY ? TRUE : FALSE;
     }
 
+    public function __getWWWAuthenticateString()
+    {
+        return 'Query name="key"';
+    }
+
     function key()
     {
         return SimpleAuth::KEY;
