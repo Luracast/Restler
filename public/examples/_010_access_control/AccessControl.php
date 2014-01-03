@@ -22,6 +22,11 @@ class AccessControl implements iAuthenticate
         return static::$requires == static::$role || static::$role == 'admin';
     }
 
+    public function __getWWWAuthenticateString()
+    {
+        return 'Query name="api_key"';
+    }
+
     /**
      * @access private
      */
