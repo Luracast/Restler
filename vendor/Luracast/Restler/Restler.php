@@ -995,7 +995,7 @@ class Restler extends EventDispatcher
             (isset(RestException::$codes[$code]) ? RestException::$codes[$code] : '')
         );
         if ($code == 401)
-            header('WWW-Authenticate: ' . $this->authClasses[0]->__getWWWAuthenticateString(), false);
+            header('WWW-Authenticate: ' . (@$this->authClasses[0]->__getWWWAuthenticateString() ? : 'Custom'), false);
 
     }
 
