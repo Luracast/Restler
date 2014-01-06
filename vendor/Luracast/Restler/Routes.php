@@ -402,7 +402,7 @@ class Routes
                 $p[$call['arguments'][$key]] = $value;
             }
         }
-        if ('post' != (string)Util::$restler->requestFormat) {
+        if (Defaults::$smartParameterParsing && 'post' != (string)Util::$restler->requestFormat) {
             if (
                 count($p) == 1 &&
                 ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
