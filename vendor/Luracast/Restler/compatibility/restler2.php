@@ -28,14 +28,11 @@ AutoLoader::seen($classMap);
 //changes in iAuthenticate
 Defaults::$authenticationMethod = '__isAuthenticated';
 
-eval('
-interface iAuthenticate{
-    public function __isAuthenticated();
-}
-');
+include __DIR__ . '/iAuthenticate.php';
 
 //changes in auto routing
 Defaults::$smartAutoRouting = false;
+Defaults::$smartParameterParsing = false;
 Defaults::$autoValidationEnabled = false;
 
 //changes in parsing embedded data in comments

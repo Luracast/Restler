@@ -6,12 +6,9 @@ use Luracast\Restler\Defaults;
 
 //changes in iAuthenticate
 Defaults::$authenticationMethod = 'isAuthenticated';
-eval('
-interface iAuthenticate{
-    public function isAuthenticated();
-}
-');
+include __DIR__ . '/iAuthenticate.php';
 
 //changes in routing
 Defaults::$autoRoutingEnabled = false;
+Defaults::$smartParameterParsing = false;
 Defaults::$autoValidationEnabled = false;
