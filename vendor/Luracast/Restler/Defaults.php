@@ -72,18 +72,24 @@ class Defaults
      */
     public static $smartAutoRouting = true;
 
+    /**
+     * @var boolean enables more ways of finding the parameter data in the request.
+     * If you need backward compatibility with Restler 2 or below turn this off
+     */
+    public static $smartParameterParsing = true;
+
     // ==================================================================
     //
-    // Versioning
+    // API Version Management
     //
     // ------------------------------------------------------------------
 
     /**
      * @var null|string name that is used for vendor specific media type and
-     * versioning using the Accept Header for example
+     * api version using the Accept Header for example
      * application/vnd.{vendor}-v1+json
      *
-     * Keep this null if you do not want to use vendor MIME versioning
+     * Keep this null if you do not want to use vendor MIME for specifying api version
      */
     public static $apiVendor = null;
 
