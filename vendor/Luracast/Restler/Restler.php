@@ -999,9 +999,6 @@ class Restler extends EventDispatcher
             "{$_SERVER['SERVER_PROTOCOL']} $code " .
             (isset(RestException::$codes[$code]) ? RestException::$codes[$code] : '')
         );
-        if ($code == 401)
-            header('WWW-Authenticate: ' . (@$this->authClasses[0]->__getWWWAuthenticateString() ? : 'Custom'), false);
-
     }
 
     protected function respond()
@@ -1016,6 +1013,8 @@ class Restler extends EventDispatcher
         }
         echo $this->responseData;
         $this->dispatch('complete');
+        if ($this->responseCode == 401)
+            @header('WWW-Authenticate: ' . (@$this->authClasses[0]->__getWWWAuthenticateString() ? : 'Custom'), false);
         exit;
     }
 
