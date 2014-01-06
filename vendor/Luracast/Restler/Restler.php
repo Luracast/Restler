@@ -1070,7 +1070,7 @@ class Restler extends EventDispatcher
     public function setCompatibilityMode($version = 2)
     {
         if ($version <= intval(self::VERSION) && $version > 0) {
-            require_once "restler{$version}.php";
+            require __DIR__."/compatibility/restler{$version}.php";
             return;
         }
         throw new \OutOfRangeException();
