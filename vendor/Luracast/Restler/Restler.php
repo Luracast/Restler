@@ -528,6 +528,11 @@ class Restler extends EventDispatcher
 
         $params = $this->getRequestData();
 
+        //backward compatibility for restler 2 and below
+        if (!Defaults::$smartParameterParsing) {
+            $params = $params + array(Defaults::$fullRequestDataName => $params);
+        }
+
         $currentUrl = 'v' . $this->requestedApiVersion;
         if (!empty($this->url))
             $currentUrl .= '/' . $this->url;
