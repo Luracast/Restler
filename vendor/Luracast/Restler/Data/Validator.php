@@ -344,7 +344,7 @@ class Validator implements iValidate
 
                 case 'bool':
                 case 'boolean':
-                    if ($input == 'true') return true;
+                    if ($input === 'true' || $input === true) return true;
                     if (is_numeric($input)) return $input > 0;
                     return false;
 
