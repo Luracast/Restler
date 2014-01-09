@@ -27,7 +27,8 @@ class Routes
      * @param        $className
      * @param string $resourcePath
      */
-    public static function addAPIClass($className, $resourcePath = '')
+    public static function addAPIClass($className,
+                                       $resourcePath = '', $version = 1)
     {
 
         /*
@@ -207,7 +208,7 @@ class Routes
                                 : null)
                             . $index . '}';
                         }, $url);
-                    static::addPath($url, $copy, $httpMethod);
+                    static::addPath($url, $copy, $httpMethod, $version);
                 }
                 //if auto route enabled, do so
             } elseif (Defaults::$autoRoutingEnabled) {
@@ -227,7 +228,7 @@ class Routes
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
                 if (empty($pathParams)) {
-                    static::addPath($url, $call, $httpMethod);
+                    static::addPath($url, $call, $httpMethod, $version);
                 }
                 $lastPathParam = array_keys($pathParams);
                 $lastPathParam = end($lastPathParam);
@@ -250,7 +251,7 @@ class Routes
                             : null)
                         . $position . '}';
                     if ($allowAmbiguity || $position == $lastPathParam) {
-                        static::addPath($url, $call, $httpMethod);
+                        static::addPath($url, $call, $httpMethod, $version);
                     }
                 }
             }
@@ -273,7 +274,8 @@ class Routes
         return 's';
     }
 
-    protected static function addPath($path, array $call, $httpMethod = 'GET')
+    protected static function addPath($path, array $call,
+                                      $httpMethod = 'GET', $version = 1)
     {
         $call['url'] = preg_replace_callback(
             "/\{\S(\d+)\}/",
@@ -286,12 +288,19 @@ class Routes
         //check for wildcard routes
         if (substr($path, -1, 1) == '*') {
             $path = rtrim($path, '/*');
-            static::$routes['*'][$path][$httpMethod] = $call;
-        } else {
+            $version == 1
+                ? static::$routes['*'][$path][$httpMethod] = $call
+                : static::$routes["№.$version"]['*'][$path][$httpMethod] = $call;
+        } elseif ($version == 1) {
             static::$routes[$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
             if ($call['methodName'] == 'index')
                 static::$routes["$path/index"][$httpMethod] = $call;
+        } else {
+            static::$routes["№.$version"][$path][$httpMethod] = $call;
+            //create an alias with index if the method name is index
+            if ($call['methodName'] == 'index')
+                static::$routes["№.$version"]["$path/index"][$httpMethod] = $call;
         }
     }
 
@@ -305,12 +314,21 @@ class Routes
      * @return ApiMethodInfo
      * @throws RestException
      */
-    public static function find($path, $httpMethod, array $data = array())
+    public static function find($path, $httpMethod,
+                                $version = 1, array $data = array())
     {
-        $p =& static::$routes;
+        $p = static::$routes;
         $status = 404;
         $message = null;
         $methods = array();
+        if ($version > 1) {
+            $p = Util::nestedValue($p, "№.$version");
+            if (!$p)
+                throw new RestException(
+                    404,
+                    "Version $version is not supported"
+                );
+        }
         if (isset($p[$path][$httpMethod])) {
             //================== static routes ==========================
             return static::populate($p[$path][$httpMethod], $data);
