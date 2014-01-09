@@ -533,10 +533,10 @@ class Restler extends EventDispatcher
             $params = $params + array(Defaults::$fullRequestDataName => $params);
         }
 
-        $currentUrl = 'v' . $this->requestedApiVersion;
-        if (!empty($this->url))
-            $currentUrl .= '/' . $this->url;
-        $this->apiMethodInfo = $o = Routes::find($currentUrl, $this->requestMethod, $params);
+        $this->apiMethodInfo = $o = Routes::find(
+            $this->url, $this->requestMethod,
+            $this->requestedApiVersion, $params
+        );
         //set defaults based on api method comments
         if (isset($o->metadata)) {
             foreach (Defaults::$fromComments as $key => $defaultsKey) {
@@ -1184,18 +1184,18 @@ class Restler extends EventDispatcher
                         Routes::addAPIClass($versionedClassName,
                             Util::getResourcePath(
                                 $className,
-                                $resourcePath,
-                                "v{$version}/"
-                            )
+                                $resourcePath
+                            ),
+                            $version
                         );
                         $foundClass[$className] = $versionedClassName;
                     } elseif (isset($foundClass[$className])) {
                         Routes::addAPIClass($foundClass[$className],
                             Util::getResourcePath(
                                 $className,
-                                $resourcePath,
-                                "v{$version}/"
-                            )
+                                $resourcePath
+                            ),
+                            $version
                         );
                     }
                 }
