@@ -1,9 +1,10 @@
 <?php
 namespace Luracast\Restler\Filter;
 
+use Luracast\Restler\Defaults;
 use Luracast\Restler\iFilter;
 use Luracast\Restler\iUseAuthentication;
-use Luracast\Restler\iUser;
+use Luracast\Restler\iIdentifyUser;
 use Luracast\Restler\User;
 use Luracast\Restler\RestException;
 
@@ -40,10 +41,6 @@ class RateLimit implements iFilter, iUseAuthentication
      * @var string group the current api belongs to
      */
     public static $group = 'common';
-    /**
-     * @var string name of the class that implements iUser interface
-     */
-    public static $userClass = 'Luracast\\Restler\\User';
 
     protected static $units = array(
         'second' => 1,
@@ -103,13 +100,13 @@ class RateLimit implements iFilter, iUseAuthentication
         $maxPerUnit = $isAuthenticated
             ? static::$authenticatedUsagePerUnit
             : static::$usagePerUnit;
-        $user = static::$userClass;
-        if(!is_subclass_of($user, 'Luracast\\Restler\\iUser')){
-            throw new \UnexpectedValueException('`Ratelimit::$userClass` must implement iUser interface');
+        $user = Defaults::$userIdentifierClass;
+        if(!is_subclass_of($user, 'Luracast\\Restler\\iIdentifyUser')){
+            throw new \UnexpectedValueException('`Defaults::$userIdentifierClass` must implement `iIdentifyUser` interface');
         }
         $id = "RateLimit_" . $maxPerUnit . '_per_' . static::$unit
             . '_for_' . static::$group
-            . '_' . $user::getUniqueId();
+            . '_' . $user::getUniqueIdentifier();
         $lastRequest = $this->restler->cache->get($id, true)
             ? : array('time' => 0, 'used' => 0);
         $time = $lastRequest['time'];
