@@ -14,7 +14,7 @@ namespace Luracast\Restler;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  */
-interface iUser
+interface iIdentifyUser
 {
     /**
      * A way to uniquely identify the current api consumer
@@ -28,7 +28,18 @@ interface iUser
      *
      * @return string
      */
-    public static function getUniqueId($includePlatform = false);
+    public static function getUniqueIdentifier($includePlatform = false);
+
+    /**
+     * User identity to be used for caching purpose
+     *
+     * When the dynamic cache service places an object in the cache, it needs to
+     * label it with a unique identifying string known as a cache ID. This
+     * method gives that identifier
+     *
+     * @return string
+     */
+    public static function getCacheIdentifier();
 
     /**
      * Authentication classes should call this method
@@ -37,5 +48,16 @@ interface iUser
      *
      * @return void
      */
-    public static function setUserId($id);
+    public static function setUniqueIdentifier($id);
+
+    /**
+     * User identity for caching purpose
+     *
+     * In a role based access control system this will be based on role
+     *
+     * @param $id
+     *
+     * @return void
+     */
+    public static function setCacheIdentifier($id);
 }
