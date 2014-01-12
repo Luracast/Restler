@@ -127,6 +127,10 @@ class Restler extends EventDispatcher
      */
     protected $apiMinimumVersion = 1;
     /**
+     * @var array
+     */
+    protected $apiVersionMap = array();
+    /**
      * Associated array that maps formats to their respective format class name
      *
      * @var array
@@ -546,8 +550,13 @@ class Restler extends EventDispatcher
                 }
             }
         }
-        if (!isset($o->className)) {
+        if (!isset($o->className))
             throw new RestException(404);
+        Scope::$classAliases[Util::getShortName($o->className)]
+            = $this->apiVersionMap[$o->className][$this->requestedApiVersion];
+        foreach($this->authClasses as $auth) {
+            Scope::$classAliases[$auth]
+                = $this->apiVersionMap[$auth][$this->requestedApiVersion];
         }
     }
 
@@ -1148,6 +1157,8 @@ class Restler extends EventDispatcher
             if ($this->productionMode && is_null($this->cached)) {
                 $routes = $this->cache->get('routes');
                 if (isset($routes) && is_array($routes)) {
+                    $this->apiVersionMap = $routes['apiVersionMap'];
+                    unset($routes['apiVersionMap']);
                     Routes::fromArray($routes);
                     $this->cached = true;
                 } else {
@@ -1158,11 +1169,17 @@ class Restler extends EventDispatcher
                 $className = Scope::$classAliases[$className];
             }
             if (!$this->cached) {
-                $foundClass = array();
+                $maxVersionMethod = '__getMaximumSupportedVersion';
                 if (class_exists($className)) {
-                    $foundClass[$className] = $className;
+                    if (method_exists($className, $maxVersionMethod)) {
+                        $max = $className::$maxVersionMethod();
+                        for ($i = 1; $i <= $max; $i++) {
+                            $this->apiVersionMap[$className][$i] = $className;
+                        }
+                    } else {
+                        $this->apiVersionMap[$className][1] = $className;
+                    }
                 }
-
                 //versioned api
                 if (false !== ($index = strrpos($className, '\\'))) {
                     $name = substr($className, 0, $index)
@@ -1188,9 +1205,16 @@ class Restler extends EventDispatcher
                             ),
                             $version
                         );
-                        $foundClass[$className] = $versionedClassName;
-                    } elseif (isset($foundClass[$className])) {
-                        Routes::addAPIClass($foundClass[$className],
+                        if (method_exists($versionedClassName, $maxVersionMethod)) {
+                            $max = $versionedClassName::$maxVersionMethod();
+                            for ($i = $version; $i <= $max; $i++) {
+                                $this->apiVersionMap[$className][$i] = $versionedClassName;
+                            }
+                        } else {
+                            $this->apiVersionMap[$className][$version] = $versionedClassName;
+                        }
+                    } elseif (isset($this->apiVersionMap[$className][$version])) {
+                        Routes::addAPIClass($this->apiVersionMap[$className][$version],
                             Util::getResourcePath(
                                 $className,
                                 $resourcePath
@@ -1309,7 +1333,11 @@ class Restler extends EventDispatcher
     public function __destruct()
     {
         if ($this->productionMode && !$this->cached) {
-            $this->cache->set('routes', Routes::toArray());
+            $this->cache->set(
+                'routes',
+                Routes::toArray() +
+                array('apiVersionMap' => $this->apiVersionMap)
+            );
         }
     }
 
