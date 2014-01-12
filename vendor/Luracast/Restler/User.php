@@ -13,10 +13,11 @@ namespace Luracast\Restler;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  */
-class User implements iUser
+class User implements iIdentifyUser
 {
     private static $initialized = false;
     public static $id = null;
+    public static $cacheId = null;
     public static $ip;
     public static $browser = '';
     public static $platform = '';
@@ -27,7 +28,7 @@ class User implements iUser
         static::$ip = static::getIpAddress();
     }
 
-    public static function getUniqueId($includePlatform = false)
+    public static function getUniqueIdentifier($includePlatform = false)
     {
         if (!static::$initialized) static::init();
         return static::$id ? : base64_encode('ip:' . ($includePlatform
@@ -64,8 +65,36 @@ class User implements iUser
      *
      * @return void
      */
-    public static function setUserId($id)
+    public static function setUniqueIdentifier($id)
     {
         static::$id = $id;
+    }
+
+    /**
+     * User identity to be used for caching purpose
+     *
+     * When the dynamic cache service places an object in the cache, it needs to
+     * label it with a unique identifying string known as a cache ID. This
+     * method gives that identifier
+     *
+     * @return string
+     */
+    public static function getCacheIdentifier()
+    {
+        return static::$cacheId ?: static::$id;
+    }
+
+    /**
+     * User identity for caching purpose
+     *
+     * In a role based access control system this will be based on role
+     *
+     * @param $id
+     *
+     * @return void
+     */
+    public static function setCacheIdentifier($id)
+    {
+        static::$cacheId = $id;
     }
 }
