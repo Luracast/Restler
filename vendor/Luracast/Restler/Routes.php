@@ -19,6 +19,8 @@ use ReflectionProperty;
  */
 class Routes
 {
+    const VERSION_PREFIX = '№.';
+
     protected static $routes = array();
 
     /**
@@ -26,6 +28,7 @@ class Routes
      *
      * @param        $className
      * @param string $resourcePath
+     * @param int    $version
      */
     public static function addAPIClass($className,
                                        $resourcePath = '', $version = 1)
@@ -290,29 +293,30 @@ class Routes
             $path = rtrim($path, '/*');
             $version == 1
                 ? static::$routes['*'][$path][$httpMethod] = $call
-                : static::$routes["№.$version"]['*'][$path][$httpMethod] = $call;
+                : static::$routes[static::VERSION_PREFIX . $version]['*'][$path][$httpMethod] = $call;
         } elseif ($version == 1) {
             static::$routes[$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
             if ($call['methodName'] == 'index')
                 static::$routes["$path/index"][$httpMethod] = $call;
         } else {
-            static::$routes["№.$version"][$path][$httpMethod] = $call;
+            static::$routes[static::VERSION_PREFIX . $version][$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
             if ($call['methodName'] == 'index')
-                static::$routes["№.$version"]["$path/index"][$httpMethod] = $call;
+                static::$routes[static::VERSION_PREFIX . $version]["$path/index"][$httpMethod] = $call;
         }
     }
 
     /**
      * Find the api method for the given url and http method
      *
-     * @param string  $path       Requested url path
-     * @param string  $httpMethod GET|POST|PUT|PATCH|DELETE etc
-     * @param array   $data       Data collected from the request
+     * @param string $path       Requested url path
+     * @param string $httpMethod GET|POST|PUT|PATCH|DELETE etc
+     * @param int    $version    Api Version number
+     * @param array  $data       Data collected from the request
      *
-     * @return ApiMethodInfo
      * @throws RestException
+     * @return ApiMethodInfo
      */
     public static function find($path, $httpMethod,
                                 $version = 1, array $data = array())
@@ -322,7 +326,7 @@ class Routes
         $message = null;
         $methods = array();
         if ($version > 1) {
-            $p = Util::nestedValue($p, "№.$version");
+            $p = Util::nestedValue($p, static::VERSION_PREFIX . $version);
             if (!$p)
                 throw new RestException(
                     404,
