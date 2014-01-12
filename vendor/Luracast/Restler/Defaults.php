@@ -132,6 +132,12 @@ class Defaults
      */
     public static $autoValidationEnabled = true;
 
+    /**
+     * @var string name of the class that implements iUser interface to identify
+     *             the user for caching purposes
+     */
+    public static $userIdentifierClass = 'Luracast\\Restler\\User';
+
     // ==================================================================
     //
     // Response
