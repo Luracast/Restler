@@ -187,7 +187,7 @@ class Resources implements iUseAuthentication
         $version = 1;
         if (empty($id)) {
             //do nothing
-        } elseif (false !== ($pos = strpos($id, '-'))) {
+        } elseif (false !== ($pos = strpos($id, '-v'))) {
             $version = intval(substr($id, $pos + 2));
             $id = substr($id, 0, $pos);
         } elseif ($id{0} == 'v' && is_numeric($v = substr($id, 1))) {
