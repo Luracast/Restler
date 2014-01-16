@@ -19,8 +19,6 @@ use ReflectionProperty;
  */
 class Routes
 {
-    const VERSION_PREFIX = '№.';
-
     protected static $routes = array();
 
     /**
@@ -291,19 +289,12 @@ class Routes
         //check for wildcard routes
         if (substr($path, -1, 1) == '*') {
             $path = rtrim($path, '/*');
-            $version == 1
-                ? static::$routes['*'][$path][$httpMethod] = $call
-                : static::$routes[static::VERSION_PREFIX . $version]['*'][$path][$httpMethod] = $call;
-        } elseif ($version == 1) {
-            static::$routes[$path][$httpMethod] = $call;
-            //create an alias with index if the method name is index
-            if ($call['methodName'] == 'index')
-                static::$routes["$path/index"][$httpMethod] = $call;
+            static::$routes["v$version"]['*'][$path][$httpMethod] = $call;
         } else {
-            static::$routes[static::VERSION_PREFIX . $version][$path][$httpMethod] = $call;
+            static::$routes["v$version"][$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
             if ($call['methodName'] == 'index')
-                static::$routes[static::VERSION_PREFIX . $version]["$path/index"][$httpMethod] = $call;
+                static::$routes["v$version"]["$path/index"][$httpMethod] = $call;
         }
     }
 
@@ -321,18 +312,16 @@ class Routes
     public static function find($path, $httpMethod,
                                 $version = 1, array $data = array())
     {
-        $p = static::$routes;
+        $p = Util::nestedValue(static::$routes, "v$version");
+        if (!$p) {
+            throw new RestException(
+                404,
+                "Version $version is not supported"
+            );
+        }
         $status = 404;
         $message = null;
         $methods = array();
-        if ($version > 1) {
-            $p = Util::nestedValue($p, static::VERSION_PREFIX . $version);
-            if (!$p)
-                throw new RestException(
-                    404,
-                    "Version $version is not supported"
-                );
-        }
         if (isset($p[$path][$httpMethod])) {
             //================== static routes ==========================
             return static::populate($p[$path][$httpMethod], $data);
