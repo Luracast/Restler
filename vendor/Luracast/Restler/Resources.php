@@ -190,7 +190,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     public function get($id = '')
     {
-        $version = $this->restler->_requestedApiVersion;
+        $version = $this->restler->getRequestedApiVersion();
         if (empty($id)) {
             //do nothing
         } elseif (false !== ($pos = strpos($id, '-v'))) {
@@ -202,11 +202,6 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         } elseif ($id == 'root' || $id == 'index') {
             $id = '';
         }
-        if (!Defaults::$useUrlBasedVersioning
-            && $version != $this->restler->getRequestedApiVersion()
-        ) {
-            throw new RestException(404);
-        }
         $this->_models = new stdClass();
         $r = null;
         $count = 0;
@@ -217,22 +212,13 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
 
         $filter = array();
 
-        $routes = Routes::toArray();
+        $routes
+            = Util::nestedValue(Routes::toArray(), "v$version")
+            ? : array();
 
-        $prefix = '';
+        $prefix = Defaults::$useUrlBasedVersioning ? "/v$version" : '';
 
-        if ($version > 1) {
-            $routes
-                = Util::nestedValue($routes, Routes::VERSION_PREFIX . $version)
-                ? : array();
-            if(Defaults::$useUrlBasedVersioning)
-                $prefix = "/v$version";
-        }
-
-        foreach ($routes as $fullPath => $value) {
-            if (0 === strpos($fullPath, Routes::VERSION_PREFIX)) {
-                continue;
-            }
+        foreach ($routes as $value) {
             foreach ($value as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
@@ -884,15 +870,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     public function index()
     {
+        $version = $this->restler->getRequestedApiVersion();
+        $allRoutes = Util::nestedValue(Routes::toArray(), "v$version");
         $r = $this->_resourceListing();
         $map = array();
-        $allRoutes = Routes::toArray();
-        $version = $this->restler->getRequestedApiVersion();
-        if ($version > 1) {
-            $allRoutes
-                = Util::nestedValue($allRoutes, Routes::VERSION_PREFIX . $version)
-                ? : array();
-        }
         if (isset($allRoutes['*'])) {
             $this->_mapResources($allRoutes['*'], $map, $version);
             unset($allRoutes['*']);
@@ -939,8 +920,6 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     private function _mapResources(array $allRoutes, array &$map, $version = 1)
     {
         foreach ($allRoutes as $fullPath => $routes) {
-            if (0 === strpos($fullPath, Routes::VERSION_PREFIX))
-                continue;
             $path = explode('/', $fullPath);
             $resource = isset($path[0]) ? $path[0] : '';
             if ($resource == 'resources')
@@ -990,6 +969,6 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     public static function __getMaximumSupportedVersion()
     {
-        return Scope::get('Restler')->_apiVersion;
+        return Scope::get('Restler')->getApiVersion();
     }
 }
