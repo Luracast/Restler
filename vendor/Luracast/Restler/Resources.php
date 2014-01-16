@@ -15,7 +15,7 @@ use stdClass;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  */
-class Resources implements iUseAuthentication
+class Resources implements iUseAuthentication, iProvideMultiVersionApi
 {
     /**
      * @var bool should protected resources be shown to unauthenticated users?
@@ -25,6 +25,11 @@ class Resources implements iUseAuthentication
      * @var bool should we use format as extension?
      */
     public static $useFormatAsExtension = true;
+    /**
+     * @var bool should we include newer apis in the list? works only when
+     * Defaults::$useUrlBasedVersioning is set to true;
+     */
+    public static $listHigherVersions = true;
     /**
      * @var array all http methods specified here will be excluded from
      * documentation
@@ -110,7 +115,7 @@ class Resources implements iUseAuthentication
         'delete' => 'remove',
     );
     private $_authenticated = false;
-    private $currentResource = '';
+    private $cacheName = '';
 
     public function __construct()
     {
@@ -142,14 +147,15 @@ class Resources implements iUseAuthentication
      */
     public function _pre_get_json($id)
     {
-        $this->currentResource = $resource = 'resources_'.$id;
+        $userClass = Defaults::$userIdentifierClass;
+        $this->cacheName = $userClass::getCacheIdentifier() . '_resources_'.$id;
         if ($this->restler->getProductionMode()
             && !$this->restler->refreshCache
-            && $this->restler->cache->isCached($resource)
+            && $this->restler->cache->isCached($this->cacheName)
         ) {
             //by pass call, compose, postCall stages and directly send response
             $this->restler->composeHeaders();
-            die($this->restler->cache->get($resource));
+            die($this->restler->cache->get($this->cacheName));
         }
     }
 
@@ -167,7 +173,7 @@ class Resources implements iUseAuthentication
     public function _post_get_json($responseData)
     {
         if ($this->restler->getProductionMode()) {
-            $this->restler->cache->set($this->currentResource, $responseData);
+            $this->restler->cache->set($this->cacheName, $responseData);
         }
         return $responseData;
     }
@@ -184,15 +190,15 @@ class Resources implements iUseAuthentication
      */
     public function get($id = '')
     {
-        $version = 1;
+        $version = $this->restler->_requestedApiVersion;
         if (empty($id)) {
             //do nothing
         } elseif (false !== ($pos = strpos($id, '-v'))) {
-            $version = intval(substr($id, $pos + 2));
+            //$version = intval(substr($id, $pos + 2));
             $id = substr($id, 0, $pos);
         } elseif ($id{0} == 'v' && is_numeric($v = substr($id, 1))) {
             $id = '';
-            $version = $v;
+            //$version = $v;
         } elseif ($id == 'root' || $id == 'index') {
             $id = '';
         }
@@ -206,14 +212,27 @@ class Resources implements iUseAuthentication
         $count = 0;
 
         $tSlash = !empty($id);
-        $target = empty($id) ? "v$version" : "v$version/$id";
+        $target = empty($id) ? '' : $id;
         $tLen = strlen($target);
 
         $filter = array();
 
         $routes = Routes::toArray();
 
-        foreach ($routes as $value) {
+        $prefix = '';
+
+        if ($version > 1) {
+            $routes
+                = Util::nestedValue($routes, Routes::VERSION_PREFIX . $version)
+                ? : array();
+            if(Defaults::$useUrlBasedVersioning)
+                $prefix = "/v$version";
+        }
+
+        foreach ($routes as $fullPath => $value) {
+            if (0 === strpos($fullPath, Routes::VERSION_PREFIX)) {
+                continue;
+            }
             foreach ($value as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
@@ -240,12 +259,12 @@ class Resources implements iUseAuthentication
                     continue;
                 }
                 foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                    if (0 === strpos($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
                 $m = $route['metadata'];
-                if ($id == '' && $m['resourcePath'] != "v$version/") {
+                if ($id == '' && $m['resourcePath'] != '') {
                     continue;
                 }
                 if ($this->_authenticated
@@ -269,10 +288,6 @@ class Resources implements iUseAuthentication
                 if (!$r) {
                     $resourcePath = '/'
                         . trim($m['resourcePath'], '/');
-                    if (!Defaults::$useUrlBasedVersioning) {
-                        $resourcePath = str_replace("/v$version", '',
-                            $resourcePath);
-                    }
                     $r = $this->_operationListing($resourcePath);
                 }
                 $parts = explode('/', $fullPath);
@@ -289,10 +304,6 @@ class Resources implements iUseAuthentication
                 $nickname = $this->_nickname($route);
                 $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
-                // $parts[0] .= $this->formatString; //".{format}";
-                if (!Defaults::$useUrlBasedVersioning) {
-                    array_shift($parts);
-                }
                 $fullPath = implode('/', $parts);
                 $description = isset(
                 $m['classDescription'])
@@ -388,7 +399,7 @@ class Resources implements iUseAuthentication
                 }
 
                 if (!$api) {
-                    $api = $this->_api("/$fullPath", $description);
+                    $api = $this->_api("$prefix/$fullPath", $description);
                     $r->apis[] = $api;
                 }
 
@@ -460,7 +471,7 @@ class Resources implements iUseAuthentication
     private function _resourceListing()
     {
         $r = new stdClass();
-        $r->apiVersion = (string)$this->restler->getApiVersion();
+        $r->apiVersion = (string)$this->restler->_requestedApiVersion;
         $r->swaggerVersion = "1.1";
         $r->basePath = $this->restler->getBaseUrl();
         $r->apis = array();
@@ -834,13 +845,17 @@ class Resources implements iUseAuthentication
      */
     public function _pre_index_json()
     {
+        $userClass = Defaults::$userIdentifierClass;
+        $this->cacheName = $userClass::getCacheIdentifier()
+            . '_resources-v'
+            . $this->restler->_requestedApiVersion;
         if ($this->restler->getProductionMode()
             && !$this->restler->refreshCache
-            && $this->restler->cache->isCached('resources')
+            && $this->restler->cache->isCached($this->cacheName)
         ) {
             //by pass call, compose, postCall stages and directly send response
             $this->restler->composeHeaders();
-            die($this->restler->cache->get('resources'));
+            die($this->restler->cache->get($this->cacheName));
         }
     }
 
@@ -858,7 +873,7 @@ class Resources implements iUseAuthentication
     public function _post_index_json($responseData)
     {
         if ($this->restler->getProductionMode()) {
-            $this->restler->cache->set('resources', $responseData);
+            $this->restler->cache->set($this->cacheName, $responseData);
         }
         return $responseData;
     }
@@ -872,26 +887,64 @@ class Resources implements iUseAuthentication
         $r = $this->_resourceListing();
         $map = array();
         $allRoutes = Routes::toArray();
+        $version = $this->restler->getRequestedApiVersion();
+        if ($version > 1) {
+            $allRoutes
+                = Util::nestedValue($allRoutes, Routes::VERSION_PREFIX . $version)
+                ? : array();
+        }
         if (isset($allRoutes['*'])) {
-            $this->_mapResources($allRoutes['*'], $map);
+            $this->_mapResources($allRoutes['*'], $map, $version);
             unset($allRoutes['*']);
         }
-        $this->_mapResources($allRoutes, $map);
+        $this->_mapResources($allRoutes, $map, $version);
         foreach ($map as $path => $description) {
-            if(false === strpos($path,'{')){
+            if (false === strpos($path, '{')) {
                 //add id
                 $r->apis[] = array(
-                    'path' => "/resources/{$path}$this->formatString",
+                    'path' => $path . $this->formatString,
                     'description' => $description
                 );
             }
         }
+        if (Defaults::$useUrlBasedVersioning && static::$listHigherVersions) {
+            $nextVersion = $version + 1;
+            if ($nextVersion <= $this->restler->getApiVersion()) {
+                list($status, $data) = $this->_loadResource("/v$nextVersion/resources.json");
+                if($status == 200){
+                    $r->apis = array_merge($r->apis, $data->apis);
+                    $r->apiVersion = $data->apiVersion;
+                }
+            }
+
+        }
         return $r;
     }
 
-    private function _mapResources(array $allRoutes, array &$map)
+    private function _loadResource ($url)
+    {
+        $ch = curl_init($this->restler->getBaseUrl() . $url
+            . (empty($_GET) ? '' : '?' . http_build_query($_GET)));
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'Accept:application/json',
+        ));
+        $result = json_decode(curl_exec($ch));
+        $http_status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        return array($http_status, $result);
+    }
+
+    private function _mapResources(array $allRoutes, array &$map, $version = 1)
     {
         foreach ($allRoutes as $fullPath => $routes) {
+            if (0 === strpos($fullPath, Routes::VERSION_PREFIX))
+                continue;
+            $path = explode('/', $fullPath);
+            $resource = isset($path[0]) ? $path[0] : '';
+            if ($resource == 'resources')
+                continue;
             foreach ($routes as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
@@ -903,21 +956,9 @@ class Resources implements iUseAuthentication
                 ) {
                     continue;
                 }
-                $path = explode('/', $fullPath);
-
-                $resource = isset($path[1]) ? $path[1] : '';
-
-                $version = intval(substr($path[0], 1));
-
-                if ($resource == 'resources'
-                    || (!Defaults::$useUrlBasedVersioning
-                        && $version != $this->restler->getRequestedApiVersion())
-                ) {
-                    continue;
-                }
 
                 foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($fullPath, "v$version/$exclude")) {
+                    if (0 === strpos($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
@@ -930,16 +971,25 @@ class Resources implements iUseAuthentication
                     continue;
                 }
 
-                $resource = $resource
-                    ? ($version == 1 ? $resource : "$resource-v$version")
-                    : ($version == 1 ? 'root' : "root-v$version");
+                $res = $resource
+                    ? ($version == 1 ? "/resources/$resource" : "/v$version/resources/$resource-v$version")
+                    : ($version == 1 ? "/resources/root" : "/v$version/resources/root-v$version");
 
-                if (empty($map[$resource])) {
-                    $map[$resource] = isset(
+                if (empty($map[$res])) {
+                    $map[$res] = isset(
                     $route['metadata']['classDescription'])
                         ? $route['metadata']['classDescription'] : '';
                 }
             }
         }
+    }
+
+    /**
+     * Maximum api version supported by the api class
+     * @return int
+     */
+    public static function __getMaximumSupportedVersion()
+    {
+        return Scope::get('Restler')->_apiVersion;
     }
 }
