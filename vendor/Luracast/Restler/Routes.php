@@ -294,7 +294,7 @@ class Routes
             static::$routes["v$version"][$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
             if ($call['methodName'] == 'index')
-                static::$routes["v$version"]["$path/index"][$httpMethod] = $call;
+                static::$routes["v$version"][ltrim("$path/index",'/')][$httpMethod] = $call;
         }
     }
 
