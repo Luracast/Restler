@@ -316,7 +316,7 @@ class Routes
         if (!$p) {
             throw new RestException(
                 404,
-                "Version $version is not supported"
+                $version == 1 ? '' : "Version $version is not supported"
             );
         }
         $status = 404;
