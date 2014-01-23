@@ -789,8 +789,8 @@ class Resources implements iUseAuthentication
                     $this->_model($itemType);
                     $itemType = $this->_noNamespace($itemType);
                 }
-                $properties[$key]['item'] = array(
-                    'type' => $itemType,
+                $properties[$key]['items'] = array(
+                    '$ref' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
             } else if (preg_match('/^array\[(.+)\]$/i', $type, $matches)) {
