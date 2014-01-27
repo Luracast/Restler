@@ -228,7 +228,7 @@ class Routes
                 }
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
-                if (empty($pathParams)) {
+                if (empty($pathParams) || $allowAmbiguity) {
                     static::addPath($url, $call, $httpMethod, $version);
                 }
                 $lastPathParam = array_keys($pathParams);
