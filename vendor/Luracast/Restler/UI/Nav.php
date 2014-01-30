@@ -58,8 +58,13 @@ class Nav
         foreach (static::$prepends as $path => $text) {
             $url = null;
             if (is_array($text)) {
-                $url = $text['url'];
-                $text = $text['text'];
+                if(isset($text['url'])) {
+                    $url = $text['url'];
+                    $text = $text['text'];
+                } else {
+                    $url = current(array_keys($text));
+                    $text = current($text);
+                }
             }
             if (is_numeric($path)) {
                 $path = $text;
@@ -109,8 +114,13 @@ class Nav
         foreach (static::$appends as $path => $text) {
             $url = null;
             if (is_array($text)) {
-                $url = $text['url'];
-                $text = $text['text'];
+                if(isset($text['url'])) {
+                    $url = $text['url'];
+                    $text = $text['text'];
+                } else {
+                    $url = current(array_keys($text));
+                    $text = current($text);
+                }
             }
             if (is_numeric($path)) {
                 $path = $text;
