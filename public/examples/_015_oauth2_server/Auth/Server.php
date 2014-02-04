@@ -1,12 +1,14 @@
 <?php
-namespace OAuth2;
+namespace Auth;
 
 use Luracast\Restler\iAuthenticate;
-use OAuth2_Request;
-use OAuth2_Response;
-use OAuth2_GrantType_AuthorizationCode;
-use OAuth2_Storage_Pdo;
-use OAuth2_Server;
+use OAuth2\GrantType\UserCredentials;
+use OAuth2\Storage\Pdo;
+use OAuth2\Server as OAuth2Server;
+use OAuth2\GrantType\AuthorizationCode;
+use OAuth2\Request;
+use OAuth2\Response;
+
 
 /**
  * Class Server
@@ -17,15 +19,15 @@ use OAuth2_Server;
 class Server implements iAuthenticate
 {
     /**
-     * @var OAuth2_Server
+     * @var OAuth2Server
      */
     protected static $server;
     /**
-     * @var OAuth2_Storage_Pdo
+     * @var Pdo
      */
     protected static $storage;
     /**
-     * @var OAuth2_Request
+     * @var Request
      */
     protected static $request;
 
@@ -36,13 +38,19 @@ class Server implements iAuthenticate
         if (!file_exists($dir . $file)) {
             include_once $dir . 'rebuild_db.php';
         }
-        static::$storage = new OAuth2_Storage_Pdo(
+        static::$storage = new Pdo(
             array('dsn' => 'sqlite:' . $dir . $file)
         );
-        static::$request = OAuth2_Request::createFromGlobals();
-        static::$server = new OAuth2_Server(static::$storage);
-        static::$server->addGrantType(
-            new OAuth2_GrantType_AuthorizationCode(static::$storage)
+        // create array of supported grant types
+        $grantTypes = array(
+            'authorization_code' => new AuthorizationCode(static::$storage),
+            'user_credentials'   => new UserCredentials(static::$storage),
+        );
+        static::$request = Request::createFromGlobals();
+        static::$server = new OAuth2Server(
+            static::$storage,
+            array('enforce_state' => true, 'allow_implicit' => true),
+            $grantTypes
         );
     }
 
@@ -57,6 +65,12 @@ class Server implements iAuthenticate
     public function authorize()
     {
         static::$server->getResponse(static::$request);
+        // validate the authorize request.  if it is invalid,
+        // redirect back to the client with the errors in tow
+        if (!static::$server->validateAuthorizeRequest(static::$request)) {
+            static::$server->getResponse()->send();
+            exit;
+        }
         return array('queryString' => $_SERVER['QUERY_STRING']);
     }
 
@@ -71,15 +85,18 @@ class Server implements iAuthenticate
      *
      * @param bool $authorize
      *
+     * @return \OAuth2\Response
+     *
      * @format JsonFormat,UploadFormat
      */
     public function postAuthorize($authorize = false)
     {
-        $response = static::$server->handleAuthorizeRequest(
+        static::$server->handleAuthorizeRequest(
             static::$request,
+            new Response(),
             (bool)$authorize
-        );
-        die($response->send());
+        )->send();
+        exit;
     }
 
     /**
@@ -91,10 +108,8 @@ class Server implements iAuthenticate
      */
     public function postGrant()
     {
-        $response = static::$server->handleGrantRequest(
-            static::$request
-        );
-        die($response->send());
+        static::$server->handleTokenRequest(static::$request)->send();
+        exit;
     }
 
     /**
@@ -121,7 +136,7 @@ class Server implements iAuthenticate
      */
     public function __isAllowed()
     {
-        return self::$server->verifyAccessRequest(static::$request);
+        return self::$server->verifyResourceRequest(static::$request);
     }
 
     public function __getWWWAuthenticateString()
