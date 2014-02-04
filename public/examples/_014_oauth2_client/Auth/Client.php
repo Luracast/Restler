@@ -1,11 +1,12 @@
 <?php
-namespace OAuth2;
+namespace Auth;
 
 use Luracast\Restler\Format\HtmlFormat;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
+use Luracast\Restler\Scope;
 use Luracast\Restler\Util;
-use OAuth2\Curl;
+use Auth\Curl;
 
 class Client
 {
@@ -28,9 +29,13 @@ class Client
 
     public function __construct()
     {
-        if (!self::$serverUrl)
-            self::$serverUrl = dirname(Util::$restler->_baseUrl) . '/_015_oauth2_server';
-        self::$authorizeRedirectUrl = Util::$restler->_baseUrl . '/authorized';
+        session_start();
+        HtmlFormat::$data['session_id']= session_id();
+        if (!self::$serverUrl) {
+            $r = Scope::get('Restler');
+            self::$serverUrl = dirname($r->getBaseUrl()) . '/_015_oauth2_server';
+            self::$authorizeRedirectUrl = $r->getBaseUrl() . '/authorized';
+        }
         if (!self::$authorizeUrl) {
             self::$authorizeUrl =
                 self::$serverUrl . '/authorize';

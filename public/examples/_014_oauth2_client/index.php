@@ -87,6 +87,6 @@ use OAuth2\Client;
 //Client::$serverUrl = 'http://brentertainment.com/oauth2/lockdin';
 
 $r = new Restler();
-$r->addAPIClass('OAuth2\\Client', '');
+$r->addAPIClass('Auth\\Client', '');
 $r->setOverridingFormats('HtmlFormat','UploadFormat','JsonFormat');
 $r->handle();
