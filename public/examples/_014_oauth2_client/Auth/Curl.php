@@ -1,6 +1,6 @@
 <?php
 
-namespace OAuth2;
+namespace Auth;
 
 class Curl
 {
