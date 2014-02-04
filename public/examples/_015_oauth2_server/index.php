@@ -121,11 +121,10 @@ but provides both client and server components and both are now readily availabl
 the world of OAuth2. 
 */
 require_once "../../../vendor/restler.php";
-require_once "OAuth2/Server.php";
 use Luracast\Restler\Restler;
 use OAuth2\Server;
 
 $r = new Restler();
-$r->addAuthenticationClass('OAuth2\\Server', '');
+$r->addAuthenticationClass('Auth\\Server', '');
 $r->setOverridingFormats('JsonFormat', 'HtmlFormat', 'UploadFormat');
 $r->handle();
