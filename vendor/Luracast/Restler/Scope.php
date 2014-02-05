@@ -87,7 +87,10 @@ class Scope
                 static::$instances[$name] = (object)array('instance' => $r);
                 if ($name != 'Restler') {
                     $r->restler = static::get('Restler');
-                    if ($m = @$r->restler->apiMethodInfo->metadata) {
+                    if (isset($r->restler->apiMethodInfo) &&
+                        isset($r->restler->apiMethodInfo->metadata))
+                    {
+                        $m = $r->restler->apiMethodInfo->metadata;
                         $properties = Util::nestedValue(
                             $m, 'class', $name,
                             CommentParser::$embeddedDataName
@@ -108,8 +111,10 @@ class Scope
                 (static::get('Restler')->_authenticated);
         }
         if (isset(static::$instances[$name]->initPending) &&
-            $m = @static::get('Restler')->apiMethodInfo->metadata
+            isset(static::get('Restler')->apiMethodInfo) &&
+            isset(static::get('Restler')->apiMethodInfo->metadata)
         ) {
+            $m = static::get('Restler')->apiMethodInfo->metadata;
             $properties = Util::nestedValue(
                 $m, 'class', $name,
                 CommentParser::$embeddedDataName
