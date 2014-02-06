@@ -27,13 +27,13 @@ library. This section -- the "client" -- is about asking for access rights and k
 important state mechanisms required to communicate with Restler once access has been granted. 
 
 If you're not familiar with OAuth, it's worth familiarizing yourself with the 
-basics and in particular understanding the various workflows that OAuth 2.0 offers. 
+basics and in particular understanding the various workflow that OAuth 2.0 offers.
 The following two links may help:
 
 - [Official OAuth Specification](http://tools.ietf.org/html/draft-ietf-oauth-v2): 
-a bit dry but if you want the "facts" they're there.
+  a bit dry but if you want the "facts" they're there.
 - [OAuth2 Simplified](http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified): 
-a nicely summarized overview of how to think through the key aspects of OAuth 2.0
+  a nicely summarized overview of how to think through the key aspects of OAuth 2.0
 
 The role of the `client application` in OAuth is two-fold:
 
