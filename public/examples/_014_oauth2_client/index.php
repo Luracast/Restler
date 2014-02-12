@@ -81,7 +81,7 @@ For more information on how to start using this functionality with Restler be su
 */
 require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
-use OAuth2\Client;
+use Auth\Client;
 
 //This client takes to the server in the next folder, you can change it by un commenting
 //Client::$serverUrl = 'http://brentertainment.com/oauth2/lockdin';
