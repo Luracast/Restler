@@ -44,6 +44,7 @@ class Scope
 
         //Cache classes
         'HumanReadableCache' => 'Luracast\Restler\HumanReadableCache',
+        'ApcCache' => 'Luracast\Restler\ApcCache',
 
         //Utility classes
         'Object' => 'Luracast\Restler\Data\Object',
