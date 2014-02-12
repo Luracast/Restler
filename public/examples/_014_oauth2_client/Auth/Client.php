@@ -14,14 +14,19 @@ class Client
      * @var string url of the OAuth2 server to authorize
      */
     public static $serverUrl;
+    public static $authorizeRoute = 'authorize';
+    public static $tokenRoute = 'grant';
+    public static $resourceMethod = 'GET';
+    public static $resourceRoute = 'access';
+    public static $resourceParams = array();
+    public static $resourceOptions = array();
     public static $clientId = 'demoapp';
     public static $clientSecret = 'demopass';
     /**
      * @var string where to send the OAuth2 authorization result
      * (success or failure)
      */
-    protected static $authorizeRedirectUrl;
-    protected static $authorizeUrl;
+    protected static $replyBackUrl;
     /**
      * @var Restler
      */
@@ -30,16 +35,30 @@ class Client
     public function __construct()
     {
         session_start();
-        HtmlFormat::$data['session_id']= session_id();
-        if (!self::$serverUrl) {
-            $r = Scope::get('Restler');
-            self::$serverUrl = dirname($r->getBaseUrl()) . '/_015_oauth2_server';
-            self::$authorizeRedirectUrl = $r->getBaseUrl() . '/authorized';
+        HtmlFormat::$data['session_id'] = session_id();
+        $this->restler = Scope::get('Restler');
+        static::$replyBackUrl =
+            $this->restler->getBaseUrl() . '/authorized';
+        if (!static::$serverUrl) {
+            static::$serverUrl =
+                dirname($this->restler->getBaseUrl()) . '/_015_oauth2_server';
         }
-        if (!self::$authorizeUrl) {
-            self::$authorizeUrl =
-                self::$serverUrl . '/authorize';
-        }
+        static::$authorizeRoute = static::fullURL(static::$authorizeRoute);
+        static::$tokenRoute = static::fullURL(static::$tokenRoute);
+        static::$resourceRoute = static::fullURL(static::$resourceRoute);
+    }
+
+    /**
+     * Prefix server url if relative path is used
+     *
+     * @param string $path full url or relative path
+     * @return string proper url
+     */
+    private function fullURL($path)
+    {
+        return 0 === strpos($path, 'http')
+            ? $path
+            : static::$serverUrl . '/' . $path;
     }
 
     /**
@@ -53,8 +72,8 @@ class Client
     public function index()
     {
         return array(
-            'authorize_url' => self::$authorizeUrl,
-            'authorize_redirect_url' => self::$authorizeRedirectUrl
+            'authorize_url' => static::$authorizeRoute,
+            'authorize_redirect_url' => static::$replyBackUrl
         );
     }
 
@@ -94,13 +113,13 @@ class Client
         $query = array(
             'grant_type' => 'authorization_code',
             'code' => $code,
-            'client_id' => self::$clientId,
-            'client_secret' => self::$clientSecret,
-            'redirect_uri' => self::$authorizeRedirectUrl,
+            'client_id' => static::$clientId,
+            'client_secret' => static::$clientSecret,
+            'redirect_uri' => static::$replyBackUrl,
         );
         //call the API using cURL
         $curl = new Curl();
-        $endpoint = self::$serverUrl . '/grant';
+        $endpoint = static::$tokenRoute;
         $response = $curl->request($endpoint, $query, 'POST');
         if (!(json_decode($response['response'], true))) {
             $status = $response['headers']['http_code'];
@@ -117,7 +136,7 @@ class Client
             //OAuth error
             Util::nestedValue($response, 'error_description')) ||
         ($error['error_description'] =
-            //Rester exception
+            //Restler exception
             Util::nestedValue($response, 'error', 'message')) ||
         ($error['error_description'] =
             //cURL error
@@ -130,19 +149,24 @@ class Client
 
         $error_uri = Util::nestedValue($response, 'error_uri');
 
-        if($error_uri){
+        if ($error_uri) {
             $error['error_uri'] = $error_uri;
         }
 
         // if it is successful, call the API with the retrieved token
-        if (($token = Util::nestedValue($response,'access_token'))) {
+        if (($token = Util::nestedValue($response, 'access_token'))) {
             // make request to the API for awesome data
-            $endpoint = self::$serverUrl . '/access?access_token=' . $token;
-            $response = $curl->request($endpoint);
+            $data = static::$resourceParams + array('access_token' => $token);
+            $response = $curl->request(
+                static::$resourceRoute,
+                $data,
+                static::$resourceMethod,
+                static::$resourceOptions
+            );
             HtmlFormat::$view = 'oauth2/client/granted.twig';
             return array(
                 'token' => $token,
-                'endpoint' => $endpoint
+                'endpoint' => static::$resourceRoute . '?' . http_build_query($data)
             ) + json_decode($response['response'], true);
         }
         HtmlFormat::$view = 'oauth2/client/error.twig';
