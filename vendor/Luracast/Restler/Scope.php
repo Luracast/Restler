@@ -31,6 +31,7 @@ class Scope
         'XmlFormat' => 'Luracast\Restler\Format\XmlFormat',
         'YamlFormat' => 'Luracast\Restler\Format\YamlFormat',
         'CsvFormat' => 'Luracast\Restler\Format\CsvFormat',
+        'TsvFormat' => 'Luracast\Restler\Format\TsvFormat',
 
         //Filter classes
         'RateLimit' => 'Luracast\Restler\Filter\RateLimit',
