@@ -602,10 +602,10 @@ class Resources implements iUseAuthentication
             ? array_values($this->_bodyParam['names'])
             : array();
         if(count($n)==1){
-            if (isset($this->_models->{$n[0]->dataType})) {
+            if (isset($this->_models->{$this->_noNamespace($n[0]->dataType)})) {
                 // ============ custom class ===================
                 $r = $n[0];
-                $c = $this->_models->{$r->dataType};
+                $c = $this->_models->{$this->_noNamespace($r->dataType)};
                 $a = $c->properties;
                 $r->description = "Paste JSON data here";
                 if (count($a)) {
