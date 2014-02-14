@@ -245,7 +245,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     continue;
                 }
                 foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($fullPath, $exclude)) {
+                    if (empty($exclude)) {
+                        if ($fullPath == $exclude)
+                            continue 2;
+                    } elseif (0 === strpos($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
@@ -937,7 +940,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
 
                 foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($fullPath, $exclude)) {
+                    if (empty($exclude)) {
+                        if ($fullPath == $exclude)
+                            continue 2;
+                    } elseif (0 === strpos($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
