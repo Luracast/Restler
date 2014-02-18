@@ -85,15 +85,20 @@ class Scope
                 $fullName = static::$classAliases[$name];
             }
             if (class_exists($fullName)) {
+                $shortName = Util::getShortName($name);
                 $r = new $fullName();
                 static::$instances[$name] = (object)array('instance' => $r);
                 if ($name != 'Restler') {
                     $r->restler = static::get('Restler');
-                    if ($m = @$r->restler->apiMethodInfo->metadata) {
+                    $m = Util::nestedValue($r->restler, 'apiMethodInfo', 'metadata');
+                    if ($m) {
                         $properties = Util::nestedValue(
-                            $m, 'class', $name,
+                            $m, 'class', $fullName,
                             CommentParser::$embeddedDataName
-                        ) ? : array();
+                        ) ? : (Util::nestedValue(
+                            $m, 'class', $shortName,
+                            CommentParser::$embeddedDataName
+                        ) ? : array());
                     } else {
                         static::$instances[$name]->initPending = true;
                     }
@@ -109,15 +114,27 @@ class Scope
             $r->__setAuthenticationStatus
                 (static::get('Restler')->_authenticated);
         }
-        if (isset(static::$instances[$name]->initPending) &&
-            $m = @static::get('Restler')->apiMethodInfo->metadata
-        ) {
-            $properties = Util::nestedValue(
-                $m, 'class', $name,
-                CommentParser::$embeddedDataName
-            ) ? : array();
-            unset(static::$instances[$name]->initPending);
-            $initialized = false;
+        if (isset(static::$instances[$name]->initPending)) {
+            $m = Util::nestedValue(static::get('Restler'), 'apiMethodInfo', 'metadata');
+            $fullName = $name;
+            if (class_exists($name)) {
+                $shortName = Util::getShortName($name);
+            } else {
+                $shortName = $name;
+                if (isset(static::$classAliases[$name]))
+                    $fullName = static::$classAliases[$name];
+            }
+            if ($m) {
+                $properties = Util::nestedValue(
+                    $m, 'class', $fullName,
+                    CommentParser::$embeddedDataName
+                ) ? : (Util::nestedValue(
+                    $m, 'class', $shortName,
+                    CommentParser::$embeddedDataName
+                ) ? : array());
+                unset(static::$instances[$name]->initPending);
+                $initialized = false;
+            }
         }
         if (!$initialized && is_object($r)) {
             $properties += static::$properties;
