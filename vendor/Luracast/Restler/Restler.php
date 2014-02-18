@@ -331,7 +331,7 @@ class Restler extends EventDispatcher
 
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
-                'iFormat interface');
+                    'iFormat interface');
             if ($throwException && get_class($obj) == get_class($this->requestFormat)) {
                 $throwException = false;
             }
@@ -374,7 +374,7 @@ class Restler extends EventDispatcher
 
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
-                'iFormat interface');
+                    'iFormat interface');
 
             foreach ($obj->getMIMEMap() as $mime => $extension) {
                 if (!isset($this->formatOverridesMap[$extension]))
@@ -410,7 +410,7 @@ class Restler extends EventDispatcher
         }
 
         $this->baseUrl = rtrim($baseUrl
-        . substr($fullPath, 0, strlen($fullPath) - strlen($path)), '/');
+            . substr($fullPath, 0, strlen($fullPath) - strlen($path)), '/');
 
         $path = preg_replace('/(\/*\?.*$)|(\/$)/', '', $path);
         $path = str_replace(
@@ -554,9 +554,13 @@ class Restler extends EventDispatcher
             throw new RestException(404);
         Scope::$classAliases[Util::getShortName($o->className)]
             = $this->apiVersionMap[$o->className][$this->requestedApiVersion];
-        foreach($this->authClasses as $auth) {
-            Scope::$classAliases[$auth]
-                = $this->apiVersionMap[$auth][$this->requestedApiVersion];
+        foreach ($this->authClasses as $auth) {
+            if (isset($this->apiVersionMap[$auth])) {
+                Scope::$classAliases[$auth] = $this->apiVersionMap[$auth][$this->requestedApiVersion];
+            } elseif (isset($this->apiVersionMap[Scope::$classAliases[$auth]])) {
+                Scope::$classAliases[$auth]
+                    = $this->apiVersionMap[Scope::$classAliases[$auth]][$this->requestedApiVersion];
+            }
         }
     }
 
@@ -584,14 +588,14 @@ class Restler extends EventDispatcher
         ) {
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
                 header('Access-Control-Allow-Methods: '
-                . Defaults::$accessControlAllowMethods);
+                    . Defaults::$accessControlAllowMethods);
 
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
                 header('Access-Control-Allow-Headers: '
-                . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
+                    . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 
             header('Access-Control-Allow-Origin: ' .
-            (Defaults::$accessControlAllowOrigin == '*' ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin));
+                (Defaults::$accessControlAllowOrigin == '*' ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin));
             header('Access-Control-Allow-Credentials: true');
 
             exit(0);
@@ -649,7 +653,7 @@ class Restler extends EventDispatcher
                 $format = Scope::get($this->formatMap[$extension]);
                 $format->setExtension($extension);
                 // echo "Extension $extension";
-               return $format;
+                return $format;
             }
         }
         // check if client has sent list of accepted data formats
@@ -841,7 +845,7 @@ class Restler extends EventDispatcher
         } catch (RestException $e) {
             $this->authVerified = true;
             if ($accessLevel > 1) { //when it is not a hybrid api
-               throw ($e);
+                throw ($e);
             } else {
                 $this->authenticated = false;
             }
