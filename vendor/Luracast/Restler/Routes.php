@@ -481,10 +481,22 @@ class Routes
         $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($props as $prop) {
             if ($c = $prop->getDocComment()) {
-                $children[$prop->getName()] =
+                $property =
                     array('name' => $prop->getName()) +
                     Util::nestedValue(CommentParser::parse($c), 'var') +
                     array('type' => 'string');
+                 
+                $type = $property['type'];
+                if(is_string($type) && class_exists($type)){
+                    list($contentType,$grandchildren) = static::getTypeAndModel(
+                        new ReflectionClass($type)
+                    );  
+                    if(is_array($grandchildren)){
+                        $property['children']=$grandchildren;
+                    }
+                }
+                  
+                $children[$prop->getName()] = $property;
             }
         }
         return array($class->getName(), $children);
