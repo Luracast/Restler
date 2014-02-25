@@ -70,8 +70,14 @@ class UploadFormat extends Format
                 //assume that the error is due to maximum size limit
                 throw new RestException($file['error'] > 5 ? 500 : 413, static::$errors[$file['error']]);
             }
-            if ($doMimeCheck && !in_array($file['type'],
-                    self::$allowedMimeTypes)
+            $typeElements = explode('/', $file['type']);
+            $genericType = $typeElements[0].'/*';
+            if (
+                $doMimeCheck
+                && !(
+                    in_array($file['type'], self::$allowedMimeTypes)
+                    || in_array($genericType, self::$allowedMimeTypes)
+                )
             ) {
                 throw new RestException(403, "File type ({$file['type']}) is not supported.");
             }
