@@ -387,7 +387,7 @@ class CommentParser
         }
         $value = implode(' ', $value);
         return array(
-            $param,
+            ltrim($param, '\\'),
             array('description' => $value)
         );
     }
