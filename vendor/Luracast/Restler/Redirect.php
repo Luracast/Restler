@@ -22,10 +22,11 @@ class Redirect
      * @param string $url relative path or full url
      * @param array $params associative array of query parameters
      * @param array $sessionData associative array of properties to be set in $_SESSION
+     * @param int $status http status code to send the response with ideally 301 or 302
      *
      * @return array
      */
-    public static function to($url, array $params = array(), array $sessionData = array())
+    public static function to($url, array $params = array(), array $sessionData = array(), $status = 302)
     {
         $url = ltrim($url, '/');
         /** @var $r Restler */
@@ -42,6 +43,10 @@ class Redirect
             foreach ($sessionData as $name => $value) {
                 $_SESSION[$name] = $value;
             }
+            header(
+                "{$_SERVER['SERVER_PROTOCOL']} $status " .
+                (isset(RestException::$codes[$status]) ? RestException::$codes[$status] : '')
+            );
             header("Location: $url");
             die('');
         }
