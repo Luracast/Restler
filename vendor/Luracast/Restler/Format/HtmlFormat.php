@@ -28,6 +28,7 @@ class HtmlFormat extends Format
     public static $view;
     public static $errorView = 'debug.php';
     public static $format = 'php';
+    public static $handleSession = true;
     /**
      * @var array global key value pair to be supplied to the templates. All
      * keys added here will be available as a variable inside the template
@@ -46,6 +47,13 @@ class HtmlFormat extends Format
 
     public function __construct()
     {
+        //============ SESSION MANAGEMENT =============//
+        if (static::$handleSession) {
+            if (session_start() && isset($_SESSION['flash'])) {
+                static::$data['flash'] = $_SESSION['flash'];
+                unset($_SESSION['flash']);
+            }
+        }
         if (!static::$viewPath) {
             $array = explode('vendor', __DIR__, 2);
             static::$viewPath = $array[0] . 'views';
@@ -213,9 +221,9 @@ class HtmlFormat extends Format
     /**
      * Encode the given data in the format
      *
-     * @param array   $data                resulting data that needs to
+     * @param array $data resulting data that needs to
      *                                     be encoded in the given format
-     * @param boolean $humanReadable       set to TRUE when restler
+     * @param boolean $humanReadable set to TRUE when restler
      *                                     is not running in production mode.
      *                                     Formatter has to make the encoded
      *                                     output more human readable
