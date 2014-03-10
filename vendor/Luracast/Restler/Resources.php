@@ -93,20 +93,20 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      * used to set the extension manually
      */
     public $formatString = '';
-    private $_models;
-    private $_bodyParam;
+    protected $_models;
+    protected $_bodyParam;
     /**
      * @var bool|stdClass
      */
-    private $_fullDataRequested = false;
-    private $crud = array(
+    protected $_fullDataRequested = false;
+    protected $crud = array(
         'POST' => 'create',
         'GET' => 'retrieve',
         'PUT' => 'update',
         'DELETE' => 'delete',
         'PATCH' => 'partial update'
     );
-    private static $prefixes = array(
+    protected static $prefixes = array(
         'get' => 'retrieve',
         'index' => 'list',
         'post' => 'create',
@@ -114,8 +114,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         'patch' => 'modify',
         'delete' => 'remove',
     );
-    private $_authenticated = false;
-    private $cacheName = '';
+    protected $_authenticated = false;
+    protected $cacheName = '';
 
     public function __construct()
     {
@@ -443,13 +443,13 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $method;
     }
 
-    private function _noNamespace($className)
+    protected function _noNamespace($className)
     {
         $className = explode('\\', $className);
         return end($className);
     }
 
-    private function _operationListing($resourcePath = '/')
+    protected function _operationListing($resourcePath = '/')
     {
         $r = $this->_resourceListing();
         $r->resourcePath = $resourcePath;
@@ -457,7 +457,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _resourceListing()
+    protected function _resourceListing()
     {
         $r = new stdClass();
         $r->apiVersion = (string)$this->restler->_requestedApiVersion;
@@ -467,7 +467,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _api($path, $description = '')
+    protected function _api($path, $description = '')
     {
         $r = new stdClass();
         $r->path = $path;
@@ -479,7 +479,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _operation(
+    protected function _operation(
         $nickname,
         $httpMethod = 'GET',
         $summary = 'description',
@@ -507,7 +507,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _parameter($param)
+    protected function _parameter($param)
     {
         $r = new stdClass();
         $r->name = $param['name'];
@@ -578,7 +578,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _appendToBody($p)
+    protected function _appendToBody($p)
     {
         if ($p->name === Defaults::$fullRequestDataName) {
             $this->_fullDataRequested = $p;
@@ -595,7 +595,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $this->_bodyParam['names'][$p->name] = $p;
     }
 
-    private function _getBody()
+    protected function _getBody()
     {
         $r = new stdClass();
         $n = isset($this->_bodyParam['names'])
@@ -693,7 +693,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _model($className, $instance = null)
+    protected function _model($className, $instance = null)
     {
         $id = $this->_noNamespace($className);
         if(isset($this->_models->{$id})){
@@ -905,7 +905,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    private function _loadResource ($url)
+    protected function _loadResource ($url)
     {
         $ch = curl_init($this->restler->getBaseUrl() . $url
             . (empty($_GET) ? '' : '?' . http_build_query($_GET)));
@@ -920,7 +920,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return array($http_status, $result);
     }
 
-    private function _mapResources(array $allRoutes, array &$map, $version = 1)
+    protected function _mapResources(array $allRoutes, array &$map, $version = 1)
     {
         foreach ($allRoutes as $fullPath => $routes) {
             $path = explode('/', $fullPath);
