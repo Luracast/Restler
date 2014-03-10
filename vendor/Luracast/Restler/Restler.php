@@ -552,8 +552,12 @@ class Restler extends EventDispatcher
         }
         if (!isset($o->className))
             throw new RestException(404);
-        Scope::$classAliases[Util::getShortName($o->className)]
-            = $this->apiVersionMap[$o->className][$this->requestedApiVersion];
+        
+        if(isset($this->apiVersionMap[$o->className])){
+            Scope::$classAliases[Util::getShortName($o->className)]
+                = $this->apiVersionMap[$o->className][$this->requestedApiVersion];
+        }
+        
         foreach ($this->authClasses as $auth) {
             if (isset($this->apiVersionMap[$auth])) {
                 Scope::$classAliases[$auth] = $this->apiVersionMap[$auth][$this->requestedApiVersion];
