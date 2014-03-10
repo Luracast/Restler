@@ -237,11 +237,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     //they are listed else where under that static part name
                     continue;
                 }
-                if (
-                    self::$hideProtected
-                    && !$this->_authenticated
-                    && $route['accessLevel'] > 1
-                ) {
+                
+                if (!static::verifyAccess($route)){
                     continue;
                 }
                 foreach (static::$excludedPaths as $exclude) {
@@ -254,13 +251,6 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
                 $m = $route['metadata'];
                 if ($id == '' && $m['resourcePath'] != '') {
-                    continue;
-                }
-                if ($this->_authenticated
-                    && static::$accessControlFunction
-                    && (!call_user_func(
-                        static::$accessControlFunction, $route['metadata']))
-                ) {
                     continue;
                 }
                 if (isset($filter[$httpMethod][$fullPath])) {
@@ -291,7 +281,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     }
                 }
                 $nickname = $this->_nickname($route);
-                $parts[self::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
+                $parts[static::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
                     .= $this->formatString;
                 $fullPath = implode('/', $parts);
                 $description = isset(
@@ -315,13 +305,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                         . '  (the api method) to write here';
                 }
                 $operation = $this->_operation(
+                    $route,
                     $nickname,
                     $httpMethod,
-                    $m['description'] .
-                    ($route['accessLevel'] > 2
-                        ? static::$apiDescriptionSuffixSymbols[2]
-                        : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
-                    ),
+                    $m['description'],
                     $m['longDescription']
                 );
                 if (isset($m['throws'])) {
@@ -426,12 +413,12 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     {
         static $hash = array();
         $method = $route['methodName'];
-        if(isset(self::$prefixes[$method])){
-            $method = self::$prefixes[$method];
+        if(isset(static::$prefixes[$method])){
+            $method = static::$prefixes[$method];
         } else {
             $method = str_replace(
-                array_keys(self::$prefixes),
-                array_values(self::$prefixes),
+                array_keys(static::$prefixes),
+                array_values(static::$prefixes),
                 $method
             );
         }
@@ -480,6 +467,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     }
 
     protected function _operation(
+        $route,
         $nickname,
         $httpMethod = 'GET',
         $summary = 'description',
@@ -500,7 +488,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
 
         $r->parameters = array();
 
-        $r->summary = $summary;
+        $r->summary = $summary.($route['accessLevel'] > 2
+            ? static::$apiDescriptionSuffixSymbols[2]
+            : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
+        );
         $r->notes = $notes;
 
         $r->errorResponses = array();
@@ -931,11 +922,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
                 }
-                if (
-                    self::$hideProtected
-                    && !$this->_authenticated
-                    && $route['accessLevel'] > 1
-                ) {
+                if (!static::verifyAccess($route)){
                     continue;
                 }
 
@@ -946,14 +933,6 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     } elseif (0 === strpos($fullPath, $exclude)) {
                         continue 2;
                     }
-                }
-
-                if ($this->_authenticated
-                    && static::$accessControlFunction
-                    && (!call_user_func(
-                        static::$accessControlFunction, $route['metadata']))
-                ) {
-                    continue;
                 }
 
                 $res = $resource
@@ -976,5 +955,30 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     public static function __getMaximumSupportedVersion()
     {
         return Scope::get('Restler')->getApiVersion();
+    }
+    
+    /**
+     * Verifies that the requesting user is allowed to view the docs for this API
+     * 
+     * @param $route
+     * 
+     * @return boolean True if the user should be able to view this API's docs
+     */
+    protected function verifyAccess($route){
+        if (
+            static::$hideProtected
+            && !$this->_authenticated
+            && $route['accessLevel'] > 1
+        ) {
+            return false;
+        }
+        if ($this->_authenticated
+            && static::$accessControlFunction
+            && (!call_user_func(
+                static::$accessControlFunction, $route['metadata']))
+        ) {
+            return false;
+        }
+        return true;
     }
 }
