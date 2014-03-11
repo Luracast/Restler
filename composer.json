@@ -1,7 +1,6 @@
 {
     "name":"luracast/restler",
     "description":"Restler is a simple and effective multi-format Web API Server framework written in PHP. Just deal with your business logic in php, Restler will take care of the REST!",
-    "version":"v3.0.0",
     "type":"library",
     "time":"2013-05-10 22:26:00",
     "keywords":["server","api","framework","REST"],
@@ -19,7 +18,8 @@
     ],
     "extra":{
         "branch-alias":{
-            "v3":"v3.0.x-dev"
+            "v3":"v3.0.x-dev",
+            "master":"v3.0.x"
         }
     },
     "suggest":{
