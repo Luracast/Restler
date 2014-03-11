@@ -16,7 +16,7 @@ use Luracast\Restler\Format\HtmlFormat;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc5
  */
-class Flash
+class Flash //implements \JsonSerializable
 {
     const SUCCESS = 'success';
     const INFO = 'info';
@@ -128,5 +128,19 @@ class Flash
     {
         if ($this->usedOnce)
             unset($_SESSION['flash']);
+    }
+
+    /**
+     * Specify data which should be serialized to JSON
+     * @link http://php.net/manual/en/jsonserializable.jsonserialize.php
+     * @return mixed data which can be serialized by <b>json_encode</b>,
+     * which is a value of any type other than a resource.
+     */
+    public function jsonSerialize()
+    {
+        $this->usedOnce = true;
+        return isset($_SESSION['flash'])
+            ? $_SESSION['flash']
+            : array();
     }
 }
