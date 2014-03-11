@@ -1,71 +1,71 @@
 {
-    "name":"luracast/restler",
-    "description":"Restler is a simple and effective multi-format Web API Server framework written in PHP. Just deal with your business logic in php, Restler will take care of the REST!",
-    "type":"library",
-    "time":"2014-03-11 15:38:34",
-    "keywords":["server","api","framework","REST"],
-    "homepage":"http://luracast.com/products/restler/",
-    "license":"LGPL-2.1",
-    "authors":[
+    "name": "luracast/restler",
+    "type": "library",
+    "description": "Restler is a simple and effective multi-format Web API Server framework written in PHP. Just deal with your business logic in php, Restler will take care of the REST!",
+    "keywords": ["server", "api", "framework", "REST"],
+    "homepage": "http://luracast.com/products/restler/",
+    "license": "LGPL-2.1",
+    "authors": [
         {
-            "name":"Luracast",
-            "email":"arul@luracast.com"
+            "name": "Luracast",
+            "email": "arul@luracast.com"
         },
         {
-            "name":"Nick nickl- Lombard",
-            "email":"github@jigsoft.co.za"
+            "name": "Nick nickl- Lombard",
+            "email": "github@jigsoft.co.za"
         }
     ],
-    "extra":{
-        "branch-alias":{
-            "v3":"3.0.x-dev"
-        }
+    "require": {
+        "php": ">=5.3.3"
     },
-    "suggest":{
-        "luracast/explorer":"Restler's very own api explorer (see require-dev for details)",
-        "guzzle/guzzle":"RESTful api HTTP client framework (see require-dev for details)",
-        "behat/behat":"Behaviour driven development testing framework (see require-dev for details)",
-        "rodneyrehm/plist":"Restler supports tho Apple plist xml format (see require-dev for details)",
-        "zendframework/zendamf":"Support for the amf document format  (see require-dev for details)",
-        "symfony/yaml":"Restler can produce content in yaml format as well (see require-dev for details)",
-        "twig/twig":"Restler can render HtmlView using twig templates (see require-dev for details)",
-        "mustache/mustache":"Restler can render HtmlView using mustache/handlebar templates (see require-dev for details)",
-        "bshaffer/oauth2-server-php":"Restler can provide OAuth2 authentication using this library (see require-dev for details)"
-    },
-    "require":{
-        "php":">=5.3.0"
-    },
-    "require-dev":{
-        "luracast/explorer":"*",
-        "guzzle/guzzle":"~3.1.1",
-        "behat/behat":"2.4.*@stable",
-        "rodneyrehm/plist":"dev-master",
-        "zendframework/zendamf":"dev-master",
-        "symfony/yaml":"*",
+    "require-dev": {
+        "luracast/explorer": "*",
+        "guzzle/guzzle": "~3.1.1",
+        "behat/behat": "2.4.*@stable",
+        "rodneyrehm/plist": "dev-master",
+        "zendframework/zendamf": "dev-master",
+        "symfony/yaml": "*",
         "mustache/mustache": "dev-master",
         "twig/twig": "v1.13.0",
-        "bshaffer/oauth2-server-php":"v0.3"
+        "bshaffer/oauth2-server-php": "v1.0"
     },
-    "repositories":[
+    "suggest": {
+        "luracast/explorer": "Restler's very own api explorer (see require-dev for details)",
+        "guzzle/guzzle": "RESTful api HTTP client framework (see require-dev for details)",
+        "behat/behat": "Behaviour driven development testing framework (see require-dev for details)",
+        "rodneyrehm/plist": "Restler supports tho Apple plist xml format (see require-dev for details)",
+        "zendframework/zendamf": "Support for the amf document format  (see require-dev for details)",
+        "symfony/yaml": "Restler can produce content in yaml format as well (see require-dev for details)",
+        "twig/twig": "Restler can render HtmlView using twig templates (see require-dev for details)",
+        "mustache/mustache": "Restler can render HtmlView using mustache/handlebar templates (see require-dev for details)",
+        "bshaffer/oauth2-server-php": "Restler can provide OAuth2 authentication using this library (see require-dev for details)"
+    },
+    "repositories": [
         {
-            "type":"vcs",
-            "url":"https://github.com/zendframework/ZendAmf.git"
+            "type": "vcs",
+            "url": "https://github.com/zendframework/ZendAmf.git"
         },
         {
-            "type":"package",
-            "package":{
-                "name":"luracast/explorer",
-                "version":"v3.0.0",
-                "dist":{
-                    "type":"zip",
-                    "url":"https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
+            "type": "package",
+            "package": {
+                "name": "luracast/explorer",
+                "version": "v3.0.0",
+                "dist": {
+                    "type": "zip",
+                    "url": "https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
                 }
             }
         }
     ],
-    "autoload":{
-        "psr-0":{
-            "Luracast\\Restler":"vendor/"
+    "autoload": {
+        "psr-0": {
+            "Luracast\\Restler": "vendor/"
+        }
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "v3": "3.0.x-dev"
         }
     }
 }
