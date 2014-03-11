@@ -18,8 +18,7 @@
     ],
     "extra":{
         "branch-alias":{
-            "v3":"v3.0.x-dev",
-            "master":"v3.0.x"
+            "v3":"v3.0.x-dev"
         }
     },
     "suggest":{
