@@ -112,7 +112,8 @@ class XmlFormat extends Format
                     && static::$namespacedProperties[static::$rootName] == $prefix
                 )
                     continue;
-                $xml->writeAttribute('xmlns:' . $prefix, $ns);
+                $prefix = 'xmlns' . (empty($prefix) ? '' : ':' . $prefix);
+                $xml->writeAttribute($prefix, $ns);
             }
         }
         $this->write($xml, $data, static::$rootName);
@@ -128,6 +129,11 @@ class XmlFormat extends Format
                 $text [] = $data[static::$textNodeName];
                 unset($data[static::$textNodeName]);
             }
+            $attributes = array_flip(static::$attributeNames);
+            //make sure we deal with attributes first
+            uksort($data, function ($a, $b) use ($attributes) {
+                return isset($attributes[$a]) ? -1 : 1;
+            });
             foreach ($data as $key => $value) {
                 if (is_numeric($key)) {
                     if (!is_array($value)) {
@@ -137,7 +143,7 @@ class XmlFormat extends Format
                     $key = static::$defaultTagName;
                 }
                 $useNS = static::$useNamespaces
-                    && isset(static::$namespacedProperties[$key])
+                    && !empty(static::$namespacedProperties[$key])
                     && false === strpos($key, ':');
                 if (is_array($value)) {
                     if ($value == array_values($value)) {
@@ -168,22 +174,16 @@ class XmlFormat extends Format
                 } elseif (is_bool($value)) {
                     $value = $value ? 'true' : 'false';
                 }
-                if (in_array($key, static::$attributeNames)) {
-                    $useNS
-                        ? $xml->writeAttributeNs(
-                        static::$namespacedProperties[$key],
-                        $key,
-                        null,
-                        $value
-                    )
-                        : $xml->writeAttribute($key, $value);
+                if (isset($attributes[$key])) {
+                    $xml->writeAttribute($useNS ? static::$namespacedProperties[$key] . ':' . $key : $key, $value);
                 } else {
                     $useNS
-                        ? $xml->startElementNs(
-                        static::$namespacedProperties[$key],
-                        $key,
-                        null
-                    )
+                        ?
+                        $xml->startElementNs(
+                            static::$namespacedProperties[$key],
+                            $key,
+                            null
+                        )
                         : $xml->startElement($key);
                     $this->write($xml, $value, $key);
                     $xml->endElement();
@@ -229,7 +229,8 @@ class XmlFormat extends Format
                 if (count($namespaces)) {
                     $p = strpos($data, $xml->getName());
                     if ($p && $data{$p - 1} == ':') {
-                        $prefix = substr($data, strpos($data, '<') + 1, $p - 3);
+                        $s = strpos($data, '<') + 1;
+                        $prefix = substr($data, $s, $p - $s - 1);
                         static::$namespacedProperties[static::$rootName] = $prefix;
                     }
                 }
