@@ -49,7 +49,7 @@ class XmlFormat extends Format
     // ------------------------------------------------------------------
     public static $attributeNames = array();
     public static $textNodeName = 'text';
-    public static $namepaces = array();
+    public static $namespaces = array();
     public static $namespacedProperties = array();
     /**
      * Default name for the root node.
@@ -79,7 +79,7 @@ class XmlFormat extends Format
             (self::$parseNamespaces ? 'true' : 'false') . ";\n";
         if (self::$parseNamespaces) {
             $s .= 'XmlFormat::$nameSpaces = ' .
-                (var_export(self::$namepaces, true)) . ";\n";
+                (var_export(self::$namespaces, true)) . ";\n";
             $s .= 'XmlFormat::$nameSpacedProperties = ' .
                 (var_export(self::$namespacedProperties, true)) . ";\n";
         }
@@ -101,11 +101,11 @@ class XmlFormat extends Format
             ? $xml->startElementNs(
             static::$namespacedProperties[static::$rootName],
             static::$rootName,
-            static::$namepaces[static::$namespacedProperties[static::$rootName]]
+            static::$namespaces[static::$namespacedProperties[static::$rootName]]
         )
             : $xml->startElement(static::$rootName);
         if (static::$useNamespaces) {
-            foreach (static::$namepaces as $prefix => $ns) {
+            foreach (static::$namespaces as $prefix => $ns) {
                 if (isset(static::$namespacedProperties[static::$rootName])
                     && static::$namespacedProperties[static::$rootName] == $prefix
                 )
@@ -221,7 +221,7 @@ class XmlFormat extends Format
             if (static::$importSettingsFromXml) {
                 static::$attributeNames = array();
                 static::$namespacedProperties = array();
-                static::$namepaces = array();
+                static::$namespaces = array();
                 static::$rootName = $xml->getName();
                 $namespaces = $xml->getNamespaces();
                 if (count($namespaces)) {
@@ -273,7 +273,7 @@ class XmlFormat extends Format
             if (is_null($namespaces))
                 $namespaces = $xml->getDocNamespaces(true);
             foreach ($namespaces as $prefix => $ns) {
-                static::$namepaces[$prefix] = $ns;
+                static::$namespaces[$prefix] = $ns;
                 if (static::$parseAttributes) {
                     $attributes = $xml->attributes($ns);
                     foreach ($attributes as $key => $value) {
