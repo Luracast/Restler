@@ -78,9 +78,9 @@ class XmlFormat extends Format
         $s .= 'XmlFormat::$parseNamespaces = ' .
             (self::$parseNamespaces ? 'true' : 'false') . ";\n";
         if (self::$parseNamespaces) {
-            $s .= 'XmlFormat::$nameSpaces = ' .
+            $s .= 'XmlFormat::$namespaces = ' .
                 (var_export(self::$namespaces, true)) . ";\n";
-            $s .= 'XmlFormat::$nameSpacedProperties = ' .
+            $s .= 'XmlFormat::$namespacedProperties = ' .
                 (var_export(self::$namespacedProperties, true)) . ";\n";
         }
 
@@ -98,12 +98,14 @@ class XmlFormat extends Format
             $xml->setIndentString('    ');
         }
         static::$useNamespaces && isset(static::$namespacedProperties[static::$rootName])
-            ? $xml->startElementNs(
-            static::$namespacedProperties[static::$rootName],
-            static::$rootName,
-            static::$namespaces[static::$namespacedProperties[static::$rootName]]
-        )
-            : $xml->startElement(static::$rootName);
+            ?
+            $xml->startElementNs(
+                static::$namespacedProperties[static::$rootName],
+                static::$rootName,
+                static::$namespaces[static::$namespacedProperties[static::$rootName]]
+            )
+            :
+            $xml->startElement(static::$rootName);
         if (static::$useNamespaces) {
             foreach (static::$namespaces as $prefix => $ns) {
                 if (isset(static::$namespacedProperties[static::$rootName])
@@ -211,9 +213,9 @@ class XmlFormat extends Format
             }
             libxml_use_internal_errors(true);
             $xml = simplexml_load_string($data,
-                "SimpleXMLElement", LIBXML_NOBLANKS | LIBXML_NOCDATA);
+                "SimpleXMLElement", LIBXML_NOBLANKS | LIBXML_NOCDATA | LIBXML_COMPACT);
             if (false === $xml) {
-                $error = end(libxml_get_errors());
+                $error = libxml_get_last_error();
                 throw new RestException(400, 'Malformed XML. '
                     . trim($error->message, "\r\n") . ' at line ' . $error->line);
             }
@@ -225,7 +227,11 @@ class XmlFormat extends Format
                 static::$rootName = $xml->getName();
                 $namespaces = $xml->getNamespaces();
                 if (count($namespaces)) {
-                    static::$namespacedProperties[static::$rootName] = @end(@array_keys($namespaces));
+                    $p = strpos($data, $xml->getName());
+                    if ($p && $data{$p - 1} == ':') {
+                        $prefix = substr($data, strpos($data, '<') + 1, $p - 3);
+                        static::$namespacedProperties[static::$rootName] = $prefix;
+                    }
                 }
             }
             $data = $this->read($xml);
