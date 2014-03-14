@@ -1052,8 +1052,8 @@ class Restler extends EventDispatcher
         foreach ($this->errorClasses as $className) {
             if (method_exists($className, $method)) {
                 $obj = Scope::get($className);
-                $obj->$method ();
-                $handled = true;
+                if ($obj->$method())
+                    $handled = true;
             }
         }
         if ($handled) {
