@@ -640,10 +640,7 @@ class Restler extends EventDispatcher
         }
 
         // check if client has specified an extension
-        /**
-         *
-         * @var iFormat
-         */
+        /** @var $format iFormat*/
         $format = null;
         $extensions = explode(
             '.',
