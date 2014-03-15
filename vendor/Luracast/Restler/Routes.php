@@ -420,6 +420,7 @@ class Routes
                 !array_key_exists($m['name'], $data) &&
                 array_key_exists(Defaults::$fullRequestDataName, $data) &&
                 !is_null($d = $data[Defaults::$fullRequestDataName]) &&
+                isset($m['type']) &&
                 static::typeMatch($m['type'], $d)
             ) {
                 $p[0] = $d;
