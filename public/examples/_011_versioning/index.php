@@ -35,6 +35,13 @@ versioning needs.
 For simplicity we only used the version number as the namespace, but practically
 You need to namespace it as `{vendor}\{product}\v{version}`
 
+If a class remains the same across few versions of the api, we can implement
+
+`iProvideMultiVersionApi` interface which is simply defining `__getMaximumSupportedVersion`
+method which returns the maximum supported version.
+
+Take a look at `Resources` class for a sample implementation.
+
 Which will be `Luracast\WeightManagement\v2` for this example
 
 Try this example and the version differences in the explorer [here](explorer/index.html#!/v2)
