@@ -199,6 +199,7 @@ class Forms implements iFilter
             if ($v->from == 'path')
                 continue;
             if (!empty($v->children)) {
+                $t = Emmet::make(static::$style['fieldset'], array('label' => $v->label ? : static::title($v->name)));
                 foreach ($v->children as $n => $c) {
                     $value = Util::nestedValue($v->value, $n);
                     if (
@@ -212,9 +213,10 @@ class Forms implements iFilter
                         continue;
                     $vc->label = $vc->label ? : static::title($vc->name);
                     $vc->name = $v->name . '[' . $vc->name . ']';
-                    $r [] = static::field($vc, $dataOnly);
-                    static::$validationInfo = null;
+                    $t [] = static::field($vc, $dataOnly);
                 }
+                $r[] = $t;
+                static::$validationInfo = null;
             } else {
                 $f = static::field($v, $dataOnly);
                 $r [] = $f;
