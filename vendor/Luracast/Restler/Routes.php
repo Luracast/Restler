@@ -68,7 +68,7 @@ class Routes
             $pathParams = array();
             $allowAmbiguity
                 = (isset($metadata['smart-auto-routing'])
-                && $metadata['smart-auto-routing'] != 'true')
+                    && $metadata['smart-auto-routing'] != 'true')
                 || !Defaults::$smartAutoRouting;
             $metadata['resourcePath'] = $resourcePath;
             if (isset($classMetadata['description'])) {
@@ -95,7 +95,7 @@ class Routes
                 $m ['name'] = $param->getName();
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
-                if(is_null($type) && isset($m['type'])) {
+                if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
                 $contentType = Util::nestedValue(
@@ -103,14 +103,14 @@ class Routes
                     CommentParser::$embeddedDataName,
                     'type'
                 );
-                if($contentType && class_exists($contentType)){
-                    list($contentType,$children) = static::getTypeAndModel(
+                if ($contentType && class_exists($contentType)) {
+                    list($contentType, $children) = static::getTypeAndModel(
                         new ReflectionClass($contentType)
                     );
                 }
                 if ($type instanceof ReflectionClass) {
                     list($type, $children) = static::getTypeAndModel($type);
-                } elseif($type && is_string($type) && class_exists($type)) {
+                } elseif ($type && is_string($type) && class_exists($type)) {
                     list($type, $children)
                         = static::getTypeAndModel(new ReflectionClass($type));
                 }
@@ -119,7 +119,7 @@ class Routes
                 }
                 $m ['children'] = $children;
 
-                if ($m['name']==Defaults::$fullRequestDataName) {
+                if ($m['name'] == Defaults::$fullRequestDataName) {
                     $from = 'body';
                     unset($m[CommentParser::$embeddedDataName]['from']);
                 } elseif (isset($m[CommentParser::$embeddedDataName]['from'])) {
@@ -128,7 +128,7 @@ class Routes
                     if ((isset($type) && Util::isObjectOrArray($type))
                     ) {
                         $from = 'body';
-                        if(!isset($type)){
+                        if (!isset($type)) {
                             $type = $m['type'] = 'array';
                         }
                     } elseif ($m['required']) {
@@ -175,7 +175,7 @@ class Routes
             // if manual route
             if (preg_match_all(
                 '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)'
-                    . '[ \t]*\/?(\S*)/s',
+                . '[ \t]*\/?(\S*)/s',
                 $doc, $matches, PREG_SET_ORDER
             )
             ) {
@@ -294,7 +294,7 @@ class Routes
             static::$routes["v$version"][$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
             if ($call['methodName'] == 'index')
-                static::$routes["v$version"][ltrim("$path/index",'/')][$httpMethod] = $call;
+                static::$routes["v$version"][ltrim("$path/index", '/')][$httpMethod] = $call;
         }
     }
 
@@ -344,7 +344,7 @@ class Routes
         }
         //================== dynamic routes =============================
         //add newline char if trailing slash is found
-        if(substr($path,-1)=='/')
+        if (substr($path, -1) == '/')
             $path .= PHP_EOL;
         //if double slash is found fill in newline char;
         $path = str_replace('//', '/' . PHP_EOL . '/', $path);
@@ -501,21 +501,34 @@ class Routes
         $children = array();
         $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($props as $prop) {
+            $name = $prop->getName();
+            $child = array('name' => $name);
             if ($c = $prop->getDocComment()) {
-                $name = $prop->getName();
-                $child =
-                    array('name' => $name) +
-                    Util::nestedValue(CommentParser::parse($c), 'var') +
-                    array('type' => 'string');
-                if (class_exists($child['type'])) {
-                    list($child['type'], $child['children'])
-                        = static::getTypeAndModel(new ReflectionClass($child['type']));
-                } elseif (($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) && class_exists($contentType)) {
-                    list($child['contentType'], $child['children'])
-                        = static::getTypeAndModel(new ReflectionClass($contentType));
+                $child += Util::nestedValue(CommentParser::parse($c), 'var');
+            } else {
+                $o = $class->newInstance();
+                $p = $o->{$name};
+                if (is_object($p)) {
+                    $child['type'] = get_class($p);
+                } elseif (is_array($p)) {
+                    $child['type'] = 'array';
+                    if (count($p)) {
+                        $pc = reset($p);
+                        if (is_object($pc)) {
+                            $child['contentType'] = get_class($pc);
+                        }
+                    }
                 }
-                $children[$name] = $child;
             }
+            $child += array('type' => 'string');
+            if (class_exists($child['type'])) {
+                list($child['type'], $child['children'])
+                    = static::getTypeAndModel(new ReflectionClass($child['type']));
+            } elseif (($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) && class_exists($contentType)) {
+                list($child['contentType'], $child['children'])
+                    = static::getTypeAndModel(new ReflectionClass($contentType));
+            }
+            $children[$name] = $child;
         }
         return array($class->getName(), $children);
     }
