@@ -94,7 +94,7 @@ class Forms implements iFilter
             && Util::getRequestMethod() == $method
                 ? Util::$restler->apiMethodInfo
                 : Routes::find(
-                    trim($action,'/'),
+                    trim($action, '/'),
                     $method,
                     Util::$restler->getRequestedApiVersion(),
                     static::$preFill ||
@@ -189,13 +189,36 @@ class Forms implements iFilter
         $r = array();
         foreach ($params as $k => $p) {
             $value = Util::nestedValue($values, $k);
-            if (is_scalar($value) || ($p['type'] == 'array' && is_array($value) && $value == array_values($value)))
+            if (
+                is_scalar($value) ||
+                ($p['type'] == 'array' && is_array($value) && $value == array_values($value)) ||
+                is_object($value) && $p['type'] == get_class($value)
+            )
                 $p['value'] = $value;
             static::$validationInfo = $v = new ValidationInfo($p);
             if ($v->from == 'path')
                 continue;
-            $f = static::field($v, $dataOnly);
-            $r [] = $f;
+            if (!empty($v->children)) {
+                foreach ($v->children as $n => $c) {
+                    $value = Util::nestedValue($v->value, $n);
+                    if (
+                        is_scalar($value) ||
+                        ($c['type'] == 'array' && is_array($value) && $value == array_values($value)) ||
+                        is_object($value) && $c['type'] == get_class($value)
+                    )
+                        $c['value'] = $value;
+                    static::$validationInfo = $vc = new ValidationInfo($c);
+                    if ($vc->from == 'path')
+                        continue;
+                    $vc->label = $vc->label ? : static::title($vc->name);
+                    $vc->name = $v->name . '[' . $vc->name . ']';
+                    $r [] = static::field($vc, $dataOnly);
+                    static::$validationInfo = null;
+                }
+            } else {
+                $f = static::field($v, $dataOnly);
+                $r [] = $f;
+            }
             static::$validationInfo = null;
         }
         return $r;
