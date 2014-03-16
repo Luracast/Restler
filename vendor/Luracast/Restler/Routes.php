@@ -81,8 +81,8 @@ class Routes
             if (!isset($metadata['param'])) {
                 $metadata['param'] = array();
             }
-            $children = array();
             foreach ($params as $param) {
+                $children = array();
                 $type =
                     $param->isArray() ? 'array' : $param->getClass();
                 $arguments[$param->getName()] = $position;
