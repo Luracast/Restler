@@ -109,7 +109,7 @@ class Forms implements iFilter
             $info = false;
         }
         if (!$info)
-            throw new RestException(500, 'invalid action path for form');
+            throw new RestException(500, 'invalid action path for form `' . $method . ' ' . $action.'`');
 
         $m = $info->metadata;
         $r = static::fields($m['param'], $info->parameters, $dataOnly);
