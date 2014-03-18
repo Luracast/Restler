@@ -2,7 +2,9 @@
 namespace Luracast\Restler\UI;
 
 use Luracast\Restler\CommentParser;
+use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
+use Luracast\Restler\Scope;
 use Luracast\Restler\Util;
 
 
@@ -16,7 +18,7 @@ use Luracast\Restler\Util;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc4
+ * @version    3.0.0rc5
  */
 class Nav
 {
@@ -50,15 +52,17 @@ class Nav
 
     public static function get($for = '', $activeUrl = null)
     {
+        /** @var Restler $restler */
+        $restler = Scope::get('Restler');
         if (is_null($activeUrl)) {
-            $activeUrl = Util::$restler->url;
+            $activeUrl = $restler->url;
         }
 
         $tree = array();
         foreach (static::$prepends as $path => $text) {
             $url = null;
             if (is_array($text)) {
-                if(isset($text['url'])) {
+                if (isset($text['url'])) {
                     $url = $text['url'];
                     $text = $text['text'];
                 } else {
@@ -74,6 +78,7 @@ class Nav
                 static::build($tree, $path, $url, $text, $activeUrl);
         }
         $routes = Routes::toArray();
+        $routes = $routes['v' . $restler->getRequestedApiVersion()];
         foreach ($routes as $value) {
             foreach ($value as $httpMethod => $route) {
                 if ($httpMethod != 'GET') {
@@ -82,13 +87,8 @@ class Nav
                 $path = $route['url'];
                 if (false !== strpos($path, '{'))
                     continue;
-                $v = 'v' . Util::$restler->getRequestedApiVersion();
-                if (0 !== strpos($path, $v))
-                    continue;
                 if ($route['accessLevel'] && !Util::$restler->_authenticated)
                     continue;
-                $path = ltrim(str_replace($v, '', $path), '/');
-
                 foreach (static::$excludedPaths as $exclude) {
                     if (0 === strpos($path, $exclude)) {
                         continue 2;
@@ -114,7 +114,7 @@ class Nav
         foreach (static::$appends as $path => $text) {
             $url = null;
             if (is_array($text)) {
-                if(isset($text['url'])) {
+                if (isset($text['url'])) {
                     $url = $text['url'];
                     $text = $text['text'];
                 } else {
