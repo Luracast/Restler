@@ -131,9 +131,14 @@ class XmlFormat extends Format
             }
             $attributes = array_flip(static::$attributeNames);
             //make sure we deal with attributes first
-            uksort($data, function ($a, $b) use ($attributes) {
-                return isset($attributes[$a]) ? -1 : 1;
-            });
+            $temp = array();
+            foreach ($data as $key => $value) {
+                if (isset($attributes[$key])) {
+                    $temp[$key] = $data[$key];
+                    unset($data[$key]);
+                }
+            }
+            $data = array_merge($temp, $data);
             foreach ($data as $key => $value) {
                 if (is_numeric($key)) {
                     if (!is_array($value)) {
