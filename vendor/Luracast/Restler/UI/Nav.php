@@ -144,7 +144,7 @@ class Nav
         return $tree;
     }
 
-    protected function build(&$tree, $path,
+    protected static function build(&$tree, $path,
                              $url = null, $text = null, $activeUrl = null)
     {
         $parts = explode('/', $path);
