@@ -93,6 +93,8 @@ class Routes
                 }
                 $m = & $metadata ['param'] [$position];
                 $m ['name'] = $param->getName();
+                if (empty($m['label']))
+                    $m['label'] = static::label($m['name']);
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
                 if (is_null($type) && isset($m['type'])) {
@@ -551,5 +553,19 @@ class Routes
     public static function toArray()
     {
         return static::$routes;
+    }
+
+    /**
+     * Create a label from name of the parameter or property
+     *
+     * Convert `camelCase` style names into proper `Title Case` names
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public static function label($name)
+    {
+        return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 }
