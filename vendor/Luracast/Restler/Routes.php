@@ -81,6 +81,10 @@ class Routes
             if (!isset($metadata['param'])) {
                 $metadata['param'] = array();
             }
+            if (isset($metadata['return']['type']) && class_exists($metadata['return']['type'])) {
+                list($metadata['return']['type'], $metadata['return']['children']) =
+                    static::getTypeAndModel(new ReflectionClass($metadata['return']['type']));
+            }
             foreach ($params as $param) {
                 $children = array();
                 $type =
