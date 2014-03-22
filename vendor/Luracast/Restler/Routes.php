@@ -45,6 +45,7 @@ class Routes
          */
         $reflection = new ReflectionClass($className);
         $classMetadata = CommentParser::parse($reflection->getDocComment());
+        $classMetadata['aliases'] = static::classAlias($reflection);
         $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC +
             ReflectionMethod::IS_PROTECTED);
         foreach ($methods as $method) {
@@ -571,5 +572,49 @@ class Routes
     public static function label($name)
     {
         return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
+    }
+
+    public static function classAlias(ReflectionClass $for)
+    {
+        $aliases = array(
+            '*' => $for->getNamespaceName() . '\\'
+        );
+        $file = file_get_contents($for->getFileName());
+        $tokens = token_get_all($file);
+        $reading = false;
+        $namespace = '';
+        $name = '';
+        $last = 0;
+        foreach ($tokens as $token) {
+            if (is_string($token)) {
+                //terminator ; found
+                if (!empty($namespace))
+                    $aliases[$name] = $namespace;
+                $reading = false;
+                continue;
+            }
+            if ($token[0] == T_USE) {
+                $reading = true;
+                $namespace = '';
+                $name = '';
+            }
+            if ($reading) {
+                //echo token_name($token[0]) . ' ' . $token[1] . PHP_EOL;
+                switch ($token[0]) {
+                    case T_WHITESPACE:
+                        continue 2;
+                    case T_STRING:
+                        $name = $token[1];
+                        if (T_AS == $last) {
+                            break;
+                        }
+                    case T_NS_SEPARATOR:
+                        $namespace .= $token[1];
+                        break;
+                }
+                $last = $token[0];
+            }
+        }
+        return $aliases;
     }
 }
