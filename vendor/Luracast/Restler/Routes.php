@@ -522,7 +522,7 @@ class Routes
                     }
                 }
             }
-            $child += array('type' => 'string');
+            $child += array('type' => 'string', 'label' => static::label($child['name']));
             if (class_exists($child['type'])) {
                 list($child['type'], $child['children'])
                     = static::getTypeAndModel(new ReflectionClass($child['type']));
