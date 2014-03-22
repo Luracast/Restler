@@ -217,17 +217,18 @@ class Validator implements iValidate
      */
     public static function validate($input, ValidationInfo $info, $full = null)
     {
+        $name = $info->label ? : $info->name;
         try {
             if (is_null($input)) {
                 if ($info->required) {
                     throw new RestException (400,
-                        "`$info->name` is required but missing.");
+                        "`$name` is required.");
                 }
                 return null;
             }
             $error = isset ($info->rules ['message'])
                 ? $info->rules ['message']
-                : "invalid value specified for `$info->name`";
+                : "Invalid value specified for `$name`";
 
             //if a validation method is specified
             if (!empty($info->method)) {
@@ -304,7 +305,7 @@ class Validator implements iValidate
                         if ($info->fix) {
                             $r = $info->min;
                         } else {
-                            $error .= '. Given value is too low';
+                            $error .= ". Minimum required value is $info->min.";
                             break;
                         }
                     }
@@ -312,7 +313,7 @@ class Validator implements iValidate
                         if ($info->fix) {
                             $r = $info->max;
                         } else {
-                            $error .= '. Given value is too high';
+                            $error .= ". Maximum allowed value is $info->max.";
                             break;
                         }
                     }
@@ -320,7 +321,7 @@ class Validator implements iValidate
 
                 case 'string' :
                     if (!is_string($input)) {
-                        $error .= '. Expecting string value';
+                        $error .= '. Expecting alpha numeric value';
                         break;
                     }
                     $r = strlen($input);
@@ -328,7 +329,8 @@ class Validator implements iValidate
                         if ($info->fix) {
                             $input = str_pad($input, $info->min, $input);
                         } else {
-                            $error .= '. Given string is too short';
+                            $char = $info->min > 1 ? 'characters' : 'character';
+                            $error .= ". Minimum $info->min $char required.";
                             break;
                         }
                     }
@@ -336,7 +338,8 @@ class Validator implements iValidate
                         if ($info->fix) {
                             $input = substr($input, 0, $info->max);
                         } else {
-                            $error .= '. Given string is too long';
+                            $char = $info->max > 1 ? 'characters' : 'character';
+                            $error .= ". Maximum $info->max $char allowed.";
                             break;
                         }
                     }
@@ -362,26 +365,28 @@ class Validator implements iValidate
                             $contentType == 'indexed' &&
                             array_values($input) != $input
                         ) {
-                            $error .= '. Expecting an array but an object is given';
+                            $error .= '. Expecting a list of items but an item is given';
                             break;
                         } elseif (
                             $contentType == 'associative' &&
                             array_values($input) == $input &&
                             count($input)
                         ) {
-                            $error .= '. Expecting an object but an array is given';
+                            $error .= '. Expecting an item but a list is given';
                             break;
                         }
                         $r = count($input);
                         if (isset ($info->min) && $r < $info->min) {
-                            $error .= '. Given array is too small';
+                            $item = $info->max > 1 ? 'items' : 'item';
+                            $error .= ". Minimum $info->min $item required.";
                             break;
                         }
                         if (isset ($info->max) && $r > $info->max) {
                             if ($info->fix) {
                                 $input = array_slice($input, 0, $info->max);
                             } else {
-                                $error .= '. Given array is too big';
+                                $item = $info->max > 1 ? 'items' : 'item';
+                                $error .= ". Maximum $info->max $item allowed.";
                                 break;
                             }
                         }
@@ -400,7 +405,7 @@ class Validator implements iValidate
                         }
                         return $input;
                     } elseif (isset($contentType)) {
-                        $error .= ". Expecting an array with contents of type `$contentType`";
+                        $error .= ". Expecting items of type `$contentType`";
                         break;
                     } elseif ($info->fix && is_string($input)) {
                         return array($input);
@@ -435,7 +440,7 @@ class Validator implements iValidate
                                 !is_array($input) ||
                                 $input === array_values($input)
                             ) {
-                                $error .= ". Expecting an object of type `$info->type`";
+                                $error .= ". Expecting an item of type `$info->type`";
                                 break;
                             }
                             foreach ($info->children as $key => $value) {
@@ -450,7 +455,7 @@ class Validator implements iValidate
             }
             throw new RestException (400, $error);
         } catch (\Exception $e) {
-            static::$exceptions []= $e;
+            static::$exceptions[] = $e;
             if (static::$holdException) {
                 return null;
             }
