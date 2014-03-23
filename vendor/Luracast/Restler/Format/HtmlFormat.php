@@ -29,6 +29,8 @@ class HtmlFormat extends Format
     public static $errorView = 'debug.php';
     public static $format = 'php';
     public static $handleSession = true;
+
+    public static $useSmartViews = true;
     /**
      * @var array global key value pair to be supplied to the templates. All
      * keys added here will be available as a variable inside the template
@@ -221,9 +223,9 @@ class HtmlFormat extends Format
     /**
      * Encode the given data in the format
      *
-     * @param array $data resulting data that needs to
+     * @param array   $data                resulting data that needs to
      *                                     be encoded in the given format
-     * @param boolean $humanReadable set to TRUE when restler
+     * @param boolean $humanReadable       set to TRUE when restler
      *                                     is not running in production mode.
      *                                     Formatter has to make the encoded
      *                                     output more human readable
@@ -269,7 +271,9 @@ class HtmlFormat extends Format
                     self::$view = $metadata[$view];
                 }
             } elseif (!self::$view) {
-                self::$view = static::$errorView;
+                self::$view = static::$useSmartViews
+                    ? $this->restler->url
+                    : static::$errorView;
             }
             if (
                 isset($metadata['param'])
