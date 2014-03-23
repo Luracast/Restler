@@ -40,8 +40,12 @@ class Routes
          *
          * - Optional parameters should not be mapped to URL
          * - If a required parameter is of primitive type
-         *      - Map them to URL
-         *      - Do not create routes with out it
+         *      - If one of the self::$prefixingParameterNames
+         *              - Map it to URL
+         *      - Else If request method is POST/PUT/PATCH
+         *              - Map it to body
+         *      - Else If request method is GET/DELETE
+         *              - Map it to body
          * - If a required parameter is not primitive type
          *      - Do not include it in URL
          */
@@ -130,7 +134,6 @@ class Routes
 
                 if ($m['name'] == Defaults::$fullRequestDataName) {
                     $from = 'body';
-                    unset($m[CommentParser::$embeddedDataName]['from']);
                 } elseif (isset($m[CommentParser::$embeddedDataName]['from'])) {
                     $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
@@ -146,7 +149,7 @@ class Routes
                         $from = 'query';
                     }
                 }
-                $m['from'] = $from;
+                $m[CommentParser::$embeddedDataName]['from'] = $from;
 
                 if ($allowAmbiguity || $from == 'path') {
                     $pathParams [$position] = true;
@@ -243,7 +246,7 @@ class Routes
                 $lastPathParam = array_keys($pathParams);
                 $lastPathParam = end($lastPathParam);
                 for ($position = 0; $position < count($params); $position++) {
-                    $from = $metadata['param'][$position]['from'];
+                    $from = $metadata['param'][$position][CommentParser::$embeddedDataName]['from'];
 
                     if ($from == 'body' && ($httpMethod == 'GET' ||
                             $httpMethod == 'DELETE')
