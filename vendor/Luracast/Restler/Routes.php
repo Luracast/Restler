@@ -583,8 +583,9 @@ class Routes
 
     public static function scope(ReflectionClass $class)
     {
+        $namespace = $class->getNamespaceName();
         $imports = array(
-            '*' => $class->getNamespaceName() . '\\'
+            '*' => empty($namespace) ? '' : $namespace . '\\'
         );
         $file = file_get_contents($class->getFileName());
         $tokens = token_get_all($file);
