@@ -24,13 +24,13 @@ Feature: Testing Helloworld Example
 
   Scenario: Saying Hi
     When I request "/examples/_001_helloworld/say/hi"
-    Then the response status code should be 404
+    Then the response status code should be 400
     And the response is JSON
     And the type is "array"
 
   Scenario: Saying Hi Arul
     Given that "to" is set to "Arul"
-    When I request "/examples/_001_helloworld/say/hi/{to}"
+    When I request "/examples/_001_helloworld/say/hi{?to}"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"

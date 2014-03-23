@@ -13,8 +13,8 @@ class Math
     }
 
     /**
-     * @param int $n1
-     * @param int $n2
+     * @param int $n1 {@from path}
+     * @param int $n2 {@from path}
      *
      * @return array
      */

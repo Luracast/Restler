@@ -21,7 +21,7 @@ class MinMaxFix
     /**
      * Restrict the value
      *
-     * @param int $int {@min 2}{@max 5}{@fix true}
+     * @param int $int {@min 2}{@max 5}{@fix true}{@from path}
      *
      * @return int
      */
