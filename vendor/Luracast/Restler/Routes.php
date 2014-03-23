@@ -157,7 +157,7 @@ class Routes
                 }
                 $m[CommentParser::$embeddedDataName]['from'] = $from;
                 if (!isset($m['type'])) {
-                    $type = $m['type'] = 'string';
+                    $type = $m['type'] = static::type($defaults[$position]);
                 }
 
                 if ($allowAmbiguity || $from == 'path') {
@@ -586,6 +586,15 @@ class Routes
     public static function toArray()
     {
         return static::$routes;
+    }
+
+    public static function type($var)
+    {
+        if (is_object($var)) return get_class($var);
+        if (is_array($var)) return 'array';
+        if (is_bool($var)) return 'boolean';
+        if (is_numeric($var)) return is_float($var) ? 'float' : 'int';
+        return 'string';
     }
 
     /**
