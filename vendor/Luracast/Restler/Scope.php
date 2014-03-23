@@ -162,6 +162,8 @@ class Scope
      */
     public static function resolve($className, array $scope)
     {
+        if (empty($className) || !is_string($className))
+            return false;
         $divider = '\\';
         $qualified = false;
         if ($className{0} == $divider) {
