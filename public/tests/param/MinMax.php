@@ -21,7 +21,7 @@ class MinMax
     /**
      * Restrict the value
      *
-     * @param int $int {@min 2}{@max 5}
+     * @param int $int {@min 2}{@max 5}{@from path}
      *
      * @return int
      */
@@ -33,7 +33,7 @@ class MinMax
     /**
      * Restrict the length of the string
      *
-     * @param string $string {@min 2}{@max 5}
+     * @param string $string {@min 2}{@max 5}{@from path}
      *
      * @return string
      */
