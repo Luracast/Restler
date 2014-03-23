@@ -140,6 +140,10 @@ class Routes
 
                 if ($m['name'] == Defaults::$fullRequestDataName) {
                     $from = 'body';
+                    if (!isset($m['type'])) {
+                        $type = $m['type'] = 'array';
+                    }
+
                 } elseif (isset($m[CommentParser::$embeddedDataName]['from'])) {
                     $from = $m[CommentParser::$embeddedDataName]['from'];
                 } else {
