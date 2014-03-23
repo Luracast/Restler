@@ -19,6 +19,9 @@ use ReflectionProperty;
  */
 class Routes
 {
+    public static $prefixingParameterNames = array(
+        'id'
+    );
     protected static $routes = array();
 
     protected static $models = array();
@@ -91,6 +94,9 @@ class Routes
             if (isset($metadata['return']['type']) && $qualified = Scope::resolve($metadata['return']['type'], $scope)) {
                 list($metadata['return']['type'], $metadata['return']['children']) =
                     static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+            } else {
+                //assume return type is array
+                $metadata['return']['type'] = 'array';
             }
             foreach ($params as $param) {
                 $children = array();
@@ -130,7 +136,7 @@ class Routes
                 if (isset($type)) {
                     $m['type'] = $type;
                 }
-                $m ['children'] = $children;
+                $m['children'] = $children;
 
                 if ($m['name'] == Defaults::$fullRequestDataName) {
                     $from = 'body';
@@ -143,13 +149,16 @@ class Routes
                         if (!isset($type)) {
                             $type = $m['type'] = 'array';
                         }
-                    } elseif ($m['required']) {
+                    } elseif ($m['required'] && in_array($m['name'], static::$prefixingParameterNames)) {
                         $from = 'path';
                     } else {
-                        $from = 'query';
+                        $from = 'body';
                     }
                 }
                 $m[CommentParser::$embeddedDataName]['from'] = $from;
+                if (!isset($m['type'])) {
+                    $type = $m['type'] = 'string';
+                }
 
                 if ($allowAmbiguity || $from == 'path') {
                     $pathParams [$position] = true;
@@ -201,9 +210,12 @@ class Routes
                             strpos($url, '{' . $p['name'] . '}') ||
                             strpos($url, ':' . $p['name']);
                         if ($inPath) {
-                            $copy['metadata']['param'][$i]['from'] = 'path';
-                        } elseif ((!isset($p['from']) || $p['from'] == 'path')) {
-                            $copy['metadata']['param'][$i]['from'] =
+                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'path';
+                        } elseif (
+                            !isset($p[CommentParser::$embeddedDataName]['from']) ||
+                            $p[CommentParser::$embeddedDataName]['from'] == 'path'
+                        ) {
+                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] =
                                 $httpMethod == 'GET' ||
                                 $httpMethod == 'DELETE'
                                     ? 'query'
@@ -251,7 +263,7 @@ class Routes
                     if ($from == 'body' && ($httpMethod == 'GET' ||
                             $httpMethod == 'DELETE')
                     ) {
-                        $from = $metadata['param'][$position]['from']
+                        $from = $metadata['param'][$position][CommentParser::$embeddedDataName]['from']
                             = 'query';
                     }
                     if (!isset($pathParams[$position]))
@@ -441,7 +453,7 @@ class Routes
                 $lastBodyParamIndex = -1;
                 $lastM = null;
                 foreach ($call['metadata']['param'] as $k => $m) {
-                    if ($m['from'] == 'body') {
+                    if ($m[CommentParser::$embeddedDataName]['from'] == 'body') {
                         $bodyParamCount++;
                         $lastBodyParamIndex = $k;
                         $lastM = $m;
