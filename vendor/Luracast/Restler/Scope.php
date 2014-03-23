@@ -151,4 +151,33 @@ class Scope
         }
         return $r;
     }
+
+    /**
+     * Get fully qualified class name for the given scope
+     *
+     * @param string $className
+     * @param array  $scope local scope
+     *
+     * @return string|boolean returns the class name or false
+     */
+    public static function resolve($className, array $scope)
+    {
+        $divider = '\\';
+        $qualified = false;
+        if ($className{0} == $divider) {
+            $qualified = trim($className, $divider);
+        } elseif (array_key_exists($className, $scope)) {
+            $qualified = $scope[$className];
+        } else {
+            $qualified = $scope['*'] . $className;
+        }
+        if (class_exists($qualified))
+            return $qualified;
+        if (isset(static::$classAliases[$className])) {
+            $qualified = static::$classAliases[$className];
+            if (class_exists($qualified))
+                return $qualified;
+        }
+        return false;
+    }
 }
