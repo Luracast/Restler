@@ -219,20 +219,19 @@ class Validator implements iValidate
      */
     public static function validate($input, ValidationInfo $info, $full = null)
     {
-        $name = Scope::get('Restler')->responseFormat instanceof HtmlFormat
-            ? $info->label
-            : $info->name;
+        $html = Scope::get('Restler')->responseFormat instanceof HtmlFormat;
+        $name = $html ? "<strong>$info->label</strong>" : "`$info->name`";
         try {
             if (is_null($input)) {
                 if ($info->required) {
                     throw new RestException (400,
-                        "`$name` is required.");
+                        "$name is required.");
                 }
                 return null;
             }
             $error = isset ($info->rules ['message'])
                 ? $info->rules ['message']
-                : "Invalid value specified for `$name`";
+                : "Invalid value specified for $name";
 
             //if a validation method is specified
             if (!empty($info->method)) {
@@ -329,7 +328,7 @@ class Validator implements iValidate
                         break;
                     }
                     if ($info->required && empty($input)) {
-                        $error = "`$name` is required.";
+                        $error = "$name is required.";
                         break;
                     }
                     $r = strlen($input);
@@ -413,7 +412,8 @@ class Validator implements iValidate
                         }
                         return $input;
                     } elseif (isset($contentType)) {
-                        $error .= ". Expecting items of type `$contentType`";
+                        $error .= '. Expecting items of type ' .
+                            ($html ? "<strong>$contentType</strong>" : "`$contentType`");
                         break;
                     } elseif ($info->fix && is_string($input)) {
                         return array($input);
@@ -448,7 +448,8 @@ class Validator implements iValidate
                                 !is_array($input) ||
                                 $input === array_values($input)
                             ) {
-                                $error .= ". Expecting an item of type `$info->type`";
+                                $error .= '. Expecting an item of type ' .
+                                    ($html ? "<strong>$info->type</strong>" : "`$info->type`");
                                 break;
                             }
                             foreach ($info->children as $key => $value) {
