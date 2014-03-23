@@ -47,7 +47,7 @@ class Routes
          */
         $class = new ReflectionClass($className);
         $classMetadata = CommentParser::parse($class->getDocComment());
-        $classMetadata['scope'] = static::scope($class);
+        $classMetadata['scope'] = $scope = static::scope($class);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC +
             ReflectionMethod::IS_PROTECTED);
         foreach ($methods as $method) {
@@ -84,9 +84,9 @@ class Routes
             if (!isset($metadata['param'])) {
                 $metadata['param'] = array();
             }
-            if (isset($metadata['return']['type']) && class_exists($metadata['return']['type'])) {
+            if (isset($metadata['return']['type']) && $qualified = Scope::resolve($metadata['return']['type'], $scope)) {
                 list($metadata['return']['type'], $metadata['return']['children']) =
-                    static::getTypeAndModel(new ReflectionClass($metadata['return']['type']));
+                    static::getTypeAndModel(new ReflectionClass($qualified), $scope);
             }
             foreach ($params as $param) {
                 $children = array();
@@ -112,16 +112,16 @@ class Routes
                     CommentParser::$embeddedDataName,
                     'type'
                 );
-                if ($contentType && class_exists($contentType)) {
+                if ($contentType && $qualified = Scope::resolve($contentType, $scope)) {
                     list($contentType, $children) = static::getTypeAndModel(
-                        new ReflectionClass($contentType)
+                        new ReflectionClass($qualified), $scope
                     );
                 }
                 if ($type instanceof ReflectionClass) {
-                    list($type, $children) = static::getTypeAndModel($type);
-                } elseif ($type && is_string($type) && class_exists($type)) {
+                    list($type, $children) = static::getTypeAndModel($type, $scope);
+                } elseif ($type && is_string($type) && $qualified = Scope::resolve($type, $scope)) {
                     list($type, $children)
-                        = static::getTypeAndModel(new ReflectionClass($type));
+                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
                 }
                 if (isset($type)) {
                     $m['type'] = $type;
@@ -499,13 +499,16 @@ class Routes
     }
 
     /**
+     * Get the type and associated model
+     *
      * @param ReflectionClass $class
+     * @param array           $scope
      *
      * @return array
      *
      * @access protected
      */
-    protected static function getTypeAndModel(ReflectionClass $class)
+    protected static function getTypeAndModel(ReflectionClass $class, array $scope)
     {
         $className = $class->getName();
         if (isset(static::$models[$className])) {
@@ -534,12 +537,15 @@ class Routes
                 }
             }
             $child += array('type' => 'string', 'label' => static::label($child['name']));
-            if (class_exists($child['type'])) {
+            if ($qualified = Scope::resolve($child['type'], $scope)) {
                 list($child['type'], $child['children'])
-                    = static::getTypeAndModel(new ReflectionClass($child['type']));
-            } elseif (($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) && class_exists($contentType)) {
+                    = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+            } elseif (
+                ($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) &&
+                ($qualified = Scope::resolve($contentType, $scope))
+            ) {
                 list($child['contentType'], $child['children'])
-                    = static::getTypeAndModel(new ReflectionClass($contentType));
+                    = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
             }
             $children[$name] = $child;
         }
