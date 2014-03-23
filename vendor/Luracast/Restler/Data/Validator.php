@@ -1,7 +1,9 @@
 <?php
 namespace Luracast\Restler\Data;
 
+use Luracast\Restler\Format\HtmlFormat;
 use Luracast\Restler\RestException;
+use Luracast\Restler\Scope;
 use Luracast\Restler\Util;
 
 /**
@@ -217,7 +219,9 @@ class Validator implements iValidate
      */
     public static function validate($input, ValidationInfo $info, $full = null)
     {
-        $name = $info->label ? : $info->name;
+        $name = Scope::get('Restler')->responseFormat instanceof HtmlFormat
+            ? $info->label
+            : $info->name;
         try {
             if (is_null($input)) {
                 if ($info->required) {
