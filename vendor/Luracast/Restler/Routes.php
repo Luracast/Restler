@@ -21,6 +21,8 @@ class Routes
 {
     protected static $routes = array();
 
+    protected static $models = array();
+
     /**
      * Route the public and protected methods of an Api class
      *
@@ -505,6 +507,10 @@ class Routes
      */
     protected static function getTypeAndModel(ReflectionClass $class)
     {
+        $className = $class->getName();
+        if (isset(static::$models[$className])) {
+            return static::$models[$className];
+        }
         $children = array();
         $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
         foreach ($props as $prop) {
@@ -537,7 +543,8 @@ class Routes
             }
             $children[$name] = $child;
         }
-        return array($class->getName(), $children);
+        static::$models[$className] = array($class->getName(), $children);
+        return static::$models[$className];
     }
 
     /**
