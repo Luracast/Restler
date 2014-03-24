@@ -633,7 +633,7 @@ class Routes
                     //===== STOP =====//
                     $reading = false;
                     if (!empty($namespace))
-                        $imports[$alias] = $namespace;
+                        $imports[$alias] = trim($namespace,'\\');
                     //===== START =====//
                     $reading = true;
                     $namespace = '';
@@ -642,7 +642,7 @@ class Routes
                     //===== STOP =====//
                     $reading = false;
                     if (!empty($namespace))
-                        $imports[$alias] = $namespace;
+                        $imports[$alias] = trim($namespace,'\\');
                 }
             } elseif (T_USE == $token[0]) {
                 //===== START =====//
