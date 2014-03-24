@@ -101,7 +101,7 @@ class RateLimit implements iFilter, iUseAuthentication
             ? static::$authenticatedUsagePerUnit
             : static::$usagePerUnit;
         $user = Defaults::$userIdentifierClass;
-        if(!is_subclass_of($user, 'Luracast\\Restler\\iIdentifyUser')){
+        if (!method_exists($user, 'getUniqueIdentifier')) {
             throw new \UnexpectedValueException('`Defaults::$userIdentifierClass` must implement `iIdentifyUser` interface');
         }
         $id = "RateLimit_" . $maxPerUnit . '_per_' . static::$unit
