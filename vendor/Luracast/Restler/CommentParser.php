@@ -297,10 +297,12 @@ class CommentParser
     {
         $data = array();
 
-        while (preg_match('/{@(\w+)\s([^}]*)}/ms', $subject, $matches)) {
+        while (preg_match('/{@(\w+)\s?([^}]*)}/ms', $subject, $matches)) {
             $subject = str_replace($matches[0], '', $subject);
             if ($matches[2] == 'true' || $matches[2] == 'false') {
                 $matches[2] = $matches[2] == 'true';
+            } elseif($matches[2] == ''){
+                $matches[2] = true;
             }
             if ($matches[1] != 'pattern'
                 && false !== strpos($matches[2], static::$arrayDelimiter)
