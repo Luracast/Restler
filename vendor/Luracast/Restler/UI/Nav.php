@@ -92,7 +92,7 @@ class Nav
                 $path = $route['url'];
                 if (false !== strpos($path, '{'))
                     continue;
-                if ($route['accessLevel'] && !Util::$restler->_authenticated)
+                if ($route['accessLevel'] > 1 && !Util::$restler->_authenticated)
                     continue;
                 foreach (static::$excludedPaths as $exclude) {
                     if (empty($exclude)) {
@@ -102,7 +102,7 @@ class Nav
                         continue 2;
                     }
                 }
-                if (Util::$restler->_authenticated
+                if ($restler->_authenticated
                     && static::$accessControlFunction
                     && (!call_user_func(
                         static::$accessControlFunction, $route['metadata']))
@@ -156,6 +156,8 @@ class Nav
                                     $url = null, $text = null, $activeUrl = null)
     {
         $parts = explode('/', $path);
+        if (count($parts) == 1 && empty($parts[0]))
+            $parts = array(static::$root);
         $p = & $tree;
         $end = end($parts);
         foreach ($parts as $part) {
