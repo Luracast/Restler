@@ -50,13 +50,18 @@ class Nav
      */
     public static $appends = array();
 
+    public static $addExtension = true;
+
+    protected static $extension = '';
+
     public static function get($for = '', $activeUrl = null)
     {
         /** @var Restler $restler */
         $restler = Scope::get('Restler');
-        if (is_null($activeUrl)) {
+        if (static::$addExtension)
+            static::$extension = '.' . $restler->responseFormat->getExtension();
+        if (is_null($activeUrl))
             $activeUrl = $restler->url;
-        }
 
         $tree = array();
         foreach (static::$prepends as $path => $text) {
@@ -164,10 +169,14 @@ class Nav
                     if ($text)
                         $p[$part]['text'] = $text;
                     if (is_null($url)) {
+                        if (empty($path) && !empty(static::$extension))
+                            $path = 'index';
                         $p[$part]['href'] = Util::$restler->getBaseUrl()
-                            . '/' . $path;
+                            . '/' . $path . static::$extension;
                     } else {
-                        $p[$part]['href'] = $url;
+                        if (empty($url) && !empty(static::$extension))
+                            $url = 'index';
+                        $p[$part]['href'] = $url . static::$extension;
                     }
                     if ($path == $activeUrl) {
                         $p[$part]['active'] = true;
