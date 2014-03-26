@@ -213,6 +213,14 @@ class Defaults
     // ------------------------------------------------------------------
 
     /**
+     * @var null|callable if the api methods are under access control mechanism
+     * you can attach a function here that returns true or false to determine
+     * visibility of a protected api method. this function will receive method
+     * info as the only parameter.
+     */
+    public static $accessControlFunction = null;
+
+    /**
      * @var int set the default api access mode
      *      value of 0 = public api
      *      value of 1 = hybrid api using `@access hybrid` comment
