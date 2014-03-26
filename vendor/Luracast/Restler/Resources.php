@@ -864,6 +864,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     public function index()
     {
+        if (!static::$accessControlFunction && Defaults::$accessControlFunction)
+            static::$accessControlFunction = Defaults::$accessControlFunction;
         $version = $this->restler->getRequestedApiVersion();
         $allRoutes = Util::nestedValue(Routes::toArray(), "v$version");
         $r = $this->_resourceListing();

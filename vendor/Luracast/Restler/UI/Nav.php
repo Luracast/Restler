@@ -2,6 +2,7 @@
 namespace Luracast\Restler\UI;
 
 use Luracast\Restler\CommentParser;
+use Luracast\Restler\Defaults;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
 use Luracast\Restler\Scope;
@@ -56,6 +57,8 @@ class Nav
 
     public static function get($for = '', $activeUrl = null)
     {
+        if (!static::$accessControlFunction && Defaults::$accessControlFunction)
+            static::$accessControlFunction = Defaults::$accessControlFunction;
         /** @var Restler $restler */
         $restler = Scope::get('Restler');
         if (static::$addExtension)
