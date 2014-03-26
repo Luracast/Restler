@@ -90,7 +90,10 @@ class Nav
                 if ($route['accessLevel'] && !Util::$restler->_authenticated)
                     continue;
                 foreach (static::$excludedPaths as $exclude) {
-                    if (0 === strpos($path, $exclude)) {
+                    if (empty($exclude)) {
+                        if (empty($path))
+                            continue 2;
+                    } elseif (0 === strpos($path, $exclude)) {
                         continue 2;
                     }
                 }
@@ -145,7 +148,7 @@ class Nav
     }
 
     protected static function build(&$tree, $path,
-                             $url = null, $text = null, $activeUrl = null)
+                                    $url = null, $text = null, $activeUrl = null)
     {
         $parts = explode('/', $path);
         $p = & $tree;
