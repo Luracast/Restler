@@ -32,9 +32,9 @@ class Nav
     public static $accessControlFunction = null;
     /**
      * @var array all paths beginning with any of the following will be excluded
-     * from documentation
+     * from documentation. if an empty string is given it will exclude the root
      */
-    public static $excludedPaths = array();
+    public static $excludedPaths = array('');
     /**
      * @var array prefix additional menu items with one of the following syntax
      *            [$path => $text]
