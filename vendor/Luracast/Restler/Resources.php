@@ -148,7 +148,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     public function _pre_get_json($id)
     {
         $userClass = Defaults::$userIdentifierClass;
-        $this->cacheName = $userClass::getCacheIdentifier() . '_resources_'.$id;
+        $this->cacheName = $userClass::getCacheIdentifier() . '_resources_' . $id;
         if ($this->restler->getProductionMode()
             && !$this->restler->refreshCache
             && $this->restler->cache->isCached($this->cacheName)
@@ -228,7 +228,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     continue;
                 }
                 $fLen = strlen($fullPath);
-                if ($fLen != $tLen &&  0 !== strpos($fullPath, $target . '/')
+                if ($fLen != $tLen && 0 !== strpos($fullPath, $target . '/')
                 ) {
                     continue;
                 }
@@ -237,8 +237,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     //they are listed else where under that static part name
                     continue;
                 }
-                
-                if (!static::verifyAccess($route)){
+
+                if (!static::verifyAccess($route)) {
                     continue;
                 }
                 foreach (static::$excludedPaths as $exclude) {
@@ -365,7 +365,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
                 $api = false;
 
-                if(static::$groupOperations){
+                if (static::$groupOperations) {
                     foreach ($r->apis as $a) {
                         if ($a->path == "/$fullPath") {
                             $api = $a;
@@ -389,7 +389,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             $r->models = $this->_models;
         usort(
             $r->apis,
-            function($a, $b){
+            function ($a, $b) {
                 $order = array(
                     'GET' => 1,
                     'POST' => 2,
@@ -413,7 +413,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     {
         static $hash = array();
         $method = $route['methodName'];
-        if(isset(static::$prefixes[$method])){
+        if (isset(static::$prefixes[$method])) {
             $method = static::$prefixes[$method];
         } else {
             $method = str_replace(
@@ -488,10 +488,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
 
         $r->parameters = array();
 
-        $r->summary = $summary.($route['accessLevel'] > 2
-            ? static::$apiDescriptionSuffixSymbols[2]
-            : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
-        );
+        $r->summary = $summary . ($route['accessLevel'] > 2
+                ? static::$apiDescriptionSuffixSymbols[2]
+                : static::$apiDescriptionSuffixSymbols[$route['accessLevel']]
+            );
         $r->notes = $notes;
 
         $r->errorResponses = array();
@@ -509,7 +509,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 : 'add <mark>@param {type} $' . $r->name
                 . ' {comment}</mark> to describe here');
         //paramType can be path or query or body or header
-        $r->paramType = isset($param['from']) ? $param['from'] : 'query';
+        $r->paramType = Util::nestedValue($param, CommentParser::$embeddedDataName, 'from') ? : 'query';
         $r->required = isset($param['required']) && $param['required'];
         if (isset($param['default'])) {
             $r->defaultValue = $param['default'];
@@ -524,13 +524,13 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             if (is_array($type)) {
                 $type = array_shift($type);
             }
-            if($type == 'array') {
+            if ($type == 'array') {
                 $contentType = Util::nestedValue(
                     $param,
                     CommentParser::$embeddedDataName,
                     'type'
                 );
-                if($contentType){
+                if ($contentType) {
                     if ($contentType == 'indexed') {
                         $type = 'Array';
                     } elseif ($contentType == 'associative') {
@@ -538,7 +538,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     } else {
                         $type = "Array[$contentType]";
                     }
-                    if(Util::isObjectOrArray($contentType)){
+                    if (Util::isObjectOrArray($contentType)) {
                         $this->_model($contentType);
                     }
                 } elseif (isset(static::$dataTypeAlias[$type])) {
@@ -578,7 +578,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         }
         $this->_bodyParam['description'][$p->name]
             = "$p->name"
-            . ' : <tag>' . $p->dataType. '</tag> '
+            . ' : <tag>' . $p->dataType . '</tag> '
             . ($p->required ? ' <i>(required)</i> - ' : ' - ')
             . $p->description;
         $this->_bodyParam['required'] = $p->required
@@ -592,7 +592,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $n = isset($this->_bodyParam['names'])
             ? array_values($this->_bodyParam['names'])
             : array();
-        if(count($n)==1){
+        if (count($n) == 1) {
             if (isset($this->_models->{$n[0]->dataType})) {
                 // ============ custom class ===================
                 $r = $n[0];
@@ -618,7 +618,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 // ============ array of custom class ===============
                 $r = $n[0];
                 $t = substr($r->dataType, $p + 1, -1);
-                if($c = Util::nestedValue($this->_models,$t)){
+                if ($c = Util::nestedValue($this->_models, $t)) {
                     $a = $c->properties;
                     $r->description = "Paste JSON data here";
                     if (count($a)) {
@@ -664,7 +664,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $p = array_values($this->_bodyParam['description']);
         $r->name = 'REQUEST_BODY';
         $r->description = "Paste JSON data here";
-        if (count($p)==0 && $this->_fullDataRequested) {
+        if (count($p) == 0 && $this->_fullDataRequested) {
             $r->required = $this->_fullDataRequested->required;
             $r->defaultValue = "{\n    \"property\" : \"\"\n}";
         } else {
@@ -687,12 +687,12 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     protected function _model($className, $instance = null)
     {
         $id = $this->_noNamespace($className);
-        if(isset($this->_models->{$id})){
+        if (isset($this->_models->{$id})) {
             return;
         }
         $properties = array();
         if (!$instance) {
-            if(!class_exists($className))
+            if (!class_exists($className))
                 return;
             $instance = new $className();
         }
@@ -739,11 +739,12 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 'type' => $type,
                 'description' => $description
             );
-            if(Util::nestedValue(
+            if (Util::nestedValue(
                 $propertyMetaData,
                 CommentParser::$embeddedDataName,
                 'required'
-            )){
+            )
+            ) {
                 $properties[$key]['required'] = true;
             }
             if ($type == 'Array') {
@@ -888,7 +889,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             $nextVersion = $version + 1;
             if ($nextVersion <= $this->restler->getApiVersion()) {
                 list($status, $data) = $this->_loadResource("/v$nextVersion/resources.json");
-                if($status == 200){
+                if ($status == 200) {
                     $r->apis = array_merge($r->apis, $data->apis);
                     $r->apiVersion = $data->apiVersion;
                 }
@@ -898,7 +899,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         return $r;
     }
 
-    protected function _loadResource ($url)
+    protected function _loadResource($url)
     {
         $ch = curl_init($this->restler->getBaseUrl() . $url
             . (empty($_GET) ? '' : '?' . http_build_query($_GET)));
@@ -909,7 +910,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             'Accept:application/json',
         ));
         $result = json_decode(curl_exec($ch));
-        $http_status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $http_status = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
         return array($http_status, $result);
     }
 
@@ -924,7 +925,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
                 }
-                if (!static::verifyAccess($route)){
+                if (!static::verifyAccess($route)) {
                     continue;
                 }
 
@@ -958,15 +959,16 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     {
         return Scope::get('Restler')->getApiVersion();
     }
-    
+
     /**
      * Verifies that the requesting user is allowed to view the docs for this API
-     * 
+     *
      * @param $route
-     * 
+     *
      * @return boolean True if the user should be able to view this API's docs
      */
-    protected function verifyAccess($route){
+    protected function verifyAccess($route)
+    {
         if (
             static::$hideProtected
             && !$this->_authenticated
