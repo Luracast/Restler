@@ -956,6 +956,8 @@ class Restler extends EventDispatcher
     {
         //only GET method should be cached if allowed by API developer
         $expires = $this->requestMethod == 'GET' ? Defaults::$headerExpires : 0;
+        if(!is_array(Defaults::$headerCacheControl))
+            Defaults::$headerCacheControl = array(Defaults::$headerCacheControl);
         $cacheControl = Defaults::$headerCacheControl[0];
         if ($expires > 0) {
             $cacheControl = $this->apiMethodInfo->accessLevel
