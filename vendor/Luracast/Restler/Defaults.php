@@ -277,7 +277,6 @@ class Defaults
     public static $validation = array(
         'suppressResponseCode' => array('type' => 'bool'),
         'headerExpires' => array('type' => 'int', 'min' => 0),
-        'headerCacheControl' => array('type' => 'array', 'fix' => true),
     );
 
     // ==================================================================
