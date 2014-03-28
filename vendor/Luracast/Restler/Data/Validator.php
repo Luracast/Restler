@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler\Data;
 
+use Luracast\Restler\CommentParser;
 use Luracast\Restler\Format\HtmlFormat;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Scope;
@@ -359,6 +360,9 @@ class Validator implements iValidate
                     return false;
 
                 case 'array':
+                    if ($info->fix && is_string($input)) {
+                        $input = explode(CommentParser::$arrayDelimiter, $input);
+                    }
                     if (is_array($input)) {
                         $contentType =
                             Util::nestedValue($info, 'contentType') ? : null;
@@ -415,8 +419,6 @@ class Validator implements iValidate
                         $error .= '. Expecting items of type ' .
                             ($html ? "<strong>$contentType</strong>" : "`$contentType`");
                         break;
-                    } elseif ($info->fix && is_string($input)) {
-                        return array($input);
                     }
                     break;
                 case 'mixed':
