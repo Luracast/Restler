@@ -66,5 +66,8 @@
         "psr-0":{
             "Luracast\\Restler":"vendor/"
         }
+    },
+    "replace": {
+        "restler/framework":"3.*"
     }
 }
