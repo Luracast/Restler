@@ -55,7 +55,7 @@ class RateLimit implements iFilter, iUseAuthentication
     /**
      * @param string $unit
      * @param int    $usagePerUnit
-     * @param int    $authenticatedUsagePerUnit
+     * @param int    $authenticatedUsagePerUnit set it to false to give unlimited access
      *
      * @throws \InvalidArgumentException
      * @return void
@@ -67,7 +67,7 @@ class RateLimit implements iFilter, iUseAuthentication
         static::$unit = $unit;
         static::$usagePerUnit = $usagePerUnit;
         static::$authenticatedUsagePerUnit =
-            $authenticatedUsagePerUnit ? : $usagePerUnit;
+            is_null($authenticatedUsagePerUnit) ? $usagePerUnit : $authenticatedUsagePerUnit;
     }
 
     public function __isAllowed()
@@ -100,40 +100,42 @@ class RateLimit implements iFilter, iUseAuthentication
         $maxPerUnit = $isAuthenticated
             ? static::$authenticatedUsagePerUnit
             : static::$usagePerUnit;
-        $user = Defaults::$userIdentifierClass;
-        if (!method_exists($user, 'getUniqueIdentifier')) {
-            throw new \UnexpectedValueException('`Defaults::$userIdentifierClass` must implement `iIdentifyUser` interface');
-        }
-        $id = "RateLimit_" . $maxPerUnit . '_per_' . static::$unit
-            . '_for_' . static::$group
-            . '_' . $user::getUniqueIdentifier();
-        $lastRequest = $this->restler->cache->get($id, true)
-            ? : array('time' => 0, 'used' => 0);
-        $time = $lastRequest['time'];
-        $diff = time() - $time; # in seconds
-        $used = $lastRequest['used'];
+        if ($maxPerUnit) {
+            $user = Defaults::$userIdentifierClass;
+            if (!method_exists($user, 'getUniqueIdentifier')) {
+                throw new \UnexpectedValueException('`Defaults::$userIdentifierClass` must implement `iIdentifyUser` interface');
+            }
+            $id = "RateLimit_" . $maxPerUnit . '_per_' . static::$unit
+                . '_for_' . static::$group
+                . '_' . $user::getUniqueIdentifier();
+            $lastRequest = $this->restler->cache->get($id, true)
+                ? : array('time' => 0, 'used' => 0);
+            $time = $lastRequest['time'];
+            $diff = time() - $time; # in seconds
+            $used = $lastRequest['used'];
 
-        header("X-RateLimit-Limit: $maxPerUnit per ".static::$unit);
-        if ($diff >= $timeUnit) {
-            $used = 1;
-            $time = time();
-        } elseif ($used >= $maxPerUnit) {
-            header("X-RateLimit-Remaining: 0");
-            $wait = $timeUnit - $diff;
-            sleep(1);
-            throw new RestException(429,
-                'Rate limit of ' . $maxPerUnit . ' request' .
-                ($maxPerUnit > 1 ? 's' : '') . ' per '
-                . static::$unit . ' exceeded. Please wait for '
-                . static::duration($wait) . '.'
-            );
-        } else {
-            $used++;
+            header("X-RateLimit-Limit: $maxPerUnit per " . static::$unit);
+            if ($diff >= $timeUnit) {
+                $used = 1;
+                $time = time();
+            } elseif ($used >= $maxPerUnit) {
+                header("X-RateLimit-Remaining: 0");
+                $wait = $timeUnit - $diff;
+                sleep(1);
+                throw new RestException(429,
+                    'Rate limit of ' . $maxPerUnit . ' request' .
+                    ($maxPerUnit > 1 ? 's' : '') . ' per '
+                    . static::$unit . ' exceeded. Please wait for '
+                    . static::duration($wait) . '.'
+                );
+            } else {
+                $used++;
+            }
+            $remainingPerUnit = $maxPerUnit - $used;
+            header("X-RateLimit-Remaining: $remainingPerUnit");
+            $this->restler->cache->set($id,
+                array('time' => $time, 'used' => $used));
         }
-        $remainingPerUnit = $maxPerUnit - $used;
-        header("X-RateLimit-Remaining: $remainingPerUnit");
-        $this->restler->cache->set($id,
-            array('time' => $time, 'used' => $used));
         return true;
     }
 
