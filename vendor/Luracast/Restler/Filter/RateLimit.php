@@ -4,8 +4,6 @@ namespace Luracast\Restler\Filter;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\iFilter;
 use Luracast\Restler\iUseAuthentication;
-use Luracast\Restler\iIdentifyUser;
-use Luracast\Restler\User;
 use Luracast\Restler\RestException;
 
 /**
