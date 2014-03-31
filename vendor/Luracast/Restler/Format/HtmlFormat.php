@@ -2,6 +2,14 @@
 namespace Luracast\Restler\Format;
 
 use Exception;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Factory;
+use Illuminate\View\FileViewFinder;
+use Illuminate\View\View;
 use Luracast\Restler\Data\Object;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
@@ -60,6 +68,28 @@ class HtmlFormat extends Format
             $array = explode('vendor', __DIR__, 2);
             static::$viewPath = $array[0] . 'views';
         }
+    }
+
+    public static function blade(array $data, $debug = true)
+    {
+        if (!class_exists('\Illuminate\View\View', true))
+            throw new RestException(500,
+                'Blade templates require laravel view classes to be installed using `composer install`');
+        $resolver = new EngineResolver();
+        $files = new Filesystem();
+        $compiler = new BladeCompiler($files, Defaults::$cacheDirectory);
+        $engine = new CompilerEngine($compiler); //new PhpEngine();
+        $resolver->register('blade', function () use ($engine) {
+            return $engine;
+        });
+
+        $viewFinder = new FileViewFinder($files, array(static::$viewPath));
+        $factory = new Factory($resolver, $viewFinder, new Dispatcher());
+        self::$view = str_replace('/', '.', self::$view);
+        $path = $viewFinder->find(self::$view);
+        $view = new View($factory, $engine, self::$view, $path, $data);
+        $factory->callCreator($view);
+        return $view->render();
     }
 
     public static function twig(array $data, $debug = true)
