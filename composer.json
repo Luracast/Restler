@@ -37,7 +37,7 @@
     "require-dev":{
         "luracast/explorer":"*",
         "guzzle/guzzle":"~3.1.1",
-        "behat/behat":"2.4.*@stable",
+        "behat/behat":"2.5.*@stable",
         "rodneyrehm/plist":"dev-master",
         "zendframework/zendamf":"dev-master",
         "symfony/yaml":"*",
