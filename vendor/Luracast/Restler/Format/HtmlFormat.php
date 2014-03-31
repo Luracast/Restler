@@ -103,7 +103,7 @@ class HtmlFormat extends Format
             return false;
         });
 
-        $template = $twig->loadTemplate(self::$view);
+        $template = $twig->loadTemplate(self::$view . '.' . self::$format);
         return $template->render($data);
     }
 
@@ -140,13 +140,13 @@ class HtmlFormat extends Format
         if (!$debug)
             $options['cache'] = Defaults::$cacheDirectory;
         $m = new \Mustache_Engine($options);
-        return $m->render(self::$view, $data);
+        return $m->render(self::$view . '.' . self::$format, $data);
     }
 
     public static function php(array $data, $debug = true)
     {
         $view = self::$viewPath . DIRECTORY_SEPARATOR .
-            self::$view;
+            self::$view . '.' . self::$format;
 
         if (!is_readable($view)) {
             throw new RestException(
@@ -295,11 +295,11 @@ class HtmlFormat extends Format
                 $data = Util::nestedValue($data, explode('.', $value));
             }
             $data += static::$data;
-            if (false === ($i = strpos(self::$view, '.'))) {
+            if (false === ($i = strrpos(self::$view, '.'))) {
                 $extension = self::$format;
-                self::$view .= '.' . $extension;
             } else {
-                $extension = substr(self::$view, $i + 1);
+                self::$format = $extension = substr(self::$view, $i + 1);
+                self::$view = substr(self::$view, 0, $i);
             }
             if (method_exists(__CLASS__, $extension)) {
                 return call_user_func(__CLASS__ . '::' . $extension, $data, $humanReadable);
