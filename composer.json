@@ -29,6 +29,7 @@
         "symfony/yaml":"Restler can produce content in yaml format as well (see require-dev for details)",
         "twig/twig":"Restler can render HtmlView using twig templates (see require-dev for details)",
         "mustache/mustache":"Restler can render HtmlView using mustache/handlebar templates (see require-dev for details)",
+        "illuminate/view":"Restler can render HtmlView using laravel blade templates (see require-dev for details)",
         "bshaffer/oauth2-server-php":"Restler can provide OAuth2 authentication using this library (see require-dev for details)"
     },
     "require":{
@@ -43,6 +44,7 @@
         "symfony/yaml":"*",
         "mustache/mustache": "dev-master",
         "twig/twig": "v1.13.0",
+        "illuminate/view": "4.2.*",
         "bshaffer/oauth2-server-php":"v1.0"
     },
     "repositories":[
@@ -67,6 +69,7 @@
             "Luracast\\Restler":"vendor/"
         }
     },
+    "minimum-stability": "dev",
     "replace": {
         "restler/framework":"3.*"
     }
