@@ -277,9 +277,9 @@ class Validator implements iValidate
                 }
             }
 
-            if (method_exists(__CLASS__, $info->type) && $info->type != 'validate') {
+            if (method_exists($class = get_called_class(), $info->type) && $info->type != 'validate') {
                 try {
-                    return call_user_func(__CLASS__ . '::' . $info->type, $input, $info);
+                    return call_user_func("$class::$info->type", $input, $info);
                 } catch (Invalid $e) {
                     throw new RestException(400, $error . '. ' . $e->getMessage());
                 }
