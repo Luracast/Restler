@@ -40,6 +40,10 @@ class HtmlFormat extends Format
 
     public static $useSmartViews = true;
     /**
+     * @var null|string defaults to template named folder in Defaults::$cacheDirectory
+     */
+    public static $cacheDirectory = null;
+    /**
      * @var array global key value pair to be supplied to the templates. All
      * keys added here will be available as a variable inside the template
      */
@@ -84,7 +88,7 @@ class HtmlFormat extends Format
                 'Blade templates require laravel view classes to be installed using `composer install`');
         $resolver = new EngineResolver();
         $files = new Filesystem();
-        $compiler = new BladeCompiler($files, Defaults::$cacheDirectory);
+        $compiler = new BladeCompiler($files, static::$cacheDirectory);
         $engine = new CompilerEngine($compiler); //new PhpEngine();
         $resolver->register('blade', function () use ($engine) {
             return $engine;
@@ -106,7 +110,7 @@ class HtmlFormat extends Format
                 'Twig templates require twig classes to be installed using `composer install`');
         $loader = new \Twig_Loader_Filesystem(static::$viewPath);
         $twig = new \Twig_Environment($loader, array(
-            'cache' => Defaults::$cacheDirectory,
+            'cache' => static::$cacheDirectory,
             'debug' => $debug,
             'use_strict_variables' => $debug,
         ));
@@ -175,7 +179,7 @@ class HtmlFormat extends Format
             )
         );
         if (!$debug)
-            $options['cache'] = Defaults::$cacheDirectory;
+            $options['cache'] = static::$cacheDirectory;
         $m = new \Mustache_Engine($options);
         return $m->render(static::getViewFile(), $data);
     }
@@ -332,15 +336,23 @@ class HtmlFormat extends Format
             }
             $data += static::$data;
             if (false === ($i = strrpos(self::$view, '.'))) {
-                $extension = self::$template;
+                $template = self::$template;
             } else {
-                self::$template = $extension = substr(self::$view, $i + 1);
+                self::$template = $template = substr(self::$view, $i + 1);
                 self::$view = substr(self::$view, 0, $i);
             }
-            if (method_exists($class = get_called_class(), $extension)) {
-                return call_user_func("$class::$extension", $data, $humanReadable);
+            if (!static::$cacheDirectory) {
+                static::$cacheDirectory = Defaults::$cacheDirectory . DIRECTORY_SEPARATOR . $template;
+                if (!file_exists(static::$cacheDirectory)) {
+                    if (!mkdir(static::$cacheDirectory)) {
+                        throw new RestException(500, 'Unable to create cache directory `' . static::$cacheDirectory . '`');
+                    }
+                }
             }
-            throw new RestException(500, "Unsupported template system `$extension`");
+            if (method_exists($class = get_called_class(), $template)) {
+                return call_user_func("$class::$template", $data, $humanReadable);
+            }
+            throw new RestException(500, "Unsupported template system `$template`");
         } catch (Exception $e) {
             static::$parseViewMetadata = false;
             $this->reset();
