@@ -9,8 +9,8 @@ Description: A special format that lets us render a template with the api result
 It currently supports the following template libraries/formats
 
  - php (default)
- - twig (requires `"twig/twig"`)
  - mustache / handlebar (requires `"mustache/mustache"`)
+ - twig (requires `"twig/twig"`)
  - Laravel 4 blade templates (requires `"illuminate/view"`)
 
 When HtmlFormat is used with out defining a view it uses debug view to present
@@ -70,10 +70,10 @@ require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Format\HtmlFormat;
 
-//un-comment the following line to try mustache/handlebar templates instead of php
-//HtmlFormat::$format = 'handlebar';
-//un-comment the following line to try laravel 4 blade templates instead
-//HtmlFormat::$format = 'blade';
+//Un-comment one of the lines to try a different template engine
+//  HtmlFormat::$template = 'handlebar'; //Mustache
+//  HtmlFormat::$template = 'twig'; //Symfony 2 Twig
+//  HtmlFormat::$template = 'blade'; //Laravel Views
 
 $r = new Restler();
 $r->setSupportedFormats('JsonFormat','HtmlFormat');
