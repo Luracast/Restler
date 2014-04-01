@@ -35,7 +35,7 @@ class HtmlFormat extends Format
     public static $extension = 'html';
     public static $view;
     public static $errorView = 'debug.php';
-    public static $format = 'php';
+    public static $template = 'php';
     public static $handleSession = true;
 
     public static $useSmartViews = true;
@@ -133,7 +133,7 @@ class HtmlFormat extends Format
             return false;
         });
 
-        $template = $twig->loadTemplate(self::$view . '.' . self::$format);
+        $template = $twig->loadTemplate(self::$view . '.' . self::$template);
         return $template->render($data);
     }
 
@@ -155,7 +155,7 @@ class HtmlFormat extends Format
         $options = array(
             'loader' => new \Mustache_Loader_FilesystemLoader(
                     static::$viewPath,
-                    array('extension' => static::$format)
+                    array('extension' => static::$template)
                 ),
             'helpers' => array(
                 'form' => function ($text, \Mustache_LambdaHelper $m) {
@@ -170,13 +170,13 @@ class HtmlFormat extends Format
         if (!$debug)
             $options['cache'] = Defaults::$cacheDirectory;
         $m = new \Mustache_Engine($options);
-        return $m->render(self::$view . '.' . self::$format, $data);
+        return $m->render(self::$view . '.' . self::$template, $data);
     }
 
     public static function php(array $data, $debug = true)
     {
         $view = self::$viewPath . DIRECTORY_SEPARATOR .
-            self::$view . '.' . self::$format;
+            self::$view . '.' . self::$template;
 
         if (!is_readable($view)) {
             throw new RestException(
@@ -326,9 +326,9 @@ class HtmlFormat extends Format
             }
             $data += static::$data;
             if (false === ($i = strrpos(self::$view, '.'))) {
-                $extension = self::$format;
+                $extension = self::$template;
             } else {
-                self::$format = $extension = substr(self::$view, $i + 1);
+                self::$template = $extension = substr(self::$view, $i + 1);
                 self::$view = substr(self::$view, 0, $i);
             }
             if (method_exists(__CLASS__, $extension)) {
@@ -347,7 +347,7 @@ class HtmlFormat extends Format
         static::$mime = 'text/html';
         static::$extension = 'html';
         static::$view = 'debug';
-        static::$format = 'php';
+        static::$template = 'php';
     }
 
     /**
