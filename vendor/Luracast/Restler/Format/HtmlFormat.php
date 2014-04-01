@@ -337,8 +337,8 @@ class HtmlFormat extends Format
                 self::$template = $extension = substr(self::$view, $i + 1);
                 self::$view = substr(self::$view, 0, $i);
             }
-            if (method_exists(__CLASS__, $extension)) {
-                return call_user_func(__CLASS__ . '::' . $extension, $data, $humanReadable);
+            if (method_exists($class = get_called_class(), $extension)) {
+                return call_user_func("$class::$extension", $data, $humanReadable);
             }
             throw new RestException(500, "Unsupported template system `$extension`");
         } catch (Exception $e) {
