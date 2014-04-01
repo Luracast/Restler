@@ -70,13 +70,13 @@ require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Format\HtmlFormat;
 
-//Un-comment one of the lines to try a different template engine
+//Un-comment one of the following lines to try a different template engine
 //  HtmlFormat::$template = 'handlebar'; //Mustache
 //  HtmlFormat::$template = 'twig'; //Symfony 2 Twig
 //  HtmlFormat::$template = 'blade'; //Laravel Views
 
 $r = new Restler();
-$r->setSupportedFormats('JsonFormat','HtmlFormat');
+$r->setSupportedFormats('JsonFormat', 'HtmlFormat');
 $r->addAPIClass('Tasks');
 $r->addAPIClass('Resources');
 $r->handle();
