@@ -49,6 +49,13 @@ class HtmlFormat extends Format
      * views folder which is same level as vendor directory.
      */
     public static $viewPath;
+    /**
+     * @var array template and its custom extension key value pair
+     */
+    public static $customTemplateExtensions = array('blade' => 'blade.php');
+    /**
+     * @var bool used internally for error handling
+     */
     protected static $parseViewMetadata = true;
     /**
      * @var Restler;
@@ -85,7 +92,7 @@ class HtmlFormat extends Format
 
         $viewFinder = new FileViewFinder($files, array(static::$viewPath));
         $factory = new Factory($resolver, $viewFinder, new Dispatcher());
-        self::$view = str_replace('/', '.', self::$view);
+        //self::$view = str_replace('/', '.', self::$view);
         $path = $viewFinder->find(self::$view);
         $view = new View($factory, $engine, self::$view, $path, $data);
         $factory->callCreator($view);
@@ -133,7 +140,7 @@ class HtmlFormat extends Format
             return false;
         });
 
-        $template = $twig->loadTemplate(self::$view . '.' . self::$template);
+        $template = $twig->loadTemplate(static::getViewFile());
         return $template->render($data);
     }
 
@@ -155,7 +162,7 @@ class HtmlFormat extends Format
         $options = array(
             'loader' => new \Mustache_Loader_FilesystemLoader(
                     static::$viewPath,
-                    array('extension' => static::$template)
+                    array('extension' => static::getViewExtension())
                 ),
             'helpers' => array(
                 'form' => function ($text, \Mustache_LambdaHelper $m) {
@@ -170,13 +177,12 @@ class HtmlFormat extends Format
         if (!$debug)
             $options['cache'] = Defaults::$cacheDirectory;
         $m = new \Mustache_Engine($options);
-        return $m->render(self::$view . '.' . self::$template, $data);
+        return $m->render(static::getViewFile(), $data);
     }
 
     public static function php(array $data, $debug = true)
     {
-        $view = self::$viewPath . DIRECTORY_SEPARATOR .
-            self::$view . '.' . self::$template;
+        $view = static::getViewFile(true);
 
         if (!is_readable($view)) {
             throw new RestException(
@@ -301,7 +307,7 @@ class HtmlFormat extends Format
                     self::$view = $metadata[$view];
                 }
             } elseif (!self::$view) {
-                self::$view = static::$useSmartViews
+                self::$view = static::$useSmartViews && is_readable(static::getViewFile(true))
                     ? $this->restler->url
                     : static::$errorView;
             }
@@ -340,6 +346,22 @@ class HtmlFormat extends Format
             $this->reset();
             throw $e;
         }
+    }
+
+    public function getViewExtension()
+    {
+        return isset(static::$customTemplateExtensions[static::$template])
+            ? static::$customTemplateExtensions[static::$template]
+            : static::$template;
+    }
+
+    public function getViewFile($fullPath = false, $includeExtension = true)
+    {
+        $v = $fullPath ? static::$viewPath . '/' : '';
+        $v .= static::$view;
+        if ($includeExtension)
+            $v .= '.' . static::getViewExtension();
+        return $v;
     }
 
     private function reset()
