@@ -14,6 +14,7 @@ use Luracast\Restler\Data\Object;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
+use Luracast\Restler\Scope;
 use Luracast\Restler\UI\Nav;
 use Luracast\Restler\Util;
 
@@ -89,14 +90,29 @@ class HtmlFormat extends Format
         $resolver = new EngineResolver();
         $files = new Filesystem();
         $compiler = new BladeCompiler($files, static::$cacheDirectory);
-        $engine = new CompilerEngine($compiler); //new PhpEngine();
+        $engine = new CompilerEngine($compiler);
         $resolver->register('blade', function () use ($engine) {
             return $engine;
         });
 
+        //Lets expose shortcuts for our classes
+        $aliases = array();
+        foreach (Scope::$classAliases as $alias => $original) {
+            if (false !== strpos($original, 'Luracast\Restler\UI'))
+                $aliases[$alias] = $original;
+        }
+
+        /** @var Restler $restler */
+        $restler = Scope::get('Restler');
+        if (isset($restler->apiMethodInfo->metadata['aliases']))
+            $aliases = $restler->apiMethodInfo->metadata['aliases'] + $aliases;
+
+        foreach ($aliases as $alias => $original) {
+            class_alias($original, $alias);
+        }
+
         $viewFinder = new FileViewFinder($files, array(static::$viewPath));
         $factory = new Factory($resolver, $viewFinder, new Dispatcher());
-        //self::$view = str_replace('/', '.', self::$view);
         $path = $viewFinder->find(self::$view);
         $view = new View($factory, $engine, self::$view, $path, $data);
         $factory->callCreator($view);
