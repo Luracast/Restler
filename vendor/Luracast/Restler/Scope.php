@@ -38,6 +38,9 @@ class Scope
 
         //UI classes
         'Forms' => 'Luracast\Restler\UI\Forms',
+        'Nav' => 'Luracast\Restler\UI\Nav',
+        'Emmet' => 'Luracast\Restler\UI\Emmet',
+        'T' => 'Luracast\Restler\UI\Tags',
 
         //API classes
         'Resources' => 'Luracast\Restler\Resources',
