@@ -104,9 +104,10 @@ class HtmlFormat extends Format
 
         /** @var Restler $restler */
         $restler = Scope::get('Restler');
-        if (isset($restler->apiMethodInfo->metadata['aliases']))
-            $aliases = $restler->apiMethodInfo->metadata['aliases'] + $aliases;
-
+        if (isset($restler->apiMethodInfo->metadata['scope'])) {
+            $aliases = $restler->apiMethodInfo->metadata['scope'] + $aliases;
+            unset($aliases['*']);
+        }
         foreach ($aliases as $alias => $original) {
             class_alias($original, $alias);
         }
