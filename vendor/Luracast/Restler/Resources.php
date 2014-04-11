@@ -673,10 +673,17 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 . '<hr/>'
                 . implode("<hr/>", $p);
             $r->required = $this->_bodyParam['required'];
-            $r->defaultValue = "{\n    \""
-                . implode("\": \"\",\n    \"",
-                    array_keys($this->_bodyParam['names']))
-                . "\": \"\"\n}";
+            // Create default object that includes parameters to be submitted
+            $defaultObject = new \StdClass();
+            foreach ($this->_bodyParam['names'] as $name => $values) {
+                if (class_exists($values->dataType)) {
+                    $myClassName = $values->dataType;
+                    $defaultObject->$name = new $myClassName();
+                } else {
+                   $defaultObject->$name = "";
+                }
+            }
+            $r->defaultValue = (defined('JSON_PRETTY_PRINT')) ? json_encode($defaultObject, JSON_PRETTY_PRINT) : json_encode($defaultObject);
         }
         $r->paramType = 'body';
         $r->allowMultiple = false;
