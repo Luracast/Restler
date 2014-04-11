@@ -242,6 +242,8 @@ class Restler extends EventDispatcher
                     $this->route();
                     throw $e;
                 }
+                if (Defaults::$useVendorMIMEVersioning)
+                    $this->responseFormat = $this->negotiateResponseFormat();
                 $this->route();
             } catch (Exception $e) {
                 $this->negotiate();
