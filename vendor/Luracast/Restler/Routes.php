@@ -556,6 +556,7 @@ class Routes
                 }
             }
             $child += array('type' => 'string', 'label' => static::label($child['name']));
+            $child[CommentParser::$embeddedDataName] += array('required' => true);
             if ($qualified = Scope::resolve($child['type'], $scope)) {
                 list($child['type'], $child['children'])
                     = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
@@ -633,7 +634,7 @@ class Routes
                     //===== STOP =====//
                     $reading = false;
                     if (!empty($namespace))
-                        $imports[$alias] = trim($namespace,'\\');
+                        $imports[$alias] = trim($namespace, '\\');
                     //===== START =====//
                     $reading = true;
                     $namespace = '';
@@ -642,7 +643,7 @@ class Routes
                     //===== STOP =====//
                     $reading = false;
                     if (!empty($namespace))
-                        $imports[$alias] = trim($namespace,'\\');
+                        $imports[$alias] = trim($namespace, '\\');
                 }
             } elseif (T_USE == $token[0]) {
                 //===== START =====//
