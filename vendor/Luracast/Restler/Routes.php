@@ -556,7 +556,9 @@ class Routes
                 }
             }
             $child += array('type' => 'string', 'label' => static::label($child['name']));
-            $child[CommentParser::$embeddedDataName] += array('required' => true);
+            isset($child[CommentParser::$embeddedDataName])
+                ? $child[CommentParser::$embeddedDataName] += array('required' => true)
+                : $child[CommentParser::$embeddedDataName]['required'] = true;
             if ($qualified = Scope::resolve($child['type'], $scope)) {
                 list($child['type'], $child['children'])
                     = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
