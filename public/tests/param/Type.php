@@ -180,7 +180,7 @@ class Author
      */
     public $name = 'Name';
     /**
-     * @var string {@type email} {@from body}
+     * @var string {@type email} {@from body} {@required false}
      * email id of the Author
      */
     public $email = 'name@domain.com';

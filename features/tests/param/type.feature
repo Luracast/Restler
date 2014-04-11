@@ -321,7 +321,7 @@ Feature: Type Attribute
 
   Examples:
     | author                                      | expected                                    |
-    | {"name":"Arul"}                             | {"name":"Arul","email":null}                |
+    | {"name":"Arul"}                             | {"name":"Arul","email":"name@domain.com"}                |
     | {"name":"Arul","email":"arul@luracast.com"} | {"name":"Arul","email":"arul@luracast.com"} |
     | {"name":"name","email":"a@b.c"}             | {"name":"name","email":"a@b.c"}             |
 
@@ -352,7 +352,7 @@ Feature: Type Attribute
 
   Examples:
     | authors                                       | expected                                      |
-    | [{"name":"Arul"}]                             | [{"name":"Arul","email":null}]                |
+    | [{"name":"Arul"}]                             | [{"name":"Arul","email":"name@domain.com"}]                |
     | [{"name":"Arul","email":"arul@luracast.com"}] | [{"name":"Arul","email":"arul@luracast.com"}] |
     | [{"name":"name","email":"a@b.c"}]             | [{"name":"name","email":"a@b.c"}]             |
 
