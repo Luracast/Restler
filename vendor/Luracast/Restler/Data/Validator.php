@@ -455,10 +455,14 @@ class Validator implements iValidate
                                 break;
                             }
                             foreach ($info->children as $key => $value) {
-                                $instance->{$key} = static::validate(
-                                    Util::nestedValue($input, $key),
-                                    new ValidationInfo($value)
-                                );
+                                $cv = new ValidationInfo($value);
+                                if (array_key_exists($key, $input) || $cv->required) {
+                                    $instance->{$key} = static::validate(
+                                        Util::nestedValue($input, $key),
+                                        $cv
+                                    );
+                                }
+
                             }
                         }
                         return $instance;
