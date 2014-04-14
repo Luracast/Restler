@@ -268,7 +268,7 @@ mode. Try changing rester to run in production mode (<code>$r = new Restler(true
   <ul>
   <li><abbr title="_008_documentation/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_008_documentation/improved/Authors.php">Authors.php</abbr>      (api)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
+  <li><abbr title="../../restler/vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -276,14 +276,17 @@ mode. Try changing rester to run in production mode (<code>$r = new Restler(true
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    authors        ⇠ improved\Authors::index()
-POST   authors        ⇠ improved\Authors::post()
-PATCH  authors/{id}   ⇠ improved\Authors::patch()
-DELETE authors/{id}   ⇠ improved\Authors::delete()
-PUT    authors/{id}   ⇠ improved\Authors::put()
-GET    authors/{id}   ⇠ improved\Authors::get()
-GET    resources      ⇠ Luracast\Restler\Resources::index()
-GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET    authors                ⇠ improved\Authors::index()
+POST   authors                ⇠ improved\Authors::post()
+GET    authors                ⇠ improved\Authors::index()
+DELETE authors/{id}           ⇠ improved\Authors::delete()
+PATCH  authors/{id}           ⇠ improved\Authors::patch()
+GET    authors/{id}           ⇠ improved\Authors::get()
+PUT    authors/{id}           ⇠ improved\Authors::put()
+GET    resources              ⇠ Luracast\Restler\Resources::index()
+GET    resources              ⇠ Luracast\Restler\Resources::index()
+GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
 </code></pre>
 
 </article>

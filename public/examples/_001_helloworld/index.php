@@ -10,7 +10,7 @@
  Example 3: GET say/hi?to=restler3.0 returns "Hi restler3.0!"
  Content: > **Note:-** If you have used Restler 2 before, you will wonder why
  the generated routes are lesser with Restler 3.
- Read the [Routes](../_006_routing/readme.html) example to understand.
+ Look at [Routes](../_006_routing/readme.html) example to understand.
  */
 require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;

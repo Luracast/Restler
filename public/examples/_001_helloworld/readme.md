@@ -16,13 +16,13 @@ Basic hello world example to get started with Restler 3.
 
 This API Server exposes the following URIs
 
-    GET say/hello   ⇠ Say::hello()
-    GET say/hi/{to} ⇠ Say::hi()
+    GET say/hello⇠ Say::hello()
+    GET say/hi ⇠ Say::hi()
 
 
 > **Note:-** If you have used Restler 2 before, you will wonder why
  the generated routes are lesser with Restler 3.
- Read the [Routes](../_006_routing/readme.html) example to understand.
+ Look at [Routes](../_006_routing/readme.html) example to understand.
 
 
 
@@ -40,7 +40,7 @@ GET [say/hello?to=R.Arul%20Kumaran](say/hello?to=R.Arul%20Kumaran)
 "Hello R.Arul Kumaran!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [say/hi/restler3.0](say/hi/restler3.0)
+GET [say/hi?to=restler3.0](say/hi?to=restler3.0)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "Hi restler3.0!"
@@ -65,7 +65,7 @@ GET [index.php/say/hello?to=R.Arul%20Kumaran](index.php/say/hello?to=R.Arul%20Ku
 "Hello R.Arul Kumaran!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [index.php/say/hi/restler3.0](index.php/say/hi/restler3.0)
+GET [index.php/say/hi?to=restler3.0](index.php/say/hi?to=restler3.0)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "Hi restler3.0!"
@@ -104,13 +104,13 @@ Feature: Testing Helloworld Example
 
   Scenario: Saying Hi
     When I request "/examples/_001_helloworld/say/hi"
-    Then the response status code should be 404
+    Then the response status code should be 400
     And the response is JSON
     And the type is "array"
 
   Scenario: Saying Hi Arul
     Given that "to" is set to "Arul"
-    When I request "/examples/_001_helloworld/say/hi/{to}"
+    When I request "/examples/_001_helloworld/say/hi{?to}"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"

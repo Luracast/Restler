@@ -75,12 +75,14 @@ var _gaq = _gaq || [];
     </nav>
 <article>
 
+<p><a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/stable.png" alt="Latest Stable Version"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/downloads.png" alt="Total Downloads"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/unstable.png" alt="Latest Unstable Version"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/license.png" alt="License"></a></p>
+
 <p><a id="luracast-restler" class="anchor"></a></p>
 <h1>
 <img src="examples/resources/Restler.png" alt="Restler"> Luracast Restler</h1>
 
-<p><a id="version-3-0-release-candidate-4" class="anchor"></a></p>
-<h3>Version 3.0 Release Candidate 4</h3>
+<p><a id="version-3-0-release-candidate-5" class="anchor"></a></p>
+<h3>Version 3.0 Release Candidate 5</h3>
 
 <p>Restler is a simple and effective multi-format Web API Server written in PHP.</p>
 
@@ -480,8 +482,24 @@ $r = new Restler(true); //turn on production mode by passing true.
 <p><a id="change-log" class="anchor"></a></p>
 <h2>Change Log</h2>
 
-<p><a id="changes-from-restler-3-0-rc3" class="anchor"></a></p>
-<h3>Changes from Restler 3.0 RC3</h3>
+<p><a id="restler-3-0-rc5" class="anchor"></a></p>
+<h3>Restler 3.0 RC5</h3>
+
+<ul>
+<li>Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
+<li>Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.</li>
+<li>HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.</li>
+<li>Tag, a utility class for generating html tags in object oriented way.</li>
+<li>Emmet class that extends a subset of emmet to create a a template engine.</li>
+<li>Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.</li>
+<li>Validator improved to allow suppressing validation errors from throwing exceptions immediatly, so that API call can reach the API method</li>
+<li>Validator improved to be form validation friendly.</li>
+<li>Nav class creating html navigation interface.</li>
+<li>OAuth examles updgrated to use version 1.0 of OAuth2 library.</li>
+<li>Many bug fixes and improvements.</li>
+</ul>
+<p><a id="restler-3-0-rc4" class="anchor"></a></p>
+<h3>Restler 3.0 RC4</h3>
 
 <ul>
 <li>
@@ -512,8 +530,8 @@ Restler works out of the box.</li>
 <li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>
 <li>Released Restler as package on packagist.</li>
 </ul>
-<p><a id="changes-from-restler-3-0-rc2" class="anchor"></a></p>
-<h3>Changes from Restler 3.0 RC2</h3>
+<p><a id="restler-3-0-rc3" class="anchor"></a></p>
+<h3>Restler 3.0 RC3</h3>
 
 <ul>
 <li>Added Defaults::$cacheDirectory to set cache directory in one central place</li>
@@ -552,8 +570,8 @@ name is a begins with part of the other API</li>
 the response</li>
 <li>Documentation improvements and minor bug fixes</li>
 </ul>
-<p><a id="changes-from-restler-3-0-rc1" class="anchor"></a></p>
-<h3>Changes from Restler 3.0 RC1</h3>
+<p><a id="restler-3-0-rc2" class="anchor"></a></p>
+<h3>Restler 3.0 RC2</h3>
 
 <ul>
 <li>Filter classes can use authentication status and respond differently for
@@ -581,8 +599,8 @@ correctly</li>
 </li>
 <li>CRUD example updated to include PATCH support</li>
 </ul>
-<p><a id="changes-from-restler-2-0" class="anchor"></a></p>
-<h3>Changes from Restler 2.0</h3>
+<p><a id="restler-3-0" class="anchor"></a></p>
+<h3>Restler 3.0</h3>
 
 <p><strong>Restler 3.0</strong> is completely rewritten from Restler 2.0 with best practices in
 mind for</p>
@@ -629,8 +647,8 @@ filters to find out about user authentication status</li>
 <li>iFilter interface updated to provide charset support</li>
 <li>...(more to follow)</li>
 </ul>
-<p><a id="changes-from-restler-1-0" class="anchor"></a></p>
-<h3>Changes from Restler 1.0</h3>
+<p><a id="restler-2-0" class="anchor"></a></p>
+<h3>Restler 2.0</h3>
 
 <p>Restler 2.0 is a major rewrite to use convention over configuration and it is
 optimized for performance. Here are some of the major changes and improvements</p>

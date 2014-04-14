@@ -241,14 +241,14 @@
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET say/hello   ⇠ Say::hello()
-GET say/hi/{to} ⇠ Say::hi()
+<pre><code>GET say/hello⇠ Say::hello()
+GET say/hi ⇠ Say::hi()
 </code></pre>
 
 <blockquote>
   <p><strong>Note:-</strong> If you have used Restler 2 before, you will wonder why
    the generated routes are lesser with Restler 3.
-   Read the <a href="../_006_routing/readme.html" target="_blank">Routes</a> example to understand.</p>
+   Look at <a href="../_006_routing/readme.html" target="_blank">Routes</a> example to understand.</p>
 </blockquote>
 
 <p>Try the following links in your browser</p>
@@ -267,7 +267,7 @@ GET say/hi/{to} ⇠ Say::hi()
 </code></pre></dd>
 
 <dl>
-<dt>GET <a href="say/hi/restler3.0" target="_blank">say/hi/restler3.0</a></dt>
+<dt>GET <a href="say/hi?to=restler3.0" target="_blank">say/hi?to=restler3.0</a></dt>
 <dd>
 <p></p>
 
@@ -296,7 +296,7 @@ Rewriting is not supported in your server. If you are on Apache Server, make sur
 </code></pre></dd>
 
 <dl>
-<dt>GET <a href="index.php/say/hi/restler3.0" target="_blank"><abbr title="_001_helloworld/index.php">index.php</abbr>/say/hi/restler3.0</a></dt>
+<dt>GET <a href="index.php/say/hi?to=restler3.0" target="_blank"><abbr title="_001_helloworld/index.php">index.php</abbr>/say/hi?to=restler3.0</a></dt>
 <dd>
 <p></p>
 
@@ -333,13 +333,13 @@ Feature: Testing Helloworld Example
 
   Scenario: Saying Hi
     When I request "/examples/_001_helloworld/say/hi"
-    Then the response status code should be 404
+    Then the response status code should be 400
     And the response is JSON
     And the type is "array"
 
   Scenario: Saying Hi Arul
     Given that "to" is set to "Arul"
-    When I request "/examples/_001_helloworld/say/hi/{to}"
+    When I request "/examples/_001_helloworld/say/hi{?to}"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"

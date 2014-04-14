@@ -257,6 +257,11 @@ You need to namespace it as <code>{vendor}\{product}\v{version}</code></p>
 
 <p>Which will be <code>Luracast\WeightManagement\v2</code> for this example</p>
 
+<p>If a class remains the same across few versions of the api, we can implement
+<code>iProvideMultiVersionApi</code> interface which is simply defining <code>__getMaximumSupportedVersion</code>
+method which returns the maximum supported version. Take a look at <code>Resources</code>
+class for a sample implementation.</p>
+
 <p>Try this example and the version differences in the explorer <a href="explorer/index.html#!/v2" target="_blank">here</a></p>
 
 <blockquote>
@@ -266,7 +271,7 @@ You need to namespace it as <code>{vendor}\{product}\v{version}</code></p>
   <li><abbr title="_011_versioning/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_011_versioning/v1/BMI.php">v1\BMI.php</abbr>      (api)</li>
   <li><abbr title="_011_versioning/v2/BMI.php">v2\BMI.php</abbr>      (api)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
+  <li><abbr title="../../restler/vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -274,15 +279,30 @@ You need to namespace it as <code>{vendor}\{product}\v{version}</code></p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET bmi               ⇠ v1\BMI::index()
-GET resources         ⇠ Luracast\Restler\Resources::index()
-GET resources/{id}    ⇠ Luracast\Restler\Resources::get()
-GET v1/bmi            ⇠ v1\BMI::index()
-GET v1/resources      ⇠ Luracast\Restler\Resources::index()
-GET v1/resources/{id} ⇠ Luracast\Restler\Resources::get()
-GET v2/bmi            ⇠ v2\BMI::index()
-GET v2/resources      ⇠ Luracast\Restler\Resources::index()
-GET v2/resources/{id} ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET bmi                       ⇠ v1\BMI::index()
+GET bmi                       ⇠ v2\BMI::index()
+GET bmi                       ⇠ v2\BMI::index()
+GET bmi                       ⇠ v1\BMI::index()
+GET resources                 ⇠ Luracast\Restler\Resources::index()
+GET resources                 ⇠ Luracast\Restler\Resources::index()
+GET resources                 ⇠ Luracast\Restler\Resources::index()
+GET resources                 ⇠ Luracast\Restler\Resources::index()
+GET resources/verifyaccess    ⇠ Luracast\Restler\Resources::verifyAccess()
+GET resources/verifyaccess    ⇠ Luracast\Restler\Resources::verifyAccess()
+GET resources/{id}            ⇠ Luracast\Restler\Resources::get()
+GET resources/{id}            ⇠ Luracast\Restler\Resources::get()
+GET v1/bmi                    ⇠ v1\BMI::index()
+GET v1/bmi                    ⇠ v1\BMI::index()
+GET v1/resources              ⇠ Luracast\Restler\Resources::index()
+GET v1/resources              ⇠ Luracast\Restler\Resources::index()
+GET v1/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+GET v1/resources/{id}         ⇠ Luracast\Restler\Resources::get()
+GET v2/bmi                    ⇠ v2\BMI::index()
+GET v2/bmi                    ⇠ v2\BMI::index()
+GET v2/resources              ⇠ Luracast\Restler\Resources::index()
+GET v2/resources              ⇠ Luracast\Restler\Resources::index()
+GET v2/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+GET v2/resources/{id}         ⇠ Luracast\Restler\Resources::get()
 </code></pre>
 
 <p>Try the following links in your browser</p>

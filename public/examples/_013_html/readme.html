@@ -238,8 +238,9 @@
 
 <ul>
 <li>php (default)</li>
-<li>twig (requires <code>"twig/twig"</code>)</li>
 <li>mustache / handlebar (requires <code>"mustache/mustache"</code>)</li>
+<li>twig (requires <code>"twig/twig"</code>)</li>
+<li>Laravel 4 blade templates (requires <code>"illuminate/view"</code>)</li>
 </ul>
 
 <p>When HtmlFormat is used with out defining a view it uses debug view to present
@@ -273,7 +274,8 @@ full path of a folder</p>
   <ul>
   <li><abbr title="_013_html/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_013_html/Tasks.php">Tasks.php</abbr>      (api)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
+  <li><abbr title="_013_html/DB/Task.php">Task.php</abbr>      (helper)</li>
+  <li><abbr title="../../restler/vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/HtmlFormat.php">HtmlFormat.php</abbr>      (format)</li>
@@ -282,13 +284,16 @@ full path of a folder</p>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    resources      ⇠ Luracast\Restler\Resources::index()
-GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
-GET    tasks          ⇠ Tasks::index()
-POST   tasks          ⇠ Tasks::post()
-PATCH  tasks/{id}     ⇠ Tasks::patch()
-GET    tasks/{id}     ⇠ Tasks::get()
-DELETE tasks/{id}     ⇠ Tasks::delete()
+<pre><code>GET    resources              ⇠ Luracast\Restler\Resources::index()
+GET    resources              ⇠ Luracast\Restler\Resources::index()
+GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
+POST   tasks                  ⇠ Tasks::post()
+GET    tasks                  ⇠ Tasks::index()
+GET    tasks                  ⇠ Tasks::index()
+PATCH  tasks/{id}             ⇠ Tasks::patch()
+GET    tasks/{id}             ⇠ Tasks::get()
+DELETE tasks/{id}             ⇠ Tasks::delete()
 </code></pre>
 
 <p>In this example, we are building tasks api and also a single page application
@@ -312,7 +317,7 @@ can use <code>{@data key.innerkey}</code> comment as shown below</p>
 directly accessible as the variable and value inside the template</p>
 
 <p>This example also show cases the heredoc syntax based simple templating system
-which is Supported with out any external dependencies</p>
+which is Supported without any external dependencies</p>
 
 <p>Just to show that it is possible to come up with API as well as an App using the
 same resource and url, you can try the json version of the tasks api using the

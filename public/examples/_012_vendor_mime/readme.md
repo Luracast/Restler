@@ -34,15 +34,18 @@ $r->setAPIVersion(2);
 
 This API Server exposes the following URIs
 
-    GET bmi               ⇠ SomeVendor\v1\BMI::index()
-    GET resources         ⇠ Luracast\Restler\Resources::index()
-    GET resources/{id}    ⇠ Luracast\Restler\Resources::get()
-    GET v1/bmi            ⇠ SomeVendor\v1\BMI::index()
-    GET v1/resources      ⇠ Luracast\Restler\Resources::index()
-    GET v1/resources/{id} ⇠ Luracast\Restler\Resources::get()
-    GET v2/bmi            ⇠ SomeVendor\v2\BMI::index()
-    GET v2/resources      ⇠ Luracast\Restler\Resources::index()
-    GET v2/resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET bmi                    ⇠ SomeVendor\v2\BMI::index()
+    GET bmi                    ⇠ SomeVendor\v1\BMI::index()
+    GET bmi                    ⇠ SomeVendor\v1\BMI::index()
+    GET bmi                    ⇠ SomeVendor\v2\BMI::index()
+    GET resources              ⇠ Luracast\Restler\Resources::index()
+    GET resources              ⇠ Luracast\Restler\Resources::index()
+    GET resources              ⇠ Luracast\Restler\Resources::index()
+    GET resources              ⇠ Luracast\Restler\Resources::index()
+    GET resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET resources/{id}         ⇠ Luracast\Restler\Resources::get()
+    GET resources/{id}         ⇠ Luracast\Restler\Resources::get()
 
 
 Here is how you will consume different versions of the api using cURL.
@@ -105,7 +108,7 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 ```
 **Version 2 with unit**
 ```bash
-curl 'http://restler3.luracast.com/examples/_012_vendor_mime/index.php/bmi??height=1.626meters&weight=84kilograms' -H 'Accept: application/vnd.somevendor-v2+json' -i
+curl 'http://restler3.luracast.com/examples/_012_vendor_mime/index.php/bmi?height=1.626meters&weight=84kilograms' -H 'Accept: application/vnd.somevendor-v2+json' -i
 
 HTTP/1.1 200 OK
 Date: Sun, 06 Jan 2013 11:05:26 GMT
@@ -141,7 +144,7 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 *[index.php]: _012_vendor_mime/index.php
 *[v1\BMI.php]: _012_vendor_mime/SomeVendor/v1/BMI.php
 *[v2\BMI.php]: _012_vendor_mime/SomeVendor/v2/BMI.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

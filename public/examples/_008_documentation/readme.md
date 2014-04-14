@@ -36,14 +36,17 @@ Happy Exploring! :)
 
 This API Server exposes the following URIs
 
-    GET    authors        ⇠ improved\Authors::index()
-    POST   authors        ⇠ improved\Authors::post()
-    PATCH  authors/{id}   ⇠ improved\Authors::patch()
-    DELETE authors/{id}   ⇠ improved\Authors::delete()
-    PUT    authors/{id}   ⇠ improved\Authors::put()
-    GET    authors/{id}   ⇠ improved\Authors::get()
-    GET    resources      ⇠ Luracast\Restler\Resources::index()
-    GET    resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET    authors                ⇠ improved\Authors::index()
+    POST   authors                ⇠ improved\Authors::post()
+    GET    authors                ⇠ improved\Authors::index()
+    DELETE authors/{id}           ⇠ improved\Authors::delete()
+    PATCH  authors/{id}           ⇠ improved\Authors::patch()
+    GET    authors/{id}           ⇠ improved\Authors::get()
+    PUT    authors/{id}           ⇠ improved\Authors::put()
+    GET    resources              ⇠ Luracast\Restler\Resources::index()
+    GET    resources              ⇠ Luracast\Restler\Resources::index()
+    GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
 
 
 
@@ -54,7 +57,7 @@ This API Server exposes the following URIs
 
 *[index.php]: _008_documentation/index.php
 *[Authors.php]: _008_documentation/improved/Authors.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 
