@@ -542,7 +542,7 @@ class Routes
                 $child += Util::nestedValue(CommentParser::parse($c), 'var');
             } else {
                 $o = $class->newInstance();
-                $p = $o->{$name};
+                $p = $prop->getValue($o);
                 if (is_object($p)) {
                     $child['type'] = get_class($p);
                 } elseif (is_array($p)) {
