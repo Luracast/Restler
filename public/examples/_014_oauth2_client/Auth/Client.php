@@ -34,7 +34,7 @@ class Client
 
     public function __construct()
     {
-        session_start();
+        //session_start(); //no need to start session, HtmlFormat does that for us
         HtmlFormat::$data['session_id'] = session_id();
         $this->restler = Scope::get('Restler');
         static::$replyBackUrl =
