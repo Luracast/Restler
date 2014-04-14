@@ -203,6 +203,8 @@ class HtmlFormat extends Format
 
     public static function php(array $data, $debug = true)
     {
+        if(static::$view == 'debug')
+            static::$viewPath = dirname(__DIR__).'/views';
         $view = static::getViewFile(true);
 
         if (!is_readable($view)) {
