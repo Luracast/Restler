@@ -379,14 +379,14 @@ class HtmlFormat extends Format
         }
     }
 
-    public function getViewExtension()
+    public static function getViewExtension()
     {
         return isset(static::$customTemplateExtensions[static::$template])
             ? static::$customTemplateExtensions[static::$template]
             : static::$template;
     }
 
-    public function getViewFile($fullPath = false, $includeExtension = true)
+    public static function getViewFile($fullPath = false, $includeExtension = true)
     {
         $v = $fullPath ? static::$viewPath . '/' : '';
         $v .= static::$view;
