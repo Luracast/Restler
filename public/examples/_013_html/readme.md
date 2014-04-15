@@ -93,7 +93,7 @@ API Explorer [here](explorer/index.html)
 *[index.php]: _013_html/index.php
 *[Tasks.php]: _013_html/Tasks.php
 *[Task.php]: _013_html/DB/Task.php
-*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 *[HtmlFormat.php]: ../../vendor/Luracast/Restler/Format/HtmlFormat.php

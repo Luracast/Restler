@@ -144,7 +144,7 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 *[index.php]: _012_vendor_mime/index.php
 *[v1\BMI.php]: _012_vendor_mime/SomeVendor/v1/BMI.php
 *[v2\BMI.php]: _012_vendor_mime/SomeVendor/v2/BMI.php
-*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

@@ -86,10 +86,10 @@ bin/behat  features/examples/_009_rate_limiting.feature
 
 
 *[index.php]: _009_rate_limiting/index.php
-*[RateLimit.php]: ../../restler/vendor/Luracast/Restler/Filter/RateLimit.php
+*[RateLimit.php]: ../../vendor/Luracast/Restler/Filter/RateLimit.php
 *[SessionCache.php]: _009_rate_limiting/SessionCache.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
-*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[Author.php]: _009_rate_limiting/Author.php
 *[restler.php]: ../../vendor/restler.php

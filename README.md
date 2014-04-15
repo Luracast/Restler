@@ -340,6 +340,7 @@ Change Log
 
  * Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.
  * Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.
+ * HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity
  * HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.
  * Tag, a utility class for generating html tags in object oriented way.
  * Emmet class that extends a subset of emmet to create a a template engine.

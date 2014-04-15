@@ -57,7 +57,7 @@ This API Server exposes the following URIs
 
 *[index.php]: _008_documentation/index.php
 *[Authors.php]: _008_documentation/improved/Authors.php
-*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

@@ -488,6 +488,7 @@ $r = new Restler(true); //turn on production mode by passing true.
 <ul>
 <li>Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
 <li>Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.</li>
+<li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity</li>
 <li>HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.</li>
 <li>Tag, a utility class for generating html tags in object oriented way.</li>
 <li>Emmet class that extends a subset of emmet to create a a template engine.</li>

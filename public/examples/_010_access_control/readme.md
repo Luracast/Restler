@@ -43,7 +43,7 @@ This API Server exposes the following URIs
 
 *[index.php]: _010_access_control/index.php
 *[Access.php]: _010_access_control/Access.php
-*[Resources.php]: ../../restler/vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
