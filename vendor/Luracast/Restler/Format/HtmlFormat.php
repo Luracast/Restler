@@ -203,8 +203,8 @@ class HtmlFormat extends Format
 
     public static function php(array $data, $debug = true)
     {
-        if(static::$view == 'debug')
-            static::$viewPath = dirname(__DIR__).'/views';
+        if (static::$view == 'debug')
+            static::$viewPath = dirname(__DIR__) . '/views';
         $view = static::getViewFile(true);
 
         if (!is_readable($view)) {
@@ -330,7 +330,8 @@ class HtmlFormat extends Format
                     self::$view = $metadata[$view];
                 }
             } elseif (!self::$view) {
-                self::$view = static::$useSmartViews && is_readable(static::getViewFile(true))
+                $file = static::$viewPath . '/' . $this->restler->url . '.' . static::getViewExtension();
+                self::$view = static::$useSmartViews && is_readable($file)
                     ? $this->restler->url
                     : static::$errorView;
             }
