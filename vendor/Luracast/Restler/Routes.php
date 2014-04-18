@@ -165,7 +165,7 @@ class Routes
                 }
 
                 if ($allowAmbiguity || $from == 'path') {
-                    $pathParams [$position] = true;
+                    $pathParams [] = $position;
                 }
                 $position++;
             }
@@ -256,22 +256,21 @@ class Routes
                 }
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
-                if (empty($pathParams) || $allowAmbiguity) {
-                    static::addPath($url, $call, $httpMethod, $version);
-                }
                 $lastPathParam = array_keys($pathParams);
                 $lastPathParam = end($lastPathParam);
                 for ($position = 0; $position < count($params); $position++) {
                     $from = $metadata['param'][$position][CommentParser::$embeddedDataName]['from'];
-
                     if ($from == 'body' && ($httpMethod == 'GET' ||
                             $httpMethod == 'DELETE')
                     ) {
-                        $from = $metadata['param'][$position][CommentParser::$embeddedDataName]['from']
+                        $call['metadata']['param'][$position][CommentParser::$embeddedDataName]['from']
                             = 'query';
                     }
-                    if (!isset($pathParams[$position]))
-                        continue;
+                }
+                if (empty($pathParams) || $allowAmbiguity) {
+                    static::addPath($url, $call, $httpMethod, $version);
+                }
+                foreach ($pathParams as $position) {
                     if (!empty($url))
                         $url .= '/';
                     $url .= '{' .
