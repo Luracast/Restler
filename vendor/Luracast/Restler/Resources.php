@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler;
 
+use Luracast\Restler\Data\String;
 use stdClass;
 
 /**
@@ -224,12 +225,11 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     continue;
                 }
                 $fullPath = $route['url'];
-                if (0 !== strpos($fullPath, $target)) {
+                if ($fullPath !== $target && !String::beginsWith($fullPath, $target)) {
                     continue;
                 }
                 $fLen = strlen($fullPath);
-                if ($fLen != $tLen && 0 !== strpos($fullPath, $target . '/')
-                ) {
+                if ($fLen != $tLen && !String::beginsWith($fullPath, $target . '/')) {
                     continue;
                 }
                 if (!$tSlash && $fLen > $tLen + 1 && $fullPath{$tLen + 1} != '{') {
@@ -274,15 +274,17 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 if (count($parts) == 1 && $httpMethod == 'GET') {
                 } else {
                     for ($i = 0; $i < count($parts); $i++) {
-                        if ($parts[$i]{0} == '{') {
+                        if (strlen($parts[$i]) && $parts[$i]{0} == '{') {
                             $pos = $i - 1;
                             break;
                         }
                     }
                 }
                 $nickname = $this->_nickname($route);
-                $parts[static::$placeFormatExtensionBeforeDynamicParts ? $pos : 0]
-                    .= $this->formatString;
+                $index = static::$placeFormatExtensionBeforeDynamicParts ? $pos : 0;
+                if (!empty($parts[$index]))
+                    $parts[$index] .= $this->formatString;
+
                 $fullPath = implode('/', $parts);
                 $description = isset(
                 $m['classDescription'])
@@ -680,7 +682,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     $myClassName = $values->dataType;
                     $defaultObject->$name = new $myClassName();
                 } else {
-                   $defaultObject->$name = "";
+                    $defaultObject->$name = '';
                 }
             }
             $r->defaultValue = (defined('JSON_PRETTY_PRINT')) ? json_encode($defaultObject, JSON_PRETTY_PRINT) : json_encode($defaultObject);
@@ -926,7 +928,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         foreach ($allRoutes as $fullPath => $routes) {
             $path = explode('/', $fullPath);
             $resource = isset($path[0]) ? $path[0] : '';
-            if ($resource == 'resources')
+            if ($resource == 'resources' || String::endsWith($resource, 'index'))
                 continue;
             foreach ($routes as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
