@@ -678,6 +678,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             // Create default object that includes parameters to be submitted
             $defaultObject = new \StdClass();
             foreach ($this->_bodyParam['names'] as $name => $values) {
+                if(!$values->required)
+                    continue;
                 if (class_exists($values->dataType)) {
                     $myClassName = $values->dataType;
                     $defaultObject->$name = new $myClassName();
