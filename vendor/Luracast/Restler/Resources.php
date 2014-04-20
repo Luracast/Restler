@@ -245,7 +245,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     if (empty($exclude)) {
                         if ($fullPath == $exclude)
                             continue 2;
-                    } elseif (0 === strpos($fullPath, $exclude)) {
+                    } elseif (String::beginsWith($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
@@ -678,7 +678,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             // Create default object that includes parameters to be submitted
             $defaultObject = new \StdClass();
             foreach ($this->_bodyParam['names'] as $name => $values) {
-                if(!$values->required)
+                if (!$values->required)
                     continue;
                 if (class_exists($values->dataType)) {
                     $myClassName = $values->dataType;
@@ -888,7 +888,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         }
         $this->_mapResources($allRoutes, $map, $version);
         foreach ($map as $path => $description) {
-            if (false === strpos($path, '{')) {
+            if (!String::contains($path, '{')) {
                 //add id
                 $r->apis[] = array(
                     'path' => $path . $this->formatString,
@@ -944,7 +944,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     if (empty($exclude)) {
                         if ($fullPath == $exclude)
                             continue 2;
-                    } elseif (0 === strpos($fullPath, $exclude)) {
+                    } elseif (String::beginsWith($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
