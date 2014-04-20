@@ -13,13 +13,47 @@ namespace Luracast\Restler\Data;
  */
 class String
 {
-    static public function beginsWith($haystack, $needle)
+    /**
+     * Given haystack contains the needle or not?
+     *
+     * @param string $haystack
+     * @param string $needle
+     * @param bool   $caseSensitive
+     *
+     * @return bool
+     */
+    public static function contains($haystack, $needle, $caseSensitive = true)
+    {
+        if (empty($needle))
+            return true;
+        return $caseSensitive
+            ? strpos($haystack, $needle) !== false
+            : stripos($haystack, $needle) !== false;
+    }
+
+    /**
+     * Given haystack begins with the needle or not?
+     *
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    public static function beginsWith($haystack, $needle)
     {
         $length = strlen($needle);
         return (substr($haystack, 0, $length) === $needle);
     }
 
-    static public function endsWith($haystack, $needle)
+    /**
+     * Given haystack ends with the needle or not?
+     *
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @return bool
+     */
+    public static function endsWith($haystack, $needle)
     {
         $length = strlen($needle);
         if ($length == 0) {
@@ -28,6 +62,14 @@ class String
         return (substr($haystack, -$length) === $needle);
     }
 
+
+    /**
+     * Convert camelCased or underscored string in to a title
+     *
+     * @param string $name
+     *
+     * @return string
+     */
     public static function title($name)
     {
         return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
