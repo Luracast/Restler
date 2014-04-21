@@ -229,10 +229,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     continue;
                 }
                 $fLen = strlen($fullPath);
-                if ($fLen != $tLen && !String::beginsWith($fullPath, $target . '/')) {
-                    continue;
-                }
-                if (!$tSlash && $fLen > $tLen + 1 && $fullPath{$tLen + 1} != '{') {
+                if ($tSlash) {
+                    if ($fLen != $tLen && !String::beginsWith($fullPath, $target . '/'))
+                        continue;
+                } elseif ($fLen > $tLen + 1 && $fullPath{$tLen + 1} != '{' && !String::beginsWith($fullPath, '{')) {
                     //when mapped to root exclude paths that have static parts
                     //they are listed else where under that static part name
                     continue;
@@ -281,7 +281,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     }
                 }
                 $nickname = $this->_nickname($route);
-                $index = static::$placeFormatExtensionBeforeDynamicParts ? $pos : 0;
+                $index = static::$placeFormatExtensionBeforeDynamicParts && $pos > 0 ? $pos : 0;
                 if (!empty($parts[$index]))
                     $parts[$index] .= $this->formatString;
 
