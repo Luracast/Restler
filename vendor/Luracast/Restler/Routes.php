@@ -2,9 +2,11 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ApiMethodInfo;
+use Luracast\Restler\Data\String;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
+use Exception;
 
 /**
  * Router class that routes the urls to api methods along with parameters
@@ -53,7 +55,11 @@ class Routes
          *      - Do not include it in URL
          */
         $class = new ReflectionClass($className);
-        $classMetadata = CommentParser::parse($class->getDocComment());
+        try {
+            $classMetadata = CommentParser::parse($class->getDocComment());
+        } catch (Exception $e) {
+            throw new RestException(500,"Error while parsing comments of `$className` class. " . $e->getMessage());
+        }
         $classMetadata['scope'] = $scope = static::scope($class);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC +
             ReflectionMethod::IS_PROTECTED);
@@ -64,7 +70,12 @@ class Routes
                 continue;
             }
             $doc = $method->getDocComment();
-            $metadata = CommentParser::parse($doc) + $classMetadata;
+
+            try {
+                $metadata = CommentParser::parse($doc) + $classMetadata;
+            } catch (Exception $e) {
+                throw new RestException(500, "Error while parsing comments of `{$className}::{$method->getName()}` method. " . $e->getMessage());
+            }
             //@access should not be private
             if (isset($metadata['access'])
                 && $metadata['access'] == 'private'
@@ -533,42 +544,49 @@ class Routes
             return static::$models[$className];
         }
         $children = array();
-        $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
-        foreach ($props as $prop) {
-            $name = $prop->getName();
-            $child = array('name' => $name);
-            if ($c = $prop->getDocComment()) {
-                $child += Util::nestedValue(CommentParser::parse($c), 'var');
-            } else {
-                $o = $class->newInstance();
-                $p = $prop->getValue($o);
-                if (is_object($p)) {
-                    $child['type'] = get_class($p);
-                } elseif (is_array($p)) {
-                    $child['type'] = 'array';
-                    if (count($p)) {
-                        $pc = reset($p);
-                        if (is_object($pc)) {
-                            $child['contentType'] = get_class($pc);
+        try {
+            $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+            foreach ($props as $prop) {
+                $name = $prop->getName();
+                $child = array('name' => $name);
+                if ($c = $prop->getDocComment()) {
+                    $child += Util::nestedValue(CommentParser::parse($c), 'var');
+                } else {
+                    $o = $class->newInstance();
+                    $p = $prop->getValue($o);
+                    if (is_object($p)) {
+                        $child['type'] = get_class($p);
+                    } elseif (is_array($p)) {
+                        $child['type'] = 'array';
+                        if (count($p)) {
+                            $pc = reset($p);
+                            if (is_object($pc)) {
+                                $child['contentType'] = get_class($pc);
+                            }
                         }
                     }
                 }
+                $child += array('type' => 'string', 'label' => static::label($child['name']));
+                isset($child[CommentParser::$embeddedDataName])
+                    ? $child[CommentParser::$embeddedDataName] += array('required' => true)
+                    : $child[CommentParser::$embeddedDataName]['required'] = true;
+                if ($qualified = Scope::resolve($child['type'], $scope)) {
+                    list($child['type'], $child['children'])
+                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+                } elseif (
+                    ($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) &&
+                    ($qualified = Scope::resolve($contentType, $scope))
+                ) {
+                    list($child['contentType'], $child['children'])
+                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+                }
+                $children[$name] = $child;
             }
-            $child += array('type' => 'string', 'label' => static::label($child['name']));
-            isset($child[CommentParser::$embeddedDataName])
-                ? $child[CommentParser::$embeddedDataName] += array('required' => true)
-                : $child[CommentParser::$embeddedDataName]['required'] = true;
-            if ($qualified = Scope::resolve($child['type'], $scope)) {
-                list($child['type'], $child['children'])
-                    = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
-            } elseif (
-                ($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) &&
-                ($qualified = Scope::resolve($contentType, $scope))
-            ) {
-                list($child['contentType'], $child['children'])
-                    = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+        } catch (Exception $e) {
+            if (String::endsWith($e->getFile(), 'CommentParser.php')) {
+                throw new RestException(500, "Error while parsing comments of `$className` class. " . $e->getMessage());
             }
-            $children[$name] = $child;
+            throw $e;
         }
         static::$models[$className] = array($class->getName(), $children);
         return static::$models[$className];
