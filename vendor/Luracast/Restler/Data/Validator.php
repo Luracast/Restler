@@ -230,8 +230,8 @@ class Validator implements iValidate
                 }
                 return null;
             }
-            $error = isset ($info->rules ['message'])
-                ? $info->rules ['message']
+            $error = isset ($info->message)
+                ? $info->message
                 : "Invalid value specified for $name";
 
             //if a validation method is specified
@@ -478,4 +478,3 @@ class Validator implements iValidate
         }
     }
 }
-
