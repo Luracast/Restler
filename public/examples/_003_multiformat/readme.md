@@ -27,6 +27,7 @@ This BMI calculator service shows how you can serve data in different
 This API Server exposes the following URIs
 
     GET bmi ⇠ BMI::index()
+    GET bmi ⇠ BMI::index()
 
 
 

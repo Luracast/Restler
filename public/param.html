@@ -334,7 +334,7 @@ class Author
      */
     public $name = 'Name';
     /**
-     * @var string {@type email} {@from body}
+     * @var string {@type email} {@from body} {@required false}
      * email id of the Author
      */
     public $email = 'name@domain.com';
@@ -665,7 +665,7 @@ Feature: Type Attribute
 
   Examples:
     | author                                      | expected                                    |
-    | {"name":"Arul"}                             | {"name":"Arul","email":null}                |
+    | {"name":"Arul"}                             | {"name":"Arul","email":"name@domain.com"}                |
     | {"name":"Arul","email":"arul@luracast.com"} | {"name":"Arul","email":"arul@luracast.com"} |
     | {"name":"name","email":"a@b.c"}             | {"name":"name","email":"a@b.c"}             |
 
@@ -696,7 +696,7 @@ Feature: Type Attribute
 
   Examples:
     | authors                                       | expected                                      |
-    | [{"name":"Arul"}]                             | [{"name":"Arul","email":null}]                |
+    | [{"name":"Arul"}]                             | [{"name":"Arul","email":"name@domain.com"}]                |
     | [{"name":"Arul","email":"arul@luracast.com"}] | [{"name":"Arul","email":"arul@luracast.com"}] |
     | [{"name":"name","email":"a@b.c"}]             | [{"name":"name","email":"a@b.c"}]             |
 
@@ -785,7 +785,7 @@ class MinMax
     /**
      * Restrict the value
      *
-     * @param int $int {@min 2}{@max 5}
+     * @param int $int {@min 2}{@max 5}{@from path}
      *
      * @return int
      */
@@ -797,7 +797,7 @@ class MinMax
     /**
      * Restrict the length of the string
      *
-     * @param string $string {@min 2}{@max 5}
+     * @param string $string {@min 2}{@max 5}{@from path}
      *
      * @return string
      */
@@ -924,7 +924,7 @@ class MinMaxFix
     /**
      * Restrict the value
      *
-     * @param int $int {@min 2}{@max 5}{@fix true}
+     * @param int $int {@min 2}{@max 5}{@fix true}{@from path}
      *
      * @return int
      */

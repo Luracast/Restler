@@ -87,7 +87,7 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 ```
 **Version 2 with unit**
 ```bash
-curl 'http://restler3.luracast.com/examples/_012_vendor_mime/index.php/bmi??height=1.626meters&weight=84kilograms' -H 'Accept: application/vnd.somevendor-v2+json' -i
+curl 'http://restler3.luracast.com/examples/_012_vendor_mime/index.php/bmi?height=1.626meters&weight=84kilograms' -H 'Accept: application/vnd.somevendor-v2+json' -i
 
 HTTP/1.1 200 OK
 Date: Sun, 06 Jan 2013 11:05:26 GMT

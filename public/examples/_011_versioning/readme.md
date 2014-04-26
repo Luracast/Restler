@@ -35,6 +35,11 @@ You need to namespace it as `{vendor}\{product}\v{version}`
 
 Which will be `Luracast\WeightManagement\v2` for this example
 
+If a class remains the same across few versions of the api, we can implement
+`iProvideMultiVersionApi` interface which is simply defining `__getMaximumSupportedVersion`
+method which returns the maximum supported version. Take a look at `Resources`
+class for a sample implementation.
+
 Try this example and the version differences in the explorer [here](explorer/index.html#!/v2)
 
 > This API Server is made using the following php files/folders
@@ -48,15 +53,30 @@ Try this example and the version differences in the explorer [here](explorer/ind
 
 This API Server exposes the following URIs
 
-    GET bmi               ⇠ v1\BMI::index()
-    GET resources         ⇠ Luracast\Restler\Resources::index()
-    GET resources/{id}    ⇠ Luracast\Restler\Resources::get()
-    GET v1/bmi            ⇠ v1\BMI::index()
-    GET v1/resources      ⇠ Luracast\Restler\Resources::index()
-    GET v1/resources/{id} ⇠ Luracast\Restler\Resources::get()
-    GET v2/bmi            ⇠ v2\BMI::index()
-    GET v2/resources      ⇠ Luracast\Restler\Resources::index()
-    GET v2/resources/{id} ⇠ Luracast\Restler\Resources::get()
+    GET bmi                       ⇠ v1\BMI::index()
+    GET bmi                       ⇠ v2\BMI::index()
+    GET bmi                       ⇠ v2\BMI::index()
+    GET bmi                       ⇠ v1\BMI::index()
+    GET resources                 ⇠ Luracast\Restler\Resources::index()
+    GET resources                 ⇠ Luracast\Restler\Resources::index()
+    GET resources                 ⇠ Luracast\Restler\Resources::index()
+    GET resources                 ⇠ Luracast\Restler\Resources::index()
+    GET resources/verifyaccess    ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET resources/verifyaccess    ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET resources/{id}            ⇠ Luracast\Restler\Resources::get()
+    GET resources/{id}            ⇠ Luracast\Restler\Resources::get()
+    GET v1/bmi                    ⇠ v1\BMI::index()
+    GET v1/bmi                    ⇠ v1\BMI::index()
+    GET v1/resources              ⇠ Luracast\Restler\Resources::index()
+    GET v1/resources              ⇠ Luracast\Restler\Resources::index()
+    GET v1/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET v1/resources/{id}         ⇠ Luracast\Restler\Resources::get()
+    GET v2/bmi                    ⇠ v2\BMI::index()
+    GET v2/bmi                    ⇠ v2\BMI::index()
+    GET v2/resources              ⇠ Luracast\Restler\Resources::index()
+    GET v2/resources              ⇠ Luracast\Restler\Resources::index()
+    GET v2/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
+    GET v2/resources/{id}         ⇠ Luracast\Restler\Resources::get()
 
 
 

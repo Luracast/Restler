@@ -99,7 +99,8 @@ understand.
 
 This API Server exposes the following URIs
 
-    POST api/method/{param1}           ⇠ Api::postMethod()
+    GET  api/all/*                     ⇠ Api::allIsMine()
+    POST api/method                    ⇠ Api::postMethod()
     POST api/method2                   ⇠ Api::whatEver()
     POST api/method2/{anything}        ⇠ Api::whatEver()
     GET  api/somanyways                ⇠ Api::soManyWays()
@@ -107,7 +108,6 @@ This API Server exposes the following URIs
     GET  api/somanyways/{p1}/{p2}      ⇠ Api::soManyWays()
     GET  api/somanyways/{p1}/{p2}/{p3} ⇠ Api::soManyWays()
     GET  api/what/ever/you/want        ⇠ Api::whatEver()
-    GET  api/all/*                     ⇠ Api::allIsMine()
 
 
 

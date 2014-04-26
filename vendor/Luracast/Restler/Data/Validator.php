@@ -230,8 +230,8 @@ class Validator implements iValidate
                 }
                 return null;
             }
-            $error = isset ($info->rules ['message'])
-                ? $info->rules ['message']
+            $error = isset ($info->message)
+                ? $info->message
                 : "Invalid value specified for $name";
 
             //if a validation method is specified
@@ -273,7 +273,6 @@ class Validator implements iValidate
 
             if (isset ($info->choice)) {
                 if (!in_array($input, $info->choice)) {
-                    $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
                     throw new RestException (400, $error);
                 }
             }
@@ -329,7 +328,7 @@ class Validator implements iValidate
                         $error .= '. Expecting alpha numeric value';
                         break;
                     }
-                    if ($info->required && empty($input)) {
+                    if ($info->required && empty($input) && $input != 0) {
                         $error = "$name is required.";
                         break;
                     }
@@ -479,4 +478,3 @@ class Validator implements iValidate
         }
     }
 }
-

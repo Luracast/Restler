@@ -62,6 +62,7 @@ by un-commenting the respective line in Authors.php and commenting others.
 This API Server exposes the following URIs
 
     GET    authors      ⇠ Authors::index()
+    GET    authors      ⇠ Authors::index()
     POST   authors      ⇠ Authors::post()
     DELETE authors/{id} ⇠ Authors::delete()
     GET    authors/{id} ⇠ Authors::get()

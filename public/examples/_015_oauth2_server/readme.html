@@ -242,7 +242,8 @@
 <li>bshaffer's oauth2 libaray</li>
 </ul></li>
 <li>make sure <code>public/examples/_015_oauth2_server/cache</code> has write permissions to create the compiled template files</li>
-<li>make sure <code>public/examples/_015_oauth2_server/OAuth2/db</code> has write permission, this is where <code>oauth.sqlite</code> file be created at run time</li>
+<li>make sure <code>public/examples/_015_oauth2_server/Auth/db</code> has write permission, this is where <code>oauth.sqlite</code> file be
+created at run time</li>
 </ol>
 
 <p>Now that you are ready, lets look at the example</p>
@@ -256,7 +257,7 @@
   
   <ul>
   <li><abbr title="_015_oauth2_server/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="_015_oauth2_server/OAuth2/Server.php">Server.php</abbr>      (auth)</li>
+  <li><abbr title="_015_oauth2_server/Auth/Server.php">Server.php</abbr>      (auth)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -264,32 +265,32 @@
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET  access    ⇠ OAuth2\Server::access()
-POST authorize ⇠ OAuth2\Server::postAuthorize()
-GET  authorize ⇠ OAuth2\Server::authorize()
-POST grant     ⇠ OAuth2\Server::postGrant()
+<pre><code>GET  access    ⇠ Auth\Server::access()
+POST authorize ⇠ Auth\Server::postAuthorize()
+GET  authorize ⇠ Auth\Server::authorize()
+POST grant     ⇠ Auth\Server::postGrant()
 </code></pre>
 
-<p>This example is part 2 in a 2 part example that shows how Restler can 
+<p>This example is part 2 in a 2 part example that shows how Restler can
 be integrated with the popular <a href="http://bshaffer.github.io/oauth2-server-php-docs/" target="_blank">OAuth 2.0 Server </a>
-library. This section -- the "server" -- focuses on enabling a Restler server to play the role of an 
+library. This section -- the "server" -- focuses on enabling a Restler server to play the role of an
 OAuth authorization and authentication server.</p>
 
-<p>If you're not familiar with OAuth, it's worth familiarizing yourself with the 
-basics and in particular understanding the various workflows that OAuth 2.0 offers. 
+<p>If you're not familiar with OAuth, it's worth familiarizing yourself with the
+basics and in particular understanding the various workflow that OAuth 2.0 offers.
 The following two links may help:</p>
 
 <ul>
-<li><a href="http://tools.ietf.org/html/draft-ietf-oauth-v2" target="_blank">Official OAuth Specification</a>: 
+<li><a href="http://tools.ietf.org/html/draft-ietf-oauth-v2" target="_blank">Official OAuth Specification</a>:
 a bit dry but if you want the "facts" they're there.</li>
-<li><a href="http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified" target="_blank">OAuth2 Simplified</a>: 
+<li><a href="http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified" target="_blank">OAuth2 Simplified</a>:
 a nicely summarized overview of how to think through the key aspects of OAuth 2.0</li>
 </ul>
 
 <p>The role of the <code>server application</code> in OAuth is:</p>
 
 <ol>
-<li><strong>Authorization</strong>: providing an authorization screen to the user with a set of permissions listed along with an "allow" 
+<li><strong>Authorization</strong>: providing an authorization screen to the user with a set of permissions listed along with an "allow"
 button to allow the user to grant the client application these permissions.</li>
 <li><strong>Authentication</strong>: validating the authorization information sent by the client application and then passing along the
 entitlements granted onto the Restler iAuthenticate system</li>
@@ -301,84 +302,93 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:</p>
 <ul>
 <li><strong>Implicit</strong>: typically for browser based or mobile apps</li>
 <li><strong>Authorization Code</strong>: typically for apps running on a server</li>
-<li><strong>Password Credentials</strong>: typically used for apps that are owned by the same organisation as the OAuth service provider (aka, the Twitter client, etc.)</li>
+<li><strong>Password Credentials</strong>: typically used for apps that are owned by the same organisation as the OAuth service
+provider (aka, the Twitter client, etc.)</li>
 <li><strong>Client Credentials</strong>: used by client's who want to update meta information about their site (URL's, logo's, etc.)</li>
-<li><strong>JWT Auth Grant</strong>: the client submits a <em>JSON Web Token</em> in a request to the token endpoint. An access token (without a refresh token) is then returned directly.</li>
+<li><strong>JWT Auth Grant</strong>: the client submits a <em>JSON Web Token</em> in a request to the token endpoint. An access token
+(without a refresh token) is then returned directly.</li>
 <li><strong>Refresh Token</strong>: client can submit refresh token and receive a new access token</li>
 </ul>
 
 <p><a id="storage" class="anchor"></a><h3>Storage</h3></p>
 
-<p>The first thing you will need to consider when setting up the server is what database technology you'd like to use to manage state. In this example the storage is 
-managed in a local SQLite database but examples are given for mySQL, Mongo DB, Doctrine, and several other storage technologies. If there isn't an example template available 
-then simply find the one that most closely resembles your technology (e.g., couchbase is similar to mongo, etc.) and spend the time to understand the required interfaces for a storage class. Creating your own storage object is relatively easy so don't use the lack of a pre-existing template as an excuse not move forward.</p>
+<p>The first thing you will need to consider when setting up the server is what database technology you'd like to use to
+manage state. In this example the storage is managed in a local SQLite database but examples are given for mySQL,
+Mongo DB, Doctrine, and several other storage technologies. If there isn't an example template available then simply
+find the one that most closely resembles your technology (e.g., couchbase is similar to mongo, etc.) and spend the time
+to understand the required interfaces for a storage class. Creating your own storage object is relatively easy
+so don't use the lack of a pre-existing template as an excuse not move forward.</p>
 
-<p>Once your storage object is ready to go just include it in the <abbr title="_015_oauth2_server/OAuth2/Server.php">Server.php</abbr>'s constructor.</p>
+<p>Once your storage object is ready to go just include it in the <abbr title="_015_oauth2_server/Auth/Server.php">Server.php</abbr>'s constructor.</p>
 
 <p><a id="grant-types" class="anchor"></a><h3>Grant Types</h3></p>
 
-<p>Grant types are configured in the <abbr title="_015_oauth2_server/OAuth2/Server.php">Server.php</abbr> file as well. In 99% of cases you'll use the built-in grant types. In these cases it's just a matter of adding one (or more) 
-grant types in the constructor:</p>
+<p>Grant types are configured in the <abbr title="_015_oauth2_server/Auth/Server.php">Server.php</abbr> file as well. In 99% of cases you'll use the built-in grant types. In these
+cases it's just a matter of adding one (or more) grant types in the constructor:</p>
 
 <pre><code class="php">static::$server-&gt;addGrantType(
-    new OAuth2_GrantType_AuthorizationCode(static::$storage)
+    new OAuth2\GrantType\AuthorizationCode(static::$storage)
 );
 </code></pre>
 
-<p>Creating your own grant types is an advanced topic and will not be covered here but if you feel this is required for your project then 
-reference the <em>Extension Grants</em> section in the <a href="http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/" target="_blank">OAuth2 Server's documentation</a>.</p>
+<p>Creating your own grant types is an advanced topic and will not be covered here but if you feel this is required for
+your project then reference the <em>Extension Grants</em> section in the <a href="http://bshaffer.github.io/oauth2-server-php-docs/overview/grant-types/" target="_blank">OAuth2 Server's documentation</a>.</p>
 
 <p><a id="scope---permissions" class="anchor"></a><h3>Scope / Permissions</h3></p>
 
-<p>The term "scope" in OAuth refers to the <em>amount</em> of <em>things</em> your authorization will allow a client application to do. Some API's simply have a 
-single scope for all client application but even in this case it's important to clearly clarify to the user what things the requesting client 
-application will be able to do once the "approve button" has been pressed. In more complicated situations <em>scope</em> can be broken down into different <em>roles</em>. 
-This granularity in terms of modifying "the ask" is great way to dramatically increase client's willingness to grant permissions.</p>
+<p>The term "scope" in OAuth refers to the <em>amount</em> of <em>things</em> your authorization will allow a client application to do.
+Some API's simply have a single scope for all client application but even in this case it's important to clearly clarify
+to the user what things the requesting client application will be able to do once the "approve button" has been pressed.
+In more complicated situations <em>scope</em> can be broken down into different <em>roles</em>.
+This granularity in terms of modifying "the ask" is great way to dramatically increase client's willingness to grant
+permissions.</p>
 
-<p>To configure scope you will need to implement the <code>OAuth2\Storage\ScopeInterface</code> interface. More documentation can be found here: 
+<p>To configure scope you will need to implement the <code>OAuth2\Storage\ScopeInterface</code> interface. More documentation can be
+found here:
 <a href="http://bshaffer.github.io/oauth2-server-php-docs/overview/scope/" target="_blank">scope</a>.</p>
 
 <p><a id="workflow" class="anchor"></a><h2>Workflow</h2></p>
 
-<p>Now that your <code>OAuth server</code> is setup, it will now manage both <code>authorization</code> requests as well as validate <code>authentication</code> credentials. 
-The two flows are illustrated below:</p>
+<p>Now that your <code>OAuth server</code> is setup, it will now manage both <code>authorization</code> requests as well as validate
+<code>authentication</code> credentials. The two flows are illustrated below:</p>
 
 <p><a href="../resources/auth-code-workflow.png" target="_blank"><img src="../resources/auth-code-workflow-thumb.png" alt="Authorization Code Flow" /></a></p>
 
 <p><a id="authorization" class="anchor"></a><h3>Authorization</h3></p>
 
-<p>The specific flow for authorization will be dependant on the grant-type but in this documentation we will stick to describing 
-the "authorization code" grant-type as this what the example app uses. The first step in this process is serving up authorization
-page to the user. This takes advantage of Restler's built-in support for custom views which includes twig templating and only requires that you point the API
-to a Twig template file. For example:</p>
+<p>The specific flow for authorization will be dependant on the grant-type but in this documentation we will stick to
+describing the "authorization code" grant-type as this what the example app uses. The first step in this process is
+serving up authorization page to the user. This takes advantage of Restler's built-in support for custom views which
+includes twig templating and only requires that you point the API to a Twig template file. For example:</p>
 
 <pre><code>@format HtmlFormat
 @view oauth2/server/authorize.twig
 </code></pre>
 
-<p>The @view and @format comments above the <code>authorize</code> method will serve the date through right template(view) file out to the user. Following a user
-granting authorization, the server will use the client application's <em>callback</em> function to pass back an access token.</p>
+<p>The @view and @format comments above the <code>authorize</code> method will serve the date through right template(view) file out to
+the user. Following a user granting authorization, the server will use the client application's <em>callback</em> function to
+pass back an access token.</p>
 
 <p><a id="authentication" class="anchor"></a><h3>Authentication</h3></p>
 
-<p>For any Restler resources which require authentication, the OAuth server will use the 'code' <em>query parameter</em> and compare that to 
-it's internal records to validate that the user has the appropriate permissions.</p>
+<p>For any Restler resources which require authentication, the OAuth server will use the 'code' <em>query parameter</em> and
+compare that to it's internal records to validate that the user has the appropriate permissions.</p>
 
 <blockquote>
   <p><strong>Note:-</strong>
-  there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a
-  query parameter.</p>
+  there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of
+  a query parameter.</p>
 </blockquote>
 
 <p><a id="in-conclusion" class="anchor"></a><h2>In Conclusion</h2></p>
 
-<p>Many people are experientially familiar with OAuth clients either as a user who has granted apps permissions or 
-as a developer who has downloaded one of many OAuth clients to get at social data from sources like Twitter, Facebook, Foursquare, etc.
-The server side of the interaction is less familiar yet it needs to be the primary focus for any RESTful API that imagines itself
-as having data of which other applications would benefit from having access to your data. Brett Shaffers's 
-<a href="http://bshaffer.github.io/oauth2-server-php-docs/" target="_blank">OAuth2 Server </a> solution focuses on the server side of the interaction
-but provides both client and server components and both are now readily available to Restler customers who want to offer or connect-into 
-the world of OAuth2.</p>
+<p>Many people are experientially familiar with OAuth clients either as a user who has granted apps permissions or
+as a developer who has downloaded one of many OAuth clients to get at social data from sources like Twitter, Facebook,
+Foursquare, etc. The server side of the interaction is less familiar yet it needs to be the primary focus for any
+RESTful API that imagines itself as having data of which other applications would benefit from having access to your
+data. Brett Shaffers's <a href="http://bshaffer.github.io/oauth2-server-php-docs/" target="_blank">OAuth2 Server </a> solution focuses on the
+server side of the interaction but provides both client and server components and both are now readily available to
+Restler customers who want to offer or connect-into the world of OAuth2.</p>
 
 </article>
 <footer>

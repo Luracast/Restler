@@ -2,7 +2,7 @@
 
 ![Restler](public/examples/resources/Restler.png) Luracast Restler
 ==================================================================
-### Version 3.0 Release Candidate 4
+### Version 3.0 Release Candidate 5
 
 Restler is a simple and effective multi-format Web API Server written in PHP.
 
@@ -336,8 +336,23 @@ $r = new Restler(true); //turn on production mode by passing true.
 
 Change Log
 ----------
+### Restler 3.0 RC5
 
-### Changes from Restler 3.0 RC3
+ * Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.
+ * Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.
+ * HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity
+ * HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.
+ * Tag, a utility class for generating html tags in object oriented way.
+ * Emmet class that extends a subset of emmet to create a a template engine.
+ * Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.
+ * Validator improved to allow suppressing validation errors from throwing exceptions immediatly, so that API call can reach the API method
+ * Validator improved to be form validation friendly.
+ * Nav class creating html navigation interface.
+ * OAuth examles updgrated to use version 1.0 of OAuth2 library.
+ * Many bug fixes and improvements.
+
+
+### Restler 3.0 RC4
 
  * `$reques_data` in api method parameters and `getRequestData()` on restler
    instance now excludes `$_GET` parameters.
@@ -365,7 +380,7 @@ Change Log
  * Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev
  * Released Restler as package on packagist.
 
-### Changes from Restler 3.0 RC2
+### Restler 3.0 RC3
 
 * Added Defaults::$cacheDirectory to set cache directory in one central place
 * Added JSONP support with JsFormat class by extending JsonFormat.
@@ -396,7 +411,7 @@ Change Log
   the response
 * Documentation improvements and minor bug fixes
 
-### Changes from Restler 3.0 RC1
+### Restler 3.0 RC2
 
 * Filter classes can use authentication status and respond differently for
   authenticated users by implementing iUseAuthentication interface
@@ -416,7 +431,7 @@ Change Log
 
 
 
-### Changes from Restler 2.0
+### Restler 3.0
 
 **Restler 3.0** is completely rewritten from Restler 2.0 with best practices in
 mind for
@@ -455,7 +470,7 @@ mind for
 * iFilter interface updated to provide charset support
 * ...(more to follow)
 
-### Changes from Restler 1.0
+### Restler 2.0
 
 Restler 2.0 is a major rewrite to use convention over configuration and it is
 optimized for performance. Here are some of the major changes and improvements
