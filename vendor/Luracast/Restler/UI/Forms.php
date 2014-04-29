@@ -2,6 +2,7 @@
 namespace Luracast\Restler\UI;
 
 use Luracast\Restler\CommentParser;
+use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Format\UploadFormat;
@@ -64,6 +65,10 @@ class Forms implements iFilter
     );
     protected static $fileUpload = false;
     private static $key = null;
+    /**
+     * @var ApiMethodInfo;
+     */
+    private static $info;
 
     /**
      * Get the form
@@ -110,9 +115,9 @@ class Forms implements iFilter
         }
         if (!$info)
             throw new RestException(500, 'invalid action path for form `' . $method . ' ' . $action . '`');
-
+        static::$info = $info;
         $m = $info->metadata;
-        $r = static::fields($m['param'], $info->parameters, $dataOnly);
+        $r = static::fields($dataOnly);
         if ($method != 'GET' && $method != 'POST') {
             if (empty(Defaults::$httpMethodOverrideProperty))
                 throw new RestException(
@@ -158,12 +163,12 @@ class Forms implements iFilter
             'tag' => 'button',
             'type' => 'submit',
             'label' =>
-                Util::nestedValue($m, CommentParser::$embeddedDataName, 'submit')
+                Util::nestedValue($m, 'return', CommentParser::$embeddedDataName, 'label')
                     ? : 'Submit'
         );
 
         if (!$dataOnly)
-            $s = Emmet::make(static::$style['submit'], $s);
+            $s = Emmet::make(static::style('submit', $m), $s);
         $r[] = $s;
         $t = array(
             'action' => Util::$restler->getBaseUrl() . '/' . rtrim($action, '/'),
@@ -174,7 +179,7 @@ class Forms implements iFilter
             $t['enctype'] = 'multipart/form-data';
         }
         if (!$dataOnly) {
-            $t = Emmet::make(static::$style['form'], $t);
+            $t = Emmet::make(static::style('form', $m), $t);
             $t->prefix = $prefix;
             $t->indent = $indent;
             $t[] = $r;
@@ -184,8 +189,18 @@ class Forms implements iFilter
         return $t;
     }
 
-    public static function fields(array $params, array $values, $dataOnly = false)
+    public static function style($name, array $metadata)
     {
+        return isset($metadata[CommentParser::$embeddedDataName][$name])
+            ? $metadata[CommentParser::$embeddedDataName][$name]
+            : (isset(static::$style[$name]) ? static::$style[$name] : null);
+    }
+
+    public static function fields($dataOnly = false)
+    {
+        $m = static::$info->metadata;
+        $params = $m['param'];
+        $values = static::$info->parameters;
         $r = array();
         foreach ($params as $k => $p) {
             $value = Util::nestedValue($values, $k);
@@ -199,7 +214,7 @@ class Forms implements iFilter
             if ($v->from == 'path')
                 continue;
             if (!empty($v->children)) {
-                $t = Emmet::make(static::$style['fieldset'], array('label' => $v->label ? : static::title($v->name)));
+                $t = Emmet::make(static::style('fieldset', $m), array('label' => $v->label ? : static::title($v->name)));
                 foreach ($v->children as $n => $c) {
                     $value = Util::nestedValue($v->value, $n);
                     if (
@@ -287,11 +302,8 @@ class Forms implements iFilter
             return $r;
         if (isset($p->rules['form']))
             return Emmet::make($p->rules['form'], $r);
-        $t = Emmet::make(
-            isset(static::$style[$type])
-                ? static::$style[$type]
-                : static::$style[$tag], $r
-        );
+        $m = static::$info->metadata;
+        $t = Emmet::make(static::style($type, $m) ? : static::style($tag, $m), $r);
         return $t;
     }
 
