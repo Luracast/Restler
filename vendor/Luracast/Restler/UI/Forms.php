@@ -3,11 +3,14 @@ namespace Luracast\Restler\UI;
 
 use Luracast\Restler\CommentParser;
 use Luracast\Restler\Data\ApiMethodInfo;
+use Luracast\Restler\Data\String;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Format\UploadFormat;
+use Luracast\Restler\Format\UrlEncodedFormat;
 use Luracast\Restler\iFilter;
 use Luracast\Restler\RestException;
+use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
 use Luracast\Restler\UI\Tags as T;
 use Luracast\Restler\User;
@@ -28,6 +31,10 @@ use Luracast\Restler\Util;
  */
 class Forms implements iFilter
 {
+    public static $filterFormRequestsOnly = false;
+
+    public static $excludedPaths = array();
+
     public static $style;
     /**
      * @var bool should we fill up the form using given data?
@@ -356,7 +363,21 @@ class Forms implements iFilter
         if (session_id() == '') {
             session_start();
         }
-        if (!empty($_POST)) {
+        /** @var Restler $restler */
+        $restler = $this->restler;
+        $url = $restler->url;
+        foreach (static::$excludedPaths as $exclude) {
+            if (empty($exclude)) {
+                if ($url == $exclude)
+                    return true;
+            } elseif (String::beginsWith($url, $exclude)) {
+                return true;
+            }
+        }
+        $check = static::$filterFormRequestsOnly
+            ? $restler->requestFormat instanceof UrlEncodedFormat || $restler->requestFormat instanceof UploadFormat
+            : true;
+        if (!empty($_POST) && $check) {
             if (isset($_POST['form_key'])
                 && isset($_SESSION['form_key'])
                 && $_POST['form_key'] == $_SESSION['form_key']
