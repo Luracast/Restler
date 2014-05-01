@@ -33,7 +33,7 @@ class FormStyles
         'fieldset' => 'fieldset>legend{$label#}',
     );
     public static $foundation5 = array(
-        'form' => 'form.large-6.column[id=$id# name=$name# method=$method# action=$action# enctype=$enctype#]',
+        'form' => 'form[id=$id# name=$name# method=$method# action=$action# enctype=$enctype#]',
         'input' => 'label{$label#}+input[name=$name# value=$value# type=$type# required=$required# autofocus=$autofocus# placeholder=$default# accept=$accept#]',
         'textarea' => 'label{$label#}+textarea[name=$name# required=$required# autofocus=$autofocus# placeholder=$default# rows=3]{$value#}',
         'radio' => 'label{$label# : &nbsp;}+label.radio-inline*options>input.radio[name=$name# value=$value# type=radio checked=$selected# required=$required#]+{$text#}',
