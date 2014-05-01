@@ -10,6 +10,7 @@ use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Illuminate\View\View;
+use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\Object;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
@@ -95,23 +96,20 @@ class HtmlFormat extends Format
             return $engine;
         });
 
-        //Lets expose shortcuts for our classes
-        $aliases = array();
-        foreach (Scope::$classAliases as $alias => $original) {
-            if (false !== strpos($original, 'Luracast\Restler\UI'))
-                $aliases[$alias] = $original;
-        }
-
         /** @var Restler $restler */
         $restler = Scope::get('Restler');
-        if (isset($restler->apiMethodInfo->metadata['scope'])) {
-            $aliases = $restler->apiMethodInfo->metadata['scope'] + $aliases;
-            unset($aliases['*']);
-        }
-        foreach ($aliases as $alias => $original) {
-            class_alias($original, $alias);
-        }
 
+        //Lets expose shortcuts for our classes
+        spl_autoload_register(function ($className) use ($restler) {
+            if (isset($restler->apiMethodInfo->metadata['scope'][$className])) {
+                return class_alias($restler->apiMethodInfo->metadata['scope'][$className], $className);
+            }
+            if (isset(Scope::$classAliases[$className])) {
+                return class_alias(Scope::$classAliases[$className], $className);
+            }
+            return false;
+        }, true, true);
+        
         $viewFinder = new FileViewFinder($files, array(static::$viewPath));
         $factory = new Factory($resolver, $viewFinder, new Dispatcher());
         $path = $viewFinder->find(self::$view);
