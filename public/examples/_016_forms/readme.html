@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Luracast Restler 3 Live Examples:- Minimal Example</title>
+<title>Luracast Restler 3 Live Examples:- Forms Example</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <link rel="stylesheet" type="text/css" href="../resources/bootstrap.min.css" />
@@ -232,147 +232,100 @@
 </ul>
     </nav>
     <article id="page">
-<div class="right"><small>2</small></div>
-<p><a id="minimal-example" class="anchor"></a><h2>Minimal Example <requires>PHP >= 5.3</requires></h2></p>
+<div class="right"><small>16</small></div>
+<p><a id="forms-example" class="anchor"></a><h2>Forms Example <requires>PHP >= 5.3</requires></h2></p>
 
-<p><tag>basic</tag>
+<p><tag>form</tag>
  <tag>validation</tag>
- <tag>http status</tag></p>
+ <tag>blade</tag>
+ <tag>html</tag>
+ <tag>bootstrap</tag>
+ <tag>foundation</tag>
+ <tag>emmet</tag></p>
 
-<p>Shows the bare minimum code needed to get your RESTful api server
- up and running</p>
+<p>Forms is a utility class that builds web forms in one of the following in built styles</p>
+
+<ul>
+<li>Plain Html 5</li>
+<li>Twitter Bootstrap 3</li>
+<li>Zerb Foundation 5</li>
+</ul>
+
+<pre><code class="php">use Luracast/Restler/UI/Forms;
+use Luracast/Restler/UI/FormStyles;
+
+Forms::$style = FormStyles::$bootstrap3; // FormStyles::$foundation5;
+</code></pre>
+
+<p>Where ever you need the generated forms (typically in view templates) just call</p>
+
+<pre><code class="php">echo Forms::get('POST','user/signup');
+</code></pre>
+
+<p>If you are using twig templates you can use the following instead</p>
+
+<pre><code>{{ form('POST', 'user/signup') }}
+</code></pre>
+
+<p><a id="emmet-templates" class="anchor"></a><h2>Emmet Templates</h2></p>
+
+<p>Forms is using Emmet templates, with which adding more styles is very easy</p>
+
+<p>Emmet Templates is built with a subset of Emmet as in <a href="http://emmet.io/" target="_blank">emmet.io</a> extended to serve as a
+template engine</p>
+
+<p>For example</p>
+
+<pre><code>.form-group&gt;label{$label#}+input.form-control[value=$value# type=$type#
+</code></pre>
+
+<p>Expands to the following html</p>
+
+<pre><code class="html">&lt;div class="form-group"&gt;
+    &lt;label&gt;Email&lt;/label&gt;
+    &lt;input class="form-control" value="arul@luracast.com" type="email"/&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>When the given data is</p>
+
+<pre><code class="php">array(
+    'label' =&gt; 'Email',
+    'value' =&gt; 'arul@luracast.com',
+    'type' =&gt; 'email'
+);
+</code></pre>
+
+<p>Typically this data is supplied by the metadata extracted from the php-doc comments of of the api parameters</p>
+
+<p><abbr title="_016_forms/Users.php">Users.php</abbr> and <abbr title="_016_forms/Address.php">Address.php</abbr> shows the bare minimum code needed to get create forms.</p>
+
+<p>Check out the resulting form <a href="users.html" target="_blank">here</a>.
+<a href="users.html" target="_blank"><img src="../resources/Form.gif" alt="Forms" /></a>
+We have made it easy to try different styles
+Also this example serves as an example for our Blade template integration</p>
+
+<p>See <abbr title="_016_forms/views/base/bootstrap3.blade.php">bootstrap3.blade.php</abbr> and <abbr title="_016_forms/views/base/foundation5.blade.php">foundation5.blade.php</abbr></p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
   
   <ul>
-  <li><abbr title="_002_minimal/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="_002_minimal/Math.php">Math.php</abbr>      (api)</li>
+  <li><abbr title="_016_forms/index.php">index.php</abbr>      (gateway)</li>
+  <li><abbr title="_016_forms/Users.php">Users.php</abbr>      (api)</li>
+  <li><abbr title="_016_forms/Address.php">Address.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
+  <li><abbr title="../../vendor/Luracast/Restler/Format/HtmlFormat.php">HtmlFormat.php</abbr>      (format)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET math/add                ⇠ Math::add()
-GET math/multiply/{n1}/{n2} ⇠ Math::multiply()
-GET math/sum/*              ⇠ Math::sum()
-</code></pre>
-
-<blockquote>
-  <p><strong>Note:-</strong></p>
-  
-  <ol>
-  <li>Take note of the php doc comments, they make sure the data is sent in the
-  right type and validated automatically before calling the api method.</li>
-  <li>Sum method accepts variable number of parameters with the help of
-  wildcard manual route. Read the <a href="../_006_routing/readme.html" target="_blank">Routes</a>
-  example for better understanding</li>
-  </ol>
-</blockquote>
-
-<p>Try the following links in your browser</p>
-
-<dl>
-<dt>GET <a href="index.php/math/add" target="_blank">math/add</a></dt>
-<dd>
-<p></p>
-
-<pre><code>2
-</code></pre>
-</dd>
-
-<dt>GET <a href="index.php/math/add?n1=6&amp;n2=4" target="_blank">math/add?n1=6&amp;n2=4</a></dt>
-<dd><pre><code>10
-</code></pre></dd>
-
-<dl>
-<dt>GET <a href="index.php/math/multiply/4/3" target="_blank">math/multiply/4/3</a></dt>
-<dd>
-<p></p>
-
-<pre><code>{"result":12}
-</code></pre>
-</dd>
-
-<dt>GET <a href="index.php/math/multiply/4/NaN" target="_blank">math/multiply/4/NaN</a></dt>
-<dd><pre><code>{
-  "error": {
-    "code": 400,
-    "message": "Bad Request: invalid value specified for n2"
-  }
-}
-</code></pre></dd>
-
-<dl>
-<dt>GET <a href="index.php/math/sum/1/2/3/4/5" target="_blank">math/sum/1/2/3/4/5</a></dt>
-<dd>
-<p></p>
-
-<pre><code>15
-</code></pre>
-</dd>
-</dl>
-
-<p>We expect the following behaviour from this example.</p>
-
-<pre><code class="gherkin"><br />@example2 @minimal
-Feature: Testing Minimal Example
-
-  Scenario: Add using Default Values
-    When I request "/examples/_002_minimal/math/add"
-    Then the response status code should be 200
-    And the response is JSON
-    And the type is "int"
-    And the value equals 2
-
-  Scenario: Add 5 and 10
-    Given that "n1" is set to "5"
-    And "n2" is set to "10"
-    When I request "/examples/_002_minimal/math/add{?n1,n2}"
-    Then the response status code should be 200
-    And the response is JSON
-    And the type is "int"
-    And the value equals 15
-
-  Scenario: Verify Validation
-    Given that "n1" is set to "NaN"
-    When I request "/examples/_002_minimal/math/add{?n1,n2}"
-    Then the response status code should be 400
-    And the response is JSON
-    And the response has a "error" property
-
-  Scenario: Multiply
-    Given that "n1" is set to "10"
-    And "n2" is set to "5"
-    When I request "/examples/_002_minimal/math/multiply/{n1}/{n2}"
-    And the response is JSON
-    And the response has a "result" property
-    And the "result" property equals 50
-
-  Scenario: Multiply without value
-    When I request "/examples/_002_minimal/math/multiply"
-    Then the response status code should be 404
-    And the response is JSON
-    And the type is "array"
-    And the response has a "error" property
-
-  Scenario: Verify Validation for multiplication
-    Given that "n1" is set to "NaN"
-    And "n2" is set to "5"
-    When I request "/examples/_002_minimal/math/multiply/{n1}/{n2}"
-    Then the response status code should be 400
-    And the response is JSON
-    And the response has a "error" property
-
-</code></pre>
-
-<p>It can be tested by running the following command on terminal/command line
-from the project root (where the vendor folder resides). Make sure <code>base_url</code>
-in <code>behat.yml</code> is updated according to your web server.</p>
-
-<pre><code class="bash">bin/behat  features/examples/_002_minimal.feature
+<pre><code>GET  users        ⇠ Users::index()
+GET  users        ⇠ Users::index()
+POST users/signin ⇠ Users::postSignIn()
+POST users/signup ⇠ Users::postSignUp()
 </code></pre>
 
 </article>
