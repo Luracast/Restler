@@ -45,6 +45,7 @@ class Forms implements iFilter
      */
     public static $validationInfo = null;
     protected static $inputTypes = array(
+        'hidden',
         'password',
         'button',
         'image',
