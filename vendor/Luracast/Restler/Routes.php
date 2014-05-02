@@ -59,7 +59,7 @@ class Routes
         try {
             $classMetadata = CommentParser::parse($class->getDocComment());
         } catch (Exception $e) {
-            throw new RestException(500,"Error while parsing comments of `$className` class. " . $e->getMessage());
+            throw new RestException(500, "Error while parsing comments of `$className` class. " . $e->getMessage());
         }
         $classMetadata['scope'] = $scope = static::scope($class);
         $methods = $class->getMethods(ReflectionMethod::IS_PUBLIC +
@@ -536,6 +536,8 @@ class Routes
      * @param ReflectionClass $class
      * @param array           $scope
      *
+     * @throws RestException
+     * @throws \Exception
      * @return array
      *
      * @access protected
@@ -569,7 +571,10 @@ class Routes
                         }
                     }
                 }
-                $child += array('type' => 'string', 'label' => static::label($child['name']));
+                $child += array(
+                    'type' => $child['name'] == 'email' ? 'email' : 'string',
+                    'label' => static::label($child['name'])
+                );
                 isset($child[CommentParser::$embeddedDataName])
                     ? $child[CommentParser::$embeddedDataName] += array('required' => true)
                     : $child[CommentParser::$embeddedDataName]['required'] = true;
