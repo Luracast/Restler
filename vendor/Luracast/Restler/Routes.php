@@ -31,12 +31,13 @@ class Routes
     /**
      * Route the public and protected methods of an Api class
      *
-     * @param        $className
+     * @param string $className
      * @param string $resourcePath
      * @param int    $version
+     *
+     * @throws RestException
      */
-    public static function addAPIClass($className,
-                                       $resourcePath = '', $version = 1)
+    public static function addAPIClass($className, $resourcePath = '', $version = 1)
     {
 
         /*
