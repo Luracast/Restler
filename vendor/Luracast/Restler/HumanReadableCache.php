@@ -24,12 +24,6 @@ class HumanReadableCache implements iCache
         if (is_null(self::$cacheDir)) {
             self::$cacheDir = Defaults::$cacheDirectory;
         }
-        if (
-            Scope::get('Restler')->getProductionMode() &&
-            !is_writable(self::$cacheDir)
-        ) {
-            $this->throwException();
-        }
     }
 
     /**
