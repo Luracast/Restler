@@ -154,7 +154,7 @@ class Forms implements iFilter
             $method = 'POST';
         }
         if (session_id() != '') {
-            $form_key = static::formKey($method, $action);
+            $form_key = static::key($method, $action);
             if ($dataOnly) {
                 $r[] = array(
                     'tag' => 'input',
@@ -350,7 +350,7 @@ class Forms implements iFilter
      *
      * @return string generated form key
      */
-    public static function formKey($method = 'POST', $action = null)
+    public static function key($method = 'POST', $action = null)
     {
         if (is_null($action))
             $action = Scope::get('Restler')->url;

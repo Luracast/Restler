@@ -142,7 +142,7 @@ class HtmlFormat extends Format
         $twig->addFunction(
             new \Twig_SimpleFunction(
                 'form_key',
-                'Luracast\Restler\UI\Forms::formKey'
+                'Luracast\Restler\UI\Forms::key'
             )
         );
         $twig->addFunction(
