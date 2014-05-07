@@ -137,6 +137,18 @@ class Restler extends EventDispatcher
      */
     protected $formatMap = array();
     /**
+     * List of the Mime Types that can be produced as a response by this API
+     *
+     * @var array
+     */
+    protected $producedMimeTypes = array();
+    /**
+     * List of the Mime Types that are supported for incoming requests by this API
+     *
+     * @var array
+     */
+    protected $consumedMimeTypes = array();
+    /**
      * Associated array that maps formats to their respective format class name
      *
      * @var array
@@ -313,6 +325,24 @@ class Restler extends EventDispatcher
     }
 
     /**
+     * Returns a list of the mime types (e.g.  ["application/json","application/xml"]) that the API can respond with
+     * @return array
+     */
+    public function getProducedMimeTypes()
+    {
+        return $this->producedMimeTypes;
+    }
+
+    /**
+     * Returns the list of Mime Types for the request that the API can understand
+     * @return array
+     */
+    public function getConsumedMimeTypes()
+    {
+        return $this->consumedMimeTypes;
+    }
+
+    /**
      * Call this method and pass all the formats that should be  supported by
      * the API Server. Accepts multiple parameters
      *
@@ -339,6 +369,10 @@ class Restler extends EventDispatcher
             }
 
             foreach ($obj->getMIMEMap() as $mime => $extension) {
+                if($obj->isWritable())
+                    $this->producedMimeTypes[]=$mime;
+                if($obj->isReadable())
+                    $this->consumedMimeTypes[]=$mime;
                 if (!isset($this->formatMap[$extension]))
                     $this->formatMap[$extension] = $className;
                 if (!isset($this->formatMap[$mime]))
@@ -554,12 +588,12 @@ class Restler extends EventDispatcher
         }
         if (!isset($o->className))
             throw new RestException(404);
-        
+
         if(isset($this->apiVersionMap[$o->className])){
             Scope::$classAliases[Util::getShortName($o->className)]
                 = $this->apiVersionMap[$o->className][$this->requestedApiVersion];
         }
-        
+
         foreach ($this->authClasses as $auth) {
             if (isset($this->apiVersionMap[$auth])) {
                 Scope::$classAliases[$auth] = $this->apiVersionMap[$auth][$this->requestedApiVersion];
