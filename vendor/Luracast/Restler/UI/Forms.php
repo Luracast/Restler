@@ -72,7 +72,7 @@ class Forms implements iFilter
         'week',
     );
     protected static $fileUpload = false;
-    private static $key = null;
+    private static $key = array();
     /**
      * @var ApiMethodInfo;
      */
@@ -150,7 +150,7 @@ class Forms implements iFilter
             $method = 'POST';
         }
         if (session_id() != '') {
-            static::generateKey();
+            $form_key = static::formKey($method, $action);
             if ($dataOnly) {
                 $r[] = array(
                     'tag' => 'input',
@@ -162,7 +162,7 @@ class Forms implements iFilter
                 $key = T::input()
                     ->name('form_key')
                     ->type('hidden')
-                    ->value(static::$key);
+                    ->value($form_key);
                 $r[] = $key;
             }
         }
@@ -343,11 +343,24 @@ class Forms implements iFilter
         return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
-    protected static function generateKey()
+    /**
+     * Get the form key
+     *
+     * @param string $method   http method for form key
+     * @param string $action   relative path from the web root. When set to null
+     *                         it uses the current api method's path
+     *
+     * @return string generated form key
+     */
+    public static function formKey($method = 'POST', $action = null)
     {
-        if (!static::$key)
-            static::$key = md5(User::getIpAddress() . uniqid(mt_rand(), true));
+        if (is_null($action))
+            $action = Util::$restler->url;
+        $target = "$method $action";
+        if (empty(static::$key[$target]))
+            static::$key[$target] = md5($target . User::getIpAddress() . uniqid(mt_rand(), true));
         $_SESSION['form_key'] = static::$key;
+        return static::$key[$target];
     }
 
     /**
@@ -379,9 +392,11 @@ class Forms implements iFilter
             ? $restler->requestFormat instanceof UrlEncodedFormat || $restler->requestFormat instanceof UploadFormat
             : true;
         if (!empty($_POST) && $check) {
-            if (isset($_POST['form_key'])
-                && isset($_SESSION['form_key'])
-                && $_POST['form_key'] == $_SESSION['form_key']
+            if (
+                isset($_POST['form_key']) &&
+                ($target = Util::getRequestMethod() . ' ' . $restler->url) &&
+                isset($_SESSION['form_key'][$target]) &&
+                $_POST['form_key'] == $_SESSION['form_key'][$target]
             ) {
                 return true;
             }
