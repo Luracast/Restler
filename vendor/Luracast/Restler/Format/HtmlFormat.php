@@ -141,6 +141,12 @@ class HtmlFormat extends Format
         );
         $twig->addFunction(
             new \Twig_SimpleFunction(
+                'form_key',
+                'Luracast\Restler\UI\Forms::formKey'
+            )
+        );
+        $twig->addFunction(
+            new \Twig_SimpleFunction(
                 'nav',
                 'Luracast\Restler\UI\Nav::get'
             )
