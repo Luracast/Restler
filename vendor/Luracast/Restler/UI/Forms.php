@@ -32,6 +32,7 @@ use Luracast\Restler\Util;
  */
 class Forms implements iFilter
 {
+    const FORM_KEY = 'form_key';
     public static $filterFormRequestsOnly = false;
 
     public static $excludedPaths = array();
@@ -157,13 +158,13 @@ class Forms implements iFilter
             if ($dataOnly) {
                 $r[] = array(
                     'tag' => 'input',
-                    'name' => 'form_key',
+                    'name' => static::FORM_KEY,
                     'type' => 'hidden',
                     'value' => 'hidden',
                 );
             } else {
                 $key = T::input()
-                    ->name('form_key')
+                    ->name(static::FORM_KEY)
                     ->type('hidden')
                     ->value($form_key);
                 $r[] = $key;
@@ -356,7 +357,7 @@ class Forms implements iFilter
         $target = "$method $action";
         if (empty(static::$key[$target]))
             static::$key[$target] = md5($target . User::getIpAddress() . uniqid(mt_rand(), true));
-        $_SESSION['form_key'] = static::$key;
+        $_SESSION[static::FORM_KEY] = static::$key;
         return static::$key[$target];
     }
 
@@ -390,10 +391,10 @@ class Forms implements iFilter
             : true;
         if (!empty($_POST) && $check) {
             if (
-                isset($_POST['form_key']) &&
+                isset($_POST[static::FORM_KEY]) &&
                 ($target = Util::getRequestMethod() . ' ' . $restler->url) &&
-                isset($_SESSION['form_key'][$target]) &&
-                $_POST['form_key'] == $_SESSION['form_key'][$target]
+                isset($_SESSION[static::FORM_KEY][$target]) &&
+                $_POST[static::FORM_KEY] == $_SESSION[static::FORM_KEY][$target]
             ) {
                 return true;
             }
