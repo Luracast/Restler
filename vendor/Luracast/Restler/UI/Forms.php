@@ -222,7 +222,7 @@ class Forms implements iFilter
             if ($v->from == 'path')
                 continue;
             if (!empty($v->children)) {
-                $t = Emmet::make(static::style('fieldset', $m), array('label' => $v->label ? : static::title($v->name)));
+                $t = Emmet::make(static::style('fieldset', $m), array('label' => $v->label));
                 foreach ($v->children as $n => $c) {
                     $value = Util::nestedValue($v->value, $n);
                     if (
@@ -234,7 +234,6 @@ class Forms implements iFilter
                     static::$validationInfo = $vc = new ValidationInfo($c);
                     if ($vc->from == 'path')
                         continue;
-                    $vc->label = $vc->label ? : static::title($vc->name);
                     $vc->name = $v->name . '[' . $vc->name . ']';
                     $t [] = static::field($vc, $dataOnly);
                 }
@@ -280,7 +279,7 @@ class Forms implements iFilter
             'tag' => $tag,
             'name' => $name,
             'type' => $type,
-            'label' => $p->label ? : static::title($p->name),
+            'label' => $p->label,
             'value' => $p->value,
             'default' => $p->default,
             'options' => & $options,
@@ -336,11 +335,6 @@ class Forms implements iFilter
         if ($p->name == 'password')
             return 'password';
         return 'text';
-    }
-
-    protected static function title($name)
-    {
-        return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
     /**
