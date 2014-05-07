@@ -12,6 +12,7 @@ use Luracast\Restler\iFilter;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
+use Luracast\Restler\Scope;
 use Luracast\Restler\UI\Tags as T;
 use Luracast\Restler\User;
 use Luracast\Restler\Util;
@@ -100,20 +101,22 @@ class Forms implements iFilter
             static::$style = FormStyles::$html;
 
         try {
+            /** @var Restler $restler */
+            $restler = Scope::get('Restler');
             if (is_null($action))
-                $action = Util::$restler->url;
+                $action = $restler->url;
 
-            $info = Util::$restler->url == $action
+            $info = $restler->url == $action
             && Util::getRequestMethod() == $method
-                ? Util::$restler->apiMethodInfo
+                ? $restler->apiMethodInfo
                 : Routes::find(
                     trim($action, '/'),
                     $method,
-                    Util::$restler->getRequestedApiVersion(),
+                    $restler->getRequestedApiVersion(),
                     static::$preFill ||
-                    (Util::$restler->requestMethod == $method &&
-                        Util::$restler->url == $action)
-                        ? Util::$restler->getRequestData()
+                    ($restler->requestMethod == $method &&
+                        $restler->url == $action)
+                        ? $restler->getRequestData()
                         : array()
                 );
 
@@ -179,7 +182,7 @@ class Forms implements iFilter
             $s = Emmet::make(static::style('submit', $m), $s);
         $r[] = $s;
         $t = array(
-            'action' => Util::$restler->getBaseUrl() . '/' . rtrim($action, '/'),
+            'action' => $restler->getBaseUrl() . '/' . rtrim($action, '/'),
             'method' => $method,
         );
         if (static::$fileUpload) {
@@ -349,7 +352,7 @@ class Forms implements iFilter
     public static function formKey($method = 'POST', $action = null)
     {
         if (is_null($action))
-            $action = Util::$restler->url;
+            $action = Scope::get('Restler')->url;
         $target = "$method $action";
         if (empty(static::$key[$target]))
             static::$key[$target] = md5($target . User::getIpAddress() . uniqid(mt_rand(), true));
