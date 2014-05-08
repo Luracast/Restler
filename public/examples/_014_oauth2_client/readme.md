@@ -26,7 +26,6 @@ Now that you are ready, lets look at the example
 This API Server exposes the following URIs
 
     GET            ⇠ Auth\Client::index()
-    GET            ⇠ Auth\Client::index()
     GET authorized ⇠ Auth\Client::authorized()
 
 
@@ -87,20 +86,6 @@ likely be to play the *server* role in this process it is useful to know that bo
 the [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) module and both are easily made available to Restler. 
 
 For more information on how to start using this functionality with Restler be sure to look at the [OAuth Server example](../_015_oauth2_server/index.php).
-
-require_once '../../../vendor/restler.php';
-use Luracast\Restler\Restler;
-use Auth\Client;
-
-//This client talks to the server in the next folder, you can change it by un commenting and customizing the following
-/*
-Client::$serverUrl = 'http://brentertainment.com/oauth2/lockdin';
-Client::$authorizeRoute = 'authorize';
-Client::$tokenRoute = 'token';
-Client::$resourceMethod = 'GET';
-Client::$resourceRoute = 'resource';
-Client::$resourceParams = array();
-Client::$resourceOptions = array(); //curl options
 
 
 

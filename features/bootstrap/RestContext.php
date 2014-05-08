@@ -1,6 +1,7 @@
 <?php
 use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\PyStringNode;
+use Luracast\Restler\Data\String;
 
 /**
  * Rest context.
@@ -48,16 +49,16 @@ class RestContext extends BehatContext
         $this->_client
             ->getEventDispatcher()
             ->addListener('request.error',
-            function (\Guzzle\Common\Event $event) {
-                switch ($event['response']->getStatusCode()) {
-                    case 400:
-                    case 401:
-                    case 404:
-                    case 405:
-                    case 406:
-                        $event->stopPropagation();
-                }
-            });
+                function (\Guzzle\Common\Event $event) {
+                    switch ($event['response']->getStatusCode()) {
+                        case 400:
+                        case 401:
+                        case 404:
+                        case 405:
+                        case 406:
+                            $event->stopPropagation();
+                    }
+                });
         $timezone = ini_get('date.timezone');
         if (empty($timezone))
             date_default_timezone_set('UTC');
@@ -102,8 +103,33 @@ class RestContext extends BehatContext
      * @Given /^that I send:/
      * @param PyStringNode $data
      */
-    public function thatISendPyString(PyStringNode $data) {
+    public function thatISendPyString(PyStringNode $data)
+    {
         $this->thatISend($data);
+    }
+
+    /**
+     * ============ json array ===================
+     * @Given /^the response contains (\[[^]]*\])$/
+     *
+     * ============ json object ==================
+     * @Given /^the response contains (\{(?>[^\{\}]+|(?1))*\})$/
+     *
+     * ============ json string ==================
+     * @Given /^the response contains ("[^"]*")$/
+     *
+     * ============ json int =====================
+     * @Given /^the response contains ([-+]?[0-9]*\.?[0-9]+)$/
+     *
+     * ============ json null or boolean =========
+     * @Given /^the response contains (null|true|false)$/
+     */
+    public function theResponseContains($response)
+    {
+        $data = json_encode($this->_data);
+        if (!String::contains($data, $response))
+            throw new Exception("Response value does not contain '$response' only\n\n"
+                . $this->echoLastResponse());
     }
 
     /**
@@ -127,7 +153,7 @@ class RestContext extends BehatContext
         $data = json_encode($this->_data);
         if ($data !== $response)
             throw new Exception("Response value does not match '$response'\n\n"
-            . $this->echoLastResponse());
+                . $this->echoLastResponse());
     }
 
     /**
@@ -138,6 +164,7 @@ class RestContext extends BehatContext
     {
         $this->theResponseEquals($response);
     }
+
     /**
      * @Given /^that I want to make a new "([^"]*)"$/
      */
@@ -245,8 +272,8 @@ class RestContext extends BehatContext
         $this->_headers['Content-Type'] = 'application/json; charset=utf-8';
         $this->_requestBody = json_encode(
             is_object($this->_restObject)
-            ? (array)$this->_restObject
-            : $this->_restObject
+                ? (array)$this->_restObject
+                : $this->_restObject
         );
     }
 
@@ -280,8 +307,8 @@ class RestContext extends BehatContext
                     : $this->_restObject;
                 $this->_request = $this->_client
                     ->post($url, $this->_headers,
-                    (empty($this->_requestBody) ? $postFields :
-                        $this->_requestBody));
+                        (empty($this->_requestBody) ? $postFields :
+                            $this->_requestBody));
                 $this->_response = $this->_request->send();
                 break;
             case 'PUT' :
@@ -290,8 +317,8 @@ class RestContext extends BehatContext
                     : $this->_restObject;
                 $this->_request = $this->_client
                     ->put($url, $this->_headers,
-                    (empty($this->_requestBody) ? $putFields :
-                        $this->_requestBody));
+                        (empty($this->_requestBody) ? $putFields :
+                            $this->_requestBody));
                 $this->_response = $this->_request->send();
                 break;
             case 'PATCH' :
@@ -300,8 +327,8 @@ class RestContext extends BehatContext
                     : $this->_restObject;
                 $this->_request = $this->_client
                     ->patch($url, $this->_headers,
-                    (empty($this->_requestBody) ? $putFields :
-                        $this->_requestBody));
+                        (empty($this->_requestBody) ? $putFields :
+                            $this->_requestBody));
                 $this->_response = $this->_request->send();
                 break;
             case 'DELETE':

@@ -49,11 +49,9 @@ full path of a folder
 This API Server exposes the following URIs
 
     GET    resources              ⇠ Luracast\Restler\Resources::index()
-    GET    resources              ⇠ Luracast\Restler\Resources::index()
     GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
     POST   tasks                  ⇠ Tasks::post()
-    GET    tasks                  ⇠ Tasks::index()
     GET    tasks                  ⇠ Tasks::index()
     PATCH  tasks/{id}             ⇠ Tasks::patch()
     GET    tasks/{id}             ⇠ Tasks::get()

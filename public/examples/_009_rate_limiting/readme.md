@@ -45,12 +45,10 @@ This API Server exposes the following URIs
 
     GET    authors                ⇠ ratelimited\Authors::index()
     POST   authors                ⇠ ratelimited\Authors::post()
-    GET    authors                ⇠ ratelimited\Authors::index()
     DELETE authors/{id}           ⇠ ratelimited\Authors::delete()
     PATCH  authors/{id}           ⇠ ratelimited\Authors::patch()
-    GET    authors/{id}           ⇠ ratelimited\Authors::get()
     PUT    authors/{id}           ⇠ ratelimited\Authors::put()
-    GET    resources              ⇠ Luracast\Restler\Resources::index()
+    GET    authors/{id}           ⇠ ratelimited\Authors::get()
     GET    resources              ⇠ Luracast\Restler\Resources::index()
     GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()

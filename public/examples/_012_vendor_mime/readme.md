@@ -35,16 +35,8 @@ $r->setAPIVersion(2);
 This API Server exposes the following URIs
 
     GET bmi                    ⇠ SomeVendor\v2\BMI::index()
-    GET bmi                    ⇠ SomeVendor\v1\BMI::index()
-    GET bmi                    ⇠ SomeVendor\v1\BMI::index()
-    GET bmi                    ⇠ SomeVendor\v2\BMI::index()
-    GET resources              ⇠ Luracast\Restler\Resources::index()
-    GET resources              ⇠ Luracast\Restler\Resources::index()
-    GET resources              ⇠ Luracast\Restler\Resources::index()
     GET resources              ⇠ Luracast\Restler\Resources::index()
     GET resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET resources/{id}         ⇠ Luracast\Restler\Resources::get()
     GET resources/{id}         ⇠ Luracast\Restler\Resources::get()
 
 

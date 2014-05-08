@@ -29,7 +29,6 @@ This API Server exposes the following URIs
     GET admin                  ⇠ Access::admin()
     GET all                    ⇠ Access::all()
     GET resources              ⇠ Luracast\Restler\Resources::index()
-    GET resources              ⇠ Luracast\Restler\Resources::index()
     GET resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET resources/{id}         ⇠ Luracast\Restler\Resources::get()
     GET user                   ⇠ Access::user()

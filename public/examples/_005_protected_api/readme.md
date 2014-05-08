@@ -35,7 +35,6 @@ This API Server exposes the following URIs
     GET restricted     ⇠ Simple::restricted()
     GET restricted2    ⇠ Simple::restricted2()
     GET secured        ⇠ Secured::index()
-    GET secured        ⇠ Secured::index()
     GET simpleauth/key ⇠ SimpleAuth::key()
 
 

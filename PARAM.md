@@ -117,6 +117,47 @@ exception
 Take a look at [MinMaxFix API Class](public/tests/param/MinMaxFix.php) and
 tests in [minmaxfix.feature](features/tests/param/minmaxfix.feature)
 
------------------------
 
-More to follow...
+## @pattern
+
+**Syntax:**
+
+    @param string $name [Description] {@pattern /REGEX_HERE/REGEX_OPTIONS}
+    
+**Example:**
+
+    @param string $password at least one alpha and one numeric character
+    						{@pattern /^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i}
+    
+Used by the validator to make sure the parammeter value matches the regex pattern. It uses preg_match for this verification. Please note that `/` should be used as the delimiter.
+
+Take a look at [MinMaxFix API Class](public/tests/param/Validation.php) and
+tests in [minmaxfix.feature](features/tests/param/validation.feature)
+
+## @message
+
+**Syntax:**
+
+    @param string|int|float $name [Description] {@message value}
+    
+**Example:**
+
+    @param string $password Password 
+    						{@message Strong password with at least one alpha and one numeric character is required}
+    
+Used by the validator to show a custom error message when invalid value is submitted. Use it to list the requirements for a parameter
+
+Take a look at [MinMaxFix API Class](public/tests/param/Validation.php) and
+tests in [minmaxfix.feature](features/tests/param/validation.feature)
+
+## @example
+
+**Syntax:**
+
+    @param string|int|float $name [Description] {@example value}
+    
+**Example:**
+
+    @param string $name Name {@example Arul Kumaran}
+    
+Used by the explorer to prefill the value for the parameter

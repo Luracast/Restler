@@ -62,6 +62,21 @@ var _gaq = _gaq || [];
                 <ul><li><a href="annotations.html#throws" title="Annotations - @throws">@throws</a></li></ul>
                 <ul><li><a href="annotations.html#return" title="Annotations - @return">@return</a></li></ul>
                 <ul><li><a href="annotations.html#var" title="Annotations - @var">@var</a></li></ul>
+                <ul><li><a href="annotations.html#format" title="Annotations - @format">@format</a></li></ul>
+                <ul><li><a href="annotations.html#view" title="Annotations - @view">@view</a></li></ul>
+                <ul><li><a href="annotations.html#errorview" title="Annotations - @errorView">@errorView</a></li></ul>
+            </li>
+            <li><a href="forms.html#forms" title="Forms">Forms</a>
+                <ul><li><a href="forms.html#label" title="Forms - @label">@label</a></li></ul>
+                <ul><li><a href="forms.html#field" title="Forms - @field">@field</a></li></ul>
+                <ul><li><a href="forms.html#message" title="Forms - @message">@message</a></li></ul>
+                <ul><li><a href="forms.html#form" title="Forms - @form">@form</a></li></ul>
+                <ul><li><a href="forms.html#input" title="Forms - @input">@input</a></li></ul>
+                <ul><li><a href="forms.html#textarea" title="Forms - @textarea">@textarea</a></li></ul>
+                <ul><li><a href="forms.html#radio" title="Forms - @radio">@radio</a></li></ul>
+                <ul><li><a href="forms.html#select" title="Forms - @select">@select</a></li></ul>
+                <ul><li><a href="forms.html#submit" title="Forms - @submit">@submit</a></li></ul>
+                <ul><li><a href="forms.html#fieldset" title="Forms - @fieldset">@fieldset</a></li></ul>
             </li>
             <li><a href="param.html#param-and--var" title="@param and @var">Param</a>
                 <ul><li><a href="param.html#from" title="Param - @from">@from</a></li></ul>
@@ -69,6 +84,9 @@ var _gaq = _gaq || [];
                 <ul><li><a href="param.html#choice" title="Param - @choice">@choice</a></li></ul>
                 <ul><li><a href="param.html#min----max" title="Param - @min & @max">@min & @max</a></li></ul>
                 <ul><li><a href="param.html#fix" title="Param - @fix">@fix</a></li></ul>
+                <ul><li><a href="param.html#pattern" title="Param - @pattern">@pattern</a></li></ul>
+                <ul><li><a href="param.html#message" title="Param - @message">@message</a></li></ul>
+                <ul><li><a href="param.html#example" title="Param - @example">@example</a></li></ul>
             </li>
 
         </ul>
@@ -296,6 +314,51 @@ iValueObject.</p>
 of a custom class @var comments can be used with properties of that class.
 They will be used for validation and documentation. Supported child attributes
 are same as that of @param so they are documented under <a href="param.html" target="_blank">@param</a></p>
+
+<p><a id="format" class="anchor"></a></p>
+<h2>@format</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@format formatName
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@pformat HtmlFormat
+</code></pre>
+
+<p>IF you want to force the request and or response format for a specific api method @format comment can be used</p>
+
+<p><a id="view" class="anchor"></a></p>
+<h2>@view</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@view Name
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@view profile.twig 
+</code></pre>
+
+<p>Specify the view file to be loaded by HtmlFormat for the given api method as relative path from the <code>HtmlFormat::viewPath</code> and optionaly include the temmplate engine as the extension. When the extension is not specified it uses the <code>HtmlFormat::template</code> for finding the template engine</p>
+
+<p><a id="errorview" class="anchor"></a></p>
+<h2>@errorView</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@errorView Name
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@errorView profile.twig
+</code></pre>
+
+<p>Similar to the <code>@view</code> but only used when an exception is thrown</p>
 
 <hr>
 

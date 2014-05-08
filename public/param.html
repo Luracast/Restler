@@ -62,6 +62,21 @@ var _gaq = _gaq || [];
                 <ul><li><a href="annotations.html#throws" title="Annotations - @throws">@throws</a></li></ul>
                 <ul><li><a href="annotations.html#return" title="Annotations - @return">@return</a></li></ul>
                 <ul><li><a href="annotations.html#var" title="Annotations - @var">@var</a></li></ul>
+                <ul><li><a href="annotations.html#format" title="Annotations - @format">@format</a></li></ul>
+                <ul><li><a href="annotations.html#view" title="Annotations - @view">@view</a></li></ul>
+                <ul><li><a href="annotations.html#errorview" title="Annotations - @errorView">@errorView</a></li></ul>
+            </li>
+            <li><a href="forms.html#forms" title="Forms">Forms</a>
+                <ul><li><a href="forms.html#label" title="Forms - @label">@label</a></li></ul>
+                <ul><li><a href="forms.html#field" title="Forms - @field">@field</a></li></ul>
+                <ul><li><a href="forms.html#message" title="Forms - @message">@message</a></li></ul>
+                <ul><li><a href="forms.html#form" title="Forms - @form">@form</a></li></ul>
+                <ul><li><a href="forms.html#input" title="Forms - @input">@input</a></li></ul>
+                <ul><li><a href="forms.html#textarea" title="Forms - @textarea">@textarea</a></li></ul>
+                <ul><li><a href="forms.html#radio" title="Forms - @radio">@radio</a></li></ul>
+                <ul><li><a href="forms.html#select" title="Forms - @select">@select</a></li></ul>
+                <ul><li><a href="forms.html#submit" title="Forms - @submit">@submit</a></li></ul>
+                <ul><li><a href="forms.html#fieldset" title="Forms - @fieldset">@fieldset</a></li></ul>
             </li>
             <li><a href="param.html#param-and--var" title="@param and @var">Param</a>
                 <ul><li><a href="param.html#from" title="Param - @from">@from</a></li></ul>
@@ -69,6 +84,9 @@ var _gaq = _gaq || [];
                 <ul><li><a href="param.html#choice" title="Param - @choice">@choice</a></li></ul>
                 <ul><li><a href="param.html#min----max" title="Param - @min & @max">@min & @max</a></li></ul>
                 <ul><li><a href="param.html#fix" title="Param - @fix">@fix</a></li></ul>
+                <ul><li><a href="param.html#pattern" title="Param - @pattern">@pattern</a></li></ul>
+                <ul><li><a href="param.html#message" title="Param - @message">@message</a></li></ul>
+                <ul><li><a href="param.html#example" title="Param - @example">@example</a></li></ul>
             </li>
 
         </ul>
@@ -1021,8 +1039,172 @@ Feature: Minimum and Maximum with Fix
     | [1]   |
 </code></pre>
 
-<hr>
-<p>More to follow...</p>
+<p><a id="pattern" class="anchor"></a></p>
+<h2>@pattern</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param string $name [Description] {@pattern /REGEX_HERE/REGEX_OPTIONS}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param string $password at least one alpha and one numeric character
+                        {@pattern /^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i}
+</code></pre>
+
+<p>Used by the validator to make sure the parammeter value matches the regex pattern. It uses preg_match for this verification. Please note that <code>/</code> should be used as the delimiter.</p>
+
+<strong>Code:</strong><p>Following api class shows various usage examples</p>
+<pre><code class="php">&lt;?php
+
+/**
+ * Class Validation provides api to check validation
+ */
+class Validation
+{
+
+    /**
+     * Validate with regex
+     *
+     * @param string $password  {@pattern /^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i}
+     *                          {@message Strong password with at least
+     *                          one alpha and one numeric character is required}
+     *
+     * @return string
+     */
+    function postPattern($password)
+    {
+        return $password;
+    }
+
+} </code></pre>
+<strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
+<pre><code class="bash">bin/behat  features/tests/param/validation.feature</code></pre>
+<p>Will test the above api for the following features</p>
+<pre><code class="gherkin">@param @type
+Feature: Validation
+
+  Scenario Outline: Valid Password
+    Given that I send {"password":&lt;password&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/validation/pattern"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;password&gt;
+
+  Examples:
+    | password |
+    | "1a"     |
+    | "b2"     |
+    | "some1"  |
+
+  Scenario Outline: Invalid Password
+    Given that I send {"password":&lt;password&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/validation/pattern"
+    Then the response status code should be 400
+    And the response is JSON
+    And the type is "string"
+    And the response contains "Bad Request: Strong password with at least one alpha and one numeric character is required"
+
+  Examples:
+    | password   |
+    | "arul"     |
+    | "12345678" |
+    | "ONEtwo"   |</code></pre>
+
+<p><a id="message" class="anchor"></a></p>
+<h2>@message</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param string|int|float $name [Description] {@message value}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param string $password Password 
+                        {@message Strong password with at least one alpha and one numeric character is required}
+</code></pre>
+
+<p>Used by the validator to show a custom error message when invalid value is submitted. Use it to list the requirements for a parameter</p>
+
+<strong>Code:</strong><p>Following api class shows various usage examples</p>
+<pre><code class="php">&lt;?php
+
+/**
+ * Class Validation provides api to check validation
+ */
+class Validation
+{
+
+    /**
+     * Validate with regex
+     *
+     * @param string $password  {@pattern /^(?:[0-9]+[a-z]|[a-z]+[0-9])[a-z0-9]*$/i}
+     *                          {@message Strong password with at least
+     *                          one alpha and one numeric character is required}
+     *
+     * @return string
+     */
+    function postPattern($password)
+    {
+        return $password;
+    }
+
+} </code></pre>
+<strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
+<pre><code class="bash">bin/behat  features/tests/param/validation.feature</code></pre>
+<p>Will test the above api for the following features</p>
+<pre><code class="gherkin">@param @type
+Feature: Validation
+
+  Scenario Outline: Valid Password
+    Given that I send {"password":&lt;password&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/validation/pattern"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;password&gt;
+
+  Examples:
+    | password |
+    | "1a"     |
+    | "b2"     |
+    | "some1"  |
+
+  Scenario Outline: Invalid Password
+    Given that I send {"password":&lt;password&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/validation/pattern"
+    Then the response status code should be 400
+    And the response is JSON
+    And the type is "string"
+    And the response contains "Bad Request: Strong password with at least one alpha and one numeric character is required"
+
+  Examples:
+    | password   |
+    | "arul"     |
+    | "12345678" |
+    | "ONEtwo"   |</code></pre>
+
+<p><a id="example" class="anchor"></a></p>
+<h2>@example</h2>
+
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param string|int|float $name [Description] {@example value}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param string $name Name {@example Arul Kumaran}
+</code></pre>
+
+<p>Used by the explorer to prefill the value for the parameter</p>
 
 </article>
 </body>

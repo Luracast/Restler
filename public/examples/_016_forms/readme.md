@@ -77,7 +77,6 @@ See bootstrap3.blade.php and foundation5.blade.php
 This API Server exposes the following URIs
 
     GET  users        ⇠ Users::index()
-    GET  users        ⇠ Users::index()
     POST users/signin ⇠ Users::postSignIn()
     POST users/signup ⇠ Users::postSignUp()
 

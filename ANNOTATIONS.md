@@ -183,4 +183,44 @@ of a custom class @var comments can be used with properties of that class.
 They will be used for validation and documentation. Supported child attributes
 are same as that of @param so they are documented under [@param](PARAM.md)
 
+
+## @format
+
+**Syntax:**
+
+    @format formatName
+    
+**Example:**
+
+    @pformat HtmlFormat
+    
+IF you want to force the request and or response format for a specific api method @format comment can be used
+
+
+## @view
+
+**Syntax:**
+
+    @view Name
+    
+**Example:**
+
+    @view profile.twig 
+       
+Specify the view file to be loaded by HtmlFormat for the given api method as relative path from the `HtmlFormat::viewPath` and optionaly include the temmplate engine as the extension. When the extension is not specified it uses the `HtmlFormat::template` for finding the template engine
+
+
+## @errorView
+
+**Syntax:**
+
+    @errorView Name
+    
+**Example:**
+
+    @errorView profile.twig
+        
+Similar to the `@view` but only used when an exception is thrown
+
+
 ---------------
