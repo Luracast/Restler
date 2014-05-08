@@ -84,15 +84,14 @@ use Luracast\Restler\Restler;
 use Auth\Client;
 
 //This client talks to the server in the next folder, you can change it by un commenting and customizing the following
-/*
-Client::$serverUrl = 'http://brentertainment.com/oauth2/lockdin';
-Client::$authorizeRoute = 'authorize';
-Client::$tokenRoute = 'token';
-Client::$resourceMethod = 'GET';
-Client::$resourceRoute = 'resource';
-Client::$resourceParams = array();
-Client::$resourceOptions = array(); //curl options
-*/
+
+//Client::$serverUrl = 'http://brentertainment.com/oauth2/lockdin';
+//Client::$authorizeRoute = 'authorize';
+//Client::$tokenRoute = 'token';
+//Client::$resourceMethod = 'GET';
+//Client::$resourceRoute = 'resource';
+//Client::$resourceParams = array();
+//Client::$resourceOptions = array(); //curl options
 
 $r = new Restler();
 $r->addAPIClass('Auth\\Client', '');
