@@ -272,7 +272,14 @@ class Validator implements iValidate
             }
 
             if (isset ($info->choice)) {
-                if (!in_array($input, $info->choice)) {
+                if (is_array($input)) {
+                    foreach ($input as $i) {
+                        if (!in_array($i, $info->choice)) {
+                            $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
+                            throw new RestException (400, $error);
+                        }
+                    }
+                } elseif (!in_array($input, $info->choice)) {
                     $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
                     throw new RestException (400, $error);
                 }
