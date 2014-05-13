@@ -201,11 +201,17 @@ class Forms implements iFilter
         return $t;
     }
 
-    public static function style($name, array $metadata)
+    public static function style($name, array $metadata, $type = '')
     {
         return isset($metadata[CommentParser::$embeddedDataName][$name])
             ? $metadata[CommentParser::$embeddedDataName][$name]
-            : (isset(static::$style[$name]) ? static::$style[$name] : null);
+            : (!empty($type) && isset(static::$style["$name-$type"])
+                ? static::$style["$name-$type"]
+                : (isset(static::$style[$name])
+                    ? static::$style[$name]
+                    : null
+                )
+            );
     }
 
     public static function fields($dataOnly = false)
@@ -266,9 +272,14 @@ class Forms implements iFilter
             ? 'input' : $type;
         $options = array();
         $name = $p->name;
+        $multiple = null;
+        if ($p->type == 'array' && $p->contentType != 'associative') {
+            $name .= '[]';
+            $multiple = true;
+        }
         if ($p->choice) {
             foreach ($p->choice as $i => $choice) {
-                $option = array('name' => $p->name, 'value' => $choice);
+                $option = array('name' => $name, 'value' => $choice);
                 $option['text'] = isset($p->rules['select'][$i])
                     ? $p->rules['select'][$i]
                     : $choice;
@@ -276,31 +287,47 @@ class Forms implements iFilter
                     $option['selected'] = true;
                 $options[] = $option;
             }
-        } elseif ($p->type == 'array' && $p->contentType != 'associative') {
-            $name .= '[]';
+        } elseif ($p->type == 'boolean' || $p->type == 'bool') {
+            if (String::beginsWith($type, 'radio')) {
+                $options[] = array('name' => $p->name, 'text' => ' Yes ',
+                    'value' => 'true');
+                $options[] = array('name' => $p->name, 'text' => ' No ',
+                    'value' => 'false');
+                if ($p->value || $p->default)
+                    $options[0]['selected'] = true;
+            } else {
+                $r = array(
+                    'tag' => $tag,
+                    'name' => $name,
+                    'type' => $type,
+                    'label' => $p->label,
+                    'value' => 'true',
+                    'default' => $p->default,
+                );
+                $r['text'] = 'Yes';
+                if ($p->default) {
+                    $r['selected'] = true;
+                }
+            }
         }
-        $r = array(
-            'tag' => $tag,
-            'name' => $name,
-            'type' => $type,
-            'label' => $p->label,
-            'value' => $p->value,
-            'default' => $p->default,
-            'options' => & $options,
-        );
-        if ($type == 'radio' && empty($options)) {
-            $options[] = array('name' => $p->name, 'text' => ' Yes ',
-                'value' => 'true');
-            $options[] = array('name' => $p->name, 'text' => ' No ',
-                'value' => 'false');
-            if ($p->value || $p->default)
-                $options[0]['selected'] = true;
-        } elseif ($type == 'file') {
+        if (empty($r)) {
+            $r = array(
+                'tag' => $tag,
+                'name' => $name,
+                'type' => $type,
+                'label' => $p->label,
+                'value' => $p->value,
+                'default' => $p->default,
+                'options' => & $options,
+                'multiple' => $multiple,
+            );
+        }
+        if ($type == 'file') {
             static::$fileUpload = true;
             $r['accept'] = implode(', ', UploadFormat::$allowedMimeTypes);
         }
 
-        if ($p->required)
+        if (true === $p->required)
             $r['required'] = true;
         if (isset($p->rules['autofocus']))
             $r['autofocus'] = true;
@@ -314,7 +341,7 @@ class Forms implements iFilter
         if (isset($p->rules['form']))
             return Emmet::make($p->rules['form'], $r);
         $m = static::$info->metadata;
-        $t = Emmet::make(static::style($type, $m) ? : static::style($tag, $m), $r);
+        $t = Emmet::make(static::style($type, $m, $p->type) ? : static::style($tag, $m, $p->type), $r);
         return $t;
     }
 
@@ -323,7 +350,7 @@ class Forms implements iFilter
         if (in_array($p->$type, static::$inputTypes))
             return $p->$type;
         if ($p->choice)
-            return 'select';
+            return $p->type == 'array' ? 'checkbox' : 'select';
         switch ($p->$type) {
             case 'boolean':
                 return 'radio';
@@ -332,8 +359,6 @@ class Forms implements iFilter
             case 'float':
                 return 'number';
             case 'array':
-                if ($p->choice)
-                    return 'checkbox';
                 return static::guessFieldType($p, 'contentType');
         }
         if ($p->name == 'password')
