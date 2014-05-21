@@ -381,7 +381,7 @@ class Forms implements iFilter
             $action = Scope::get('Restler')->url;
         $target = "$method $action";
         if (empty(static::$key[$target]))
-            static::$key[$target] = md5($target . User::getIpAddress() . uniqid(mt_rand(), true));
+            static::$key[$target] = md5($target . User::getIpAddress() . uniqid(mt_rand()));
         $_SESSION[static::FORM_KEY] = static::$key;
         return static::$key[$target];
     }
