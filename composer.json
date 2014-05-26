@@ -70,7 +70,7 @@
         }
     },
     "minimum-stability": "dev",
-    "replace": {
+    "conflict": {
         "restler/framework":"3.*"
     }
 }
