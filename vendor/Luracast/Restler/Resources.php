@@ -57,21 +57,23 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     public static $accessControlFunction = null;
     /**
-     * @var array type mapping for converting data types to javascript / swagger
+     * @var array type mapping for converting data types to JSON-Schema Draft 4
+     * Which is followed by swagger 1.2 spec
      */
     public static $dataTypeAlias = array(
-        'string' => 'string',
-        'int' => 'int',
-        'number' => 'float',
-        'float' => 'float',
+        //'string' => 'string',
+        'int' => 'integer',
+        'number' => 'number',
+        'float' => array('number', 'float'),
         'bool' => 'boolean',
-        'boolean' => 'boolean',
-        'NULL' => 'null',
-        'array' => 'Array',
-        'object' => 'Object',
-        'stdClass' => 'Object',
+        //'boolean' => 'boolean',
+        //'NULL' => 'null',
+        'array' => 'array',
+        //'object' => 'object',
+        'stdClass' => 'object',
         'mixed' => 'string',
-        'DateTime' => 'Date'
+        'date' => array('string', 'date'),
+        'datetime' => array('string', 'date-time'),
     );
     /**
      * @var array configurable symbols to differentiate public, hybrid and
@@ -349,7 +351,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
                         } elseif (strtolower($responseClass) == 'array') {
-                            $operation->responseClass = 'Array';
+                            $operation->responseClass = 'array';
                             $rt = $m['return'];
                             if (isset(
                             $rt[CommentParser::$embeddedDataName]['type'])
@@ -536,9 +538,9 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 );
                 if ($contentType) {
                     if ($contentType == 'indexed') {
-                        $type = 'Array';
+                        $type = 'array';
                     } elseif ($contentType == 'associative') {
-                        $type = 'Object';
+                        $type = 'object';
                     } else {
                         $type = "Array[$contentType]";
                     }
@@ -570,7 +572,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 );
             }
         }
-        return $r;
+        return $this->_fixDataType($r);
     }
 
     protected function _appendToBody($p)
@@ -645,7 +647,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     $r->defaultValue = "[ ]";
                     return $r;
                 }
-            } elseif ($n[0]->dataType == 'Array') {
+            } elseif ($n[0]->dataType == 'array') {
                 // ============ array ===============================
                 $r = $n[0];
                 $r->description = "Paste JSON array data here"
@@ -654,7 +656,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 $r->defaultValue = "[\n    {\n        \""
                     . "property\" : \"\"\n    }\n]";
                 return $r;
-            } elseif ($n[0]->dataType == 'Object') {
+            } elseif ($n[0]->dataType == 'object') {
                 // ============ object ==============================
                 $r = $n[0];
                 $r->description = "Paste JSON object data here"
@@ -693,7 +695,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         }
         $r->paramType = 'body';
         $r->allowMultiple = false;
-        $r->dataType = 'Object';
+        $r->dataType = 'object';
         return $r;
     }
 
@@ -703,6 +705,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         if (isset($this->_models->{$id})) {
             return;
         }
+        $required = array();
         $properties = array();
         if (!$instance) {
             if (!class_exists($className))
@@ -745,22 +748,20 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
             }
 
-            if (isset(static::$dataTypeAlias[$type])) {
-                $type = static::$dataTypeAlias[$type];
-            }
-            $properties[$key] = array(
+            $properties[$key] = (array)$this->_fixDataType((object)array(
                 'type' => $type,
                 'description' => $description
-            );
+            ));
+
             if (Util::nestedValue(
                 $propertyMetaData,
                 CommentParser::$embeddedDataName,
                 'required'
             )
             ) {
-                $properties[$key]['required'] = true;
+                $required[$key] = true;
             }
-            if ($type == 'Array') {
+            if ($type == 'array') {
                 $itemType = Util::nestedValue(
                     $propertyMetaData,
                     CommentParser::$embeddedDataName,
@@ -777,9 +778,9 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
-            } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
+            } else if (preg_match('/^array\[(.+)\]$/i', $type, $matches)) {
                 $itemType = $matches[1];
-                $properties[$key]['type'] = 'Array';
+                $properties[$key]['type'] = 'array';
                 $properties[$key]['item']['type'] = $itemType;
 
                 if (class_exists($itemType)) {
@@ -790,6 +791,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         if (!empty($properties)) {
             $model = new stdClass();
             $model->id = $id;
+            $model->required = array_keys($required);
             $model->properties = $properties;
             $this->_models->{$id} = $model;
         }
@@ -925,6 +927,22 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $result = json_decode(curl_exec($ch));
         $http_status = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
         return array($http_status, $result);
+    }
+
+    private function _fixDataType($item)
+    {
+        $type = isset($item->type) ? $item->type : 'string';
+        if ($t = Util::nestedValue(
+            static::$dataTypeAlias, strtolower($type))
+        ) {
+            if (is_array($t)) {
+                $item->type = $t[0];
+                $item->format = $t[1];
+            } else {
+                $item->type = $t;
+            }
+        }
+        return $item;
     }
 
     protected function _mapResources(array $allRoutes, array &$map, $version = 1)
