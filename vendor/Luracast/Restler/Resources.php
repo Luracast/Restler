@@ -5,7 +5,7 @@ use Luracast\Restler\Data\String;
 use stdClass;
 
 /**
- * API Class to create Swagger Spec 1.1 compatible id and operation
+ * API Class to create Swagger Spec 1.2 compatible id and operation
  * listing
  *
  * @category   Framework
@@ -450,7 +450,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
     {
         $r = new stdClass();
         $r->apiVersion = (string)$this->restler->_requestedApiVersion;
-        $r->swaggerVersion = "1.1";
+        $r->swaggerVersion = "1.2";
         $r->basePath = $this->restler->getBaseUrl();
         $r->produces = $this->restler->getWritableMimeTypes();
         $r->consumes = $this->restler->getReadableMimeTypes();
