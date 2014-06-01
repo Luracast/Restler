@@ -44,6 +44,7 @@ class Scope
 
         //API classes
         'Resources' => 'Luracast\Restler\Resources',
+        'Explorer' => 'Luracast\Restler\Explorer',
 
         //Cache classes
         'HumanReadableCache' => 'Luracast\Restler\HumanReadableCache',
