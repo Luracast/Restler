@@ -92,7 +92,7 @@ class Routes
                 = (isset($metadata['smart-auto-routing'])
                     && $metadata['smart-auto-routing'] != 'true')
                 || !Defaults::$smartAutoRouting;
-            $metadata['resourcePath'] = $resourcePath;
+            $metadata['resourcePath'] = trim($resourcePath, '/');
             if (isset($classMetadata['description'])) {
                 $metadata['classDescription'] = $classMetadata['description'];
             }
@@ -435,6 +435,55 @@ class Routes
         }
         throw new RestException($status, $message);
     }
+
+    public static function findAll(array $excludedPaths = array(), array $excludedHttpMethods = array(), $version = 1)
+    {
+        $map = array();
+        $all = Util::nestedValue(self::$routes, "v$version");
+        if (isset($all['*'])) {
+            $all = $all['*'] + $all;
+            unset($all['*']);
+        }
+        foreach ($all as $fullPath => $routes) {
+            foreach ($routes as $httpMethod => $route) {
+                if (in_array($httpMethod, $excludedHttpMethods)) {
+                    continue;
+                }
+                foreach ($excludedPaths as $exclude) {
+                    if (empty($exclude)) {
+                        if ($fullPath == $exclude)
+                            continue 2;
+                    } elseif (String::beginsWith($fullPath, $exclude)) {
+                        continue 2;
+                    }
+                }
+                $route['httpMethod'] = $httpMethod;
+                $map[$route['metadata']['resourcePath']][]
+                    = array('access' => static::verifyAccess($route), 'route' => $route);
+            }
+        }
+        return $map;
+    }
+
+    public static function verifyAccess($route)
+    {
+        if ($route['accessLevel'] < 2)
+            return true;
+        /** @var Restler $r */
+        $r = Scope::get('Restler');
+        $authenticated = $r->_authenticated;
+        if (!$authenticated && $route['accessLevel'] > 1)
+            return false;
+        if (
+            $authenticated &&
+            Defaults::$accessControlFunction &&
+            (!call_user_func(Defaults::$accessControlFunction, $route['metadata']))
+        ) {
+            return false;
+        }
+        return true;
+    }
+
 
     /**
      * Populates the parameter values
