@@ -430,6 +430,10 @@ class Restler extends EventDispatcher
      */
     protected function getPath()
     {
+        // fix SCRIPT_NAME for PHP 5.4 built-in web server
+        if (strpos($_SERVER['SCRIPT_NAME'], '.php') === FALSE)
+            $_SERVER['SCRIPT_NAME'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']);
+        
         $fullPath = urldecode($_SERVER['REQUEST_URI']);
         $path = Util::removeCommonPath(
             $fullPath,
