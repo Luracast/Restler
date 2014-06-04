@@ -487,8 +487,13 @@ class Restler extends EventDispatcher
     {
         $format = null ;
         // check if client has sent any information on request format
-        if (!empty($_SERVER['CONTENT_TYPE'])) {
-            $mime = $_SERVER['CONTENT_TYPE'];
+        if (!empty($_SERVER['CONTENT_TYPE']) || !empty($_SERVER['HTTP_CONTENT_TYPE'])) {
+            if (!empty($_SERVER['CONTENT_TYPE'])) {
+                $mime = $_SERVER['CONTENT_TYPE'];
+            } else {
+                $mime = $_SERVER['HTTP_CONTENT_TYPE'];
+            }
+            
             if (false !== $pos = strpos($mime, ';')) {
                 $mime = substr($mime, 0, $pos);
             }
