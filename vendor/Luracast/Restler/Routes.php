@@ -125,13 +125,13 @@ class Routes
                 $m ['name'] = $param->getName();
                 if (empty($m['label']))
                     $m['label'] = static::label($m['name']);
-                if ($m['name'] == 'email' && empty($m[CommentParser::$embeddedDataName]['type']))
-                    $m[CommentParser::$embeddedDataName]['type'] = 'email';
-                $m ['default'] = $defaults [$position];
-                $m ['required'] = !$param->isOptional();
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
+                if ($m['name'] == 'email' && empty($m[CommentParser::$embeddedDataName]['type']) && $type=='string')
+                    $m[CommentParser::$embeddedDataName]['type'] = 'email';
+                $m ['default'] = $defaults [$position];
+                $m ['required'] = !$param->isOptional();
                 $contentType = Util::nestedValue(
                     $m,
                     CommentParser::$embeddedDataName,
