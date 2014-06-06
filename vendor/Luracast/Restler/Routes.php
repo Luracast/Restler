@@ -103,9 +103,10 @@ class Routes
             if (!isset($metadata['param'])) {
                 $metadata['param'] = array();
             }
-            if (isset($metadata['return']['type']) && $qualified = Scope::resolve($metadata['return']['type'], $scope)) {
-                list($metadata['return']['type'], $metadata['return']['children']) =
-                    static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+            if (isset($metadata['return']['type'])) {
+                if ($qualified = Scope::resolve($metadata['return']['type'], $scope))
+                    list($metadata['return']['type'], $metadata['return']['children']) =
+                        static::getTypeAndModel(new ReflectionClass($qualified), $scope);
             } else {
                 //assume return type is array
                 $metadata['return']['type'] = 'array';
