@@ -224,7 +224,7 @@ class Explorer
             $r,
             new ValidationInfo(Util::nestedValue($m, 'return') ? : array())
         );
-        if (is_null($r->type) || $r->type = 'mixed') {
+        if (is_null($r->type) || 'mixed' == $r->type) {
             $r->type = 'array';
         } elseif ($r->type == 'null') {
             $r->type = 'void';
