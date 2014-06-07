@@ -262,18 +262,22 @@ class Explorer
             }
         }
         if (!empty($children)) {
-            //lets group all body parameters under a generated model name
-            $name = $this->nameModel($route);
-            $r[] = $this->parameter(
-                new ValidationInfo(array(
-                    'name' => $name,
-                    'type' => $name,
-                    'from' => 'body',
-                    'required' => $required,
-                    'children' => $children
-                )),
-                'Generated Params Model' //TODO: generate cumulative description from individual params
-            );
+            if (1 == count($children) && !empty($children[0]['children'])) {
+                $r[] = $this->parameter(new ValidationInfo($children[0]), $children[0]['description']);
+            } else {
+                //lets group all body parameters under a generated model name
+                $name = $this->nameModel($route);
+                $r[] = $this->parameter(
+                    new ValidationInfo(array(
+                        'name' => $name,
+                        'type' => $name,
+                        'from' => 'body',
+                        'required' => $required,
+                        'children' => $children
+                    )),
+                    'Generated Params Model' //TODO: generate cumulative description from individual params
+                );
+            }
         }
         return $r;
     }
