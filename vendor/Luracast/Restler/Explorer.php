@@ -220,9 +220,11 @@ class Explorer
             ? $m['longDescription']
             : '';
         $r->responseMessages = $this->responseMessages($route);
-        $r->type = Util::nestedValue($m, 'return', 'type');
-
-        if (is_null($r->type)) {
+        $this->setType(
+            $r,
+            new ValidationInfo(Util::nestedValue($m, 'return') ? : array())
+        );
+        if (is_null($r->type) || $r->type = 'mixed') {
             $r->type = 'array';
         } elseif ($r->type == 'null') {
             $r->type = 'void';
