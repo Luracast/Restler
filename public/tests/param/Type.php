@@ -1,10 +1,13 @@
 <?php
+
 class Type
 {
     /**
      * Email validation
      *
      * @param string $email {@from body}{@type email}
+     *
+     * @return string {@type email}
      */
     function postEmail($email)
     {
@@ -15,6 +18,8 @@ class Type
      * Date validation
      *
      * @param string $date {@from body}{@type date}
+     *
+     * @return string {@type date}
      */
     function postDate($date)
     {
@@ -25,6 +30,8 @@ class Type
      * Array of dates
      *
      * @param array $dates Dates array{@from body}{@type date}
+     *
+     * @return array {@type date}
      */
     function postDates(array $dates)
     {
@@ -35,6 +42,8 @@ class Type
      * DateTime validation
      *
      * @param string $datetime {@from body}{@type datetime}
+     *
+     * @return string {@type datetime}
      */
     function postDatetime($datetime)
     {
@@ -45,6 +54,8 @@ class Type
      * time validation
      *
      * @param string $time {@from body}{@type time}
+     *
+     * @return string {@type time}
      */
     function postTime($time)
     {
@@ -54,7 +65,9 @@ class Type
     /**
      * time validation in 12 hour format
      *
-     * @param string $time {@from body}{@type time12}
+     * @param string $time12 {@from body}{@type time12}
+     *
+     * @return string {@type time12}
      */
     function postTime12($time12)
     {
@@ -65,6 +78,8 @@ class Type
      * Timestamp validation
      *
      * @param string $timestamp {@from body}{@type timestamp}
+     *
+     * @return string {@type timestamp}
      */
     function postTimestamp($timestamp)
     {
@@ -75,6 +90,8 @@ class Type
      * Integer validation
      *
      * @param array $integers {@type int}
+     *
+     * @return array {@type int}
      */
     function postIntegers(array $integers)
     {
@@ -85,6 +102,8 @@ class Type
      * Array of numbers
      *
      * @param array $numbers {@type float}
+     *
+     * @return array {@type float}
      */
     function postNumbers(array $numbers)
     {
@@ -94,17 +113,21 @@ class Type
     /**
      * Array of time strings
      *
-     * @param array $timestamp {@from body}{@type time}
+     * @param array $times {@from body}{@type time}
+     *
+     * @return array {@type time}
      */
-    function postTimes(array $timestamps)
+    function postTimes(array $times)
     {
-        return $timestamps;
+        return $times;
     }
 
     /**
      * Array of timestamps
      *
-     * @param array $timestamp {@from body}{@type timestamp}
+     * @param array $timestamps {@from body}{@type timestamp}
+     *
+     * @return array {@type timestamp}
      */
     function postTimestamps(array $timestamps)
     {
@@ -140,7 +163,7 @@ class Type
      *
      * @param array $object {@type associative}
      *
-     * @return array
+     * @return array {@type associative}
      */
     function postObject(array $object)
     {
@@ -152,7 +175,7 @@ class Type
      *
      * @param array $array {@type indexed}
      *
-     * @return array
+     * @return array {@type indexed}
      */
     function postArray(array $array)
     {
