@@ -128,7 +128,7 @@ class Type
      *
      * @param array $authors {@type Author}
      *
-     * @return mixed
+     * @return array {@type Author}
      */
     function postAuthors(array $authors)
     {
