@@ -247,10 +247,32 @@ class Explorer
     private function parameters(array $route)
     {
         $r = array();
+        $children = array();
+        $required = false;
         foreach ($route['metadata']['param'] as $param) {
+            $info = new ValidationInfo($param);
+            $description = isset($param['description']) ? $param['description'] : '';
+            if ('body' == $info->from) {
+                if ($info->required)
+                    $required = true;
+                $param['description'] = $description;
+                $children[] = $param;
+            } else {
+                $r[] = $this->parameter($info, $description);
+            }
+        }
+        if (!empty($children)) {
+            //lets group all body parameters under a generated model name
+            $name = $this->nameModel($route);
             $r[] = $this->parameter(
-                new ValidationInfo($param),
-                isset($param['description']) ? $param['description'] : ''
+                new ValidationInfo(array(
+                    'name' => $name,
+                    'type' => $name,
+                    'from' => 'body',
+                    'required' => $required,
+                    'children' => $children
+                )),
+                'Generated Params Model' //TODO: generate cumulative description from individual params
             );
         }
         return $r;
@@ -388,6 +410,21 @@ class Explorer
         }
         $hash[$method] = $route['url'];
         return $method;
+    }
+
+    private function nameModel(array $route)
+    {
+        static $hash = array();
+        $count = 1;
+        //$name = str_replace('/', '-', $route['url']) . 'Model';
+        $name = $route['className'] . 'Model';
+        while (isset($hash[$name . $count])) {
+            //create another one
+            $count++;
+        }
+        $name .= $count;
+        $hash[$name] = $route['url'];
+        return $name;
     }
 
     private function authorizations()
