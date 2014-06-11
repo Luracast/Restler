@@ -141,13 +141,13 @@ class Restler extends EventDispatcher
      *
      * @var array
      */
-    protected $producedMimeTypes = array();
+    protected $writableMimeTypes = array();
     /**
      * List of the Mime Types that are supported for incoming requests by this API
      *
      * @var array
      */
-    protected $consumedMimeTypes = array();
+    protected $readableMimeTypes = array();
     /**
      * Associated array that maps formats to their respective format class name
      *
@@ -328,18 +328,18 @@ class Restler extends EventDispatcher
      * Returns a list of the mime types (e.g.  ["application/json","application/xml"]) that the API can respond with
      * @return array
      */
-    public function getProducedMimeTypes()
+    public function getWritableMimeTypes()
     {
-        return $this->producedMimeTypes;
+        return $this->writableMimeTypes;
     }
 
     /**
      * Returns the list of Mime Types for the request that the API can understand
      * @return array
      */
-    public function getConsumedMimeTypes()
+    public function getReadableMimeTypes()
     {
-        return $this->consumedMimeTypes;
+        return $this->readableMimeTypes;
     }
 
     /**
@@ -370,9 +370,9 @@ class Restler extends EventDispatcher
 
             foreach ($obj->getMIMEMap() as $mime => $extension) {
                 if($obj->isWritable())
-                    $this->producedMimeTypes[]=$mime;
+                    $this->writableMimeTypes[]=$mime;
                 if($obj->isReadable())
-                    $this->consumedMimeTypes[]=$mime;
+                    $this->readableMimeTypes[]=$mime;
                 if (!isset($this->formatMap[$extension]))
                     $this->formatMap[$extension] = $className;
                 if (!isset($this->formatMap[$mime]))
