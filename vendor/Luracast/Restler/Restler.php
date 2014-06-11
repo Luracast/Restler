@@ -1075,8 +1075,12 @@ class Restler extends EventDispatcher
         }
         echo $this->responseData;
         $this->dispatch('complete');
-        if ($this->responseCode == 401)
-            @header('WWW-Authenticate: ' . (@$this->authClasses[0]->__getWWWAuthenticateString() ? : 'Custom'), false);
+        if ($this->responseCode == 401) {
+            $authString = count($this->authClasses)
+                ? Scope::get($this->authClasses[0])->____getWWWAuthenticateString()
+                : 'Unknown';
+            @header('WWW-Authenticate: ' . $authString, false);
+        }
         exit;
     }
 
