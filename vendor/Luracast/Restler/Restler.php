@@ -433,19 +433,21 @@ class Restler extends EventDispatcher
         // fix SCRIPT_NAME for PHP 5.4 built-in web server
         if (strpos($_SERVER['SCRIPT_NAME'], '.php') === FALSE)
             $_SERVER['SCRIPT_NAME'] = str_replace($_SERVER['DOCUMENT_ROOT'], '', $_SERVER['SCRIPT_FILENAME']);
-        
+
         $fullPath = urldecode($_SERVER['REQUEST_URI']);
         $path = Util::removeCommonPath(
             $fullPath,
             $_SERVER['SCRIPT_NAME']
         );
-        $serverPort= isset($_SERVER['SERVER_PORT'])? $_SERVER['SERVER_PORT'] : "80";
-        $baseUrl = $serverPort == '443' ||
-        (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
-        (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https://' : 'http://';
-        if ($serverPort != '80' && $serverPort != '443') {
+        $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
+        $baseUrl =
+            $port == '443' ||
+            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
+            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
+                ? 'https://' : 'http://';
+        if ($port != '80' && $port != '443') {
             $baseUrl .= $_SERVER['SERVER_NAME'] . ':'
-                . $serverPort;
+                . $port;
         } else {
             $baseUrl .= $_SERVER['SERVER_NAME'];
         }
