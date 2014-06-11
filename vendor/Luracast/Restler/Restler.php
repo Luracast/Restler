@@ -441,22 +441,19 @@ class Restler extends EventDispatcher
             $_SERVER['SCRIPT_NAME']
         );
         $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
-        $baseUrl =
-            $port == '443' ||
+        $https = $port == '443' ||
             (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
-            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on')
-                ? 'https://' : 'http://';
-        if ($port != '80' && $port != '443') {
-            $baseUrl .= $_SERVER['SERVER_NAME'] . ':'
-                . $port;
-        } else {
-            $baseUrl .= $_SERVER['SERVER_NAME'];
-        }
+            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
+
+        $baseUrl = ($https ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'];
+
+        if (!$https && $port != '80' || !$https && $port != '443')
+            $baseUrl .= ':' . $port;
 
         $this->baseUrl = rtrim($baseUrl
             . substr($fullPath, 0, strlen($fullPath) - strlen($path)), '/');
 
-        $path = strtok($path, '?');
+        $path = strtok($path, '?'); //remove query string from path if found any
         $path = str_replace(
             array_merge(
                 $this->formatMap['extensions'],
@@ -465,9 +462,7 @@ class Restler extends EventDispatcher
             '',
             $path
         );
-        if (Defaults::$useUrlBasedVersioning
-            && strlen($path) && $path{0} == 'v'
-        ) {
+        if (Defaults::$useUrlBasedVersioning && strlen($path) && $path{0} == 'v') {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->apiVersion) {
                 $this->requestedApiVersion = $version;
