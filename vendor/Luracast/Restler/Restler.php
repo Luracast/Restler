@@ -419,7 +419,8 @@ class Restler extends EventDispatcher
                     $this->formatOverridesMap[$extension] = $className;
                 if (!isset($this->formatOverridesMap[$mime]))
                     $this->formatOverridesMap[$mime] = $className;
-                $extensions[".$extension"] = true;
+                if($obj->isWritable())
+                    $extensions[".$extension"] = true;
             }
         }
         $this->formatOverridesMap['extensions'] = array_keys($extensions);
