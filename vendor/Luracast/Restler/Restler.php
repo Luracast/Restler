@@ -370,15 +370,16 @@ class Restler extends EventDispatcher
             }
 
             foreach ($obj->getMIMEMap() as $mime => $extension) {
-                if($obj->isWritable())
+                if($obj->isWritable()){
                     $this->writableMimeTypes[]=$mime;
+                    $extensions[".$extension"] = true;
+                }
                 if($obj->isReadable())
                     $this->readableMimeTypes[]=$mime;
                 if (!isset($this->formatMap[$extension]))
                     $this->formatMap[$extension] = $className;
                 if (!isset($this->formatMap[$mime]))
                     $this->formatMap[$mime] = $className;
-                $extensions[".$extension"] = true;
             }
         }
         if ($throwException) {
