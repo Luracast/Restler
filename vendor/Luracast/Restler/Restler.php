@@ -357,6 +357,7 @@ class Restler extends EventDispatcher
         $args = func_get_args();
         $extensions = array();
         $throwException = $this->requestFormatDiffered;
+        $this->writableMimeTypes = $this->readableMimeTypes = array();
         foreach ($args as $className) {
 
             $obj = Scope::get($className);
