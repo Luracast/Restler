@@ -176,9 +176,9 @@ class Explorer
             $access = $data[0]['access'];
             if ($access && !String::contains($path, '{')) {
                 $r[] = array(
-                    'path' => empty($path) ? '/root' : "/$path", //"/$this->base()/resources/$path",
+                    'path' => empty($path) ? '/root' : "/$path",
                     'description' => ''
-                    // Util::nestedValue($route, 'metadata', 'classDescription') ? : ''
+                    //TODO: Util::nestedValue($route, 'metadata', 'classDescription') ? : ''
                 );
             }
             if (static::$hideProtected && !$access)
@@ -188,9 +188,9 @@ class Explorer
                 $access = $item['access'];
                 if (static::$hideProtected && !$access)
                     continue;
-                $url = $route['url']; //end(explode($path . '/', $route['url'], 2));
+                $url = $route['url'];
                 $a[$path][] = array(
-                    'path' => "/$url", //str_replace($path, '', $route['url']),
+                    'path' => "/$url",
                     'description' =>
                         Util::nestedValue($route, 'metadata', 'classDescription') ? : '',
                     'operations' => array($this->operation($route))
@@ -198,10 +198,8 @@ class Explorer
             }
         }
         if (false !== $resource) {
-            if ($resource == 'root')
-                $resource = '';
-            if (isset($a[$resource]))
-                return $a[$resource];
+            if ($resource == 'root') $resource = '';
+            if (isset($a[$resource])) return $a[$resource];
         }
         return $r;
     }
