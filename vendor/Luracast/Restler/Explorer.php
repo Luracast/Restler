@@ -139,7 +139,7 @@ class Explorer
         $r->swaggerVersion = static::SWAGGER_VERSION;
         $r->apis = $this->apis($r->apiVersion);
         $r->authorizations = $this->authorizations();
-        $r->info = get_class_vars(static::$infoClass);
+        $r->info = array_filter(get_class_vars(static::$infoClass));
         return $r;
     }
 
