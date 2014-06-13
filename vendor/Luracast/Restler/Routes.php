@@ -459,7 +459,7 @@ class Routes
                     }
                 }
                 $check = "$httpMethod " . $route['url'];
-                if (!$filter[$check]) {
+                if (!isset($filter[$check])) {
                     $route['httpMethod'] = $httpMethod;
                     $map[$route['metadata']['resourcePath']][]
                         = array('access' => static::verifyAccess($route), 'route' => $route);
