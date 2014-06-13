@@ -9,7 +9,7 @@ use Luracast\Restler\Data\ValidationInfo;
  * Class Explorer
  * @package Luracast\Restler
  *
- * @access hybrid
+ * @access  hybrid
  */
 class Explorer
 {
@@ -176,7 +176,7 @@ class Explorer
             $access = $data[0]['access'];
             if ($access && !String::contains($path, '{')) {
                 $r[] = array(
-                    'path' => "/$path", //"/$this->base()/resources/$path",
+                    'path' => empty($path) ? '/root' : "/$path", //"/$this->base()/resources/$path",
                     'description' => ''
                     // Util::nestedValue($route, 'metadata', 'classDescription') ? : ''
                 );
@@ -196,12 +196,13 @@ class Explorer
                     'operations' => array($this->operation($route))
                 );
             }
-            //var_dump($route['metadata']['throws']);
-            //die();
         }
-        //echo json_encode(($a), JSON_PRETTY_PRINT) . PHP_EOL;
-        if ($resource && isset($a[$resource]))
-            return $a[$resource];
+        if (false !== $resource) {
+            if ($resource == 'root')
+                $resource = '';
+            if (isset($a[$resource]))
+                return $a[$resource];
+        }
         return $r;
     }
 
