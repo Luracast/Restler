@@ -263,14 +263,27 @@ class Explorer
                 1 == count($children) &&
                 (static::$allowScalarValueOnRequestBody || !empty($children[0]['children']))
             ) {
-                $r[] = $this->parameter(new ValidationInfo($children[0]), $children[0]['description']);
-            } else {
-                $description = '';
-                foreach ($children as $child) {
-                    $description .= $child['name'];
-                    if (isset($child['required']))
-                        $description .= ' (required)<br/>';
+                $firstChild = $children[0];
+                if (empty($firstChild['children'])) {
+                    $description = $firstChild['description'];
+                } else {
+                    $description = '<section class="body-param">';
+                    foreach ($firstChild['children'] as $child) {
+                        $description .= isset($child['required'])
+                            ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
+                            : $child['name'] . '<br/>';
+                    }
+                    $description .= '</section>';
                 }
+                $r[] = $this->parameter(new ValidationInfo($firstChild), $description);
+            } else {
+                $description = '<section class="body-param">';
+                foreach ($children as $child) {
+                    $description .= isset($child['required'])
+                        ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
+                        : $child['name']. '<br/>';
+                }
+                $description .= '</section>';
 
                 //lets group all body parameters under a generated model name
                 $name = $this->nameModel($route);
