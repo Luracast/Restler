@@ -22,6 +22,10 @@ class Explorer
      * @var bool should we use format as extension?
      */
     public static $useFormatAsExtension = true;
+    /*
+     * @var bool can we accept scalar values (string, int, float etc) as the request body?
+     */
+    public static $allowScalarValueOnRequestBody = true;
     /**
      * @var array all http methods specified here will be excluded from
      * documentation
@@ -40,13 +44,7 @@ class Explorer
      * @var bool should we group all the operations with the same url or not
      */
     public static $groupOperations = false;
-    /**
-     * @var null|callable if the api methods are under access control mechanism
-     * you can attach a function here that returns true or false to determine
-     * visibility of a protected api method. this function will receive method
-     * info as the only parameter.
-     */
-    public static $accessControlFunction = null;
+
     /**
      * @var string class that holds metadata as static properties
      */
@@ -262,7 +260,7 @@ class Explorer
             }
         }
         if (!empty($children)) {
-            if (1 == count($children) && !empty($children[0]['children'])) {
+            if (1 == count($children) && (static::$allowScalarValueOnRequestBody || !empty($children[0]['children']))) {
                 $r[] = $this->parameter(new ValidationInfo($children[0]), $children[0]['description']);
             } else {
                 //lets group all body parameters under a generated model name
