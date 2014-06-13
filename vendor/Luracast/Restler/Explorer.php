@@ -5,6 +5,12 @@ use stdClass;
 use Luracast\Restler\Data\String;
 use Luracast\Restler\Data\ValidationInfo;
 
+/**
+ * Class Explorer
+ * @package Luracast\Restler
+ *
+ * @access hybrid
+ */
 class Explorer
 {
     const SWAGGER_VERSION = '1.2';
