@@ -25,7 +25,7 @@ class Explorer
     /*
      * @var bool can we accept scalar values (string, int, float etc) as the request body?
      */
-    public static $allowScalarValueOnRequestBody = true;
+    public static $allowScalarValueOnRequestBody = false;
     /**
      * @var array all http methods specified here will be excluded from
      * documentation
@@ -61,7 +61,6 @@ class Explorer
      */
     public $formatString = '';
     protected $models = array();
-    protected $bodyParam;
     /**
      * @var bool|stdClass
      */
@@ -260,9 +259,19 @@ class Explorer
             }
         }
         if (!empty($children)) {
-            if (1 == count($children) && (static::$allowScalarValueOnRequestBody || !empty($children[0]['children']))) {
+            if (
+                1 == count($children) &&
+                (static::$allowScalarValueOnRequestBody || !empty($children[0]['children']))
+            ) {
                 $r[] = $this->parameter(new ValidationInfo($children[0]), $children[0]['description']);
             } else {
+                $description = '';
+                foreach ($children as $child) {
+                    $description .= $child['name'];
+                    if (isset($child['required']))
+                        $description .= ' (required)<br/>';
+                }
+
                 //lets group all body parameters under a generated model name
                 $name = $this->nameModel($route);
                 $r[] = $this->parameter(
@@ -273,7 +282,7 @@ class Explorer
                         'required' => $required,
                         'children' => $children
                     )),
-                    'Generated Params Model' //TODO: generate cumulative description from individual params
+                    $description
                 );
             }
         }
