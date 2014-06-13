@@ -107,11 +107,6 @@ class Explorer
         'datetime' => array('string', 'date-time'),
     );
 
-    /**
-     * @var string base path for explorer
-     */
-    private $base = 'explorer';
-
     public function __construct()
     {
 
@@ -130,15 +125,22 @@ class Explorer
             return $this->getResources(func_get_arg(1));
         }
         $filename = implode('/', func_get_args());
-        if (empty($filename))
-            $filename = 'index.html';
-        PassThrough::file(__DIR__ . '/explorer/' . $filename, false, 60 * 60 * 24);
+        $redirect = false;
+        if (
+            (empty($filename) && substr($_SERVER['REQUEST_URI'], -1, 1) != '/') ||
+            $filename == 'index.html'
+        ) {
+            $status = 302;
+            $url = $this->restler->getBaseUrl() . '/' . $this->base() . '/';
+            header("{$_SERVER['SERVER_PROTOCOL']} $status " . RestException::$codes[$status]);
+            header("Location: $url");
+            exit;
+        }
+        PassThrough::file(__DIR__ . '/explorer/' . (empty($filename) ? 'index.html' : $filename), false, 0); //60 * 60 * 24);
     }
 
     public function resources()
     {
-        if (!String::beginsWith($this->base . '/', $this->restler->url))
-            $this->base = pathinfo($this->restler->url, PATHINFO_DIRNAME);
         $r = new stdClass();
         $r->apiVersion = (string)$this->restler->getRequestedApiVersion();
         $r->swaggerVersion = static::SWAGGER_VERSION;
@@ -150,8 +152,6 @@ class Explorer
 
     public function getResources($id)
     {
-        if (!String::beginsWith($this->base . '/', $this->restler->url))
-            $this->base = pathinfo($this->restler->url, PATHINFO_DIRNAME);
         $r = new stdClass();
         $r->apiVersion = (string)$this->restler->getRequestedApiVersion();
         $r->swaggerVersion = static::SWAGGER_VERSION;
@@ -169,7 +169,7 @@ class Explorer
 
     private function apis($version = 1, $resource = false)
     {
-        $map = Routes::findAll(static::$excludedPaths + array($this->base), static::$excludedHttpMethods, $version);
+        $map = Routes::findAll(static::$excludedPaths + array($this->base()), static::$excludedHttpMethods, $version);
         $r = array();
         $a = array();
         foreach ($map as $path => $data) {
@@ -177,7 +177,7 @@ class Explorer
             $access = $data[0]['access'];
             if ($access && !String::contains($path, '{')) {
                 $r[] = array(
-                    'path' => "/$path", //"/$this->base/resources/$path",
+                    'path' => "/$path", //"/$this->base()/resources/$path",
                     'description' => ''
                     // Util::nestedValue($route, 'metadata', 'classDescription') ? : ''
                 );
@@ -440,5 +440,10 @@ class Explorer
             'keyname' => 'api_key',
         );
         return $r;
+    }
+
+    private function base()
+    {
+        return strtok($this->restler->url, '/');
     }
 } 
