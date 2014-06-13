@@ -180,6 +180,8 @@ class Explorer
             foreach ($data as $item) {
                 $route = $item['route'];
                 $access = $item['access'];
+                if (static::$hideProtected && !$access)
+                    continue;
                 $url = $route['url']; //end(explode($path . '/', $route['url'], 2));
                 $a[$path][] = array(
                     'path' => "/$url", //str_replace($path, '', $route['url']),
