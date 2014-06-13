@@ -180,19 +180,29 @@ class Explorer
             }
             if (static::$hideProtected && !$access)
                 continue;
+            $grouper = array();
             foreach ($data as $item) {
                 $route = $item['route'];
                 $access = $item['access'];
                 if (static::$hideProtected && !$access)
                     continue;
                 $url = $route['url'];
-                $a[$path][] = array(
-                    'path' => "/$url",
-                    'description' =>
-                        Util::nestedValue($route, 'metadata', 'classDescription') ? : '',
-                    'operations' => array($this->operation($route))
-                );
+                if (isset($grouper[$url])) {
+                    $grouper[$url]['operations'][] = $this->operation($route);
+                } else {
+                    $api = array(
+                        'path' => "/$url",
+                        'description' =>
+                            Util::nestedValue($route, 'metadata', 'classDescription') ? : '',
+                        'operations' => array($this->operation($route))
+                    );
+                    static::$groupOperations
+                        ? $grouper[$url] = $api
+                        : $a[$path][] = $api;
+                }
             }
+            if (!empty($grouper))
+                $a[$path] = array_values($grouper);
         }
         if (false !== $resource) {
             if ($resource == 'root') $resource = '';
@@ -281,7 +291,7 @@ class Explorer
                 foreach ($children as $child) {
                     $description .= isset($child['required'])
                         ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
-                        : $child['name']. '<br/>';
+                        : $child['name'] . '<br/>';
                 }
                 $description .= '</section>';
 
