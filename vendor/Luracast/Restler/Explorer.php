@@ -42,16 +42,9 @@ class Explorer
      */
     public static $accessControlFunction = null;
     /**
-     * @var array metadata about the api
+     * @var string class that holds metadata as static properties
      */
-    public static $info = array(
-        'title' => 'Restler API Explorer',
-        'description' => 'Live API Documentation',
-        //'termsOfServiceUrl' => "http://myapi.com/terms/",
-        'contact' => 'arul@luracast.com',
-        'license' => 'LGPL-2.1',
-        'licenseUrl' => 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html',
-    );
+    public static $infoClass = 'Luracast\Restler\ExplorerInfo';
     /**
      * Injected at runtime
      *
@@ -146,7 +139,7 @@ class Explorer
         $r->swaggerVersion = static::SWAGGER_VERSION;
         $r->apis = $this->apis($r->apiVersion);
         $r->authorizations = $this->authorizations();
-        $r->info = static::$info;
+        $r->info = get_class_vars(static::$infoClass);
         return $r;
     }
 
