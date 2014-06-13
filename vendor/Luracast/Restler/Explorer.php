@@ -161,8 +161,8 @@ class Explorer
         $r->apis = $this->apis($r->apiVersion, $id);
         $r->models = (object)$this->models;
 
-        $r->produces = $this->restler->getProducedMimeTypes();
-        $r->consumes = $this->restler->getConsumedMimeTypes();
+        $r->produces = $this->restler->getWritableMimeTypes();
+        $r->consumes = $this->restler->getReadableMimeTypes();
         $r->authorizations = $this->authorizations();
         return $r;
     }
