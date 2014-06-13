@@ -458,12 +458,12 @@ class Routes
                         continue 2;
                     }
                 }
-                $check = "$httpMethod " . $route['url'];
-                if (!isset($filter[$check])) {
+                $hash = "$httpMethod " . $route['url'];
+                if (!isset($filter[$hash])) {
                     $route['httpMethod'] = $httpMethod;
                     $map[$route['metadata']['resourcePath']][]
-                        = array('access' => static::verifyAccess($route), 'route' => $route);
-                    $filter[$check] = true;
+                        = array('access' => static::verifyAccess($route), 'route' => $route, 'hash' => $hash);
+                    $filter[$hash] = true;
                 }
             }
         }
