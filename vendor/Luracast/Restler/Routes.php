@@ -440,6 +440,7 @@ class Routes
     {
         $map = array();
         $all = Util::nestedValue(self::$routes, "v$version");
+        $filter = array();
         if (isset($all['*'])) {
             $all = $all['*'] + $all;
             unset($all['*']);
@@ -457,9 +458,13 @@ class Routes
                         continue 2;
                     }
                 }
-                $route['httpMethod'] = $httpMethod;
-                $map[$route['metadata']['resourcePath']][]
-                    = array('access' => static::verifyAccess($route), 'route' => $route);
+                $check = "$httpMethod " . $route['url'];
+                if (!$filter[$check]) {
+                    $route['httpMethod'] = $httpMethod;
+                    $map[$route['metadata']['resourcePath']][]
+                        = array('access' => static::verifyAccess($route), 'route' => $route);
+                    $filter[$check] = true;
+                }
             }
         }
         return $map;
