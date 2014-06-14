@@ -201,8 +201,31 @@ class Explorer
                         : $a[$path][] = $api;
                 }
             }
-            if (!empty($grouper))
+            if (!empty($grouper)) {
                 $a[$path] = array_values($grouper);
+            } else {
+                $order = array(
+                    'GET' => 1,
+                    'POST' => 2,
+                    'PUT' => 3,
+                    'PATCH' => 4,
+                    'DELETE' => 5
+                );
+                foreach ($a as & $b) {
+                    usort(
+                        $b,
+                        function ($x, $y) use ($order) {
+                            return
+                                $x['operations'][0]->method ==
+                                $y['operations'][0]->method
+                                    ? $x['path'] > $y['path']
+                                    : $order[$x['operations'][0]->method] >
+                                    $order[$y['operations'][0]->method];
+
+                        }
+                    );
+                }
+            }
         }
         if (false !== $resource) {
             if ($resource == 'root') $resource = '';
