@@ -1158,7 +1158,7 @@
   cursor: pointer;
 }
 .swagger-section #header {
-  background-color: #89bf04;
+  background-color: #646257;
   padding: 14px;
 }
 .swagger-section #header a#logo {
@@ -1193,7 +1193,7 @@
   padding: 6px 8px;
   font-size: 0.9em;
   color: white;
-  background-color: #547f00;
+  background-color: #000000;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
   -o-border-radius: 4px;
@@ -1202,7 +1202,7 @@
   border-radius: 4px;
 }
 .swagger-section #header form#api_selector .input a#explore:hover {
-  background-color: #547f00;
+  background-color: #a41e22;
 }
 .swagger-section #header form#api_selector .input input {
   font-size: 0.9em;
