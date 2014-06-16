@@ -72,6 +72,13 @@ class String
      */
     public static function title($name)
     {
-        return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
+        return
+            ucwords(
+                preg_replace(
+                    array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/', '/(_)/'),
+                    array(' $0', ' $0', ' '),
+                    $name
+                )
+            );
     }
 } 
