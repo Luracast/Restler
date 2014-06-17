@@ -66,8 +66,32 @@ class Validator implements iValidate
             return $input;
         }
         if ($info && $info->fix) {
-            //remove non alpha characters
+            //remove non alpha numeric and space characters
             return preg_replace("/[^a-z0-9 ]/i", "", $input);
+        }
+        throw new Invalid('Expecting only alpha numeric characters.');
+    }
+
+    /**
+     * Validate printable characters.
+     *
+     * Check that given value contains only printable characters.
+     *
+     * @param                $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     *
+     * @throws Invalid
+     */
+    public static function printable($input, ValidationInfo $info = null)
+    {
+        if (ctype_print($input)) {
+            return $input;
+        }
+        if ($info && $info->fix) {
+            //remove non printable characters
+            return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $input);
         }
         throw new Invalid('Expecting only alpha numeric characters.');
     }
