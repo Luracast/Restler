@@ -93,7 +93,27 @@ class Validator implements iValidate
             //remove non printable characters
             return preg_replace('/[\x00-\x1F\x80-\xFF]/', '', $input);
         }
-        throw new Invalid('Expecting only alpha numeric characters.');
+        throw new Invalid('Expecting only printable characters.');
+    }
+
+    /**
+     * Validate hexadecimal digits.
+     *
+     * Check that given value contains only hexadecimal digits.
+     *
+     * @param                $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     *
+     * @throws Invalid
+     */
+    public static function hex($input, ValidationInfo $info = null)
+    {
+        if (ctype_xdigit($input)) {
+            return $input;
+        }
+        throw new Invalid('Expecting only hexadecimal digits.');
     }
 
     /**
