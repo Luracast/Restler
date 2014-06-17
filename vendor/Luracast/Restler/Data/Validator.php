@@ -25,6 +25,30 @@ class Validator implements iValidate
     public static $exceptions = array();
 
     /**
+     * Validate alphabetic characters.
+     *
+     * Check that given value contains only alphabetic characters.
+     *
+     * @param                $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     *
+     * @throws Invalid
+     */
+    public static function alpha($input, ValidationInfo $info = null)
+    {
+        if (ctype_alpha($input)) {
+            return $input;
+        }
+        if ($info && $info->fix) {
+            //remove non alpha characters
+            return preg_replace("/[^a-z]/i", "", $input);
+        }
+        throw new Invalid('Expecting only alphabetic characters.');
+    }
+
+    /**
      * Validate Telephone number
      *
      * Check if the given value is numeric with or without a `+` prefix
