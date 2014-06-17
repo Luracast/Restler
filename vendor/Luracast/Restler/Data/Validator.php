@@ -93,6 +93,29 @@ class Validator implements iValidate
     }
 
     /**
+     * Validate Url
+     *
+     * Check if the given string is a valid url
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function url($input, ValidationInfo $info = null)
+    {
+        $r = filter_var($input, FILTER_VALIDATE_URL);
+        if ($r) {
+            return $r;
+        } elseif ($info && $info->fix) {
+            $r = filter_var($input, FILTER_SANITIZE_URL);
+            return static::url($r);
+        }
+        throw new Invalid('Expecting url in `http://example.com` format');
+    }
+
+    /**
      * MySQL Date
      *
      * Check if the given string is a valid date in YYYY-MM-DD format
