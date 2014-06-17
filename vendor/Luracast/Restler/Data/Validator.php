@@ -85,6 +85,9 @@ class Validator implements iValidate
         $r = filter_var($input, FILTER_VALIDATE_EMAIL);
         if ($r) {
             return $r;
+        } elseif ($info && $info->fix) {
+            $r = filter_var($input, FILTER_SANITIZE_EMAIL);
+            return static::email($r);
         }
         throw new Invalid('Expecting email in `name@example.com` format');
     }
