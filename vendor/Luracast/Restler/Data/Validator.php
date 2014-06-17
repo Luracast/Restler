@@ -93,6 +93,26 @@ class Validator implements iValidate
     }
 
     /**
+     * Validate IP Address
+     *
+     * Check if the given string is a valid ip address
+     *
+     * @param String         $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function ip($input, ValidationInfo $info = null)
+    {
+        $r = filter_var($input, FILTER_VALIDATE_IP);
+        if ($r)
+            return $r;
+
+        throw new Invalid('Expecting IP address in IPV6 or IPV4 format');
+    }
+
+    /**
      * Validate Url
      *
      * Check if the given string is a valid url
