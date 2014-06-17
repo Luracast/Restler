@@ -49,6 +49,30 @@ class Validator implements iValidate
     }
 
     /**
+     * Validate alpha numeric characters.
+     *
+     * Check that given value contains only alpha numeric characters.
+     *
+     * @param                $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     *
+     * @throws Invalid
+     */
+    public static function alphanumeric($input, ValidationInfo $info = null)
+    {
+        if (ctype_alnum($input)) {
+            return $input;
+        }
+        if ($info && $info->fix) {
+            //remove non alpha characters
+            return preg_replace("/[^a-z0-9 ]/i", "", $input);
+        }
+        throw new Invalid('Expecting only alpha numeric characters.');
+    }
+
+    /**
      * Validate Telephone number
      *
      * Check if the given value is numeric with or without a `+` prefix
