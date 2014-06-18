@@ -336,7 +336,7 @@ class Validator implements iValidate
                         $error .= '. Expecting alpha numeric value';
                         break;
                     }
-                    if ($info->required && $input == "" && $input !== 0) {
+                    if ($info->required && empty($input) && (string)$input !== "0") {
                         $error = "$name is required.";
                         break;
                     }
