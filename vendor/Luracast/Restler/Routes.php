@@ -127,8 +127,7 @@ class Routes
                 if ($m['name'] == 'email' && empty($m[CommentParser::$embeddedDataName]['type']))
                     $m[CommentParser::$embeddedDataName]['type'] = 'email';
                 $m ['default'] = $defaults [$position];
-                //$m ['required'] = !$param->isOptional();
-                $m ['required'] = !$param->isDefaultValueAvailable();
+                $m ['required'] = !$param->isOptional();
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
