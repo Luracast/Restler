@@ -49,6 +49,12 @@ class RateLimit implements iFilter, iUseAuthentication
         'month' => 2592000, // 60*60*24*30 seconds
     );
 
+    /**
+     * @var array all paths beginning with any of the following will be excluded
+     * from documentation
+     */
+    public static $excludedPaths = array('resources');
+
 
     /**
      * @param string $unit
@@ -93,6 +99,14 @@ class RateLimit implements iFilter, iUseAuthentication
 
     private function check($isAuthenticated = false)
     {
+        $path = $this->restler->url;
+        foreach (static::$excludedPaths as $exclude) {
+            if (empty($exclude) && empty($path)) {
+                return true;
+            } elseif (0 === strpos($path, $exclude)) {
+                return true;
+            }
+        }
         static::validate(static::$unit);
         $timeUnit = static::$units[static::$unit];
         $maxPerUnit = $isAuthenticated
