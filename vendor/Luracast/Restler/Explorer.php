@@ -185,7 +185,7 @@ class Explorer
             if ($access && !String::contains($path, '{')) {
                 $r[] = array(
                     'path' => empty($path) ? '/root' : "/$path",
-                    'description' => ''
+                    //'description' => ''
                     //TODO: Util::nestedValue($route, 'metadata', 'classDescription') ? : ''
                 );
             }
