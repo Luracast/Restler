@@ -60,6 +60,37 @@ class Explorer
      * used to set the extension manually
      */
     public $formatString = '';
+
+    /**
+     * @var array type mapping for converting data types to JSON-Schema Draft 4
+     * Which is followed by swagger 1.2 spec
+     */
+    public static $dataTypeAlias = array(
+        //'string' => 'string',
+        'int' => 'integer',
+        'number' => 'number',
+        'float' => array('number', 'float'),
+        'bool' => 'boolean',
+        //'boolean' => 'boolean',
+        //'NULL' => 'null',
+        'array' => 'array',
+        //'object' => 'object',
+        'stdClass' => 'object',
+        'mixed' => 'string',
+        'date' => array('string', 'date'),
+        'datetime' => array('string', 'date-time'),
+    );
+
+    /**
+     * @var array configurable symbols to differentiate public, hybrid and
+     * protected api
+     */
+    public static $apiDescriptionSuffixSymbols = array(
+        0 => '&nbsp; <i class="icon-unlock-alt icon-large"></i>', //public api
+        1 => '&nbsp; <i class="icon-adjust icon-large"></i>', //hybrid api
+        2 => '&nbsp; <i class="icon-lock icon-large"></i>', //protected api
+    );
+
     protected $models = array();
     /**
      * @var bool|stdClass
@@ -82,26 +113,6 @@ class Explorer
     );
     protected $_authenticated = false;
     protected $cacheName = '';
-
-    /**
-     * @var array type mapping for converting data types to JSON-Schema Draft 4
-     * Which is followed by swagger 1.2 spec
-     */
-    public static $dataTypeAlias = array(
-        //'string' => 'string',
-        'int' => 'integer',
-        'number' => 'number',
-        'float' => array('number', 'float'),
-        'bool' => 'boolean',
-        //'boolean' => 'boolean',
-        //'NULL' => 'null',
-        'array' => 'array',
-        //'object' => 'object',
-        'stdClass' => 'object',
-        'mixed' => 'string',
-        'date' => array('string', 'date'),
-        'datetime' => array('string', 'date-time'),
-    );
 
     public function __construct()
     {
@@ -246,6 +257,9 @@ class Explorer
         $r->summary = isset($m['description'])
             ? $m['description']
             : '';
+        $r->summary .= $route['accessLevel'] > 2
+            ? static::$apiDescriptionSuffixSymbols[2]
+            : static::$apiDescriptionSuffixSymbols[$route['accessLevel']];
         $r->notes = isset($m['longDescription'])
             ? $m['longDescription']
             : '';
