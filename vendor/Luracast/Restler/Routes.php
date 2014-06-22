@@ -128,7 +128,7 @@ class Routes
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
-                if ($m['name'] == 'email' && empty($m[CommentParser::$embeddedDataName]['type']) && $type=='string')
+                if ($m['name'] == 'email' && empty($m[CommentParser::$embeddedDataName]['type']) && $type == 'string')
                     $m[CommentParser::$embeddedDataName]['type'] = 'email';
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
@@ -138,7 +138,7 @@ class Routes
                     'type'
                 );
                 if ($contentType && $qualified = Scope::resolve($contentType, $scope)) {
-                    list($contentType, $children) = static::getTypeAndModel(
+                    list($m[CommentParser::$embeddedDataName]['type'], $children) = static::getTypeAndModel(
                         new ReflectionClass($qualified), $scope
                     );
                 }
