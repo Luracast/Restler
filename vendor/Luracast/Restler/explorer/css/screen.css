@@ -1209,6 +1209,28 @@
   padding: 3px;
   margin: 0;
 }
+.swagger-section #footer-nav {
+  margin-top: 50px;
+  color: #bbb;
+  float: left;
+  list-style: none;
+  font-size: 0.8em;
+}
+.swagger-section #footer-nav li {
+  display: block;
+  float: left;
+}
+.swagger-section #footer-nav a {
+  margin-right: 4px;
+  text-decoration: none;
+  font-weight: none;
+  padding: 4px 2px;
+  font-size: 0.9em;
+  color: #999;
+}
+.swagger-section #footer-nav a:hover {
+  color: #555;
+}
 .swagger-section #content_message {
   margin: 10px 15px;
   font-style: italic;
