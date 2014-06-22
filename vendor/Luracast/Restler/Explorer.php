@@ -86,9 +86,9 @@ class Explorer
      * protected api
      */
     public static $apiDescriptionSuffixSymbols = array(
-        0 => '&nbsp; <i class="icon-unlock-alt icon-large"></i>', //public api
-        1 => '&nbsp; <i class="icon-adjust icon-large"></i>', //hybrid api
-        2 => '&nbsp; <i class="icon-lock icon-large"></i>', //protected api
+        0 => '&nbsp; <i class="fa fa-lg fa-unlock-alt"></i>', //public api
+        1 => '&nbsp; <i class="fa fa-lg fa-adjust"></i>', //hybrid api
+        2 => '&nbsp; <i class="fa fa-lg fa-lock"></i>', //protected api
     );
 
     protected $models = array();
