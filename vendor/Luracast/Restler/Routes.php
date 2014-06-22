@@ -597,7 +597,7 @@ class Routes
             }
             throw $e;
         }
-        static::$models[$className] = array($class->getName(), $children);
+        static::$models[$className] = array($className, $children);
         return static::$models[$className];
     }
 
