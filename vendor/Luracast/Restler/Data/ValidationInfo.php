@@ -231,7 +231,7 @@ class ValidationInfo implements iValueObject
             $this->contentType = $p2;
             return $p;
         }
-        $r = $p2 ? : $p ? : null;
+        $r = is_null($p2) ? (is_null($p) ? null : $p) : $p2;
         if (!is_null($r)) {
             if ($property == 'min' || $property == 'max') {
                 return static::numericValue($r);
