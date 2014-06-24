@@ -1078,14 +1078,14 @@ class Restler extends EventDispatcher
                 usleep(1e6 * (Defaults::$throttle / 1e3 - $elapsed));
             }
         }
-        echo $this->responseData;
-        $this->dispatch('complete');
         if ($this->responseCode == 401) {
             $authString = count($this->authClasses)
                 ? Scope::get($this->authClasses[0])->__getWWWAuthenticateString()
                 : 'Unknown';
             @header('WWW-Authenticate: ' . $authString, false);
         }
+        echo $this->responseData;
+        $this->dispatch('complete');
         exit;
     }
 
