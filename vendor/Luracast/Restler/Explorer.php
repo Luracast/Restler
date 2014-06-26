@@ -428,7 +428,18 @@ class Explorer
                 $object->items = (object)array(
                     '$ref' => $info->contentType
                 );
-            } elseif ($info->contentType) {
+            } elseif ($info->contentType && $info->contentType == 'associative') {
+                unset($info->contentType);
+                $this->model($info->type = 'Object', array(
+                    array(
+                        'name' => 'property',
+                        'type' => 'string',
+                        'default' => '',
+                        'required' => false,
+                        'description' => ''
+                    )
+                ));
+            } elseif ($info->contentType && $info->contentType != 'indexed') {
                 $object->items = (object)array(
                     'type' => $info->contentType
                 );
