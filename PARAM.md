@@ -17,7 +17,7 @@ in the examples below
 
 **Syntax:**
 
-    @param [type] $name [Description] {@from url|body|query|head}
+    @param [type] $name [Description] {@from path|body|query|head}
     
 **Example:**
 
