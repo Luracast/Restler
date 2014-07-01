@@ -62,9 +62,13 @@ class Nav
         /** @var Restler $restler */
         $restler = Scope::get('Restler');
         if (static::$addExtension)
-            static::$extension = '.' . $restler->responseFormat->getExtension();
+            static::$extension = isset($restler->responseFormat)
+                ? '.' . $restler->responseFormat->getExtension()
+                : '.html';
         if (is_null($activeUrl))
-            $activeUrl = $restler->url;
+            $activeUrl = isset($restler->url)
+                ? $restler->url
+                : '';
 
         $tree = array();
         foreach (static::$prepends as $path => $text) {
