@@ -86,7 +86,8 @@ class Nav
                 static::build($tree, $path, $url, $text, $activeUrl);
         }
         $routes = Routes::toArray();
-        $routes = $routes['v' . $restler->getRequestedApiVersion()];
+        if (!empty($routes))
+            $routes = $routes['v' . $restler->getRequestedApiVersion()];
         foreach ($routes as $value) {
             foreach ($value as $httpMethod => $route) {
                 if ($httpMethod != 'GET') {
