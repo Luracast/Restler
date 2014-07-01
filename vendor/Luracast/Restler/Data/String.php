@@ -75,7 +75,7 @@ class String
         return
             ucwords(
                 preg_replace(
-                    array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/', '/(_)/'),
+                    array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/', '/([_-])/'),
                     array(' $0', ' $0', ' '),
                     $name
                 )
