@@ -81,4 +81,15 @@ class String
                 )
             );
     }
+
+    /**
+     * Convert given string to be used as a slug or css class
+     *
+     * @param string $name
+     * @return string
+     */
+    public static function slug($name)
+    {
+        return preg_replace('/[^a-zA-Z]+/', '-', strtolower(strip_tags($name)));
+    }
 } 
