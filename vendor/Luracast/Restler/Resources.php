@@ -2,6 +2,7 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\String;
+use Luracast\Restler\Scope;
 use stdClass;
 
 /**
@@ -689,7 +690,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     $defaultObject->$name = '';
                 }
             }
-            $r->defaultValue = (defined('JSON_PRETTY_PRINT')) ? json_encode($defaultObject, JSON_PRETTY_PRINT) : json_encode($defaultObject);
+            $r->defaultValue = Scope::get('JsonFormat')->encode($defaultObject, true);
         }
         $r->paramType = 'body';
         $r->allowMultiple = false;
@@ -799,9 +800,9 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      * Find the data type of the given value.
      *
      *
-     * @param mixed $o              given value for finding type
+     * @param mixed $o given value for finding type
      *
-     * @param bool  $appendToModels if an object is found should we append to
+     * @param bool $appendToModels if an object is found should we append to
      *                              our models list?
      *
      * @return string
