@@ -238,13 +238,11 @@ class CommentParser
                 $value = $this->formatThrows($value);
                 $allowMultiple = true;
                 break;
-            case 'header' :
-                $allowMultiple = true;
-                break;
             case 'author':
                 $value = $this->formatAuthor($value);
                 $allowMultiple = true;
                 break;
+            case 'header' :
             case 'link':
             case 'example':
             case 'todo':
