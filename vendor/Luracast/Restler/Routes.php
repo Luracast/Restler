@@ -448,7 +448,7 @@ class Routes
                     }
                     foreach ($excludedPaths as $exclude) {
                         if (empty($exclude)) {
-                            if ($fullPath == $exclude)
+                            if ($fullPath == $exclude || $fullPath == 'index')
                                 continue 2;
                         } elseif (String::beginsWith($fullPath, $exclude)) {
                             continue 2;
