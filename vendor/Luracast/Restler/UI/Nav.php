@@ -65,8 +65,11 @@ class Nav
             static::$url = $restler->getBaseUrl();
             if (empty(static::$url))
                 static::$url = '';
-            static::$activeTrail = empty($activeTrail)
-                ? static::$url
+            static::$activeTrail = $activeTrail = empty($activeTrail)
+                ? (empty($restler->url) || $restler->url == 'index'
+                    ? static::$root
+                    : $restler->url
+                )
                 : $activeTrail;
             if (static::$addExtension)
                 static::$extension = isset($restler->responseFormat)
@@ -98,19 +101,20 @@ class Nav
                 }
             }
             static::addUrls(static::$appends);
-        } else {
-            static::$activeTrail = empty($activeTrail)
-                ? static::$url
-                : $activeTrail;
+        } elseif (empty($activeTrail)) {
+            $activeTrail = static::$activeTrail;
         }
         $tree = static::$tree;
         $activeTrail = explode('/', $activeTrail);
-        static::nested($tree, $activeTrail)['active'] = true;
+        $nested = & static::nested($tree, $activeTrail);
+        if (is_array($nested)) {
+            $nested['active'] = true;
+        }
         if (!empty($for)) {
             $for = explode('/', $for);
-            $tree = static::nested($tree, $for);
+            $tree = static::nested($tree, $for)['children'];
         }
-        return $tree;
+        return array_filter($tree);
     }
 
     protected static function & nested(array & $tree, array $parts)
