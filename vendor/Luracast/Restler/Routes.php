@@ -440,25 +440,27 @@ class Routes
             $all = $all['*'] + $all;
             unset($all['*']);
         }
-        foreach ($all as $fullPath => $routes) {
-            foreach ($routes as $httpMethod => $route) {
-                if (in_array($httpMethod, $excludedHttpMethods)) {
-                    continue;
-                }
-                foreach ($excludedPaths as $exclude) {
-                    if (empty($exclude)) {
-                        if ($fullPath == $exclude)
-                            continue 2;
-                    } elseif (String::beginsWith($fullPath, $exclude)) {
-                        continue 2;
+        if(is_array($all)){
+            foreach ($all as $fullPath => $routes) {
+                foreach ($routes as $httpMethod => $route) {
+                    if (in_array($httpMethod, $excludedHttpMethods)) {
+                        continue;
                     }
-                }
-                $hash = "$httpMethod " . $route['url'];
-                if (!isset($filter[$hash])) {
-                    $route['httpMethod'] = $httpMethod;
-                    $map[$route['metadata']['resourcePath']][]
-                        = array('access' => static::verifyAccess($route), 'route' => $route, 'hash' => $hash);
-                    $filter[$hash] = true;
+                    foreach ($excludedPaths as $exclude) {
+                        if (empty($exclude)) {
+                            if ($fullPath == $exclude)
+                                continue 2;
+                        } elseif (String::beginsWith($fullPath, $exclude)) {
+                            continue 2;
+                        }
+                    }
+                    $hash = "$httpMethod " . $route['url'];
+                    if (!isset($filter[$hash])) {
+                        $route['httpMethod'] = $httpMethod;
+                        $map[$route['metadata']['resourcePath']][]
+                            = array('access' => static::verifyAccess($route), 'route' => $route, 'hash' => $hash);
+                        $filter[$hash] = true;
+                    }
                 }
             }
         }
