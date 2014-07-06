@@ -427,6 +427,28 @@ class Restler extends EventDispatcher
     }
 
     /**
+     * Set one or more string to be considered as the base url
+     *
+     * When more than one base url is provided, restler will make
+     * use of $_SERVER['HTTP_HOST'] to find the right one
+     *
+     * @param string ,... $url
+     */
+    public function setBaseUrl($url /*[, $url2...$urlN]*/)
+    {
+        if (func_num_args() > 1) {
+            $urls = func_get_args();
+            foreach ($urls as $url) {
+                if (0 === strpos($_SERVER['HTTP_HOST'], $url)) {
+                    $this->baseUrl = $url;
+                    return;
+                }
+            }
+        }
+        $this->baseUrl = $url;
+    }
+
+    /**
      * Parses the request url and get the api path
      *
      * @return string api path
@@ -436,25 +458,25 @@ class Restler extends EventDispatcher
         // fix SCRIPT_NAME for PHP 5.4 built-in web server
         if (false === strpos($_SERVER['SCRIPT_NAME'], '.php'))
             $_SERVER['SCRIPT_NAME']
-                = '/' . Util::removeCommonPath($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']);
+                = '/' . substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']) + 1);
 
-        $fullPath = urldecode($_SERVER['REQUEST_URI']);
-        $path = Util::removeCommonPath(
-            $fullPath,
+        list($base, $path) = Util::splitCommonPath(
+            urldecode($_SERVER['REQUEST_URI']),
             $_SERVER['SCRIPT_NAME']
         );
-        $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
-        $https = $port == '443' ||
-            (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
-            (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
 
-        $baseUrl = ($https ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'];
-
-        if (!$https && $port != '80' || $https && $port != '443')
-            $baseUrl .= ':' . $port;
-
-        $this->baseUrl = rtrim($baseUrl
-            . substr($fullPath, 0, strlen($fullPath) - strlen($path)), '/');
+        if (!$this->baseUrl) {
+            $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
+            $https = $port == '443' ||
+                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
+                (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
+            $baseUrl = ($https ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'];
+            if (!$https && $port != '80' || $https && $port != '443')
+                $baseUrl .= ':' . $port;
+            $this->baseUrl = $baseUrl . $base;
+        } elseif (!empty($base) && false === strpos($this->baseUrl, $base)) {
+            $this->baseUrl .= $base;
+        }
 
         $path = rtrim(strtok($path, '?'), '/'); //remove query string and trailing slash if found any
         $path = str_replace(
