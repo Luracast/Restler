@@ -438,8 +438,11 @@ class Restler extends EventDispatcher
     {
         if (func_num_args() > 1) {
             $urls = func_get_args();
+            usort($urls, function ($a, $b) {
+                return strlen($a) - strlen($b);
+            });
             foreach ($urls as $url) {
-                if (0 === strpos($_SERVER['HTTP_HOST'], $url)) {
+                if (0 === strpos($url, $_SERVER['HTTP_HOST'])) {
                     $this->baseUrl = $url;
                     return;
                 }
