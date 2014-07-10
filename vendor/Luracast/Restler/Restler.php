@@ -441,9 +441,9 @@ class Restler extends EventDispatcher
             usort($urls, function ($a, $b) {
                 return strlen($a) - strlen($b);
             });
-            foreach ($urls as $url) {
-                if (0 === strpos($url, $_SERVER['HTTP_HOST'])) {
-                    $this->baseUrl = $url;
+            foreach ($urls as $u) {
+                if (0 === strpos($u, $_SERVER['HTTP_HOST'])) {
+                    $this->baseUrl = $u;
                     return;
                 }
             }
