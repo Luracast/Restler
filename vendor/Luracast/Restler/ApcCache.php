@@ -25,14 +25,6 @@ class ApcCache implements iCache
     static public $namespace = 'restler';
 
     /**
-     * @param string $namespace
-     */
-    function __construct($namespace = 'restler')
-    {
-        self::$namespace = $namespace;
-    }
-
-    /**
      * store data in the cache
      *
      *
