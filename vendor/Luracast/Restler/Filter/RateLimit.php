@@ -53,7 +53,7 @@ class RateLimit implements iFilter, iUseAuthentication
      * @var array all paths beginning with any of the following will be excluded
      * from documentation
      */
-    public static $excludedPaths = array('resources');
+    public static $excludedPaths = array('explorer');
 
 
     /**
