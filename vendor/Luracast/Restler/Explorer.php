@@ -4,6 +4,7 @@ namespace Luracast\Restler;
 use stdClass;
 use Luracast\Restler\Data\String;
 use Luracast\Restler\Data\ValidationInfo;
+use Luracast\Restler\Scope;
 
 /**
  * Class Explorer
@@ -11,7 +12,7 @@ use Luracast\Restler\Data\ValidationInfo;
  *
  * @access  hybrid
  */
-class Explorer
+class Explorer implements iProvideMultiVersionApi
 {
     const SWAGGER_VERSION = '1.2';
     /**
@@ -524,4 +525,13 @@ class Explorer
     {
         return strtok($this->restler->url, '/');
     }
-} 
+
+    /**
+     * Maximum api version supported by the api class
+     * @return int
+     */
+    public static function __getMaximumSupportedVersion()
+    {
+        return Scope::get('Restler')->getApiVersion();
+    }
+}
