@@ -78,5 +78,5 @@ use Luracast\Restler\Format\HtmlFormat;
 $r = new Restler();
 $r->setSupportedFormats('JsonFormat', 'HtmlFormat');
 $r->addAPIClass('Tasks');
-$r->addAPIClass('Resources');
+$r->addAPIClass('Explorer');
 $r->handle();
