@@ -376,12 +376,36 @@ class CommentParser
 
     private function formatThrows(array $value)
     {
-        $r = array();
-        $r['code'] = count($value) && is_numeric($value[0])
-            ? intval(array_shift($value)) : 500;
+        $code = 500;
+        $exception = 'Exception';
+        if(count($value)>1){
+            $v1 = $value[0];
+            $v2 = $value[1];
+            if(is_numeric($v1)){
+                $code = $v1;
+                $exception = $v2;
+                array_shift($value);
+                array_shift($value);
+            } elseif(is_numeric($v2)){
+                $code = $v2;
+                $exception = $v1;
+                array_shift($value);
+                array_shift($value);
+            } else {
+                $exception = $v1;
+                array_shift($value);
+            }
+        } elseif(count($value) && is_numeric($value[0])) {
+            $code = $value[0];
+            array_shift($value);
+        }
         $message = implode(' ', $value);
-        $r['message'] = empty($message) ? '' : $message;
-        return $r;
+        if(!isset(RestException::$codes[$code])){
+            $code = 500;
+        } elseif(empty($message)){
+            $message = RestException::$codes[$code];
+        }
+        return compact('code','message','exception');
     }
 
     private function formatClass(array $value)
