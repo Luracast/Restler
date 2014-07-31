@@ -52,7 +52,7 @@ RateLimit::setLimit('hour', 10);
 $r = new Restler();
 
 $r->addAPIClass('ratelimited\\Authors');
-$r->addAPIClass('Resources');
+$r->addAPIClass('Explorer');
 $r->addFilterClass('RateLimit');
 $r->addAuthenticationClass('KeyAuth');
 $r->handle();
