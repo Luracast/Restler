@@ -124,7 +124,7 @@ class Routes
                 $m = & $metadata ['param'] [$position];
                 $m ['name'] = $param->getName();
                 if (empty($m['label']))
-                    $m['label'] = static::label($m['name']);
+                    $m['label'] = String::title($m['name']);
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
@@ -625,7 +625,7 @@ class Routes
                 }
                 $child += array(
                     'type' => $child['name'] == 'email' ? 'email' : 'string',
-                    'label' => static::label($child['name'])
+                    'label' => String::title($child['name'])
                 );
                 isset($child[CommentParser::$embeddedDataName])
                     ? $child[CommentParser::$embeddedDataName] += array('required' => true)
@@ -679,20 +679,6 @@ class Routes
         if (is_bool($var)) return 'boolean';
         if (is_numeric($var)) return is_float($var) ? 'float' : 'int';
         return 'string';
-    }
-
-    /**
-     * Create a label from name of the parameter or property
-     *
-     * Convert `camelCase` style names into proper `Title Case` names
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public static function label($name)
-    {
-        return ucfirst(preg_replace(array('/(?<=[^A-Z])([A-Z])/', '/(?<=[^0-9])([0-9])/'), ' $0', $name));
     }
 
     public static function scope(ReflectionClass $class)
