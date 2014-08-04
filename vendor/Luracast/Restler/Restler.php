@@ -9,6 +9,7 @@ use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Format\iFormat;
 use Luracast\Restler\Format\iDecodeStream;
 use Luracast\Restler\Format\UrlEncodedFormat;
+use Interop\Container\ContainerInterface;
 
 /**
  * REST API Server. It is the server part of the Restler framework.
@@ -166,7 +167,10 @@ class Restler extends EventDispatcher
      * @var array
      */
     protected $postAuthFilterClasses = array();
-
+    /**
+     * @var \Interop\Container\ContainerInterface
+     */
+    protected $container;
 
     // ==================================================================
     //
@@ -957,7 +961,7 @@ class Restler extends EventDispatcher
                 || $info['validate'] != false
             ) {
                 if (isset($info['method'])) {
-                    $info ['apiClassInstance'] = Scope::get($o->className);
+                    $info ['apiClassInstance'] = $this->resolveApiClassInstance($o->className);
                 }
                 //convert to instance of ValidationInfo
                 $info = new ValidationInfo($param);
@@ -989,7 +993,7 @@ class Restler extends EventDispatcher
         $o = & $this->apiMethodInfo;
         $accessLevel = max(Defaults::$apiAccessLevel,
             $o->accessLevel);
-        $object =  Scope::get($o->className);
+        $object = $this->resolveApiClassInstance($o->className);
         switch ($accessLevel) {
             case 3 : //protected method
                 $reflectionMethod = new \ReflectionMethod(
@@ -1471,6 +1475,37 @@ class Restler extends EventDispatcher
                 Scope::get($o->className),
                 $postCall
             ), $this->responseData);
+        }
+    }
+
+    /**
+     * @return \Interop\Container\ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param \Interop\Container\ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * Returns an API class instance with a class name of $className.
+     *
+     * @param string $className
+     * @return mixed|null
+     */
+    protected function resolveApiClassInstance($className)
+    {
+        if($this->container != null && $this->container->has($className)) {
+            return $this->container->get($className);
+        } else {
+            return Scope::get($className);
         }
     }
 }
