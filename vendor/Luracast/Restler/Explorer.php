@@ -401,7 +401,7 @@ class Explorer implements iProvideMultiVersionApi
             $info = new ValidationInfo($child);
             $p = new stdClass();
             $this->setType($p, $info);
-            $p->description = $child['description'];
+            $p->description = isset($child['description']) ? $child['description'] : '';
             if ($info->default)
                 $p->defaultValue = $info->default;
             if ($info->choice)
