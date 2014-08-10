@@ -267,6 +267,10 @@ class Forms implements iFilter
      */
     public static function field(ValidationInfo $p, $dataOnly = false)
     {
+        if (is_string($p->value)) {
+            //prevent XSS attacks
+            $p->value = htmlspecialchars($p->value, ENT_QUOTES | ENT_HTML401, 'UTF-8');
+        }
         $type = $p->field ? : static::guessFieldType($p);
         $tag = in_array($type, static::$inputTypes)
             ? 'input' : $type;
