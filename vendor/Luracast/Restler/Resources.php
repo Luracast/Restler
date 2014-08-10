@@ -983,6 +983,9 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     protected function verifyAccess($route)
     {
+        if ($route['accessLevel'] < 2) {
+            return true;
+        }
         if (
             static::$hideProtected
             && !$this->_authenticated
