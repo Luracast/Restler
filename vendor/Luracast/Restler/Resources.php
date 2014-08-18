@@ -317,7 +317,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 if (isset($m['throws'])) {
                     foreach ($m['throws'] as $exception) {
                         $operation->errorResponses[] = array(
-                            'reason' => $exception['message'],
+                            'reason' => $exception['reason'],
                             'code' => $exception['code']);
                     }
                 }
