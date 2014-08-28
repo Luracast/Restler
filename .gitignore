@@ -19,6 +19,7 @@ vendor/rodneyrehm
 vendor/twig
 vendor/illuminate
 vendor/bshaffer
+vendor/container-interop
 .idea
 tag.sh
 bin/*
