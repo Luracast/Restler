@@ -1018,6 +1018,8 @@ class Restler extends EventDispatcher
         $o = & $this->apiMethodInfo;
         $accessLevel = max(Defaults::$apiAccessLevel,
             $o->accessLevel);
+        if (function_exists('newrelic_name_transaction'))
+            newrelic_name_transaction("{$o->className}/{$o->methodName}");
         $object =  Scope::get($o->className);
         switch ($accessLevel) {
             case 3 : //protected method
