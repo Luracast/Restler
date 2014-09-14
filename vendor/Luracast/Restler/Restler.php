@@ -3,12 +3,14 @@ namespace Luracast\Restler;
 
 use Exception;
 use InvalidArgumentException;
+use Luracast\Restler\container\ScopeAdapter;
 use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Format\iFormat;
 use Luracast\Restler\Format\iDecodeStream;
 use Luracast\Restler\Format\UrlEncodedFormat;
+use Interop\Container\ContainerInterface;
 
 /**
  * REST API Server. It is the server part of the Restler framework.
@@ -167,6 +169,12 @@ class Restler extends EventDispatcher
      */
     protected $postAuthFilterClasses = array();
 
+    /**
+     * The IoC Container to be used for instantiating API classes
+     *
+     * @var ContainerInterface
+     */
+    protected $container;
 
     // ==================================================================
     //
@@ -202,13 +210,15 @@ class Restler extends EventDispatcher
     /**
      * Constructor
      *
-     * @param boolean $productionMode    When set to false, it will run in
-     *                                   debug mode and parse the class files
-     *                                   every time to map it to the URL
+     * @param boolean            $productionMode    When set to false, it will run in
+     *                                              debug mode and parse the class files
+     *                                              every time to map it to the URL
      *
-     * @param bool    $refreshCache      will update the cache when set to true
+     * @param bool               $refreshCache      will update the cache when set to true
+     * @param ContainerInterface $container         When not null, adds an external IoC
+     *                                              Container to instantiate API classes from
      */
-    public function __construct($productionMode = false, $refreshCache = false)
+    public function __construct($productionMode = false, $refreshCache = false, $container = null)
     {
         parent::__construct();
         $this->startTime = time();
@@ -225,6 +235,11 @@ class Restler extends EventDispatcher
         if ($productionMode && $refreshCache) {
             $this->cached = false;
         }
+
+        if ($container == null) {
+            $container= new ScopeAdapter();
+        }
+        $this->setContainer($container);
     }
 
     /**
@@ -957,7 +972,7 @@ class Restler extends EventDispatcher
                 || $info['validate'] != false
             ) {
                 if (isset($info['method'])) {
-                    $info ['apiClassInstance'] = Scope::get($o->className);
+                    $info ['apiClassInstance'] = $this->container->get($o->className);
                 }
                 //convert to instance of ValidationInfo
                 $info = new ValidationInfo($param);
@@ -989,7 +1004,7 @@ class Restler extends EventDispatcher
         $o = & $this->apiMethodInfo;
         $accessLevel = max(Defaults::$apiAccessLevel,
             $o->accessLevel);
-        $object =  Scope::get($o->className);
+        $object = $this->container->get($o->className);
         switch ($accessLevel) {
             case 3 : //protected method
                 $reflectionMethod = new \ReflectionMethod(
@@ -1474,5 +1489,21 @@ class Restler extends EventDispatcher
                 $postCall
             ), $this->responseData);
         }
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container)
+    {
+        $this->container = $container;
     }
 }
