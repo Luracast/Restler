@@ -1082,6 +1082,8 @@ class Restler extends EventDispatcher
         if (!Defaults::$suppressResponseCode) {
             if ($e) {
                 $code = $e->getCode();
+            } elseif ($this->responseCode) {
+                $code = $this->responseCode;
             } elseif (isset($this->apiMethodInfo->metadata['status'])) {
                 $code = $this->apiMethodInfo->metadata['status'];
             }
