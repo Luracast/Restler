@@ -21,11 +21,11 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc5
+ * @version    3.0.0rc6
  */
 class Restler extends EventDispatcher
 {
-    const VERSION = '3.0.0rc5';
+    const VERSION = '3.0.0rc6';
 
     // ==================================================================
     //
