@@ -8,9 +8,11 @@ use Luracast\Restler\Scope;
 
 /**
  * Class Explorer
+ *
  * @package Luracast\Restler
  *
  * @access  hybrid
+ * @version 3.0.0rc6
  */
 class Explorer implements iProvideMultiVersionApi
 {
