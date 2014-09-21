@@ -1,6 +1,11 @@
 <?php namespace Luracast\Restler;
 
-
+/**
+ * Class ExplorerInfo
+ * @package Luracast\Restler
+ * 
+ * @version    3.0.0rc6
+ */
 class ExplorerInfo
 {
     public static $title = 'Restler API Explorer';
