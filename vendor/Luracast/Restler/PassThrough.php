@@ -20,6 +20,7 @@ class PassThrough
         'png' => 'image/png',
         'jpg' => 'image/jpeg',
         'gif' => 'image/gif',
+        'html' => 'text/html',
     );
 
     /**
@@ -44,6 +45,16 @@ class PassThrough
             throw new RestException(403);
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         if (!$mime = Util::nestedValue(static::$mimeTypes, $extension)) {
+            if (!function_exists('finfo_open')) {
+                throw new RestException(
+                    500,
+                    'Unable to find media type of ' .
+                    basename($filename) .
+                    ' either enable fileinfo php extension or update ' .
+                    'PassThrough::$mimeTypes to include mime type for ' . $extension .
+                    ' extension'
+                );
+            }
             $finfo = finfo_open(FILEINFO_MIME_TYPE);
             $mime = finfo_file($finfo, $filename);
         }
