@@ -302,7 +302,7 @@ class Forms implements iFilter
                     'value' => 'false');
                 if ($p->value || $p->default)
                     $options[0]['selected'] = true;
-            } else {
+            } else { //checkbox
                 $r = array(
                     'tag' => $tag,
                     'name' => $name,
@@ -314,6 +314,9 @@ class Forms implements iFilter
                 $r['text'] = 'Yes';
                 if ($p->default) {
                     $r['selected'] = true;
+                }
+                if (isset($p->rules)) {
+                    $r += $p->rules;
                 }
             }
         }
@@ -328,10 +331,15 @@ class Forms implements iFilter
                 'options' => & $options,
                 'multiple' => $multiple,
             );
+            if (isset($p->rules)) {
+                $r += $p->rules;
+            }
         }
         if ($type == 'file') {
             static::$fileUpload = true;
-            $r['accept'] = implode(', ', UploadFormat::$allowedMimeTypes);
+            if (empty($r['accept'])) {
+                $r['accept'] = implode(', ', UploadFormat::$allowedMimeTypes);
+            }
         }
 
         if (true === $p->required)
