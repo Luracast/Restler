@@ -190,6 +190,9 @@ class Forms implements iFilter
             static::$fileUpload = false;
             $t['enctype'] = 'multipart/form-data';
         }
+        if (isset($m[CommentParser::$embeddedDataName])) {
+            $t += $m[CommentParser::$embeddedDataName];
+        }
         if (!$dataOnly) {
             $t = Emmet::make(static::style('form', $m), $t);
             $t->prefix = $prefix;
