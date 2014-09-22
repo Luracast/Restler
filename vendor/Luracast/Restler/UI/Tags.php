@@ -154,10 +154,10 @@ class Tags implements ArrayAccess, Countable
      */
     public function id($value)
     {
-        $this->attributes['id'] = isset($value)
-            ? (string)$value
-            : Util::nestedValue($this->attributes, 'name');
-        static::$instances[$value] = $this;
+        if (!empty($value) && is_string($value)) {
+            $this->attributes['id'] = $value;
+            static::$instances[$value] = $this;
+        }
         return $this;
     }
 
