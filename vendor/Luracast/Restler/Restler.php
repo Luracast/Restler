@@ -961,6 +961,8 @@ class Restler extends EventDispatcher
                 }
                 //convert to instance of ValidationInfo
                 $info = new ValidationInfo($param);
+                //initialize validator
+                Scope::get(Defaults::$validatorClass);
                 $validator = Defaults::$validatorClass;
                 //if(!is_subclass_of($validator, 'Luracast\\Restler\\Data\\iValidate')) {
                 //changed the above test to below for addressing this php bug
