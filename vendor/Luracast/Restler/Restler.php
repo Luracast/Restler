@@ -78,9 +78,9 @@ class Restler extends EventDispatcher
     /**
      * Http status code
      *
-     * @var int
+     * @var int|null when specified it will override @status comment
      */
-    public $responseCode=200;
+    public $responseCode=null;
     /**
      * @var string base url of the api service
      */
