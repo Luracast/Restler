@@ -233,22 +233,28 @@ class Routes
                         } elseif (
                             !isset($p[CommentParser::$embeddedDataName]['from']) ||
                             $p[CommentParser::$embeddedDataName]['from'] == 'path'
+
                         ) {
                             $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] =
                                 $httpMethod == 'GET' ||
                                 $httpMethod == 'DELETE'
                                     ? 'query'
                                     : 'body';
+                        } elseif (
+                            ($httpMethod == 'GET' || $httpMethod == 'DELETE') &&
+                            $p[CommentParser::$embeddedDataName]['from'] == 'body'
+                        ) {
+                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'query';
                         }
                     }
                     $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
-                        function ($matches) use ($call) {
+                        function ($matches) use ($copy) {
                             $match = trim($matches[0], '{}:');
-                            $index = $call['arguments'][$match];
+                            $index = $copy['arguments'][$match];
                             return '{' .
                             Routes::typeChar(isset(
-                            $call['metadata']['param'][$index]['type'])
-                                ? $call['metadata']['param'][$index]['type']
+                                $copy['metadata']['param'][$index]['type'])
+                                ? $copy['metadata']['param'][$index]['type']
                                 : null)
                             . $index . '}';
                         }, $url);
