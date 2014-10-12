@@ -153,6 +153,18 @@ class Routes
                 }
                 if(!empty($children)){
                     $required = Util::nestedValue($m,CommentParser::$embeddedDataName,'required');
+                    $properties = Util::nestedValue($m,CommentParser::$embeddedDataName,'properties');
+                    if(!is_null($properties)){
+                        if(is_string($properties)){
+                            $properties = array($properties);
+                        }
+                        $properties = array_fill_keys($properties,true);
+                        foreach ($children as $name => $child) {
+                            if (!isset($properties[$name])) {
+                                unset($children[$name]);
+                            }
+                        }
+                    }
                     if(!is_null($required)){
                         //override required on children
                         if (is_bool($required)) {
@@ -169,7 +181,6 @@ class Routes
                         }
 
                     }
-                    //print_r($children);
                 }
                 $m['children'] = $children;
 
