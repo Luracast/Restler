@@ -603,7 +603,9 @@ class Routes
         $children = array();
         try {
             if($magic_properties = Util::nestedValue(CommentParser::parse($class->getDocComment()), 'property')){
-                $children += $magic_properties;
+                foreach ($magic_properties as $prop) {
+                    $children[$prop['name']] = $prop;
+                }
             } else {
                 $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
                 foreach ($props as $prop) {
