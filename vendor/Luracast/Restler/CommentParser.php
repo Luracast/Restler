@@ -214,6 +214,7 @@ class CommentParser
         $allowMultiple = false;
         switch ($param) {
             case 'param' :
+            case 'property' :
                 $value = $this->formatParam($value);
                 $allowMultiple = true;
                 break;
@@ -280,7 +281,12 @@ class CommentParser
                 $value[self::$embeddedDataName]
                     += $data[$param][self::$embeddedDataName];
             }
-            $data[$param] = $value + $data[$param];
+            if (!is_array($data[$param])) {
+                $data[$param] = array('description' => (string) $data[$param]);
+            }
+            if (is_array($value)) {
+                $data[$param] = $value + $data[$param];
+            }
         }
     }
 
