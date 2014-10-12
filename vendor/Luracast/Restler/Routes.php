@@ -151,6 +151,26 @@ class Routes
                 if (isset($type)) {
                     $m['type'] = $type;
                 }
+                if(!empty($children)){
+                    $required = Util::nestedValue($m,CommentParser::$embeddedDataName,'required');
+                    if(!is_null($required)){
+                        //override required on children
+                        if (is_bool($required)) {
+                            throw new Exception(
+                                '@required comment for '.$m ['name'].
+                                ' should only be a comma separated list of property names.'
+                            );
+                        }elseif(is_string($required)) {
+                            $required = array($required);
+                        }
+                        $required = array_fill_keys($required,true);
+                        foreach ($children as $name => $child) {
+                            $children[$name][CommentParser::$embeddedDataName]['required'] = isset($required[$name]);
+                        }
+
+                    }
+                    //print_r($children);
+                }
                 $m['children'] = $children;
 
                 if ($m['name'] == Defaults::$fullRequestDataName) {
