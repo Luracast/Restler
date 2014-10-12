@@ -602,45 +602,49 @@ class Routes
         }
         $children = array();
         try {
-            $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
-            foreach ($props as $prop) {
-                $name = $prop->getName();
-                $child = array('name' => $name);
-                if ($c = $prop->getDocComment()) {
-                    $child += Util::nestedValue(CommentParser::parse($c), 'var') ?: [];
-                } else {
-                    $o = $class->newInstance();
-                    $p = $prop->getValue($o);
-                    if (is_object($p)) {
-                        $child['type'] = get_class($p);
-                    } elseif (is_array($p)) {
-                        $child['type'] = 'array';
-                        if (count($p)) {
-                            $pc = reset($p);
-                            if (is_object($pc)) {
-                                $child['contentType'] = get_class($pc);
+            if($magic_properties = Util::nestedValue(CommentParser::parse($class->getDocComment()), 'property')){
+                $children += $magic_properties;
+            } else {
+                $props = $class->getProperties(ReflectionProperty::IS_PUBLIC);
+                foreach ($props as $prop) {
+                    $name = $prop->getName();
+                    $child = array('name' => $name);
+                    if ($c = $prop->getDocComment()) {
+                        $child += Util::nestedValue(CommentParser::parse($c), 'var') ?: [];
+                    } else {
+                        $o = $class->newInstance();
+                        $p = $prop->getValue($o);
+                        if (is_object($p)) {
+                            $child['type'] = get_class($p);
+                        } elseif (is_array($p)) {
+                            $child['type'] = 'array';
+                            if (count($p)) {
+                                $pc = reset($p);
+                                if (is_object($pc)) {
+                                    $child['contentType'] = get_class($pc);
+                                }
                             }
                         }
                     }
+                    $child += array(
+                        'type' => $child['name'] == 'email' ? 'email' : 'string',
+                        'label' => String::title($child['name'])
+                    );
+                    isset($child[CommentParser::$embeddedDataName])
+                        ? $child[CommentParser::$embeddedDataName] += array('required' => true)
+                        : $child[CommentParser::$embeddedDataName]['required'] = true;
+                    if ($qualified = Scope::resolve($child['type'], $scope)) {
+                        list($child['type'], $child['children'])
+                            = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+                    } elseif (
+                        ($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) &&
+                        ($qualified = Scope::resolve($contentType, $scope))
+                    ) {
+                        list($child['contentType'], $child['children'])
+                            = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+                    }
+                    $children[$name] = $child;
                 }
-                $child += array(
-                    'type' => $child['name'] == 'email' ? 'email' : 'string',
-                    'label' => String::title($child['name'])
-                );
-                isset($child[CommentParser::$embeddedDataName])
-                    ? $child[CommentParser::$embeddedDataName] += array('required' => true)
-                    : $child[CommentParser::$embeddedDataName]['required'] = true;
-                if ($qualified = Scope::resolve($child['type'], $scope)) {
-                    list($child['type'], $child['children'])
-                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
-                } elseif (
-                    ($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) &&
-                    ($qualified = Scope::resolve($contentType, $scope))
-                ) {
-                    list($child['contentType'], $child['children'])
-                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
-                }
-                $children[$name] = $child;
             }
         } catch (Exception $e) {
             if (String::endsWith($e->getFile(), 'CommentParser.php')) {
