@@ -38,6 +38,7 @@ class HtmlFormat extends DependentFormat
     public static $errorView = 'debug.php';
     public static $template = 'php';
     public static $handleSession = true;
+    public static $convertResponseToArray = false;
 
     public static $useSmartViews = true;
     /**
@@ -308,7 +309,9 @@ class HtmlFormat extends DependentFormat
             $success = is_null($exception);
             $error = $success ? null : $exception->getMessage();
             $data = array(
-                'response' => Object::toArray($data),
+                'response' => static::$convertResponseToArray
+                    ? Object::toArray($data)
+                    : $data,
                 'stages' => $this->restler->getEvents(),
                 'success' => $success,
                 'error' => $error
