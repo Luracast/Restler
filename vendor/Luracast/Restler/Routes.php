@@ -344,7 +344,7 @@ class Routes
     }
 
     protected static function addPath($path, array $call,
-                                      $httpMethod = 'GET', $version = 1)
+        $httpMethod = 'GET', $version = 1)
     {
         $call['url'] = preg_replace_callback(
             "/\{\S(\d+)\}/",
@@ -378,7 +378,7 @@ class Routes
      * @return ApiMethodInfo
      */
     public static function find($path, $httpMethod,
-                                $version = 1, array $data = array())
+        $version = 1, array $data = array())
     {
         $p = Util::nestedValue(static::$routes, "v$version");
         if (!$p) {
@@ -635,6 +635,12 @@ class Routes
         try {
             if($magic_properties = Util::nestedValue(CommentParser::parse($class->getDocComment()), 'property')){
                 foreach ($magic_properties as $prop) {
+                    if (!isset($prop['name'])) {
+                        throw new Exception('@property comment is not properly defined in '.$className.' class');
+                    }
+                    if(!isset($prop[CommentParser::$embeddedDataName]['label'])){
+                        $prop[CommentParser::$embeddedDataName]['label'] = String::title($prop['name']);
+                    }
                     $children[$prop['name']] = $prop;
                 }
             } else {
