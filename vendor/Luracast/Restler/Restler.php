@@ -22,6 +22,32 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0rc6
+ *
+ * @method static void onGet() onGet(Callable $function) fired before reading the request details
+ * @method static void onRoute() onRoute(Callable $function) fired before finding the api method
+ * @method static void onNegotiate() onNegotiate(Callable $function) fired before content negotiation
+ * @method static void onPreAuthFilter() onPreAuthFilter(Callable $function) fired before pre auth filtering
+ * @method static void onAuthenticate() onAuthenticate(Callable $function) fired before auth
+ * @method static void onPostAuthFilter() onPostAuthFilter(Callable $function) fired before post auth filtering
+ * @method static void onValidate() onValidate(Callable $function) fired before validation
+ * @method static void onCall() onCall(Callable $function) fired before api method call
+ * @method static void onCompose() onCompose(Callable $function) fired before composing response
+ * @method static void onRespond() onRespond(Callable $function) fired before sending response
+ * @method static void onComplete() onComplete(Callable $function) fired after sending response
+ * @method static void onMessage() onMessage(Callable $function) fired before composing error response
+ *
+ * @method void onGet() onGet(Callable $function) fired before reading the request details
+ * @method void onRoute() onRoute(Callable $function) fired before finding the api method
+ * @method void onNegotiate() onNegotiate(Callable $function) fired before content negotiation
+ * @method void onPreAuthFilter() onPreAuthFilter(Callable $function) fired before pre auth filtering
+ * @method void onAuthenticate() onAuthenticate(Callable $function) fired before auth
+ * @method void onPostAuthFilter() onPostAuthFilter(Callable $function) fired before post auth filtering
+ * @method void onValidate() onValidate(Callable $function) fired before validation
+ * @method void onCall() onCall(Callable $function) fired before api method call
+ * @method void onCompose() onCompose(Callable $function) fired before composing response
+ * @method void onRespond() onRespond(Callable $function) fired before sending response
+ * @method void onComplete() onComplete(Callable $function) fired after sending response
+ * @method void onMessage() onMessage(Callable $function) fired before composing error response
  */
 class Restler extends EventDispatcher
 {
