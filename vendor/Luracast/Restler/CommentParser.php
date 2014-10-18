@@ -215,6 +215,8 @@ class CommentParser
         switch ($param) {
             case 'param' :
             case 'property' :
+            case 'property-read' :
+            case 'property-write' :
                 $value = $this->formatParam($value);
                 $allowMultiple = true;
                 break;
