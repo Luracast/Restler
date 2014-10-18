@@ -593,14 +593,11 @@ class Routes
         if (!$c = CommentParser::parse($class->getDocComment())) {
             return false;
         }
-        $r = array();
         $p = 'property';
-        if (!empty($c[$p])) {
-            $r += $c[$p];
-        }
+        $r = empty($c[$p]) ? array() : $c[$p];
         $p .= '-' . ($forRead ? 'read' : 'write');
         if (!empty($c[$p])) {
-            $r += $c[$p];
+            $r = array_merge($r, $c[$p]);
         }
 
         return $r;
