@@ -123,75 +123,50 @@ class Routes
                 }
                 $m = & $metadata ['param'] [$position];
                 $m ['name'] = $param->getName();
+                if (!isset($m[CommentParser::$embeddedDataName])) {
+                    $m[CommentParser::$embeddedDataName] = array();
+                }
+                $p = &$m[CommentParser::$embeddedDataName];
                 if (empty($m['label']))
                     $m['label'] = String::title($m['name']);
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
-                if ($m['name'] == 'email' && empty($m[CommentParser::$embeddedDataName]['type']) && $type == 'string')
-                    $m[CommentParser::$embeddedDataName]['type'] = 'email';
+                if ($m['name'] == 'email' && empty($p['type']) && $type == 'string')
+                    $p['type'] = 'email';
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
-                $contentType = Util::nestedValue(
-                    $m,
-                    CommentParser::$embeddedDataName,
-                    'type'
-                );
+                $contentType = Util::nestedValue($p,'type');
                 if ($contentType && $qualified = Scope::resolve($contentType, $scope)) {
-                    list($m[CommentParser::$embeddedDataName]['type'], $children) = static::getTypeAndModel(
-                        new ReflectionClass($qualified), $scope
+                    list($p['type'], $children, $modelName) = static::getTypeAndModel(
+                        new ReflectionClass($qualified), $scope,
+                        $className . String::title($methodUrl), $p
                     );
                 }
                 if ($type instanceof ReflectionClass) {
-                    list($type, $children) = static::getTypeAndModel($type, $scope);
+                    list($type, $children, $modelName) = static::getTypeAndModel($type, $scope,
+                        $className . String::title($methodUrl), $p);
                 } elseif ($type && is_string($type) && $qualified = Scope::resolve($type, $scope)) {
-                    list($type, $children)
-                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
+                    list($type, $children, $modelName)
+                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope,
+                        $className . String::title($methodUrl), $p);
                 }
                 if (isset($type)) {
                     $m['type'] = $type;
                 }
-                if(!empty($children)){
-                    $required = Util::nestedValue($m,CommentParser::$embeddedDataName,'required');
-                    $properties = Util::nestedValue($m,CommentParser::$embeddedDataName,'properties');
-                    if(!is_null($properties)){
-                        if(is_string($properties)){
-                            $properties = array($properties);
-                        }
-                        $properties = array_fill_keys($properties,true);
-                        foreach ($children as $name => $child) {
-                            if (!isset($properties[$name])) {
-                                unset($children[$name]);
-                            }
-                        }
-                    }
-                    if(!is_null($required)){
-                        //override required on children
-                        if (is_bool($required)) {
-                            throw new Exception(
-                                '@required comment for '.$m ['name'].
-                                ' should only be a comma separated list of property names.'
-                            );
-                        }elseif(is_string($required)) {
-                            $required = array($required);
-                        }
-                        $required = array_fill_keys($required,true);
-                        foreach ($children as $name => $child) {
-                            $children[$name][CommentParser::$embeddedDataName]['required'] = isset($required[$name]);
-                        }
 
-                    }
-                }
                 $m['children'] = $children;
-
+                if (isset($modelName)) {
+                    $m['model'] = $modelName;
+                }
                 if ($m['name'] == Defaults::$fullRequestDataName) {
                     $from = 'body';
                     if (!isset($m['type'])) {
                         $type = $m['type'] = 'array';
                     }
 
-                } elseif (isset($m[CommentParser::$embeddedDataName]['from'])) {
-                    $from = $m[CommentParser::$embeddedDataName]['from'];
+                } elseif (isset($p['from'])) {
+                    $from = $p['from'];
                 } else {
                     if ((isset($type) && Util::isObjectOrArray($type))
                     ) {
@@ -205,7 +180,7 @@ class Routes
                         $from = 'body';
                     }
                 }
-                $m[CommentParser::$embeddedDataName]['from'] = $from;
+                $p['from'] = $from;
                 if (!isset($m['type'])) {
                     $type = $m['type'] = static::type($defaults[$position]);
                 }
@@ -625,11 +600,11 @@ class Routes
      *
      * @access protected
      */
-    protected static function getTypeAndModel(ReflectionClass $class, array $scope)
+    protected static function getTypeAndModel(ReflectionClass $class, array $scope, $prefix='', array $rules=array())
     {
         $className = $class->getName();
-        if (isset(static::$models[$className])) {
-            return static::$models[$className];
+        if (isset(static::$models[$prefix.$className])) {
+            return static::$models[$prefix.$className];
         }
         $children = array();
         try {
@@ -691,8 +666,35 @@ class Routes
             }
             throw $e;
         }
-        static::$models[$className] = array($className, $children);
-        return static::$models[$className];
+        if ($properties = Util::nestedValue($rules, 'properties')) {
+            if (is_string($properties)) {
+                $properties = array($properties);
+            }
+            $c = array();
+            foreach ($properties as $property) {
+                if (isset($children[$property])) {
+                    $c[$property] = $children[$property];
+                }
+            }
+            $children = $c;
+        }
+        if ($required = Util::nestedValue($rules, 'required')) {
+            //override required on children
+            if (is_bool($required)) {
+                throw new Exception(
+                    '@required comment for type ' . $className .
+                    ' should only be a comma separated list of property names.'
+                );
+            } elseif (is_string($required)) {
+                $required = array($required);
+            }
+            $required = array_fill_keys($required, true);
+            foreach ($children as $name => $child) {
+                $children[$name][CommentParser::$embeddedDataName]['required'] = isset($required[$name]);
+            }
+        }
+        static::$models[$prefix.$className] = array($className, $children, $prefix.$className);
+        return static::$models[$prefix.$className];
     }
 
     /**
