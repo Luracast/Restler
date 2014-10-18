@@ -355,6 +355,9 @@ class Explorer implements iProvideMultiVersionApi
     private function parameter(ValidationInfo $info, $description = '')
     {
         $p = new stdClass();
+        if(isset($info->rules['model'])){
+            $info->type = $info->rules['model'];
+        }
         $p->name = $info->name;
         $this->setType($p, $info);
         if (empty($info->children) || $info->type != 'array') {
