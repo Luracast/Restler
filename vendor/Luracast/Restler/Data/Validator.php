@@ -24,6 +24,17 @@ class Validator implements iValidate
     public static $holdException = false;
     public static $exceptions = array();
 
+    public static $preFilters = array(
+        '*'              => 'trim',
+        //'string'       => 'strip_tags',
+        //'string'       => 'htmlspecialchars',
+        //'int'          => 'abs',
+        //'float'        => 'abs',
+        //'CustomClass'  => 'MyFilterClass::custom',
+        //                  please note that you wont get an instance
+        //                  of CustomClass. you will get an array instead
+    );
+
     /**
      * Validate alphabetic characters.
      *
@@ -360,6 +371,20 @@ class Validator implements iValidate
     {
         $html = Scope::get('Restler')->responseFormat instanceof HtmlFormat;
         $name = $html ? "<strong>$info->label</strong>" : "`$info->name`";
+        if (
+            isset(static::$preFilters['*']) &&
+            is_scalar($input) &&
+            is_callable($func = static::$preFilters['*'])
+        ) {
+            $input = $func($input);
+        }
+        if (
+            isset(static::$preFilters[$info->type]) &&
+            (is_scalar($input) || !empty($info->children)) &&
+            is_callable($func = static::$preFilters[$info->type])
+        ) {
+            $input = $func($input);
+        }
         try {
             if (is_null($input)) {
                 if ($info->required) {
