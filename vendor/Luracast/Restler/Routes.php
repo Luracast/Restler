@@ -696,10 +696,8 @@ class Routes
         if ($required = Util::nestedValue($rules, 'required')) {
             //override required on children
             if (is_bool($required)) {
-                throw new Exception(
-                    '@required comment for type ' . $className .
-                    ' should only be a comma separated list of property names.'
-                );
+                // true means all are required false means none are required
+                $required = $required ? array_keys($children) : array();
             } elseif (is_string($required)) {
                 $required = array($required);
             }
