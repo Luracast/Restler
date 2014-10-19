@@ -146,6 +146,12 @@ class Explorer implements iProvideMultiVersionApi
             header("Location: $url");
             exit;
         }
+        if (
+            isset($this->restler->responseFormat) &&
+            $this->restler->responseFormat->getExtension() == 'js'
+        ) {
+            $filename .= '.js';
+        }
         PassThrough::file(__DIR__ . '/explorer/' . (empty($filename) ? 'index.html' : $filename), false, 0); //60 * 60 * 24);
     }
 
