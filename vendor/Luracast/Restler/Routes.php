@@ -137,7 +137,7 @@ class Routes
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
                 $contentType = Util::nestedValue($p,'type');
-                if ($contentType && $qualified = Scope::resolve($contentType, $scope)) {
+                if ($type == 'array' && $contentType && $qualified = Scope::resolve($contentType, $scope)) {
                     list($p['type'], $children, $modelName) = static::getTypeAndModel(
                         new ReflectionClass($qualified), $scope,
                         $className . String::title($methodUrl), $p
