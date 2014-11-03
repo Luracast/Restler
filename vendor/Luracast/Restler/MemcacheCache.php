@@ -1,6 +1,5 @@
 <?php
-
-use \Luracast\Restler\iCache;
+namespace Luracast\Restler;
 
 /**
  * Class MemcacheCache provides a memcache based cache for Restler
@@ -20,7 +19,20 @@ class MemcacheCache implements iCache
      *
      * @var string
      */
-    static public $namespace = 'restler';
+    static public $namespace;
+    
+    /**
+     * @var string the memcache server hostname / IP address. For the memcache 
+     * cache method.
+     */
+    static public $memcacheServer = '127.0.0.1';
+    
+    /**
+     * @var int the memcache server port. For the memcache cache method. 
+     */
+    static public $memcachePort = 11211;
+
+    
     private $memcache;
 
     /**
@@ -30,10 +42,10 @@ class MemcacheCache implements iCache
     {
         self::$namespace = $namespace;
         if (function_exists('memcache_connect')) {
-            $this->memcache = new Memcache;
-            $this->memcache->connect(Luracast\Restler\Defaults::$memcache_server, Luracast\Restler\Defaults::$memcache_port);
+            $this->memcache = new \Memcache;
+            $this->memcache->connect(self::$memcacheServer, self::$memcachePort);
         } else {
-            $this->memcacheNotAvailable();
+            $this->memcacheNotAvailable('Memcache is not available for use as Restler Cache. Please make sure the the memcache php extension is installed.');
         }
     }
 
@@ -58,9 +70,9 @@ class MemcacheCache implements iCache
         }
     }
 
-    private function memcacheNotAvailable()
+    private function memcacheNotAvailable($message = 'Memcache is not available.')
     {
-        throw new \Exception('Memcache is not available for use as Restler Cache. Please make sure the the memcache php extension is installed.');
+        throw new \Exception($message);
     }
 
     /**

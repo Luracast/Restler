@@ -39,17 +39,6 @@ class Defaults
     public static $cacheDirectory;
     
     /**
-     * @var string the memcache server hostname / IP address. For the memcache 
-     * cache method.
-     */
-    public static $memcacheServer;
-    
-    /**
-     * @var int the memcache server port. For the memcache cache method. 
-     */
-    public static $memcachePort;
-
-    /**
      * @var string of name of the class that implements
      * \Luracast\Restler\Data\iValidate the validator class to be used
      */
