@@ -37,7 +37,7 @@ class Defaults
      * in the same folder as index.php (gateway)
      */
     public static $cacheDirectory;
-    
+
     /**
      * @var string of name of the class that implements
      * \Luracast\Restler\Data\iValidate the validator class to be used
