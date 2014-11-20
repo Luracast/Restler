@@ -51,6 +51,14 @@ class CommentParser
     public static $arrayDelimiter = ',';
 
     /**
+     * @var array annotations that support array value
+     */
+    public static $allowsArrayValue = array(
+        'choice' => true,
+        'select' => true,
+    );
+
+    /**
      * character sequence used to escape \@
      */
     const escapedAtChar = '\\@';
@@ -318,7 +326,10 @@ class CommentParser
             }
             if ($matches[1] == 'pattern') {
                 throw new Exception('Inline pattern tag should follow {@pattern /REGEX_PATTERN_HERE/} format and can optionally include PCRE modifiers following the ending `/`');
-            } elseif (false !== strpos($matches[2], static::$arrayDelimiter)) {
+            } elseif (
+                isset(static::$allowsArrayValue[$matches[1]]) &&
+                false !== strpos($matches[2], static::$arrayDelimiter)
+            ) {
                 $matches[2] = explode(static::$arrayDelimiter, $matches[2]);
             }
             $data[$matches[1]] = $matches[2];
