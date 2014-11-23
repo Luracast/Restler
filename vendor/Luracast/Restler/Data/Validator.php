@@ -627,13 +627,13 @@ class Validator implements iValidate
                             }
                             foreach ($info->children as $key => $value) {
                                 $cv = new ValidationInfo($value);
+                                $cv->name = "{$info->name}[$key]";
                                 if (array_key_exists($key, $input) || $cv->required) {
                                     $instance->{$key} = static::validate(
                                         Util::nestedValue($input, $key),
                                         $cv
                                     );
                                 }
-
                             }
                         }
                         return $instance;
@@ -641,7 +641,7 @@ class Validator implements iValidate
             }
             throw new RestException (400, $error);
         } catch (\Exception $e) {
-            static::$exceptions[] = $e;
+            static::$exceptions[$info->name] = $e;
             if (static::$holdException) {
                 return null;
             }
