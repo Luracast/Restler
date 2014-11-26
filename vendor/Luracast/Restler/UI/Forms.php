@@ -5,6 +5,7 @@ use Luracast\Restler\CommentParser;
 use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\String;
 use Luracast\Restler\Data\ValidationInfo;
+use Luracast\Restler\Data\Validator;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Format\UploadFormat;
 use Luracast\Restler\Format\UrlEncodedFormat;
@@ -340,6 +341,10 @@ class Forms implements iFilter
             if (empty($r['accept'])) {
                 $r['accept'] = implode(', ', UploadFormat::$allowedMimeTypes);
             }
+        }
+        if (!empty(Validator::$exceptions[$name]) && static::$info->url == Scope::get('Restler')->url) {
+            $r['error'] = 'has-error';
+            $r['message'] = Validator::$exceptions[$p->name]->getMessage();
         }
 
         if (true === $p->required)
