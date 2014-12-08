@@ -230,15 +230,10 @@ class Routes
                             strpos($url, ':' . $p['name']);
                         if ($inPath) {
                             $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'path';
-                        } elseif (
-                            !isset($p[CommentParser::$embeddedDataName]['from']) ||
-                            $p[CommentParser::$embeddedDataName]['from'] == 'path'
-                        ) {
-                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] =
-                                $httpMethod == 'GET' ||
-                                $httpMethod == 'DELETE'
-                                    ? 'query'
-                                    : 'body';
+                        } elseif ($httpMethod == 'GET' || $httpMethod == 'DELETE') {
+                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'query';
+                        } elseif ($p[CommentParser::$embeddedDataName]['from'] == 'path') {
+                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'body';
                         }
                     }
                     $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
