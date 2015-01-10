@@ -56,6 +56,7 @@ class Routes
          *      - Do not include it in URL
          */
         $class = new ReflectionClass($className);
+        $dataName = CommentParser::$embeddedDataName;
         try {
             $classMetadata = CommentParser::parse($class->getDocComment());
         } catch (Exception $e) {
@@ -123,10 +124,10 @@ class Routes
                 }
                 $m = & $metadata ['param'] [$position];
                 $m ['name'] = $param->getName();
-                if (!isset($m[CommentParser::$embeddedDataName])) {
-                    $m[CommentParser::$embeddedDataName] = array();
+                if (!isset($m[$dataName])) {
+                    $m[$dataName] = array();
                 }
-                $p = &$m[CommentParser::$embeddedDataName];
+                $p = &$m[$dataName];
                 if (empty($m['label']))
                     $m['label'] = String::title($m['name']);
                 if (is_null($type) && isset($m['type'])) {
@@ -235,11 +236,11 @@ class Routes
                             strpos($url, '{' . $p['name'] . '}') ||
                             strpos($url, ':' . $p['name']);
                         if ($inPath) {
-                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'path';
+                            $copy['metadata']['param'][$i][$dataName]['from'] = 'path';
                         } elseif ($httpMethod == 'GET' || $httpMethod == 'DELETE') {
-                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'query';
-                        } elseif ($p[CommentParser::$embeddedDataName]['from'] == 'path') {
-                            $copy['metadata']['param'][$i][CommentParser::$embeddedDataName]['from'] = 'body';
+                            $copy['metadata']['param'][$i][$dataName]['from'] = 'query';
+                        } elseif (empty($p[$dataName]['from']) || $p[$dataName]['from'] == 'path') {
+                            $copy['metadata']['param'][$i][$dataName]['from'] = 'body';
                         }
                     }
                     $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
@@ -275,11 +276,11 @@ class Routes
                 $lastPathParam = array_keys($pathParams);
                 $lastPathParam = end($lastPathParam);
                 for ($position = 0; $position < count($params); $position++) {
-                    $from = $metadata['param'][$position][CommentParser::$embeddedDataName]['from'];
+                    $from = $metadata['param'][$position][$dataName]['from'];
                     if ($from == 'body' && ($httpMethod == 'GET' ||
                             $httpMethod == 'DELETE')
                     ) {
-                        $call['metadata']['param'][$position][CommentParser::$embeddedDataName]['from']
+                        $call['metadata']['param'][$position][$dataName]['from']
                             = 'query';
                     }
                 }
@@ -507,6 +508,7 @@ class Routes
     {
         $call['parameters'] = $call['defaults'];
         $p = & $call['parameters'];
+        $dataName = CommentParser::$embeddedDataName;
         foreach ($data as $key => $value) {
             if (isset($call['arguments'][$key])) {
                 $p[$call['arguments'][$key]] = $value;
@@ -528,7 +530,7 @@ class Routes
                 $lastBodyParamIndex = -1;
                 $lastM = null;
                 foreach ($call['metadata']['param'] as $k => $m) {
-                    if ($m[CommentParser::$embeddedDataName]['from'] == 'body') {
+                    if ($m[$dataName]['from'] == 'body') {
                         $bodyParamCount++;
                         $lastBodyParamIndex = $k;
                         $lastM = $m;
@@ -618,6 +620,7 @@ class Routes
     protected static function getTypeAndModel(ReflectionClass $class, array $scope, $prefix='', array $rules=array())
     {
         $className = $class->getName();
+        $dataName = CommentParser::$embeddedDataName;
         if (isset(static::$models[$prefix.$className])) {
             return static::$models[$prefix.$className];
         }
@@ -628,8 +631,8 @@ class Routes
                     if (!isset($prop['name'])) {
                         throw new Exception('@property comment is not properly defined in '.$className.' class');
                     }
-                    if(!isset($prop[CommentParser::$embeddedDataName]['label'])){
-                        $prop[CommentParser::$embeddedDataName]['label'] = String::title($prop['name']);
+                    if(!isset($prop[$dataName]['label'])){
+                        $prop[$dataName]['label'] = String::title($prop['name']);
                     }
                     $children[$prop['name']] = $prop;
                 }
@@ -659,14 +662,14 @@ class Routes
                         'type' => $child['name'] == 'email' ? 'email' : 'string',
                         'label' => String::title($child['name'])
                     );
-                    isset($child[CommentParser::$embeddedDataName])
-                        ? $child[CommentParser::$embeddedDataName] += array('required' => true)
-                        : $child[CommentParser::$embeddedDataName]['required'] = true;
+                    isset($child[$dataName])
+                        ? $child[$dataName] += array('required' => true)
+                        : $child[$dataName]['required'] = true;
                     if ($qualified = Scope::resolve($child['type'], $scope)) {
                         list($child['type'], $child['children'])
                             = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
                     } elseif (
-                        ($contentType = Util::nestedValue($child, CommentParser::$embeddedDataName, 'type')) &&
+                        ($contentType = Util::nestedValue($child, $dataName, 'type')) &&
                         ($qualified = Scope::resolve($contentType, $scope))
                     ) {
                         list($child['contentType'], $child['children'])
@@ -703,7 +706,7 @@ class Routes
             }
             $required = array_fill_keys($required, true);
             foreach ($children as $name => $child) {
-                $children[$name][CommentParser::$embeddedDataName]['required'] = isset($required[$name]);
+                $children[$name][$dataName]['required'] = isset($required[$name]);
             }
         }
         static::$models[$prefix.$className] = array($className, $children, $prefix.$className);
