@@ -128,151 +128,143 @@ var _gaq = _gaq || [];
 <li>没有学习曲线</li>
 <li>轻量级</li>
 <li>灵活</li>
-<li>高度满足顾客/用户的个性化要求</li>
+<li>高度满足顾客/用户的个性化要求(也可以简称为:高定制)</li>
 <li>大量的案例在你的本地中，你可以尝试跟着案例开始</li>
 <li>支持HTTP请求方式包括: HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH 通过头部信息或者请求参数(方法)</li>
 <li>支持RESTful和Pragmatic风格的REST接口设计</li>
 <li>客户端可以通过"X-HTTP-Method-Override"来覆盖HTTP头信息,支持跨域资源共享和JSONP</li>
-<li>Two way format(media type) conversion both send and receive
+<li>双向格式（媒体类型）转换同时发送和接收
 
 <ul>
-<li>Pluggable content Formatter framework and api</li>
-<li>Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format
-support</li>
+<li>可插拔的内容格式化的框架和API</li>
+<li>自带的JSON，XML，Yaml，Amf和Plist（XML和二进制）格式的支持</li>
 </ul>
 </li>
-<li>Pluggable Authentication schemes
+<li>可插拔的身份验证方案
 
 <ul>
-<li>OAuth 2 Server</li>
+<li>OAuth的2服务器</li>
 </ul>
 </li>
-<li>Pluggable Filters to effectively manage API usage
+<li>可插拔的过滤器能够有效地管理API使用
 
 <ul>
-<li>API Rate Limiting Filter</li>
+<li>API速率限制过滤器</li>
 </ul>
 </li>
-<li>Routing
+<li>路由
 
 <ul>
-<li>Manual Routing (Annotation)
+<li>手动路由(注解) 
 
 <ul>
-<li>Using <code>@url GET my/custom/url/{param}</code> PHPDoc comments</li>
+<li>使用 <code>@url GET my/custom/url/{param}</code> PHPDoc 注解</li>
 </ul>
 </li>
-<li>Auto Routing (Reflection)
+<li>自动路由 (反射)
 
 <ul>
-<li>URL to Method mapping</li>
-<li>URL part to Method parameter mapping</li>
-<li>Query parameters to Method parameter mapping</li>
-<li>Request body to Method parameter mapping</li>
+<li>URL与方法映射</li>
+<li>URL与方法参数映射</li>
+<li>查询参数与方法参数映射</li>
+<li>请求Body与方法参数映射</li>
 <li>
-<code>[planned]</code> Header to Method parameter mapping</li>
+<code>[planned]</code> Header 与方法参数映射</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>Cache built-in
+<li>内置缓存
 
 <ul>
-<li>Client Side Caching support</li>
-<li>Proxy Caching support</li>
-<li>Server Side Caching
-
-<ul>
-<li>
-<code>[planned]</code> ETag, If-None-Match support</li>
-<li>
-<code>[planned]</code> Last-Modified, If-Modified-Since support</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>API Features
-
-<ul>
-<li>Always supports URLEncoded format for simplified input (POST vars)</li>
-<li>Automatic parameter validation and type conversion</li>
-<li>API versioning support by URL and/or vendor specific MIME</li>
-<li>API documentation and discovery using <a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a>
-</li>
-<li>Throttling and Performance tuning</li>
-</ul>
-</li>
-<li>Management
+<li>支持Client side缓存</li>
+<li>支持代理缓存</li>
+<li>Server side缓存
 
 <ul>
 <li>
-<code>[planned]</code> Unit Testing using <a href="https://github.com/sebastianbergmann/phpunit/" target="_blank">PHPUnit</a>
+<code>[planned]</code> <a href="http://zh.wikipedia.org/wiki/HTTP_ETag" title="HTTP ETag - 维基百科" target="_blank">ETag</a>, If-None-Match 支持</li>
+<li>
+<code>[planned]</code> <a href="http://t.cn/RZXqMcm" title="Last-Modified 百度百科" target="_blank">Last-Modified</a>, If-Modified-Since 支持</li>
+</ul>
 </li>
-<li>Behavior Driven API testing using <a href="http://behat.org/" target="_blank">Behat</a> and <a href="https://github.com/guzzle/guzzle" target="_blank">Guzzle</a>
+</ul>
 </li>
-<li>Command line Project Management using <a href="https://github.com/Respect/Foundation" target="_blank">Respect/Foundation</a>
+<li>API 特点
+
+<ul>
+<li>简化输入始终支持URLEncoded 格式(POST vars)</li>
+<li>自动参数验证和类型转换</li>
+<li>API版本支持通过URL and/or 针对各种MIME(翻译有问题:API versioning support by URL and/or vendor specific MIME)</li>
+<li>API文档和显示数据使用<a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank" title="Reslter API Explorer">Restler API Explorer</a>
 </li>
-<li>Dependency Management using <a href="http://getcomposer.org/" target="_blank">Composer</a>
+<li>节流和效率高</li>
+</ul>
 </li>
-<li>Source code distributed under LGPL</li>
+<li>管理
+
+<ul>
+<li>
+<code>[planned]</code> 单元测试使用 <a href="https://github.com/sebastianbergmann/phpunit/" target="_blank" title="PHPUnit">PHPUnit</a>
+</li>
+<li>API行为测试驱动开发(BDD)测试使用<a href="http://behat.org/" target="_blank" title="Behat">Behat</a>和<a href="https://github.com/guzzle/guzzle" target="_blank" title="Guzzle">Guzzle</a>
+</li>
+<li>命令行进行项目管理使用<a href="https://github.com/Respect/Foundation" target="_blank" title="Respect Foundation">Respect/Foundation</a>
+</li>
+<li>依赖管理使用<a href="http://getcomposer.org/" target="_blank" title="Composer 官网">Composer</a>
+</li>
+<li>源代码分布使用LGPL开源协议</li>
 </ul>
 </li>
 </ul>
 <p><a id="git-repository-and-the-branches" class="anchor"></a></p>
-<h2>Git Repository and the Branches</h2>
+<h2>Git 版本库和分支</h2>
 
 <ol>
-<li><p>Most stable and recent version is maintained at the <code>master</code> branch, previous
-versions are kept in the branches such as <code>v1</code> and <code>v2</code></p></li>
-<li><p>Version branch with the current version such as <code>v3</code> is used for building up
-the next release. It's documentation may not be updated frequently and thus
-reserved for the daring ones.</p></li>
-<li><p>Feature branches such as <code>../features/html</code> and <code>../features/router</code> are purely
-for experimentation purpose to try out a feature</p></li>
+<li><p>许多稳定版本和最近的版本都是在<code>master</code> 分支上进行维护, 以前的版本在像分支名称为
+<code>v1</code>和 <code>v2</code>上进行维护</p></li>
+<li><p>版本分支当前的版本名称,例如 <code>v3</code>是用于建立下一个发布版本.这个文档可能没有频繁的更新,因此胆大的将旧的文档一部分保留了下来.</p></li>
+<li><p>推荐的分支例如 <code>../features/html</code> 和 <code>../features/router</code> 仅仅是
+用于实验出一个特色</p></li>
 </ol>
 <p><a id="installation" class="anchor"></a></p>
-<h2>Installation</h2>
+<h2>安装</h2>
 
-<p>Make sure PHP 5.3.2 or above (at least 5.3.4 recommended to avoid potential bugs)
-is available on your server</p>
+<p>确保PHP 5.3.2 或者以上(推荐至少 5.3.4 避免潜在的错误) </p>
 
 <p><a id="1--install-composer" class="anchor"></a></p>
-<h3>1. Install Composer</h3>
+<h3>1. 安装Composer</h3>
 
-<p>Restler uses <a href="http://getcomposer.org/" target="_blank">Composer</a> to manage its dependencies.
-First, download a copy of <code>composer.phar</code>. It can be kept in your project folder
-or ideally in <code>usr/local/bin</code> to use it globally for all your projects. If you
-are on Windows, you can use the composer
-<a href="https://getcomposer.org/Composer-Setup.exe" target="_blank">windows installer</a> instead.</p>
+<p>Restler 使用<a href="http://getcomposer.org/" target="_blank" title="Composer">Composer</a>来管理它的依赖关系.
+第一步, 下载一份<code>composer.phar</code>. 它能保持在你的项目文件夹中或者在理想情况下 <code>usr/local/bin</code> 使用它全局的管理你所有项目.如果你使用的是Windows, 你可以使用 composer
+<a href="https://getcomposer.org/Composer-Setup.exe" target="_blank" title="Composer windows installer">windows installer</a> 代替.</p>
 
 <p><a id="2--install-restler" class="anchor"></a></p>
-<h3>2. Install Restler</h3>
+<h3>2. 安装 Restler</h3>
 
 <p><a id="option-1--using-composer-create-project" class="anchor"></a></p>
-<h4>Option 1. Using composer create-project</h4>
+<h4>方法 1. 使用Composer创建项目(不太推荐,目前国内的速度很慢)</h4>
 
-<p>You may install Restler by running the create project command in your terminal.
-Replace {projectName} with your actual project name. It will create a folder
-with that name and install Restler.</p>
+<p>你可以安装Reslter通过终端运行创建项目的命令.
+替换 {projectName} 为你实际的项目名称. 它将创建一个名称一样的文件夹并安装Reslter.</p>
 
 <pre><code class="console">php composer.phar create-project luracast/restler {projectName}
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong></p>
+  <p><strong>注意:-</strong></p>
   
   <ol>
-<li><p>If you do not want the additional formats and BDD tools you can include
-  <code>--no-dev</code> to enforce exclusion of dev packages.</p></li>
-  <li><p>If you want to try the bleading edge v3 branch or any of the feature
-  branches include <code>3.x-dev</code> or <code>dev-../features/html</code> in the above command</p></li>
+<li><p>如果你不需要附加的格式和行为测试驱动开发工具,你可以包含
+  <code>--no-dev</code> 来实施排除开发工具包.</p></li>
+  <li><p>如果你想尝试前沿的v3 分支 或者其它推荐的分支包含 <code>3.x-dev</code> 或者<code>dev-../features/html</code> 在上面的命令</p></li>
   </ol>
 </blockquote>
 
 <p><a id="option-2--downloading-from-github" class="anchor"></a></p>
-<h4>Option 2. Downloading from github</h4>
+<h4>方法2. 在github下载Restler</h4>
 
-<p>Once Composer is installed, download the <a href="" target="_blank">latest version</a> of the Restler
+<p>曾经安装过Composer, 下载Restler 框架的<a href="" target="_blank">最后版本</a> of the Restler
 framework and extract its contents into a directory on your server. Next, in the
 root of your Restler project, run the <code>php composer.phar install</code>
 (or <code>composer install</code>) command to install all of the framework's dependencies.
