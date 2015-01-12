@@ -5,6 +5,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="examples/resources/highlight.css">
 <link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
+<link rel="stylesheet" type="text/css" href="examples/resources/wakasann.css"/>
 <script src="examples/resources/highlight.pack.js"></script>
 <script type="text/javascript" src="examples/resources/jquery-1.7.2.min.js"></script>
 
@@ -48,7 +49,7 @@ var _gaq = _gaq || [];
             <li><a href="index.html#installation" title="安装">安装</a></li>
             <li><a href="index.html#quick-start-guide" title="快速入门">开始</a></li>
             <li><a href="index.html#change-log" title="有哪些更新呢?">更改日志</a></li>
-            <li><a href="annotations.html#supported-annotations" title="支持注解">注解</a>
+            <li><a href="annotations.html#supported-annotations" title="注解">注解</a>
                 <ul><li><a href="annotations.html#url" title="注解 - @url">@url</a></li></ul>
                 <ul><li><a href="annotations.html#access" title="注解 - @access">@access</a></li></ul>
                 <ul><li><a href="annotations.html#smart-auto-routing" title="注解 - @smart-auto-routing">@smart-auto...</a></li></ul>
@@ -116,10 +117,10 @@ var _gaq = _gaq || [];
 <li><a href="http://restler3.luracast.com/examples/" target="_blank">在线案例</a></li>
 <li>在 <a href="https://www.facebook.com/Luracast" target="_blank">Facebook</a> 和 <a href="http://twitter.com/Luracast" target="_blank">Twitter </a>上更新
 </li>
-<li><a href="#features" target="_blank">特点</a></li>
-<li><a href="#installation" target="_blank">安装</a></li>
-<li><a href="#quick-start-guide" target="_blank">快速入门指南</a></li>
-<li><a href="#change-log" target="_blank">更改日志</a></li>
+<li><a href="#features" >特点</a></li>
+<li><a href="#installation" >安装</a></li>
+<li><a href="#quick-start-guide">快速入门指南</a></li>
+<li><a href="#change-log" >变更记录</a></li>
 </ul>
 <p><a id="features" class="anchor"></a></p>
 <h2>特点</h2>
@@ -311,20 +312,19 @@ var _gaq = _gaq || [];
 <p>所有的设置都好了, 快乐的使用Restler! :)</p>
 
 <p><a id="quick-start-guide" class="anchor"></a></p>
-<h2>Quick Start Guide</h2>
+<h2>快速入门指南</h2>
 
-<p>Once you have got restler installed with the above steps, you can quickly create
-your application by following these steps</p>
+<p>只要你通过上面的步骤安装了restler, 你就可以通过下面的几个步骤快速创建你的应用</p>
 
 <p><a id="1--write-api" class="anchor"></a></p>
-<h3>1. Write API</h3>
+<h3>1. 写 API</h3>
 
-<p>Create your <strong>API classes</strong> with all needed public and protected methods</p>
+<p>创建你的<strong>API 类</strong>中所有公开和私有方法</p>
 
 <p><a id="2--open-the-gateway" class="anchor"></a></p>
-<h3>2. Open the Gateway</h3>
+<h3>2. 打开网关(创建入口文件)</h3>
 
-<p>Create the <strong>gateway (index.php)</strong> as follows</p>
+<p>创建一个 <strong>网关(也可以叫做入口文件) (index.php)</strong> 如下面的代码:</p>
 
 <pre><code class="php">&lt;?php
 require_once '../../../vendor/restler.php';
@@ -336,20 +336,20 @@ $r-&gt;handle(); //serve the response
 </code></pre>
 
 <p><a id="3--prettify-urls" class="anchor"></a></p>
-<h3>3. Prettify URLs</h3>
+<h3>3. 美化URL</h3>
 
-<p><strong>Enable URL Rewriting</strong></p>
+<p><strong>开启URL 重写(rewrite)</strong></p>
 
-<p>Make sure all the requests are routed to index.php by enabling URL Rewriting for
-your website</p>
+<p>给你的网站开启URL 重写需要确保所有请求都通过index.php(也可以叫做:单一入口应用程序)</p>
 
-<p>For example:-</p>
+<p>比如:-</p>
 
-<p>If you are on Apache, you can use an .htaccess file such as</p>
+<p>如果你使用的是Apache,可以使用一个  .htaccess 文件,比如:</p>
 
 <pre><code class="apache">DirectoryIndex index.php
 &lt;IfModule mod_rewrite.c&gt;
     RewriteEngine On
+ #RewriteBase /   
     RewriteRule ^$ index.php [QSA,L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -361,14 +361,11 @@ your website</p>
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> This requires <code>AllowOverride</code> to be set to <code>All</code> instead of <code>None</code>
-  in the <code>httpd.conf</code> file, and might require some tweaking on some server
-  configurations. Refer to <a href="http://httpd.apache.org/docs/current/mod/mod_rewrite.html" target="_blank">mod_rewrite</a>
-  documentation for more info.</p>
+  <p><strong>注意:-</strong> 这个请求需要将<code>httpd.conf</code> 文件中的<code>AllowOverride</code> 将<code>None</code>设置为<code>All</code>, 可能在一些服务器上面需要做一些稍微的配置. 可以参考 <a href="http://httpd.apache.org/docs/current/mod/mod_rewrite.html" target="_blank">mod_rewrite</a>
+ 文档来获取更多信息.</p>
 </blockquote>
 
-<p>If you are on Nginx, you have to make sure you set the <code>server_name</code> and pass the
-PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000</p>
+<p>如果你使用的是<strong class="translation_warn">Nginx</strong>,你必须确定你设置 <code>server_name</code>和通过设置php 脚本为 fast cgi (PHP-FPM) 监听在 127.0.0.1:9000</p>
 
 <pre><code>server {
         listen        80;
@@ -390,15 +387,14 @@ PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000</p>
 </code></pre>
 
 <blockquote>
-  <p><strong>Note:-</strong> This requires PHP, PHP-FPM to be properly installed and configured.
-  Refer to <a href="http://wiki.nginx.org/PHPFcgiExample" target="_blank">PHP FastCGI</a> example for more
-  info.</p>
+  <p><strong>注意:-</strong>这里要求PHP, PHP-FPM 都已经安装并配置好.
+  参考  <a href="http://wiki.nginx.org/PHPFcgiExample" target="_blank" title="Ngnix PHP Fcgi Example">PHP FastCGI</a> 案例来获取更多信息.</p>
 </blockquote>
 
 <p><a id="4--customise" class="anchor"></a></p>
-<h3>4. Customise</h3>
+<h3>4. 定制</h3>
 
-<p><strong>Fine tune to suit your needs</strong></p>
+<p><strong>最后调整选项来适应你的应用程序需求</strong></p>
 
 <pre><code class="php">&lt;?php
 require_once '../../../vendor/restler.php';
@@ -414,34 +410,32 @@ $r-&gt;addFilterClass('RateLimit'); //Add Filters as needed
 $r-&gt;handle(); //serve the response
 </code></pre>
 
-<p>If you have successfully completed Installation Step 2, you should have
-<a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a> installed
-in <code>vendor/Luracast/explorer</code> folder. Create a symbolic link of
-<code>vendor/Luracast/explorer/dist</code> or copy the folder and name it as <code>explorer</code></p>
+<p>假如你通过第二步成功的安装,你应该有一个
+<a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a> 安装在你的
+ <code>vendor/Luracast/explorer</code>文件夹中. 创建一个符号链接(Symbolic Links) 指向
+<code>vendor/Luracast/explorer/dist</code> 或者复制文件夹并重命名为 <code>explorer</code></p>
 
-<p>Place the explorer in the same folder as the <code>index.php</code></p>
+<p>替换的explorer文件夹需要 与<code>index.php</code>文件同级</p>
 
-<p>Explore the api and try it out by openings <code>explorer/index.html</code> from the web
-root on your browser</p>
+<p>通过浏览器浏览你网站根目录,并尝试打开 <code>explorer/index.html</code>来浏览api</p>
 
-<p>Happy Exploring! :)</p>
+<p>快乐浏览! :)</p>
 
 <blockquote>
-  <p><strong>Note:-</strong> Using eAccelerator can make restler to fail as it removes the
-  comments. More info can be found <a href="http://wildlyinaccurate.com/eaccelerator-and-doctrine-2" target="_blank">here</a></p>
+  <p><strong>注意:-</strong>使用 eAccelerator 会移除注解会导致restler失败.更多信息可以在<a href="http://wildlyinaccurate.com/eaccelerator-and-doctrine-2" target="_blank">这里</a>找到</p>
 </blockquote>
 
 <p><a id="5--annotate" class="anchor"></a></p>
-<h3>5. Annotate</h3>
+<h3>5. 注解</h3>
 
 <p>Restler supports annotations in the form of PHPDoc comments for API fine tuning</p>
 
-<p>They are documented in detail under <a href="annotations.html" target="_blank">Annotations</a></p>
+<p>文档的详细资料在 <a href="annotations.html" target="_blank" title="Annotations">Annotations</a>中</p>
 
 <p><a id="6--authorize" class="anchor"></a></p>
-<h3>6. Authorize</h3>
+<h3>6. 授权(验证)</h3>
 
-<p>In order to protect your api, authenticate and allow valid users</p>
+<p>为了保护你的api, 验证和允许有效的用户</p>
 
 <pre><code class="php">&lt;?php
 require_once '../../../vendor/restler.php';
@@ -453,15 +447,12 @@ $r-&gt;handle(); //serve the response
 </code></pre>
 
 <p><a id="7--start-production" class="anchor"></a></p>
-<h3>7. Start Production</h3>
+<h3>7. 开始生产(Start Production)</h3>
 
-<p>By default Restler runs in debug mode more fine tuned for API developer, by
-showing detailed error messages and prettifying the api result to human readbale
-form</p>
+<p>默认情况下,Restler都是运行在调试模式(debug mode)下,为了能返回更多调试信息给开发者,会显示详细的错误信息和让api返回结果能更好理解</p>
 
-<p>By turning on production mode you will gain some performance boost as it will
-cache the routes (comment parsing happens only once instead of every api call),
-few other files and avoid giving out debug information</p>
+<p> 在开启了生产模式(production mode)的情况下, 你将增加性能的提高,它将会缓存路由(注释只会解析一次,而不是每次api请求时解析) ,
+一些其它文件和取消发出调试信息</p>
 
 <pre><code class="php">&lt;?php
 require_once '../../../vendor/restler.php';
@@ -477,13 +468,13 @@ $r = new Restler(true); //turn on production mode by passing true.
 </code></pre>
 
 <p><a id="change-log" class="anchor"></a></p>
-<h2>Change Log</h2>
+<h2>变更记录</h2>
 
 <p><a id="restler-3-0-rc5" class="anchor"></a></p>
 <h3>Restler 3.0 RC5</h3>
 
 <ul>
-<li>Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
+<li>适用范围(依赖注入容器)添加. It's register method allows adding api classes that has some dependencies.</li>
 <li>Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.</li>
 <li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity</li>
 <li>HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.</li>
