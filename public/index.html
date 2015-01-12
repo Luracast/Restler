@@ -225,7 +225,7 @@ var _gaq = _gaq || [];
 <code>v1</code>和 <code>v2</code>上进行维护</p></li>
 <li><p>版本分支当前的版本名称,例如 <code>v3</code>是用于建立下一个发布版本.这个文档可能没有频繁的更新,因此胆大的将旧的文档一部分保留了下来.</p></li>
 <li><p>推荐的分支例如 <code>../features/html</code> 和 <code>../features/router</code> 仅仅是
-用于实验出一个特色</p></li>
+用于实验用途</p></li>
 </ol>
 <p><a id="installation" class="anchor"></a></p>
 <h2>安装</h2>
@@ -264,43 +264,36 @@ var _gaq = _gaq || [];
 <p><a id="option-2--downloading-from-github" class="anchor"></a></p>
 <h4>方法2. 在github下载Restler</h4>
 
-<p>曾经安装过Composer, 下载Restler 框架的<a href="" target="_blank">最后版本</a> of the Restler
-framework and extract its contents into a directory on your server. Next, in the
-root of your Restler project, run the <code>php composer.phar install</code>
-(or <code>composer install</code>) command to install all of the framework's dependencies.
-This process requires Git to be installed on the server to successfully complete
-the installation.</p>
+<p>曾经安装过Composer, 下载Restler 框架的<a href="" target="_blank">最后版本</a>，将它解压在你的服务器的一个目录上. 接下来,进入你的Restler项目根目录, 运行<code>php composer.phar install</code>
+(或者 <code>composer install</code>) 命令来安装Restler框架的全部依赖的外部工具库.这个过程必须服务器安装了git,才能成功地完成安装.</p>
 
-<p>If you want to update the Restler framework, you may issue the
-<code>php composer.phar update</code> command.</p>
+<p>如果你想更新Restler框架, 你可以使用
+<code>php composer.phar update</code> 命令来进行更新.</p>
 
 <blockquote>
-  <p><strong>Note:-</strong> If are not allowed to install composer and git on your server, you
-  can install and run them on your development machine. The resulting files and
-  folders can be uploaded and used on the server.</p>
+  <p><strong>注意-</strong>如果你的服务器不允许安装Composer和git, 你可以将Composer和git安装在你的开发机器上面并运行它们.最终生成的文件和文件夹可以上传的，并在服务器上使用.</p>
 </blockquote>
 
 <p><a id="3--configure" class="anchor"></a></p>
-<h3>3. Configure</h3>
+<h3>3. 配置</h3>
 
-<p>Ideally public folder should be mapped as your web root, It is optional, but
-recommended to avoid exposing unneeded files and folders.</p>
+<p>理想情况下,public 文件夹应该放在你的web根目录中, 这不是必须的, 但是推荐这样做，避免列出不需要的文件和文件夹.</p>
 
 <p><a id="4--try-it-out" class="anchor"></a></p>
-<h3>4. Try it out</h3>
+<h3>4. 尝试它</h3>
 
-<p>Try the live examples in your localhost</p>
+<p>尝试你本地的<a href="examples/index.html" target="_blank" title="点击查看本地的案例">案例</a></p>
 
 <p><a id="5--run-some-test" class="anchor"></a></p>
-<h3>5. Run some test</h3>
+<h3>5. 运行一些检验</h3>
 
-<p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p>
+<p>更新项目根目录的<code>behat.yml</code>中<code>base_url</code>的值并尝试下面的命令</p>
 
 <pre><code class="console"><br>bin/behat
 
 </code></pre>
 
-<p>This will test the examples against the behaviors expected, for example</p>
+<p>它将检测案例行为的预期, 比如:</p>
 
 <pre><code class="gherkin"><br>Feature: Testing CRUD Example
     Scenario: Creating new Author with JSON
@@ -315,7 +308,7 @@ recommended to avoid exposing unneeded files and folders.</p>
 
 </code></pre>
 
-<p>All set, Happy Restling! :)</p>
+<p>所有的设置都好了, 快乐的使用Restler! :)</p>
 
 <p><a id="quick-start-guide" class="anchor"></a></p>
 <h2>Quick Start Guide</h2>
