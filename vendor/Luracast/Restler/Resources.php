@@ -370,7 +370,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
 
                 if (static::$groupOperations) {
                     foreach ($r->apis as $a) {
-                        if ($a->path == "/$fullPath") {
+                        if ($a->path == "$prefix/$fullPath") {
                             $api = $a;
                             break;
                         }
