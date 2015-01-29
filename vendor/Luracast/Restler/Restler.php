@@ -929,6 +929,20 @@ class Restler extends EventDispatcher
                         'at least one Authentication Class is required'
                     );
                 }
+
+                /* Authentication using multiple authentication classes works as follow:
+                 * - clear $this->authenticated
+                 * - iterate over all authentication classes and call their authentication method,
+                 *   saving the result in $this->authenticated
+                 * - break out of the loop once $this->authenticated is true
+                 * - when the loop finishes, check if $this->authenticated is false and throw a
+                 *   401 error.
+                 *
+                 * This approach means that a single authentication class must return true for authentication to
+                 * succeed, instead of all of them, as previously implemented.
+                 *
+                 */
+                $this->authenticated = false;
                 foreach ($this->authClasses as $authClass) {
                     $authObj = Scope::get($authClass);
                     if (!method_exists($authObj,
@@ -937,13 +951,20 @@ class Restler extends EventDispatcher
                         throw new RestException (
                             500, 'Authentication Class ' .
                             'should implement iAuthenticate');
-                    } elseif (
-                    !$authObj->{Defaults::$authenticationMethod}()
-                    ) {
-                        throw new RestException(401);
+                    }
+                    $this->authenticated = $authObj->{Defaults::$authenticationMethod}();
+                    if ($this->authenticated) {
+                        /* If we got one positive authentication result we may break out of the loop */
+                        break;
                     }
                 }
-                $this->authenticated = true;
+
+                /* Check if all authentication classes returned a negative result and throw
+                 * a 401 error in that case.
+                 */
+                if (!$this->authenticated) {
+                    throw new RestException(401);
+                }
             }
             $this->authVerified = true;
         } catch (RestException $e) {
@@ -1137,10 +1158,22 @@ class Restler extends EventDispatcher
             }
         }
         if ($this->responseCode == 401) {
-            $authString = count($this->authClasses)
-                ? Scope::get($this->authClasses[0])->__getWWWAuthenticateString()
-                : 'Unknown';
-            @header('WWW-Authenticate: ' . $authString, false);
+            if (count($this->authClasses)  == 0) {
+                @header('WWW-Authenticate: Unknown');
+            } else {
+                /*
+                 * Return an WWW-Authenticate header per registered
+                 * authentication class.
+                 * Sending multiple WWW-Authenticate headers is covered by RFC2616 and thus
+                 * should be handled correctly by a complying client.
+                 */
+                foreach($this->authClasses as $authClass) {
+                    /** @var iAuthenticate $authClassInstance */
+                    $authClassInstance = Scope::get($authClass);
+
+                    @header('WWW-Authenticate: '. $authClassInstance->__getWWWAuthenticateString(), false);
+                }
+            }
         }
         echo $this->responseData;
         $this->dispatch('complete');
