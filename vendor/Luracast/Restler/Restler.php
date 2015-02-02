@@ -1171,7 +1171,10 @@ class Restler extends EventDispatcher
                     /** @var iAuthenticate $authClassInstance */
                     $authClassInstance = Scope::get($authClass);
 
-                    @header('WWW-Authenticate: '. $authClassInstance->__getWWWAuthenticateString(), false);
+                    $wwwAuthenticateString = $authClassInstance->__getWWWAuthenticateString();
+                    if (!is_null($wwwAuthenticateString)) {
+                        @header('WWW-Authenticate: ' . $wwwAuthenticateString, false);
+                    }
                 }
             }
         }
