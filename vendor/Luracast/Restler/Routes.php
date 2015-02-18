@@ -2,7 +2,7 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ApiMethodInfo;
-use Luracast\Restler\Data\String;
+use Luracast\Restler\Data\Text;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -129,7 +129,7 @@ class Routes
                 }
                 $p = &$m[$dataName];
                 if (empty($m['label']))
-                    $m['label'] = String::title($m['name']);
+                    $m['label'] = Text::title($m['name']);
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
@@ -141,16 +141,16 @@ class Routes
                 if ($type == 'array' && $contentType && $qualified = Scope::resolve($contentType, $scope)) {
                     list($p['type'], $children, $modelName) = static::getTypeAndModel(
                         new ReflectionClass($qualified), $scope,
-                        $className . String::title($methodUrl), $p
+                        $className . Text::title($methodUrl), $p
                     );
                 }
                 if ($type instanceof ReflectionClass) {
                     list($type, $children, $modelName) = static::getTypeAndModel($type, $scope,
-                        $className . String::title($methodUrl), $p);
+                        $className . Text::title($methodUrl), $p);
                 } elseif ($type && is_string($type) && $qualified = Scope::resolve($type, $scope)) {
                     list($type, $children, $modelName)
                         = static::getTypeAndModel(new ReflectionClass($qualified), $scope,
-                        $className . String::title($methodUrl), $p);
+                        $className . Text::title($methodUrl), $p);
                 }
                 if (isset($type)) {
                     $m['type'] = $type;
@@ -457,7 +457,7 @@ class Routes
                         if (empty($exclude)) {
                             if ($fullPath == $exclude || $fullPath == 'index')
                                 continue 2;
-                        } elseif (String::beginsWith($fullPath, $exclude)) {
+                        } elseif (Text::beginsWith($fullPath, $exclude)) {
                             continue 2;
                         }
                     }
@@ -632,7 +632,7 @@ class Routes
                         throw new Exception('@property comment is not properly defined in '.$className.' class');
                     }
                     if(!isset($prop[$dataName]['label'])){
-                        $prop[$dataName]['label'] = String::title($prop['name']);
+                        $prop[$dataName]['label'] = Text::title($prop['name']);
                     }
                     $children[$prop['name']] = $prop;
                 }
@@ -660,7 +660,7 @@ class Routes
                     }
                     $child += array(
                         'type' => $child['name'] == 'email' ? 'email' : 'string',
-                        'label' => String::title($child['name'])
+                        'label' => Text::title($child['name'])
                     );
                     isset($child[$dataName])
                         ? $child[$dataName] += array('required' => true)
@@ -679,7 +679,7 @@ class Routes
                 }
             }
         } catch (Exception $e) {
-            if (String::endsWith($e->getFile(), 'CommentParser.php')) {
+            if (Text::endsWith($e->getFile(), 'CommentParser.php')) {
                 throw new RestException(500, "Error while parsing comments of `$className` class. " . $e->getMessage());
             }
             throw $e;

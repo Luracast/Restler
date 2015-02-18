@@ -2,7 +2,7 @@
 namespace Luracast\Restler\UI;
 
 use Luracast\Restler\CommentParser;
-use Luracast\Restler\Data\String;
+use Luracast\Restler\Data\Text;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
 use Luracast\Restler\Scope;
@@ -85,7 +85,7 @@ class Nav
                     $access = $item['access'];
                     $route = $item['route'];
                     $url = $route['url'];
-                    if ($access && !String::contains($url, '{')) {
+                    if ($access && !Text::contains($url, '{')) {
                         $label = Util::nestedValue(
                             $route,
                             'metadata',
@@ -173,20 +173,20 @@ class Nav
         if (isset($r['fragment'])) {
             $parts[] = $r['fragment'];
             if (is_null($label)) {
-                $label = String::title($r['fragment']);
+                $label = Text::title($r['fragment']);
             }
         }
         if (empty($r['scheme'])) {
             //relative url found
             if (empty($url)) {
-                $label = String::title(static::$root);
+                $label = Text::title(static::$root);
                 $url = static::$url;
             } else {
                 $url = static::$url . '/' . ltrim($url, '/');
             }
         }
         if (is_null($label)) {
-            $label = String::title(strtok(end($parts), '.'));
+            $label = Text::title(strtok(end($parts), '.'));
         }
         $r['url'] = $url;
         $r['path'] = $trail;
@@ -205,14 +205,14 @@ class Nav
             if ($i == $last) {
                 $p[$part]['text'] = $r['label'];
                 $p[$part]['href'] = $r['url'];
-                $p[$part]['class'] = String::slug($part);
+                $p[$part]['class'] = Text::slug($part);
                 /* dynamically do it at run time instead
                 if ($r['path'] == static::$activeTrail)
                     $p[$part]['active'] = true;
                 */
             } elseif (!isset($p[$part])) {
                 $p[$part] = array();
-                $p[$part]['text'] = String::title($part);
+                $p[$part]['text'] = Text::title($part);
                 $p[$part]['href'] = '#';
                 $p[$part]['children'] = array();
             }
