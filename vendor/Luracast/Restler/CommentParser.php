@@ -2,7 +2,7 @@
 namespace Luracast\Restler;
 
 use Exception;
-use Luracast\Restler\Data\String;
+use Luracast\Restler\Data\Text;
 
 /**
  * Parses the PHPDoc comments for metadata. Inspired by `Documentor` code base.
@@ -483,7 +483,7 @@ class CommentParser
                 $r['name'] = substr($data, 1);
             }
         }
-        if (isset($r['type']) && String::endsWith($r['type'], '[]')) {
+        if (isset($r['type']) && Text::endsWith($r['type'], '[]')) {
             $r[static::$embeddedDataName]['type'] = substr($r['type'], 0, -2);
             $r['type'] = 'array';
         }
@@ -506,7 +506,7 @@ class CommentParser
             $data = explode('|', $data);
             $r['type'] = count($data) == 1 ? $data[0] : $data;
         }
-        if (isset($r['type']) && String::endsWith($r['type'], '[]')) {
+        if (isset($r['type']) && Text::endsWith($r['type'], '[]')) {
             $r[static::$embeddedDataName]['type'] = substr($r['type'], 0, -2);
             $r['type'] = 'array';
         }
