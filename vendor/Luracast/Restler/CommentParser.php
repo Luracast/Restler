@@ -204,7 +204,7 @@ class CommentParser
             list(, $param, $value) = preg_split('/\@|\s/', $line, 3)
             + array('', '', '');
             list($value, $embedded) = $this->parseEmbeddedData($value);
-            $value = array_filter(preg_split('/\s+/msu', $value));
+            $value = array_filter(preg_split('/\s+/msu', $value), 'strlen');
             $this->parseParam($param, $value, $embedded);
         }
         return $this->_data;
