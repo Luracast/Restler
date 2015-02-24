@@ -69,7 +69,12 @@ class Scope
     protected static $instances = array();
     protected static $registry = array();
 
-    public static function register($name, Callable $function, $singleton = true)
+    /**
+     * @param string   $name
+     * @param callable $function
+     * @param bool     $singleton
+     */
+    public static function register($name, $function, $singleton = true)
     {
         static::$registry[$name] = (object)compact('function', 'singleton');
     }
