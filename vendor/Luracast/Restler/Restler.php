@@ -917,23 +917,21 @@ class Restler extends EventDispatcher
 
     protected function authenticate()
     {
-        $o = & $this->apiMethodInfo;
-        $accessLevel = max(Defaults::$apiAccessLevel,
-            $o->accessLevel);
-        try {
-            if ($accessLevel || count($this->postAuthFilterClasses)) {
-                $this->dispatch('authenticate');
-                if (!count($this->authClasses)) {
-                    throw new RestException(
-                        403,
-                        'at least one Authentication Class is required'
-                    );
-                }
-                foreach ($this->authClasses as $authClass) {
+        $o = &$this->apiMethodInfo;
+        $accessLevel = max(Defaults::$apiAccessLevel, $o->accessLevel);
+        if ($accessLevel || count($this->postAuthFilterClasses)) {
+            $this->dispatch('authenticate');
+            if (!count($this->authClasses)) {
+                throw new RestException(
+                    403,
+                    'at least one Authentication Class is required'
+                );
+            }
+            $unauthorized = false;
+            foreach ($this->authClasses as $authClass) {
+                try {
                     $authObj = Scope::get($authClass);
-                    if (!method_exists($authObj,
-                        Defaults::$authenticationMethod)
-                    ) {
+                    if (!method_exists($authObj, Defaults::$authenticationMethod)) {
                         throw new RestException (
                             500, 'Authentication Class ' .
                             'should implement iAuthenticate');
@@ -942,17 +940,23 @@ class Restler extends EventDispatcher
                     ) {
                         throw new RestException(401);
                     }
+                    $unauthorized = false;
+                    break;
+                } catch (RestException $e) {
+                    if (!$unauthorized) {
+                        $unauthorized = $e;
+                    }
                 }
-                $this->authenticated = true;
             }
             $this->authVerified = true;
-        } catch (RestException $e) {
-            $this->authVerified = true;
-            if ($accessLevel > 1) { //when it is not a hybrid api
-                throw ($e);
-            } else {
-                $this->authenticated = false;
+            if ($unauthorized) {
+                if ($accessLevel > 1) { //when it is not a hybrid api
+                    throw $unauthorized;
+                } else {
+                    $this->authenticated = false;
+                }
             }
+            $this->authenticated = true;
         }
     }
 
