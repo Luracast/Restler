@@ -58,7 +58,6 @@ class CommentParser
         'choice' => true,
         'select' => true,
         'properties' => true,
-        'required' => true,
     );
 
     /**
@@ -322,14 +321,15 @@ class CommentParser
         }
         while (preg_match('/{@(\w+)\s?([^}]*)}/ms', $subject, $matches)) {
             $subject = str_replace($matches[0], '', $subject);
-            if ($matches[2] == 'true' || $matches[2] == 'false') {
+            if ($matches[1] == 'pattern') {
+                throw new Exception('Inline pattern tag should follow {@pattern /REGEX_PATTERN_HERE/} format and can optionally include PCRE modifiers following the ending `/`');
+            } elseif (isset(static::$allowsArrayValue[$matches[1]])) {
+                $matches[2] = explode(static::$arrayDelimiter, $matches[2]);
+            } elseif ($matches[2] == 'true' || $matches[2] == 'false') {
                 $matches[2] = $matches[2] == 'true';
             } elseif ($matches[2] == '') {
                 $matches[2] = true;
-            }
-            if ($matches[1] == 'pattern') {
-                throw new Exception('Inline pattern tag should follow {@pattern /REGEX_PATTERN_HERE/} format and can optionally include PCRE modifiers following the ending `/`');
-            } elseif (is_string($matches[2]) && isset(static::$allowsArrayValue[$matches[1]])) {
+            } elseif ($matches[1] == 'required') {
                 $matches[2] = explode(static::$arrayDelimiter, $matches[2]);
             }
             $data[$matches[1]] = $matches[2];
