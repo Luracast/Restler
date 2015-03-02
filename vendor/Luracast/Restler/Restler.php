@@ -955,8 +955,9 @@ class Restler extends EventDispatcher
                 } else {
                     $this->authenticated = false;
                 }
+            } else {
+                $this->authenticated = true;
             }
-            $this->authenticated = true;
         }
     }
 
