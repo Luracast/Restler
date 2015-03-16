@@ -877,6 +877,8 @@ class Restler extends EventDispatcher
                         'at least one Authentication Class is required'
                     );
                 }
+
+                $this->authenticated = false;
                 foreach ($this->authClasses as $authClass) {
                     $authObj = Scope::get($authClass);
                     if (!method_exists($authObj,
@@ -885,22 +887,22 @@ class Restler extends EventDispatcher
                         throw new RestException (
                             500, 'Authentication Class ' .
                             'should implement iAuthenticate');
-                    } elseif (
-                    !$authObj->{Defaults::$authenticationMethod}()
+                    }
+
+                    if ($authObj->{Defaults::$authenticationMethod}()
                     ) {
-                        throw new RestException(401);
+                        $this->authenticated = true;
                     }
                 }
-                $this->authenticated = true;
+                $this->authVerified = true;
+
+                if (! $this->authenticated && $accessLevel > 1) {//when it is not a hybrid api
+                    throw new RestException(401);
+                }
             }
-            $this->authVerified = true;
         } catch (RestException $e) {
             $this->authVerified = true;
-            if ($accessLevel > 1) { //when it is not a hybrid api
-                throw ($e);
-            } else {
-                $this->authenticated = false;
-            }
+            throw ($e);
         }
     }
 
