@@ -37,6 +37,7 @@ Footer:
 */
 
 use Luracast\Restler\Defaults;
+use Luracast\Restler\Explorer;
 use Luracast\Restler\Filter\RateLimit;
 use Luracast\Restler\Restler;
 
@@ -48,6 +49,8 @@ require_once '../_007_crud/DB/Session.php';
 Defaults::$cacheClass = 'SessionCache';
 //set extreme value for quick testing
 RateLimit::setLimit('hour', 10);
+
+Explorer::$hideProtected = false;
 
 $r = new Restler();
 
