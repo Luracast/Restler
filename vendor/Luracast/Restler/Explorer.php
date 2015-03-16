@@ -132,7 +132,16 @@ class Explorer implements iProvideMultiVersionApi
     public function get()
     {
         if (func_num_args() > 1 && func_get_arg(0) == 'resources') {
-            return $this->getResources(func_get_arg(1));
+            /**
+             * BUGFIX:
+             * If we use common resourcePath (e.g. $r->addAPIClass([api-class], 'api/shop')), than we must determine resource-ID of e.g. 'api/shop'!
+             */
+            $arguments = func_get_args();
+            // remove first entry
+            array_shift($arguments);
+            // create ID
+            $id = implode('/', $arguments);
+            return $this->getResources($id);
         }
         $filename = implode('/', func_get_args());
         $redirect = false;
