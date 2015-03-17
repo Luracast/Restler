@@ -98,7 +98,7 @@ class Scope
             if (static::$registry[$name]->singleton) {
                 static::$instances[$name] = (object)array('instance' => $r);
             }
-        } elseif (is_callable(static::$resolver)) {
+        } elseif (is_callable(static::$resolver) && $name != 'Restler') {
             $fullName = $name;
             if (isset(static::$classAliases[$name])) {
                 $fullName = static::$classAliases[$name];
