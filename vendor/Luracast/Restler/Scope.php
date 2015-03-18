@@ -98,7 +98,7 @@ class Scope
             if (static::$registry[$name]->singleton) {
                 static::$instances[$name] = (object)array('instance' => $r);
             }
-        } elseif (is_callable(static::$resolver)) {
+        } elseif (is_callable(static::$resolver) && false === stristr($name, 'Luracast\Restler')) {
             $fullName = $name;
             if (isset(static::$classAliases[$name])) {
                 $fullName = static::$classAliases[$name];
@@ -107,6 +107,7 @@ class Scope
             $function = static::$resolver;
             $r = $function($fullName);
             static::$instances[$name] = (object)array('instance' => $r);
+            static::$instances[$name]->initPending = true;
         } else {
             $fullName = $name;
             if (isset(static::$classAliases[$name])) {
