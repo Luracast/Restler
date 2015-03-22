@@ -182,17 +182,17 @@ class HtmlFormat extends DependentFormat
             $data['nav'] = array_values(Nav::get());
         $options = array(
             'loader' => new \Mustache_Loader_FilesystemLoader(
-                    static::$viewPath,
-                    array('extension' => static::getViewExtension())
-                ),
+                static::$viewPath,
+                array('extension' => static::getViewExtension())
+            ),
             'helpers' => array(
                 'form' => function ($text, \Mustache_LambdaHelper $m) {
-                        $params = explode(',', $m->render($text));
-                        return call_user_func_array(
-                            'Luracast\Restler\UI\Forms::get',
-                            $params
-                        );
-                    },
+                    $params = explode(',', $m->render($text));
+                    return call_user_func_array(
+                        'Luracast\Restler\UI\Forms::get',
+                        $params
+                    );
+                },
             )
         );
         if (!$debug)
@@ -332,10 +332,7 @@ class HtmlFormat extends DependentFormat
                     self::$view = $metadata[$view];
                 }
             } elseif (!self::$view) {
-                $file = static::$viewPath . '/' . $this->restler->url . '.' . static::getViewExtension();
-                self::$view = static::$useSmartViews && is_readable($file)
-                    ? $this->restler->url
-                    : static::$errorView;
+                self::$view = static::guessViewName($this->restler->url);
             }
             if (
                 isset($metadata['param'])
@@ -387,6 +384,20 @@ class HtmlFormat extends DependentFormat
             $this->reset();
             throw $e;
         }
+    }
+
+    public static function guessViewName($path)
+    {
+        if (empty($path)) {
+            $path = 'index';
+        } elseif (strpos($path, '/')) {
+            $path .= '/index';
+        }
+        $file = static::$viewPath . '/' . $path . '.' . static::getViewExtension();
+
+        return static::$useSmartViews && is_readable($file)
+            ? $path
+            : static::$errorView;
     }
 
     public static function getViewExtension()
