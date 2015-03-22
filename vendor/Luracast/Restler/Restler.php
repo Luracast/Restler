@@ -919,7 +919,7 @@ class Restler extends EventDispatcher
     {
         $o = &$this->apiMethodInfo;
         $accessLevel = max(Defaults::$apiAccessLevel, $o->accessLevel);
-        if ($accessLevel || count($this->postAuthFilterClasses)) {
+        if ($accessLevel > 1 || count($this->postAuthFilterClasses)) {
             $this->dispatch('authenticate');
             if (!count($this->authClasses)) {
                 throw new RestException(
