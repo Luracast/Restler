@@ -409,7 +409,24 @@ class Explorer implements iProvideMultiVersionApi
 
     private function model($type, array $children)
     {
-        $type = Util::getShortName($type);
+        /**
+         * Bugfix:
+         * If we use namespaces, than the model will not be correct, if we use a short name for the type!
+         *
+         * Example (phpDoc/annotations in API-class, which uses custom domain-model with namespace):
+         * @param Car $car {@from body} {@type Aoe\RestServices\Domain\Model\Car}
+         * @return Car {@type Aoe\RestServices\Domain\Model\Car}
+         * Than, the model (in swagger-spec) must also be 'Aoe\RestServices\Domain\Model\Car' and not 'Car'
+         *
+         * When we use namespaces, than we must use the @type-annotation, otherwise the automatic reconstitution
+         * from request-data (e.g. when it is a POST-request) to custom domain-model-object will not work!
+         *
+         * Summary:
+         * - When we use no namespaces, than the type would not be changed, if we would call 'Util::getShortName'
+         * - When we use namespaces, than the model will not be correct, if we would call 'Util::getShortName'
+         * ...so this method-call is either needless or will create a bug/error
+         */
+        //$type = Util::getShortName($type);
         if (isset($this->models[$type]))
             return $this->models[$type];
         $r = new stdClass();
