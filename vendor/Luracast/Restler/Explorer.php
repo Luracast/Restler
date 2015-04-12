@@ -142,6 +142,7 @@ class Explorer implements iProvideMultiVersionApi
             array_shift($arguments);
             // create ID
             $id = implode('/', $arguments);
+
             return $this->getResources($id);
         }
         $filename = implode('/', func_get_args());
@@ -237,7 +238,9 @@ class Explorer implements iProvideMultiVersionApi
             : '';
         $r->responses = $this->responses($route);
         //TODO: avoid hard coding
-        $r->security = array(array('api_key' => array()));
+        if ($route['accessLevel']) {
+            $r->security = array(array('api_key' => array()));
+        }
         /*
         $this->setType(
             $r,
@@ -353,6 +356,7 @@ class Explorer implements iProvideMultiVersionApi
         $p->description = $description;
         $p->in = $info->from; //$info->from == 'body' ? 'form' : $info->from;
         $p->required = $info->required;
+
         //$p->allowMultiple = false;
 
         return $p;
@@ -362,16 +366,14 @@ class Explorer implements iProvideMultiVersionApi
     {
         $code = '200';
         $r = array(
-            $code => array(
+            $code => (object)array(
                 'description' => RestException::$codes[$code],
-                'schema'      => array(
-                    '$ref' => '#/definitions/Author'
-                ),
             )
         );
         $return = Util::nestedValue($route, 'metadata', 'return');
-        $r[$code] += $this->schema($return);
-
+        if (!empty($return)) {
+            $this->setType($r[$code], new ValidationInfo($return));
+        }
 
         if (is_array($throws = Util::nestedValue($route, 'metadata', 'throws'))) {
             foreach ($throws as $message) {
@@ -380,15 +382,6 @@ class Explorer implements iProvideMultiVersionApi
         }
 
         return $r;
-    }
-
-    private function schema($metadata)
-    {
-        if (!empty($metadata)) {
-            return array();
-        } else {
-            return array();
-        }
     }
 
     private function model($type, array $children)
@@ -402,7 +395,7 @@ class Explorer implements iProvideMultiVersionApi
         foreach ($children as $child) {
             $info = new ValidationInfo($child);
             $p = new stdClass();
-            //$this->setType($p, $info);
+            $this->setType($p, $info);
             $p->description = isset($child['description']) ? $child['description'] : '';
             if ($info->default) {
                 $p->defaultValue = $info->default;
@@ -440,7 +433,7 @@ class Explorer implements iProvideMultiVersionApi
                 $contentType = Util::getShortName($info->contentType);
                 $model = $this->model($contentType, $info->children);
                 $object->items = (object)array(
-                    '$ref' => $contentType
+                    '$ref' => "$contentType"
                 );
             } elseif ($info->contentType && $info->contentType == 'associative') {
                 unset($info->contentType);
