@@ -6,6 +6,7 @@ use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\View\Compilers\BladeCompiler;
 use Illuminate\View\Engines\CompilerEngine;
+use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
@@ -99,6 +100,10 @@ class HtmlFormat extends DependentFormat
         $engine = new CompilerEngine($compiler);
         $resolver->register('blade', function () use ($engine) {
             return $engine;
+        });
+        $phpEngine = new PhpEngine();
+        $resolver->register('php', function () use ($phpEngine) {
+            return $phpEngine;
         });
 
         /** @var Restler $restler */
