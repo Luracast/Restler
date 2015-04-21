@@ -478,6 +478,19 @@ class Explorer implements iProvideMultiVersionApi
                     )
                 ));
             } elseif ($info->contentType && $info->contentType != 'indexed') {
+                /**
+                 * Bugfix:
+                 * The custom model will not be shown, if we configure the custom model (via phpDoc-synthax '@type') inside an array!
+                 *
+                 * Example (phpDoc/annotations in custom model with namespace):
+                 * @var array {@type Aoe\RestlerExamples\Domain\Model\Product}
+                 * Than, the model of Aoe\RestlerExamples\Domain\Model\Product was not set (in swagger-spec)
+                 */
+                if (class_exists($info->contentType)) {
+                    list($objectType, $objectChildren) = \Luracast\Restler\Routes::getTypeAndModel(new \ReflectionClass($info->contentType), array());
+                    $this->model($objectType, $objectChildren);
+                }
+
                 $object->items = (object)array(
                     'type' => $info->contentType
                 );
