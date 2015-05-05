@@ -379,6 +379,7 @@ class RestContext extends BehatContext
             case 'application/xml':
                 $this->_type = 'xml';
                 libxml_use_internal_errors(true);
+                libxml_disable_entity_loader(true);
                 $this->_data = @simplexml_load_string(
                     $this->_response->getBody(true));
                 if (!$this->_data) {
