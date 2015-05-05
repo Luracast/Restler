@@ -204,6 +204,7 @@ class XmlFormat extends Format
                 return array();
             }
             libxml_use_internal_errors(true);
+            libxml_disable_entity_loader(true);
             $xml = simplexml_load_string($data,
                 "SimpleXMLElement", LIBXML_NOBLANKS | LIBXML_NOCDATA | LIBXML_COMPACT);
             if (false === $xml) {
