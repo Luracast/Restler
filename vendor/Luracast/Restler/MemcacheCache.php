@@ -133,7 +133,8 @@ class MemcacheCache implements iCache
     public function isCached($name)
     {
         function_exists('memcache_get') || $this->memcacheNotAvailable();
-        return !empty($this->memcache->get(self::$namespace . "-" . $name));
+        $data = $this->memcache->get(self::$namespace . "-" . $name);
+        return !empty($data);
     }
 
 }
