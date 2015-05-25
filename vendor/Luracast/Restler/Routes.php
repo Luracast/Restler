@@ -665,7 +665,7 @@ class Routes
                     isset($child[$dataName])
                         ? $child[$dataName] += array('required' => true)
                         : $child[$dataName]['required'] = true;
-                    if ($qualified = Scope::resolve($child['type'], $scope)) {
+                    if ($prop->class != $className && $qualified = Scope::resolve($child['type'], $scope)) {
                         list($child['type'], $child['children'])
                             = static::getTypeAndModel(new ReflectionClass($qualified), $scope);
                     } elseif (
