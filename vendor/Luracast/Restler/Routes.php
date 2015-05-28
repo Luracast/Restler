@@ -615,9 +615,9 @@ class Routes
      * @throws \Exception
      * @return array
      *
-     * @access protected
+     * @access public
      */
-    protected static function getTypeAndModel(ReflectionClass $class, array $scope, $prefix='', array $rules=array())
+    public static function getTypeAndModel(ReflectionClass $class, array $scope, $prefix='', array $rules=array())
     {
         $className = $class->getName();
         $dataName = CommentParser::$embeddedDataName;
