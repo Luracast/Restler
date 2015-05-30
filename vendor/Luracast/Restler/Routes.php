@@ -629,10 +629,13 @@ class Routes
             if ($magic_properties = static::parseMagic($class, empty($prefix))) {
                 foreach ($magic_properties as $prop) {
                     if (!isset($prop['name'])) {
-                        throw new Exception('@property comment is not properly defined in '.$className.' class');
+                        throw new Exception('@property comment is not properly defined in ' . $className . ' class');
                     }
-                    if(!isset($prop[$dataName]['label'])){
+                    if (!isset($prop[$dataName]['label'])) {
                         $prop[$dataName]['label'] = Text::title($prop['name']);
+                    }
+                    if ($prop['name'] == 'email' && $prop['type'] == 'string' && !isset($prop[$dataName]['type'])) {
+                        $prop[$dataName]['type'] = 'email';
                     }
                     $children[$prop['name']] = $prop;
                 }
