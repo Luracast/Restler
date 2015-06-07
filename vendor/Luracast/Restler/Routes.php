@@ -514,9 +514,8 @@ class Routes
                 $p[$call['arguments'][$key]] = $value;
             }
         }
-        if (Defaults::$smartParameterParsing && 'post' != (string)Util::$restler->requestFormat) {
+        if (Defaults::$smartParameterParsing) {
             if (
-                count($p) == 1 &&
                 ($m = Util::nestedValue($call, 'metadata', 'param', 0)) &&
                 !array_key_exists($m['name'], $data) &&
                 array_key_exists(Defaults::$fullRequestDataName, $data) &&
