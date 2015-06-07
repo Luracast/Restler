@@ -460,7 +460,7 @@ class Restler extends EventDispatcher
      *
      * @param string ,... $url
      */
-    public function setBaseUrl($url /*[, $url2...$urlN]*/)
+    public function setBaseUrls($url /*[, $url2...$urlN]*/)
     {
         if (func_num_args() > 1) {
             $urls = func_get_args();
@@ -468,7 +468,7 @@ class Restler extends EventDispatcher
                 return strlen($a) - strlen($b);
             });
             foreach ($urls as $u) {
-                if (0 === strpos($u, $_SERVER['HTTP_HOST'])) {
+                if (0 === strpos($_SERVER['HTTP_HOST'], parse_url($u, PHP_URL_HOST))) {
                     $this->baseUrl = $u;
                     return;
                 }
