@@ -31,8 +31,7 @@
         "php":">=5.3.0"
     },
     "require-dev":{
-        "symfony/finder":"2.5.x-dev",
-        "guzzle/guzzle":"~3.1.1",
+        "guzzle/guzzle":"3.8.1",
         "behat/behat":"2.5.*@stable",
         "bshaffer/oauth2-server-php":"v1.0"
     },
