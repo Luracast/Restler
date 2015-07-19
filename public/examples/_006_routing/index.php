@@ -41,8 +41,11 @@ Similarly method *postSomething* will be mapped to
 **Smart Parameter Routing**
 
 Starting from Restler 3, smart auto routes are created where optional
-parameters will be mapped to query string, required primitive types will be
-mapped to url path, objects ana array will be mapped to request body.
+parameters will be mapped to query string, required primitive types,
+objects and arrays will be mapped to request body.
+
+>**Note:-** Required primitive types used to be mapped to url path. This behavior
+> has changed in favour of better and readable urls.
 
 This helps build as few URIs as possible for the given API method,
 reducing the ambiguity.
