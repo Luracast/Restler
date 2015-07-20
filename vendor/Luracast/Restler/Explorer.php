@@ -471,10 +471,9 @@ class Explorer implements iProvideMultiVersionApi
             }
         } elseif ($info->children) {
             $this->model($info->type, $info->children);
-        } elseif ($t = Util::nestedValue(static::$dataTypeAlias, strtolower($info->type))) {
+        } elseif (is_string($info->type) && $t = Util::nestedValue(static::$dataTypeAlias, strtolower($info->type))) {
             if (is_array($t)) {
-                $info->type = $t[0];
-                $object->format = $t[1];
+                list($info->type, $object->format) = $t;
             } else {
                 $info->type = $t;
             }
