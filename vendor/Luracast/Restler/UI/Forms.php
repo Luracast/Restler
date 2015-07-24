@@ -296,7 +296,7 @@ class Forms implements iFilter
                 $options[] = $option;
             }
         } elseif ($p->type == 'boolean' || $p->type == 'bool') {
-            if (Text::beginsWith($type, 'radio')) {
+            if (Text::beginsWith($type, 'radio') || Text::beginsWith($type, 'select')) {
                 $options[] = array('name' => $p->name, 'text' => ' Yes ',
                     'value' => 'true');
                 $options[] = array('name' => $p->name, 'text' => ' No ',
