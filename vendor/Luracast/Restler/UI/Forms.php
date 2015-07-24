@@ -348,9 +348,9 @@ class Forms implements iFilter
         }
 
         if (true === $p->required)
-            $r['required'] = true;
+            $r['required'] = 'required';
         if (isset($p->rules['autofocus']))
-            $r['autofocus'] = true;
+            $r['autofocus'] = 'autofocus';
         /*
         echo "<pre>";
         print_r($r);
