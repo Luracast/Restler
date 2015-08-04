@@ -128,6 +128,25 @@ class Validator implements iValidate
     }
 
     /**
+     * Color specified as hexadecimals
+     *
+     * Check that given value contains only color.
+     *
+     * @param                     $input
+     * @param ValidationInfo|null $info
+     *
+     * @return string
+     * @throws Invalid
+     */
+    public static function color($input, ValidationInfo $info = null)
+    {
+        if (preg_match('/^#[a-f0-9]{6}$/i', $input)) {
+           return $input;
+        }
+        throw new Invalid('Expecting color as hexadecimal digits.');
+    }
+
+    /**
      * Validate Telephone number
      *
      * Check if the given value is numeric with or without a `+` prefix
@@ -495,6 +514,8 @@ class Validator implements iValidate
                     return $r;
 
                 case 'string' :
+                case 'password' : //password fields with string
+                case 'search' : //search field with string
                     if (!is_string($input)) {
                         $error .= '. Expecting alpha numeric value';
                         break;
