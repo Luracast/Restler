@@ -24,6 +24,25 @@ class Routes
     public static $prefixingParameterNames = array(
         'id'
     );
+
+    public static $fieldTypesByName = array(
+        'email'       => 'email',
+        'password'    => 'password',
+        'phone'       => 'tel',
+        'mobile'      => 'tel',
+        'tel'         => 'tel',
+        'search'      => 'search',
+        'date'        => 'date',
+        'created_at'  => 'datetime',
+        'modified_at' => 'datetime',
+        'url'         => 'url',
+        'link'        => 'url',
+        'href'        => 'url',
+        'website'     => 'url',
+        'color'       => 'color',
+        'colour'      => 'color',
+    );
+
     protected static $routes = array();
 
     protected static $models = array();
@@ -133,8 +152,9 @@ class Routes
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
-                if ($m['name'] == 'email' && empty($p['type']) && $type == 'string')
-                    $p['type'] = 'email';
+                if (isset(static::$fieldTypesByName[$m['name']]) && empty($p['type']) && $type == 'string') {
+                    $p['type'] = static::$fieldTypesByName[$m['name']];
+                }
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
                 $contentType = Util::nestedValue($p,'type');
@@ -633,8 +653,8 @@ class Routes
                     if (!isset($prop[$dataName]['label'])) {
                         $prop[$dataName]['label'] = Text::title($prop['name']);
                     }
-                    if ($prop['name'] == 'email' && $prop['type'] == 'string' && !isset($prop[$dataName]['type'])) {
-                        $prop[$dataName]['type'] = 'email';
+                    if (isset(static::$fieldTypesByName[$prop['name']]) && $prop['type'] == 'string' && !isset($prop[$dataName]['type'])) {
+                        $prop[$dataName]['type'] = static::$fieldTypesByName[$prop['name']];
                     }
                     $children[$prop['name']] = $prop;
                 }
@@ -661,7 +681,9 @@ class Routes
                         }
                     }
                     $child += array(
-                        'type' => $child['name'] == 'email' ? 'email' : 'string',
+                        'type'  => isset(static::$fieldTypesByName[$child['name']])
+                            ? static::$fieldTypesByName[$child['name']]
+                            : 'string',
                         'label' => Text::title($child['name'])
                     );
                     isset($child[$dataName])
