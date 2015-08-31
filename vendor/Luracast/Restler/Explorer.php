@@ -334,7 +334,7 @@ class Explorer implements iProvideMultiVersionApi
                 } else {
                     $description = '<section class="body-param">';
                     foreach ($firstChild['children'] as $child) {
-                        $description .= isset($child['required'])
+                        $description .= isset($child['required']) && $child['required']
                             ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
                             : $child['name'] . '<br/>';
                     }
@@ -344,7 +344,7 @@ class Explorer implements iProvideMultiVersionApi
             } else {
                 $description = '<section class="body-param">';
                 foreach ($children as $child) {
-                    $description .= isset($child['required'])
+                    $description .= isset($child['required'])  && $child['required']
                         ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
                         : $child['name'] . '<br/>';
                 }
