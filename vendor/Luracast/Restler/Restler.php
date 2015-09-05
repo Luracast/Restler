@@ -443,7 +443,14 @@ class Restler extends EventDispatcher
             $fullPath,
             $_SERVER['SCRIPT_NAME']
         );
-        $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
+        // Fix port number retrieval if port is specified in HOST header.
+        $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+        $portPos = strpos($host,":");
+        if ($portPos){
+           $port = substr($host,$portPos+1);
+        } else {
+           $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
+        }
         $https = $port == '443' ||
             (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
             (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
