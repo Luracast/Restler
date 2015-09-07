@@ -3,7 +3,7 @@ namespace Luracast\Restler\UI;
 
 use Luracast\Restler\CommentParser;
 use Luracast\Restler\Data\ApiMethodInfo;
-use Luracast\Restler\Data\String;
+use Luracast\Restler\Data\String as Str;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Format\UploadFormat;
@@ -292,7 +292,7 @@ class Forms implements iFilter
                 $options[] = $option;
             }
         } elseif ($p->type == 'boolean' || $p->type == 'bool') {
-            if (String::beginsWith($type, 'radio')) {
+            if (Str::beginsWith($type, 'radio')) {
                 $options[] = array('name' => $p->name, 'text' => ' Yes ',
                     'value' => 'true');
                 $options[] = array('name' => $p->name, 'text' => ' No ',
@@ -411,7 +411,7 @@ class Forms implements iFilter
             if (empty($exclude)) {
                 if ($url == $exclude)
                     return true;
-            } elseif (String::beginsWith($url, $exclude)) {
+            } elseif (Str::beginsWith($url, $exclude)) {
                 return true;
             }
         }
