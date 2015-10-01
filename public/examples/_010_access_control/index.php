@@ -22,6 +22,6 @@ use Luracast\Restler\Restler;
 
 $r = new Restler();
 $r->addAPIClass('Access', '');
-$r->addAPIClass('Resources');
+$r->addAPIClass('Explorer');
 $r->addAuthenticationClass('AccessControl');
 $r->handle();
