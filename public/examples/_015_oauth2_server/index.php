@@ -12,7 +12,7 @@ In order to run this example on your localhost do the following
 
 1. run composer update to make sure you have
     - twig template library
-    - bshaffer's oauth2 libarary
+    - bshaffer's oauth2 library
 2. make sure `public/examples/_015_oauth2_server/cache` has write permissions to create the compiled template files
 3. make sure `public/examples/_015_oauth2_server/Auth/db` has write permission, this is where `oauth.sqlite` file be
    created at run time
