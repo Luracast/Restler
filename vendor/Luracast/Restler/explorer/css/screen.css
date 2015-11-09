@@ -350,7 +350,7 @@
   font-size: .85em;
   line-height: 1.2em;
   overflow: auto;
-  max-height: 200px;
+  max-height: 400px;
   cursor: pointer;
 }
 .swagger-section .swagger-ui-wrap .model-signature ul.signature-nav {
