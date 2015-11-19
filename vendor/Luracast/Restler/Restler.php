@@ -304,11 +304,20 @@ class Restler extends EventDispatcher
             $this->call();
             $this->compose();
             $this->postCall();
+            if (Defaults::$returnResponse) {
+                return $this->respond();
+            }
             $this->respond();
         } catch (Exception $e) {
             try{
+                if (Defaults::$returnResponse) {
+                    return $this->message($e);
+                }
                 $this->message($e);
             } catch (Exception $e2) {
+                if (Defaults::$returnResponse) {
+                    return $this->message($e2);
+                }
                 $this->message($e2);
             }
         }
@@ -1154,9 +1163,13 @@ class Restler extends EventDispatcher
                 : 'Unknown';
             @header('WWW-Authenticate: ' . $authString, false);
         }
-        echo $this->responseData;
         $this->dispatch('complete');
-        exit;
+        if (Defaults::$returnResponse) {
+            return $this->responseData;
+        } else {
+            echo $this->responseData;
+            exit;
+        }
     }
 
     protected function message(Exception $exception)
@@ -1198,6 +1211,9 @@ class Restler extends EventDispatcher
             $compose->message($exception),
             !$this->productionMode
         );
+        if (Defaults::$returnResponse) {
+            return $this->respond();
+        }
         $this->respond();
     }
 

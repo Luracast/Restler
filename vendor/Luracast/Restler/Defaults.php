@@ -167,6 +167,12 @@ class Defaults
     public static $emptyBodyForNullResponse = true;
 
     /**
+     * @var bool when set to true, the response will not be outputted directly into the buffer.
+     * If set, Restler::handle() will return the response as a string.
+     */
+    public static $returnResponse = false;
+
+    /**
      * @var bool enables CORS support
      */
     public static $crossOriginResourceSharing = false;
