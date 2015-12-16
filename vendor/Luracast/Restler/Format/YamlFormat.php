@@ -26,7 +26,7 @@ class YamlFormat extends DependentFormat
 
     public function encode($data, $humanReadable = false)
     {
-        return @Yaml::dump(Object::toArray($data));
+        return @Yaml::dump(Object::toArray($data), $humanReadable ? 10 : 4);
     }
 
     public function decode($data)
