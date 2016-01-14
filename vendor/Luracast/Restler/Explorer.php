@@ -232,6 +232,15 @@ class Explorer implements iProvideMultiVersionApi
             }
             if (!empty($grouper)) {
                 $a[$path] = array_values($grouper);
+                // sort REST-endpoints by path
+                foreach ($a as & $b) {
+                    usort(
+                        $b,
+                        function ($x, $y) {
+                            return $x['path'] > $y['path'];
+                        }
+                    );
+                }
             } else {
                 $order = array(
                     'GET' => 1,
