@@ -77,7 +77,11 @@ class RestException extends Exception
      * @param array       $details        any extra detail about the exception
      * @param Exception   $previous       previous exception if any
      */
-    public function __construct($httpStatusCode, $errorMessage = null, array $details = array(), Exception $previous = null)
+    public function __construct(
+        $httpStatusCode, $errorMessage = null,
+        array $details = array('forceException' => false),
+        Exception $previous = null
+    )
     {
         $events = Scope::get('Restler')->getEvents();
         if(count($events)<= 1){
