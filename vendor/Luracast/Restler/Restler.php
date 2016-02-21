@@ -499,7 +499,7 @@ class Restler extends EventDispatcher
                 = '/' . substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']) + 1);
 
         list($base, $path) = Util::splitCommonPath(
-            urldecode($_SERVER['REQUEST_URI']),
+            strtok(urldecode($_SERVER['REQUEST_URI']), '?'), //remove query string
             $_SERVER['SCRIPT_NAME']
         );
 
@@ -524,15 +524,15 @@ class Restler extends EventDispatcher
             $this->baseUrl .= $base;
         }
 
-        $path = rtrim(strtok($path, '?'), '/'); //remove query string and trailing slash if found any
         $path = str_replace(
             array_merge(
                 $this->formatMap['extensions'],
                 $this->formatOverridesMap['extensions']
             ),
             '',
-            $path
+            rtrim($path, '/') //remove trailing slash if found
         );
+
         if (Defaults::$useUrlBasedVersioning && strlen($path) && $path{0} == 'v') {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->apiVersion) {
