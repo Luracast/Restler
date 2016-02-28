@@ -958,6 +958,9 @@ class Restler extends EventDispatcher
                     }
                     $unauthorized = false;
                     break;
+                } catch (InvalidAuthCredentials $e) {
+                    $this->authenticated = false;
+                    throw $e;
                 } catch (RestException $e) {
                     if (!$unauthorized) {
                         $unauthorized = $e;
