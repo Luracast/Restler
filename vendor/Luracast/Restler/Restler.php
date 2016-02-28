@@ -966,11 +966,7 @@ class Restler extends EventDispatcher
             }
             $this->authVerified = true;
             if ($unauthorized) {
-                $details = $unauthorized->getDetails();
-                $forceException = $accessLevel > 1 //when it is not a hybrid api
-                    //or forced exception
-                    || (isset($details['forceException']) && $details['forceException'] === true);
-                if ( $forceException ) {
+                if ($accessLevel > 1) { //when it is not a hybrid api
                     throw $unauthorized;
                 } else {
                     $this->authenticated = false;
