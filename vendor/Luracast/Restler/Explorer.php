@@ -132,7 +132,7 @@ class Explorer implements iProvideMultiVersionApi
      */
     public function get()
     {
-        if (func_num_args() > 1 && func_get_arg(0) == 'resources') {
+        if (func_num_args() > 1 && func_get_arg(0) == 'swagger') {
             /**
              * BUGFIX:
              * If we use common resourcePath (e.g. $r->addAPIClass([api-class], 'api/shop')), than we must determine resource-ID of e.g. 'api/shop'!
@@ -163,8 +163,7 @@ class Explorer implements iProvideMultiVersionApi
         ) {
             $filename .= '.js';
         }
-        PassThrough::file(__DIR__ . '/explorer/' . (empty($filename) ? 'index.html' : $filename), false,
-            0); //60 * 60 * 24);
+        PassThrough::file(__DIR__ . '/explorer/' . (empty($filename) ? 'index.html' : $filename), false, 0); //60 * 60 * 24);
     }
 
     public function swagger()
