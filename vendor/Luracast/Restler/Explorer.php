@@ -362,6 +362,10 @@ class Explorer implements iProvideMultiVersionApi
         $p->required = $info->required;
 
         //$p->allowMultiple = false;
+        if($p->in == 'body'){
+            $p->schema = (object)array('$ref'=>"#/definitions/$p->type");
+            unset($p->type);
+        }
 
         return $p;
     }
