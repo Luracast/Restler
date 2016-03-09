@@ -163,7 +163,8 @@ class Explorer implements iProvideMultiVersionApi
         ) {
             $filename .= '.js';
         }
-        PassThrough::file(__DIR__ . '/explorer/' . (empty($filename) ? 'index.html' : $filename), false, 0); //60 * 60 * 24);
+        PassThrough::file(__DIR__ . '/explorer/' . (empty($filename) ? 'index.html' : $filename), false,
+            0); //60 * 60 * 24);
     }
 
     public function swagger()
@@ -304,7 +305,7 @@ class Explorer implements iProvideMultiVersionApi
             } else {
                 $description = '<section class="body-param">';
                 foreach ($children as $child) {
-                    $description .= isset($child['required'])  && $child['required']
+                    $description .= isset($child['required']) && $child['required']
                         ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
                         : $child['name'] . '<br/>';
                 }
@@ -357,9 +358,10 @@ class Explorer implements iProvideMultiVersionApi
         $p->required = $info->required;
 
         //$p->allowMultiple = false;
-        if($p->in == 'body'){
-            $p->schema = (object)array('$ref'=>"#/definitions/$p->type");
-            unset($p->type);
+
+        if (isset($p->{'$ref'})) {
+            $p->schema = (object)array('$ref' => ($p->{'$ref'}));
+            unset($p->{'$ref'});
         }
 
         return $p;
@@ -370,12 +372,13 @@ class Explorer implements iProvideMultiVersionApi
         $code = '200';
         $r = array(
             $code => (object)array(
-                'description' => RestException::$codes[$code],
+                'description' => 'Success',
+                'schema'      => new stdClass()
             )
         );
         $return = Util::nestedValue($route, 'metadata', 'return');
         if (!empty($return)) {
-            $this->setType($r[$code], new ValidationInfo($return));
+            $this->setType($r[$code]->schema, new ValidationInfo($return));
         }
 
         if (is_array($throws = Util::nestedValue($route, 'metadata', 'throws'))) {
@@ -432,11 +435,12 @@ class Explorer implements iProvideMultiVersionApi
         //TODO: proper type management
         $type = Util::getShortName($info->type);
         if ($info->type == 'array') {
+            $object->type = 'array';
             if ($info->children) {
                 $contentType = Util::getShortName($info->contentType);
                 $model = $this->model($contentType, $info->children);
                 $object->items = (object)array(
-                    '$ref' => "$contentType"
+                    '$ref' => "#/definitions/$contentType"
                 );
             } elseif ($info->contentType && $info->contentType == 'associative') {
                 unset($info->contentType);
@@ -452,7 +456,7 @@ class Explorer implements iProvideMultiVersionApi
             } elseif ($info->contentType && $info->contentType != 'indexed') {
                 $contentType = Util::getShortName($info->contentType);
                 $object->items = (object)array(
-                    'type' => $contentType
+                    '$ref' => "#/definitions/$contentType"
                 );
             } else {
                 $object->items = (object)array(
@@ -461,26 +465,28 @@ class Explorer implements iProvideMultiVersionApi
             }
         } elseif ($info->children) {
             $this->model($type, $info->children);
+            $object->{'$ref'} = "#/definitions/$type";
         } elseif (is_string($info->type) && $t = Util::nestedValue(static::$dataTypeAlias, strtolower($info->type))) {
             if (is_array($t)) {
-                $type = $t[0];
+                $object->type = $t[0];
                 $object->format = $t[1];
             } else {
-                $type = $t;
+                $object->type = $t;
             }
         } else {
-            $type = 'string';
+            $object->type = 'string';
         }
-        $object->type = $type;
         $has64bit = PHP_INT_MAX > 2147483647;
-        if ($object->type == 'integer') {
-            $object->format = $has64bit
-                ? 'int64'
-                : 'int32';
-        } elseif ($object->type == 'number') {
-            $object->format = $has64bit
-                ? 'double'
-                : 'float';
+        if (isset($object->type)) {
+            if ($object->type == 'integer') {
+                $object->format = $has64bit
+                    ? 'int64'
+                    : 'int32';
+            } elseif ($object->type == 'number') {
+                $object->format = $has64bit
+                    ? 'double'
+                    : 'float';
+            }
         }
     }
 
