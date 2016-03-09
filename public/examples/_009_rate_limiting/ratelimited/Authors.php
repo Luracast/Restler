@@ -21,7 +21,7 @@ class Authors
      * @expires 30
      * @throttle 200
      * @class RateLimit {@unit second} {@usagePerUnit 1}
-     * @return array
+     * @return array {@type Author}
      */
     function index()
     {
