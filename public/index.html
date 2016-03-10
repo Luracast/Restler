@@ -156,7 +156,7 @@ var _gaq = _gaq || [];
 <li>路由
 
 <ul>
-<li>手动路由(注解) 
+<li>手动路由(注解)
 
 <ul>
 <li>使用 <code>@url GET my/custom/url/{param}</code> PHPDoc 注解</li>
@@ -254,7 +254,7 @@ var _gaq = _gaq || [];
 
 <blockquote>
   <p><strong>注意:-</strong></p>
-  
+
   <ol>
 <li><p>如果你不需要附加的格式和行为测试驱动开发工具,你可以包含
   <code>--no-dev</code> 来实施排除开发工具包.</p></li>
@@ -349,7 +349,7 @@ $r-&gt;handle(); //serve the response
 <pre><code class="apache">DirectoryIndex index.php
 &lt;IfModule mod_rewrite.c&gt;
     RewriteEngine On
- #RewriteBase /   
+ #RewriteBase /
     RewriteRule ^$ index.php [QSA,L]
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -474,10 +474,10 @@ $r = new Restler(true); //turn on production mode by passing true.
 <h3>Restler 3.0 RC5</h3>
 
 <ul>
-<li>适用范围(依赖注入容器)添加. It's register method allows adding api classes that has some dependencies.</li>
-<li>Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.</li>
-<li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity</li>
-<li>HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.</li>
+<li>适用范围(依赖注入容器)添加. 它注册的方法允许添加 api 类,那是因为有一些依赖关系。</li>
+<li>改善HtmlFormat对blade 模板的支持，并使它能够更容易被继承到你自己添加模板。</li>
+<li>HtmlFormat::$format 已经重命名为 HtmlFormat::$template，更加清晰明了。</li>
+<li>HtmlFormat 现在支持通过一个API方法基于匹配的url相关的模板进行自动生成模板。</li>
 <li>Tag, a utility class for generating html tags in object oriented way.</li>
 <li>Emmet class that extends a subset of emmet to create a a template engine.</li>
 <li>Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.</li>
