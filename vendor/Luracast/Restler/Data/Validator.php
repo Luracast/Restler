@@ -361,7 +361,7 @@ class Validator implements iValidate
         $html = Scope::get('Restler')->responseFormat instanceof HtmlFormat;
         $name = $html ? "<strong>$info->label</strong>" : "`$info->name`";
         try {
-            if (is_null($input) || !$input) {
+            if (is_null($input) || $input === false) {
                 if ($info->required) {
                     throw new RestException (400,
                         "$name is required.");
