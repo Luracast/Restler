@@ -51,7 +51,7 @@ class Scope
 
         //Utility classes
         'Object' => 'Luracast\Restler\Data\Object',
-        'String' => 'Luracast\Restler\Data\String',
+        'StringHelper' => 'Luracast\Restler\Data\String',
         'Arr' => 'Luracast\Restler\Data\Arr',
 
         //Exception

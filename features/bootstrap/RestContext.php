@@ -1,7 +1,7 @@
 <?php
 use Behat\Behat\Context\BehatContext;
 use Behat\Gherkin\Node\PyStringNode;
-use Luracast\Restler\Data\String;
+use Luracast\Restler\Data\StringHelper;
 
 /**
  * Rest context.
@@ -127,7 +127,7 @@ class RestContext extends BehatContext
     public function theResponseContains($response)
     {
         $data = json_encode($this->_data);
-        if (!String::contains($data, $response))
+        if (!StringHelper::contains($data, $response))
             throw new Exception("Response value does not contain '$response' only\n\n"
                 . $this->echoLastResponse());
     }

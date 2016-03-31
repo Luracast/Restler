@@ -2,7 +2,7 @@
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ApiMethodInfo;
-use Luracast\Restler\Data\String;
+use Luracast\Restler\Data\StringHelper;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -587,7 +587,7 @@ class Routes
                 $children[$name] = $child;
             }
         } catch (Exception $e) {
-            if (String::endsWith($e->getFile(), 'CommentParser.php')) {
+            if (StringHelper::endsWith($e->getFile(), 'CommentParser.php')) {
                 throw new RestException(500, "Error while parsing comments of `$className` class. " . $e->getMessage());
             }
             throw $e;

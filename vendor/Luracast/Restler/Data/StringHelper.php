@@ -11,7 +11,7 @@ namespace Luracast\Restler\Data;
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
  */
-class String
+class StringHelper
 {
     /**
      * Given haystack contains the needle or not?
