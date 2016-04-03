@@ -19,7 +19,7 @@ class MemcachedCache implements iCache
      *
      * @var string
      */
-    static public $namespace;
+    static public $namespace = "restler";
     
     /**
      * @var string the memcache server hostname / IP address. For the memcache 
@@ -35,15 +35,11 @@ class MemcachedCache implements iCache
     
     private $memcached;
 
-    /**
-     * @param string $namespace
-     */
-    function __construct($namespace = 'restler')
+    function __construct()
     {
-        self::$namespace = $namespace;
         if (extension_loaded('Memcached')) {
-            $this->memcache = new \Memcached();
-            $this->memcache->addServer(self::$memcachedServer, self::$memcachedPort);
+            $this->memcached = new \Memcached();
+            $this->memcached->addServer(self::$memcachedServer, self::$memcachedPort);
         } else {
             $this->memcachedNotAvailable('Memcached is not available for use as Restler Cache. Please make sure the the memcached php extension is installed.');
         }
@@ -63,7 +59,7 @@ class MemcachedCache implements iCache
         extension_loaded('Memcached') || $this->memcachedNotAvailable();
 
         try {
-            return $this->memcache->set(self::$namespace . "-" . $name, $data);
+            return $this->memcached->set(self::$namespace . "-" . $name, $data);
         } catch
         (\Exception $exception) {
             return false;
@@ -90,7 +86,7 @@ class MemcachedCache implements iCache
         extension_loaded('Memcached') || $this->memcachedNotAvailable();
 
         try {
-            return $this->memcache->get(self::$namespace . "-" . $name);
+            return $this->memcached->get(self::$namespace . "-" . $name);
         } catch (\Exception $exception) {
             if (!$ignoreErrors) {
                 throw $exception;
@@ -114,7 +110,7 @@ class MemcachedCache implements iCache
         extension_loaded('Memcached') || $this->memcachedNotAvailable();
 
         try {
-            $this->memcache->delete(self::$namespace . "-" . $name);
+            $this->memcached->delete(self::$namespace . "-" . $name);
         } catch (\Exception $exception) {
             if (!$ignoreErrors) {
                 throw $exception;
@@ -133,7 +129,7 @@ class MemcachedCache implements iCache
     public function isCached($name)
     {
         extension_loaded('Memcached') || $this->memcachedNotAvailable();
-        $data = $this->memcache->get(self::$namespace . "-" . $name);
+        $data = $this->memcached->get(self::$namespace . "-" . $name);
         return !empty($data);
     }
 
