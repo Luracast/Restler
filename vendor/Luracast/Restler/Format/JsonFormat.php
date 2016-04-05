@@ -93,6 +93,10 @@ class JsonFormat extends Format
 
     public function decode($data)
     {
+	if(empty($data)){
+	    return array();
+	}
+
         $options = 0;
         if (self::$bigIntAsString) {
             if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
