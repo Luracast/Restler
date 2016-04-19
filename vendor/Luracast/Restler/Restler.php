@@ -1099,7 +1099,10 @@ class Restler extends EventDispatcher
         }
         @header('Cache-Control: ' . $cacheControl);
         @header('Expires: ' . $expires);
-        @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+        
+        if (!$this->productionMode) {
+            @header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+        }
 
         if (Defaults::$crossOriginResourceSharing
             && isset($_SERVER['HTTP_ORIGIN'])

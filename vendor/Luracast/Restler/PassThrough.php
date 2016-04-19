@@ -78,7 +78,11 @@ class PassThrough
             exit;
         }
         header('Last-Modified: ' . date('r', $lastModified));
-        header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+
+        if (!Scope::get('Restler')->getProductionMode()) {
+            header('X-Powered-By: Luracast Restler v' . Restler::VERSION);
+        }
+
         header('Content-type: ' . $mime);
         header("Content-Length: " . filesize($filename));
         if ($forceDownload) {
