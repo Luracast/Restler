@@ -282,8 +282,13 @@ these prefixes will be mapped to GET request. This means functions
 <p><strong>Smart Parameter Routing</strong></p>
 
 <p>Starting from Restler 3, smart auto routes are created where optional
-parameters will be mapped to query string, required primitive types will be
-mapped to url path, objects ana array will be mapped to request body.</p>
+parameters will be mapped to query string, required primitive types,
+objects and arrays will be mapped to request body.</p>
+
+<blockquote>
+  <p><strong>Note:-</strong> Required primitive types used to be mapped to url path. This behavior
+  has changed in favour of better and readable urls.</p>
+</blockquote>
 
 <p>This helps build as few URIs as possible for the given API method,
 reducing the ambiguity.</p>
