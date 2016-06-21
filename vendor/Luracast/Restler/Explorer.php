@@ -175,6 +175,11 @@ class Explorer implements iProvideMultiVersionApi
         return $r;
     }
 
+    /**
+     * @param $id {@from path}
+     *
+     * @return stdClass
+     */
     public function getResources($id)
     {
         $r = new stdClass();
