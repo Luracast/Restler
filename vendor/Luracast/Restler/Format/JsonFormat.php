@@ -43,6 +43,13 @@ class JsonFormat extends Format
      */
     public static $bigIntAsString = null;
 
+    /**
+     * @var boolean|null  shim for json_decode JSON_NUMERIC_CHECK set it to
+     * null to
+     * use smart defaults
+     */
+    public static $numbersAsNumbers = null;
+
     const MIME = 'application/json';
     const EXTENSION = 'json';
 
@@ -78,6 +85,10 @@ class JsonFormat extends Format
 
             if (self::$unEscapedUnicode) {
                 $options |= JSON_UNESCAPED_UNICODE;
+            }
+
+            if (self::$numbersAsNumbers) {
+                $options |= JSON_NUMERIC_CHECK;
             }
 
             $result = json_encode(Object::toArray($data, true), $options);
