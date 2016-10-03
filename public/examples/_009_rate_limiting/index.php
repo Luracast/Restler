@@ -52,6 +52,13 @@ RateLimit::setLimit('hour', 10);
 
 Explorer::$hideProtected = false;
 
+// For some applications it might be useful to remove the HTML form the Swagger output
+// So check whether we should output HTML
+if(isset($_GET["no_html"]) && $_GET["no_html"] == TRUE)
+{
+	Explorer::$useHTMLMarkup = FALSE;
+}
+
 $r = new Restler();
 
 $r->addAPIClass('ratelimited\\Authors');
