@@ -170,6 +170,11 @@ class ValidationInfo implements iValueObject
      */
     public $apiClassInstance = null;
 
+    /**
+     * @var array Contains Swagger 2.0 Schema
+     */
+    public $schema = [];
+
     public static function numericValue($value)
     {
         return ( int )$value == $value
