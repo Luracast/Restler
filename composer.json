@@ -31,7 +31,7 @@
         "php":">=5.3.0"
     },
     "require-dev":{
-        "guzzle/guzzle":"3.8.1",
+        "guzzlehttp/guzzle":"3.8.1",
         "behat/behat":"2.5.*@stable",
         "bshaffer/oauth2-server-php":"v1.0"
     },
