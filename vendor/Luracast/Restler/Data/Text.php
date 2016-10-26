@@ -56,6 +56,10 @@ class Text
      */
     public static function endsWith($haystack, $needle)
     {
+        if(!is_string($haystack)){
+            return false;
+        }
+        
         $length = strlen($needle);
         if ($length == 0) {
             return true;
