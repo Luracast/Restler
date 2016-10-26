@@ -471,6 +471,11 @@ class Validator implements iValidate
             }
 
             if (method_exists($class = get_called_class(), $info->type) && $info->type != 'validate') {
+                if(!$info->required && empty($input))
+                {
+                    //optional parameter with a empty value assume null
+                    return null;
+                }
                 try {
                     return call_user_func("$class::$info->type", $input, $info);
                 } catch (Invalid $e) {
