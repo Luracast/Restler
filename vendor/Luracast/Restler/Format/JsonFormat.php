@@ -128,7 +128,7 @@ class JsonFormat extends Format
     public function decode($data)
     {
 	if(empty($data)){
-	    return null;
+	    return null; 
 	}
 
         $options = 0;

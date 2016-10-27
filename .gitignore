@@ -30,3 +30,5 @@ public/examples/_015_oauth2_server/OAuth2/db
 vendor/bin/behat
 public/examples/_016_forms/cache
 behat
+vendor/guzzlehttp/guzzle
+vendor/psr/log
