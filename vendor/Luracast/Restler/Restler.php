@@ -1484,6 +1484,12 @@ class Restler extends EventDispatcher
     public function __destruct()
     {
         if ($this->productionMode && !$this->cached) {
+            if ($this->exception instanceof RestException && $this->exception->getStage() === 'setup') {
+                // An exception has occured during configuration of restler. Maybe we could not add all API-classes correctly!
+                // So, don't cache the routes, because the routes can now be corrupt/incomplete!
+                return;
+            }
+
             $this->cache->set(
                 'routes',
                 Routes::toArray() +
