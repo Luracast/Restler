@@ -15,5 +15,6 @@ $r->addAPIClass('MinMax');
 $r->addAPIClass('MinMaxFix');
 $r->addAPIClass('Type');
 $r->addAPIClass('Validation');
-$r->addAPIClass('Resources');
+//$r->addAPIClass('Resources');
+$r->addAPIClass('Explorer','swagger');
 $r->handle();

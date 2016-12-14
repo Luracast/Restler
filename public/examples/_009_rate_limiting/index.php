@@ -37,6 +37,7 @@ Footer:
 */
 
 use Luracast\Restler\Defaults;
+use Luracast\Restler\Explorer;
 use Luracast\Restler\Filter\RateLimit;
 use Luracast\Restler\Restler;
 
@@ -49,10 +50,19 @@ Defaults::$cacheClass = 'SessionCache';
 //set extreme value for quick testing
 RateLimit::setLimit('hour', 10);
 
+Explorer::$hideProtected = false;
+
+// For some applications it might be useful to remove the HTML form the Swagger output
+// So check whether we should output HTML
+if(isset($_GET["no_html"]) && $_GET["no_html"] == TRUE)
+{
+	Explorer::$useHTMLMarkup = FALSE;
+}
+
 $r = new Restler();
 
 $r->addAPIClass('ratelimited\\Authors');
-$r->addAPIClass('Resources');
+$r->addAPIClass('Explorer');
 $r->addFilterClass('RateLimit');
 $r->addAuthenticationClass('KeyAuth');
 $r->handle();

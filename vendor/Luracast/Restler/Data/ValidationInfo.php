@@ -15,7 +15,7 @@ use Luracast\Restler\Util;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc5
+ * @version    3.0.0rc6
  */
 class ValidationInfo implements iValueObject
 {
@@ -169,6 +169,11 @@ class ValidationInfo implements iValueObject
      * @var null|object will be null or api class instance
      */
     public $apiClassInstance = null;
+
+    /**
+     * @var array Contains Swagger 2.0 Schema
+     */
+    public $schema = [];
 
     public static function numericValue($value)
     {
