@@ -1613,6 +1613,13 @@ class Restler extends EventDispatcher
     public function __destruct()
     {
         if ($this->productionMode && !$this->cached) {
+            if (empty($this->url) && empty($this->requestMethod)) {
+                // url and requestMethod is NOT set:
+                // This can only happen, when an exception was thrown outside of restler, so that the method Restler::handle was NOT called.
+                // In this case, the routes can now be corrupt/incomplete, because we don't know, if all API-classes could be registered
+                // before the exception was thrown. So, don't cache the routes, because the routes can now be corrupt/incomplete!
+                return;
+            }
             if ($this->exception instanceof RestException && $this->exception->getStage() === 'setup') {
                 // An exception has occured during configuration of restler. Maybe we could not add all API-classes correctly!
                 // So, don't cache the routes, because the routes can now be corrupt/incomplete!
