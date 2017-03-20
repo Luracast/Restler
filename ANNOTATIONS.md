@@ -179,7 +179,7 @@ iValueObject.
     @var int policy age {@min 18} {@max 100}
 
 When an api method is returning or having one of the parameters as an instance
-of a custom class @var comments can be used with properties of that class.
+of a custom class @var comments can be used with properties of that class.
 They will be used for validation and documentation. Supported child attributes
 are same as that of @param so they are documented under [@param](PARAM.md)
 
