@@ -94,9 +94,9 @@ class Explorer implements iProvideMultiVersionApi
      * protected api
      */
     public static $apiDescriptionSuffixSymbols = array(
-        0 => '&nbsp; <i class="fa fa-lg fa-unlock-alt"></i>', //public api
-        1 => '&nbsp; <i class="fa fa-lg fa-adjust"></i>', //hybrid api
-        2 => '&nbsp; <i class="fa fa-lg fa-lock"></i>', //protected api
+        0 => ' 🔓', //'&nbsp; <i class="fa fa-lg fa-unlock-alt"></i>', //public api
+        1 => ' ◑', //'&nbsp; <i class="fa fa-lg fa-adjust"></i>', //hybrid api
+        2 => ' 🔐', //'&nbsp; <i class="fa fa-lg fa-lock"></i>', //protected api
     );
 
     protected $models = array();
@@ -242,7 +242,7 @@ class Explorer implements iProvideMultiVersionApi
             ? $m['longDescription']
             : '';
         $r->responses = $this->responses($route);
-        //TODO: avoid hard coding
+        //TODO: avoid hard coding. Properly detect security
         if ($route['accessLevel']) {
             $r->security = array(array('api_key' => array()));
         }
@@ -298,23 +298,23 @@ class Explorer implements iProvideMultiVersionApi
                 if (empty($firstChild['children'])) {
                     $description = $firstChild['description'];
                 } else {
-                    $description = '<section class="body-param">';
+                    $description = ''; //'<section class="body-param">';
                     foreach ($firstChild['children'] as $child) {
                         $description .= isset($child['required']) && $child['required']
-                            ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
-                            : $child['name'] . '<br/>';
+                            ? '**' . $child['name'] . '** (required)  '.PHP_EOL
+                            : $child['name'] . '  '.PHP_EOL;
                     }
-                    $description .= '</section>';
+                    //$description .= '</section>';
                 }
                 $r[] = $this->parameter(new ValidationInfo($firstChild), $description);
             } else {
-                $description = '<section class="body-param">';
+                $description = ''; //'<section class="body-param">';
                 foreach ($children as $child) {
                     $description .= isset($child['required']) && $child['required']
-                        ? '<strong>' . $child['name'] . '</strong> (required)<br/>'
-                        : $child['name'] . '<br/>';
+                        ? '**' . $child['name'] . '** (required)  '.PHP_EOL
+                        : $child['name'] . '  '.PHP_EOL;
                 }
-                $description .= '</section>';
+                //$description .= '</section>';
 
                 //lets group all body parameters under a generated model name
                 $name = $this->modelName($route);
