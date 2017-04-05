@@ -22,7 +22,7 @@
     },
     "suggest":{
         "luracast/explorer":"Restler's very own api explorer (see require-dev for details)",
-        "guzzle/guzzle":"RESTful api HTTP client framework (see require-dev for details)",
+        "guzzlehttp/guzzle":"RESTful api HTTP client framework (see require-dev for details)",
         "behat/behat":"Behaviour driven development testing framework (see require-dev for details)",
         "rodneyrehm/plist":"Restler supports tho Apple plist xml format (see require-dev for details)",
         "zendframework/zendamf":"Support for the amf document format  (see require-dev for details)",
@@ -37,7 +37,7 @@
     },
     "require-dev":{
         "luracast/explorer":"*",
-        "guzzle/guzzle":"~3.1.1",
+        "guzzlehttp/guzzle":"~3.1.1",
         "behat/behat":"2.5.*@stable",
         "rodneyrehm/plist":"dev-master",
         "zendframework/zendamf":"dev-master",
