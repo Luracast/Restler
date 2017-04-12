@@ -361,7 +361,7 @@ class Validator implements iValidate
         $html = Scope::get('Restler')->responseFormat instanceof HtmlFormat;
         $name = $html ? "<strong>$info->label</strong>" : "`$info->name`";
         try {
-            if (is_null($input)) {
+            if (is_null($input) || $input === false) {
                 if ($info->required) {
                     throw new RestException (400,
                         "$name is required.");
@@ -412,12 +412,12 @@ class Validator implements iValidate
             if (isset ($info->choice)) {
                 if (is_array($input)) {
                     foreach ($input as $i) {
-                        if (!in_array($i, $info->choice)) {
+                        if (!in_array($i, $info->choice) && $info->required) {
                             $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
                             throw new RestException (400, $error);
                         }
                     }
-                } elseif (!in_array($input, $info->choice)) {
+                } elseif (!in_array($input, $info->choice) && $info->required) {
                     $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
                     throw new RestException (400, $error);
                 }
