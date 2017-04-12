@@ -450,9 +450,6 @@ class Restler extends EventDispatcher
 
         $baseUrl = ($https ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'];
 
-        if (!$https && $port != '80' || $https && $port != '443')
-            $baseUrl .= ':' . $port;
-
         $this->baseUrl = rtrim($baseUrl
             . substr($fullPath, 0, strlen($fullPath) - strlen($path)), '/');
 
