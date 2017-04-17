@@ -524,6 +524,7 @@ class Validator implements iValidate
                 case 'string' :
                 case 'password' : //password fields with string
                 case 'search' : //search field with string
+                    if (is_bool($input)) $input = $input ? 'true' : 'false';
                     if (!is_string($input)) {
                         $error .= '. Expecting alpha numeric value';
                         break;
