@@ -87,10 +87,22 @@ class JsonFormat extends Format
                 }
                 , $result);
         }
+        
+                
+        // Remove non-UTF8 characters
+        $result = preg_replace('/[\x00-\x08\x10\x0B\x0C\x0E-\x19\x7F]' .
+                '|[\x00-\x7F][\x80-\xBF]+' .
+                '|([\xC0\xC1]|[\xF0-\xFF])[\x80-\xBF]*' .
+                '|[\xC2-\xDF]((?![\x80-\xBF])|[\x80-\xBF]{2,})' .
+                '|[\xE0-\xEF](([\x80-\xBF](?![\x80-\xBF]))|(?![\x80-\xBF]{2})|[\x80-\xBF]{3,})/S', '?', $result);
+
+        $result = preg_replace('/\xE0[\x80-\x9F][\x80-\xBF]' .
+                '|\xED[\xA0-\xBF][\x80-\xBF]/S', '?', $result);
+
         if (self::$unEscapedSlashes) $result = str_replace('\/', '/', $result);
         return $result;
     }
-
+    
     public function decode($data)
     {
         $options = 0;
