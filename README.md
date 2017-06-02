@@ -298,7 +298,7 @@ They are documented in detail under [Annotations](ANNOTATIONS.md)
 
 ### 6. Authorize
 
-In order to protect your api, authenticate and allow valid users
+In order to protect your api, authenticate and allow valid users
 
 ```php
 <?php

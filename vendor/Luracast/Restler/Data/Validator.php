@@ -405,7 +405,7 @@ class Validator implements iValidate
             $input = $func($input);
         }
         try {
-            if (is_null($input)) {
+            if (is_null($input) || $input === false) {
                 if ($info->required) {
                     throw new RestException (400,
                         "$name is required.");
@@ -459,12 +459,12 @@ class Validator implements iValidate
                     $input = null;
                 } elseif (is_array($input)) {
                     foreach ($input as $i) {
-                        if (!in_array($i, $info->choice)) {
+                        if (!in_array($i, $info->choice) && $info->required) {
                             $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
                             throw new RestException (400, $error);
                         }
                     }
-                } elseif (!in_array($input, $info->choice)) {
+                } elseif (!in_array($input, $info->choice) && $info->required) {
                     $error .= ". Expected one of (" . implode(',', $info->choice) . ").";
                     throw new RestException (400, $error);
                 }
