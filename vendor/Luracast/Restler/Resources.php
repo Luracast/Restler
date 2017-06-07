@@ -774,14 +774,14 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     $this->_model($itemType);
                     $itemType = $this->_noNamespace($itemType);
                 }
-                $properties[$key]['item'] = array(
+                $properties[$key]['items'] = array(
                     'type' => $itemType,
                     /*'description' => '' */ //TODO: add description
                 );
             } else if (preg_match('/^Array\[(.+)\]$/', $type, $matches)) {
                 $itemType = $matches[1];
                 $properties[$key]['type'] = 'Array';
-                $properties[$key]['item']['type'] = $itemType;
+                $properties[$key]['items']['type'] = $this->_noNamespace($itemType);
 
                 if (class_exists($itemType)) {
                     $this->_model($itemType);
