@@ -718,7 +718,8 @@ class Restler extends EventDispatcher
                     . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 
             header('Access-Control-Allow-Origin: ' .
-                (Defaults::$accessControlAllowOrigin == '*' ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin));
+                ((Defaults::$accessControlAllowOrigin == '*' && isset($_SERVER['HTTP_ORIGIN']))
+                    ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin));
             header('Access-Control-Allow-Credentials: true');
 
             exit(0);
