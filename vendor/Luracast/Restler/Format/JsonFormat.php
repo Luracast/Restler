@@ -35,6 +35,13 @@ class JsonFormat extends Format
      * to null to use smart defaults
      */
     public static $unEscapedUnicode = null;
+    
+    
+    /**
+     * @var boolean|null  shim for json_encode JSON_NUMERIC_CHECK set it
+     * to null to use smart defaults
+    */
+    public static $numbersAsIntOrFloat = null;
 
     /**
      * @var boolean|null  shim for json_decode JSON_BIGINT_AS_STRING set it to
@@ -65,6 +72,7 @@ class JsonFormat extends Format
             if (self::$unEscapedSlashes) $options |= JSON_UNESCAPED_SLASHES;
             if (self::$bigIntAsString) $options |= JSON_BIGINT_AS_STRING;
             if (self::$unEscapedUnicode) $options |= JSON_UNESCAPED_UNICODE;
+            if (self::$numbersAsIntOrFloat) $options |= JSON_NUMERIC_CHECK;
             return json_encode(
                 Object::toArray($data, true), $options
             );
