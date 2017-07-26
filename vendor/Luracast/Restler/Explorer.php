@@ -168,8 +168,6 @@ class Explorer implements iProvideMultiVersionApi
     }
 
     /**
-     * @param $id {@from path}
-     *
      * @return stdClass
      */
     public function swagger()
@@ -180,7 +178,7 @@ class Explorer implements iProvideMultiVersionApi
 
         $info = parse_url($this->restler->getBaseUrl());
         $r->host = $info['host'];
-        $r->basePath = $info['path'];
+        $r->basePath = isset($info['path']) ?  $info['path'] : '';
         if (!empty(static::$schemes)) {
             $r->schemes = static::$schemes;
         }
