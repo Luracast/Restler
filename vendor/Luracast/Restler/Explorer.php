@@ -178,6 +178,9 @@ class Explorer implements iProvideMultiVersionApi
 
         $info = parse_url($this->restler->getBaseUrl());
         $r->host = $info['host'];
+        if (isset($info['port'])) {
+            $r->host .= ':' . $info['port'];
+        }
         $r->basePath = isset($info['path']) ?  $info['path'] : '';
         if (!empty(static::$schemes)) {
             $r->schemes = static::$schemes;
