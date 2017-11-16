@@ -17,45 +17,45 @@ class Scope
 {
     public static $classAliases = array(
 
-        //Core
-        'Restler' => 'Luracast\Restler\Restler',
+	    //Core
+	    'Restler'            => 'Luracast\Restler\Restler',
 
-        //Format classes
-        'AmfFormat' => 'Luracast\Restler\Format\AmfFormat',
-        'JsFormat' => 'Luracast\Restler\Format\JsFormat',
-        'JsonFormat' => 'Luracast\Restler\Format\JsonFormat',
-        'HtmlFormat' => 'Luracast\Restler\Format\HtmlFormat',
-        'PlistFormat' => 'Luracast\Restler\Format\PlistFormat',
-        'UploadFormat' => 'Luracast\Restler\Format\UploadFormat',
-        'UrlEncodedFormat' => 'Luracast\Restler\Format\UrlEncodedFormat',
-        'XmlFormat' => 'Luracast\Restler\Format\XmlFormat',
-        'YamlFormat' => 'Luracast\Restler\Format\YamlFormat',
-        'CsvFormat' => 'Luracast\Restler\Format\CsvFormat',
-        'TsvFormat' => 'Luracast\Restler\Format\TsvFormat',
+	    //Format classes
+	    'AmfFormat'          => 'Luracast\Restler\Format\AmfFormat',
+	    'JsFormat'           => 'Luracast\Restler\Format\JsFormat',
+	    'JsonFormat'         => 'Luracast\Restler\Format\JsonFormat',
+	    'HtmlFormat'         => 'Luracast\Restler\Format\HtmlFormat',
+	    'PlistFormat'        => 'Luracast\Restler\Format\PlistFormat',
+	    'UploadFormat'       => 'Luracast\Restler\Format\UploadFormat',
+	    'UrlEncodedFormat'   => 'Luracast\Restler\Format\UrlEncodedFormat',
+	    'XmlFormat'          => 'Luracast\Restler\Format\XmlFormat',
+	    'YamlFormat'         => 'Luracast\Restler\Format\YamlFormat',
+	    'CsvFormat'          => 'Luracast\Restler\Format\CsvFormat',
+	    'TsvFormat'          => 'Luracast\Restler\Format\TsvFormat',
 
-        //Filter classes
-        'RateLimit' => 'Luracast\Restler\Filter\RateLimit',
+	    //Filter classes
+	    'RateLimit'          => 'Luracast\Restler\Filter\RateLimit',
 
-        //UI classes
-        'Forms' => 'Luracast\Restler\UI\Forms',
-        'Nav' => 'Luracast\Restler\UI\Nav',
-        'Emmet' => 'Luracast\Restler\UI\Emmet',
-        'T' => 'Luracast\Restler\UI\Tags',
+	    //UI classes
+	    'Forms'              => 'Luracast\Restler\UI\Forms',
+	    'Nav'                => 'Luracast\Restler\UI\Nav',
+	    'Emmet'              => 'Luracast\Restler\UI\Emmet',
+	    'T'                  => 'Luracast\Restler\UI\Tags',
 
-        //API classes
-        'Resources' => 'Luracast\Restler\Resources',
+	    //API classes
+	    'Resources'          => 'Luracast\Restler\Resources',
 
-        //Cache classes
-        'HumanReadableCache' => 'Luracast\Restler\HumanReadableCache',
-        'ApcCache' => 'Luracast\Restler\ApcCache',
+	    //Cache classes
+	    'HumanReadableCache' => 'Luracast\Restler\HumanReadableCache',
+	    'ApcCache'           => 'Luracast\Restler\ApcCache',
 
-        //Utility classes
-        'Object' => 'Luracast\Restler\Data\Object',
-        'String' => 'Luracast\Restler\Data\String',
-        'Arr' => 'Luracast\Restler\Data\Arr',
+	    //Utility classes
+	    'Obj'                => 'Luracast\Restler\Data\Obj',
+	    'String'             => 'Luracast\Restler\Data\String',
+	    'Arr'                => 'Luracast\Restler\Data\Arr',
 
-        //Exception
-        'RestException' => 'Luracast\Restler\RestException'
+	    //Exception
+	    'RestException'      => 'Luracast\Restler\RestException'
     );
     public static $properties = array();
     protected static $instances = array();

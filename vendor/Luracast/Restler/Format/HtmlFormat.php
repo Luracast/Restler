@@ -11,7 +11,7 @@ use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Illuminate\View\View;
 use Luracast\Restler\Data\ApiMethodInfo;
-use Luracast\Restler\Data\Object;
+use Luracast\Restler\Data\Obj;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
@@ -313,7 +313,7 @@ class HtmlFormat extends Format
             $success = is_null($exception);
             $error = $success ? null : $exception->getMessage();
             $data = array(
-                'response' => Object::toArray($data),
+                'response' => Obj::toArray($data),
                 'stages' => $this->restler->getEvents(),
                 'success' => $success,
                 'error' => $error
