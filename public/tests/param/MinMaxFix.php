@@ -1,7 +1,8 @@
 <?php
 /**
- * Class MinMax provides an api to check min and max
- * attributes for array, int, and string
+ * Class MinMaxFix provides an api to check min and max
+ * attributes for array, int, and string.
+ * It also suggests the validator to fix the values if possible
  */
 class MinMaxFix
 {
