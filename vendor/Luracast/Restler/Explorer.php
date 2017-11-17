@@ -75,18 +75,21 @@ class Explorer implements iProvideMultiVersionApi
      */
     public static $dataTypeAlias = array(
         //'string' => 'string',
-        'int'      => 'integer',
-        'number'   => 'number',
-        'float'    => array('number', 'float'),
-        'bool'     => 'boolean',
+        'int'       => 'integer',
+        'number'    => 'number',
+        'float'     => array('number', 'float'),
+        'bool'      => 'boolean',
         //'boolean' => 'boolean',
         //'NULL' => 'null',
-        'array'    => 'array',
-        //'object' => 'object',
-        'stdClass' => 'object',
-        'mixed'    => 'string',
-        'date'     => array('string', 'date'),
-        'datetime' => array('string', 'date-time'),
+        'array'     => 'array',
+        //'object'  => 'object',
+        'stdClass'  => 'object',
+        'mixed'     => 'string',
+        'date'      => array('string', 'date'),
+        'datetime'  => array('string', 'date-time'),
+
+        'time'      => 'string',
+        'timestamp' => 'string',
     );
 
     /**
