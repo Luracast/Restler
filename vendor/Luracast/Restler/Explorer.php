@@ -460,10 +460,24 @@ class Explorer implements iProvideMultiVersionApi
                     )
                 ));
             } elseif ($info->contentType && $info->contentType != 'indexed') {
-                $contentType = Util::getShortName($info->contentType);
-                $object->items = (object)array(
-                    '$ref' => "#/definitions/$contentType"
-                );
+                if (is_string($info->contentType) && $t = Util::nestedValue(static::$dataTypeAlias,
+                        strtolower($info->contentType))) {
+                    if (is_array($t)) {
+                        $object->items = (object)array(
+                            'type'   => $t[0],
+                            'format' => $t[1],
+                        );
+                    } else {
+                        $object->items = (object)array(
+                            'type' => $t,
+                        );
+                    }
+                } else {
+                    $contentType = Util::getShortName($info->contentType);
+                    $object->items = (object)array(
+                        '$ref' => "#/definitions/$contentType"
+                    );
+                }
             } else {
                 $object->items = (object)array(
                     'type' => 'string'
