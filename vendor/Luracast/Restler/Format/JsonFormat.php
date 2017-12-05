@@ -1,7 +1,7 @@
 <?php
 namespace Luracast\Restler\Format;
 
-use Luracast\Restler\Data\Object;
+use Luracast\Restler\Data\Obj;
 use Luracast\Restler\RestException;
 
 /**
@@ -91,13 +91,13 @@ class JsonFormat extends Format
                 $options |= JSON_NUMERIC_CHECK;
             }
 
-            $result = json_encode(Object::toArray($data, true), $options);
+            $result = json_encode(Obj::toArray($data, true), $options);
             $this->handleJsonError();
 
             return $result;
         }
 
-        $result = json_encode(Object::toArray($data, true));
+        $result = json_encode(Obj::toArray($data, true));
         $this->handleJsonError();
 
         if ($humanReadable) {
@@ -157,7 +157,7 @@ class JsonFormat extends Format
             throw new RestException(400, 'Error parsing JSON');
         }
 
-        return Object::toArray($decoded);
+        return Obj::toArray($decoded);
     }
 
     /**
