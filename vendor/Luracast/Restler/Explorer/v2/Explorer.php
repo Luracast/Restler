@@ -157,6 +157,7 @@ class Explorer implements iProvideMultiVersionApi
             return $this->getResources($id);
         }
         $filename = implode('/', func_get_args());
+        $filename = str_replace(array('../', './', '\\', '..', '.php'), '', $filename);
         $redirect = false;
         if (
             (empty($filename) && substr($_SERVER['REQUEST_URI'], -1, 1) != '/') ||
