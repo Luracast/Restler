@@ -25,7 +25,8 @@ class Validator implements iValidate
     public static $exceptions = array();
 
     public static $preFilters = array(
-        '*'              => 'trim',
+        //'*'            => 'some_global_filter', //applied to all parameters
+        'string'         => 'trim', //apply filter function by type (string)
         //'string'       => 'strip_tags',
         //'string'       => 'htmlspecialchars',
         //'int'          => 'abs',
@@ -555,10 +556,29 @@ class Validator implements iValidate
 
                 case 'bool':
                 case 'boolean':
-                    if ($input === 'true' || $input === true) return true;
-                    if (is_numeric($input)) return $input > 0;
-                    return false;
-
+                    if (is_bool($input)) {
+                        return $input;
+                    }
+                    if (is_numeric($input)) {
+                        if ($input == 1) {
+                            return true;
+                        }
+                        if ($input == 0) {
+                            return false;
+                        }
+                    } elseif (is_string($input)) {
+                        switch (strtolower($input)) {
+                            case 'true':
+                                return true;
+                            case 'false':
+                                return false;
+                        }
+                    }
+                    if ($info->fix) {
+                        return $input ? true : false;
+                    }
+                    $error .= '. Expecting boolean value';
+                    break;
                 case 'array':
                     if ($info->fix && is_string($input)) {
                         $input = explode(CommentParser::$arrayDelimiter, $input);
