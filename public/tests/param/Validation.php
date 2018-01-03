@@ -5,6 +5,25 @@
  */
 class Validation
 {
+    /**
+     * Make sure string is converted properly to bool
+     * @param bool $value {@from query}
+     * @return bool
+     */
+    function getBoolean($value)
+    {
+        return $value;
+    }
+
+    /**
+     * Make sure string is converted properly to bool
+     * @param bool $value {@from query}{@fix true}
+     * @return bool
+     */
+    function getBoolFix($value)
+    {
+        return $value;
+    }
 
     /**
      * Validate with regex

@@ -491,6 +491,9 @@ class RestContext extends BehatContext
         $data = $this->_data;
 
         switch ($type) {
+            case 'bool':
+            case 'boolean':
+                if (is_bool($data)) return;
             case 'string':
                 if (is_string($data)) return;
             case 'int':
