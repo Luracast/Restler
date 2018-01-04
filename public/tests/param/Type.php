@@ -2,6 +2,19 @@
 
 class Type
 {
+
+    /**
+     * UUID validation
+     *
+     * @param string $uuid {@from body}{@type uuid}
+     *
+     * @return string {@type uuid}
+     */
+    function postUUID($uuid)
+    {
+        return $uuid;
+    }
+
     /**
      * Email validation
      *

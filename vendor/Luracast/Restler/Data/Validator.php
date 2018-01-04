@@ -61,6 +61,26 @@ class Validator implements iValidate
     }
 
     /**
+     * Validate UUID strings.
+     *
+     * Check that given value contains only alpha numeric characters and the length is 36 chars.
+     *
+     * @param                $input
+     * @param ValidationInfo $info
+     *
+     * @return string
+     *
+     * @throws Invalid
+     */
+    public static function uuid($input, ValidationInfo $info = null)
+    {
+        if (strlen($input) == 36 && ctype_alnum(str_replace('-', '', $input))) {
+            return $input;
+        }
+        throw new Invalid('Expecting a Universally Unique IDentifier (UUID) string.');
+    }
+
+    /**
      * Validate alpha numeric characters.
      *
      * Check that given value contains only alpha numeric characters.
