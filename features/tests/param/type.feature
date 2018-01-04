@@ -341,6 +341,7 @@ Feature: Type Attribute
     | {"name":"12","email":"a@b.c"}  |
     | {"email":"a@b.c"}              |
     | {"email":"ab.c","name":"1234"} |
+    | {"email":"a@b.c","name":"ab"}  |
 
   Scenario Outline: Array of Custom Class objects
     Given that I send <authors>
