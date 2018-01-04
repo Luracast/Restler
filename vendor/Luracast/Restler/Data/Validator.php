@@ -629,6 +629,8 @@ class Validator implements iValidate
                             $name = $info->name;
                             $info->type = $contentType;
                             unset($info->contentType);
+                            unset($info->min);
+                            unset($info->max);
                             foreach ($input as $key => $chinput) {
                                 $info->name = "{$name}[$key]";
                                 $input[$key] = static::validate($chinput, $info);
