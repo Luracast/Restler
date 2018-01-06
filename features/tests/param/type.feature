@@ -8,14 +8,14 @@ Feature: Type Attribute
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
-    And the response equals <uuid>
+    And the response equals <lowercase>
 
     Examples:
-      | uuid                                   |
-      | "4b972cba-f138-11e7-8c3f-9a214cf093ae" |
-      | "4b973020-f138-11e7-8c3f-9a214cf093ae" |
-      | "4b973200-f138-11e7-8c3f-9a214cf093ae" |
-      | "4b9733b8-f138-11e7-8c3f-9a214cf093ae" |
+      | uuid                                   | lowercase                              |
+      | "4b972cba-f138-11e7-8c3f-9a214cf093ae" | "4b972cba-f138-11e7-8c3f-9a214cf093ae" |
+      | "4b973020-f138-11e7-8c3f-9a214cf093ae" | "4b973020-f138-11e7-8c3f-9a214cf093ae" |
+      | "4B973200-F138-11E7-8C3F-9A214CF093AE" | "4b973200-f138-11e7-8c3f-9a214cf093ae" |
+      | "4b9733b8-f138-11e7-8c3f-9a214cf093ae" | "4b9733b8-f138-11e7-8c3f-9a214cf093ae" |
 
   Scenario Outline: valid UUID version 4
     Given that I send {"uuid":<uuid>}
@@ -24,14 +24,14 @@ Feature: Type Attribute
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
-    And the response equals <uuid>
+    And the response equals <lowercase>
 
     Examples:
-      | uuid                                   |
-      | "040fdd24-cd36-4b94-a5e5-3ad72917686f" |
-      | "16bea809-4d60-42b8-9de2-03d464979f74" |
-      | "c0b32c01-3892-4202-a955-dc1ae8323ca3" |
-      | "fd71a4f8-5423-48b1-863d-fea243503d59" |
+      | uuid                                   | lowercase                              |
+      | "040FDD24-CD36-4B94-A5E5-3AD72917686F" | "040fdd24-cd36-4b94-a5e5-3ad72917686f" |
+      | "16bea809-4d60-42b8-9de2-03d464979f74" | "16bea809-4d60-42b8-9de2-03d464979f74" |
+      | "c0b32c01-3892-4202-a955-dc1ae8323ca3" | "c0b32c01-3892-4202-a955-dc1ae8323ca3" |
+      | "fd71a4f8-5423-48b1-863d-fea243503d59" | "fd71a4f8-5423-48b1-863d-fea243503d59" |
 
   Scenario Outline: Invalid UUID
     Given that I send {"uuid":<uuid>}
@@ -45,6 +45,7 @@ Feature: Type Attribute
       | "16bea8$9-4d60-42b8-9de2-03d464979f_4"  |
       | "c0b32c01-3892-4202-a955-dc1ae8323c"    |
       | "fd71a4f8-5423-48b1-863d-fea243503d593" |
+      | "fd71a4f-54238-48b1-863d-fea243503d59"  |
 
   Scenario Outline: Email
     Given that I send {"email":<email>}

@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Data;
 
 use Luracast\Restler\CommentParser;
@@ -26,7 +27,7 @@ class Validator implements iValidate
 
     public static $preFilters = array(
         //'*'            => 'some_global_filter', //applied to all parameters
-        'string'         => 'trim', //apply filter function by type (string)
+        'string' => 'trim', //apply filter function by type (string)
         //'string'       => 'strip_tags',
         //'string'       => 'htmlspecialchars',
         //'int'          => 'abs',
@@ -74,8 +75,11 @@ class Validator implements iValidate
      */
     public static function uuid($input, ValidationInfo $info = null)
     {
-        if (strlen($input) == 36 && ctype_alnum(str_replace('-', '', $input))) {
-            return $input;
+        if (is_string($input) && preg_match(
+                '/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i',
+                $input
+            )) {
+            return strtolower($input);
         }
         throw new Invalid('Expecting a Universally Unique IDentifier (UUID) string.');
     }
@@ -162,7 +166,7 @@ class Validator implements iValidate
     public static function color($input, ValidationInfo $info = null)
     {
         if (preg_match('/^#[a-f0-9]{6}$/i', $input)) {
-           return $input;
+            return $input;
         }
         throw new Invalid('Expecting color as hexadecimal digits.');
     }
@@ -225,8 +229,9 @@ class Validator implements iValidate
     public static function ip($input, ValidationInfo $info = null)
     {
         $r = filter_var($input, FILTER_VALIDATE_IP);
-        if ($r)
+        if ($r) {
             return $r;
+        }
 
         throw new Invalid('Expecting IP address in IPV6 or IPV4 format');
     }
@@ -492,8 +497,7 @@ class Validator implements iValidate
             }
 
             if (method_exists($class = get_called_class(), $info->type) && $info->type != 'validate') {
-                if(!$info->required && empty($input))
-                {
+                if (!$info->required && empty($input)) {
                     //optional parameter with a empty value assume null
                     return null;
                 }
@@ -605,7 +609,7 @@ class Validator implements iValidate
                     }
                     if (is_array($input)) {
                         $contentType =
-                            Util::nestedValue($info, 'contentType') ? : null;
+                            Util::nestedValue($info, 'contentType') ?: null;
                         if ($info->fix) {
                             if ($contentType == 'indexed') {
                                 $input = $info->filterArray($input, true);
