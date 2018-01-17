@@ -4,15 +4,19 @@ if (isset($_GET['file'])) {
     $require_comments = $file[0] == '.';
     $file = '../' . $file;
     $filepath = realpath($file);
-    $basepath = realpath('../../');
-    if (strpos($basepath, $filepath) === 0) {
+    $basepath = realpath('../../examples');
+    if (strpos($filepath, $basepath) !== 0) {
         #trying to get the source outside restler examples
         die('not allowed');
     }
-    if (!file_exists($file)) die('file not found');
+    if (!file_exists($file)) {
+        die('file not found');
+    }
     $text = file_get_contents($file);
     $file = pathinfo($file, PATHINFO_FILENAME) . '.php';
-    if (!$require_comments) $text = strip_comments($text);
+    if (!$require_comments) {
+        $text = strip_comments($text);
+    }
     die($file . '<pre id="php">' . htmlspecialchars($text) . "</pre>");
 } else {
     die('no file specified');
