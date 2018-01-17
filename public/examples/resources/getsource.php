@@ -5,7 +5,7 @@ if (isset($_GET['file'])) {
     $file = '../' . $file;
     $filepath = realpath($file);
     $basepath = realpath('../../');
-    if (strpos($basepath, $filepath) === 0) {
+    if (strpos($filepath, $basepath) === 0 || strpos($filepath, 'public/examples') === false) {
         #trying to get the source outside restler examples
         die('not allowed');
     }
