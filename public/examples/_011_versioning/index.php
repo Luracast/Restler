@@ -38,7 +38,7 @@ You need to namespace it as `{vendor}\{product}\v{version}`
 Which will be `Luracast\WeightManagement\v2` for this example
 
 If a class remains the same across few versions of the api, we can implement
-`iProvideMultiVersionApi` interface which is simply defining `__getMaximumSupportedVersion`
+`iProvideMultiVersionApi` interface which is simply defining `getMaximumSupportedVersion`
 method which returns the maximum supported version. Take a look at `Resources`
 class for a sample implementation.
 

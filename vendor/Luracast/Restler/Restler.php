@@ -1231,7 +1231,7 @@ class Restler extends EventDispatcher
                 $className = Scope::$classAliases[$className];
             }
             if (!$this->cached) {
-                $maxVersionMethod = '__getMaximumSupportedVersion';
+                $maxVersionMethod = 'getMaximumSupportedVersion';
                 if (class_exists($className)) {
                     if (method_exists($className, $maxVersionMethod)) {
                         $max = $className::$maxVersionMethod();
