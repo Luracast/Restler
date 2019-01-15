@@ -74,7 +74,7 @@ class RateLimit implements iFilter, iUseAuthentication
             is_null($authenticatedUsagePerUnit) ? $usagePerUnit : $authenticatedUsagePerUnit;
     }
 
-    public function __isAllowed()
+    public function isAllowed()
     {
         if (static::$authenticatedUsagePerUnit
             == static::$usagePerUnit

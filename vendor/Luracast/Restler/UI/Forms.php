@@ -399,7 +399,7 @@ class Forms implements iFilter
      *
      * @throws RestException 403 security violation
      */
-    public function __isAllowed()
+    public function isAllowed()
     {
         if (session_id() == '') {
             session_start();

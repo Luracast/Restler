@@ -233,7 +233,7 @@ class Defaults
      * @var string authentication method to be called in iAuthenticate
      * Interface
      */
-    public static $authenticationMethod = '__isAllowed';
+    public static $authenticationMethod = 'isAllowed';
 
     /**
      * @var int time in milliseconds for bandwidth throttling,
