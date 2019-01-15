@@ -139,7 +139,7 @@ class Server implements iAuthenticate
         return self::$server->verifyResourceRequest(static::$request);
     }
 
-    public function __getWWWAuthenticateString()
+    public function getWWWAuthenticateString()
     {
         return 'Bearer realm="example"';
     }

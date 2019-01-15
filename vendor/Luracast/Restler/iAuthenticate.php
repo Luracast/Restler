@@ -21,5 +21,5 @@ interface iAuthenticate extends iFilter
      * @example Digest
      * @example OAuth
      */
-    public function __getWWWAuthenticateString();
+    public function getWWWAuthenticateString();
 }
