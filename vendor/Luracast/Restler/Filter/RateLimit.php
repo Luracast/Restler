@@ -82,7 +82,7 @@ class RateLimit implements iFilter, iUseAuthentication
         return null;
     }
 
-    public function __setAuthenticationStatus($isAuthenticated = false)
+    public function setAuthenticationStatus($isAuthenticated = false)
     {
         header('X-Auth-Status: ' . ($isAuthenticated ? 'true' : 'false'));
         $this->check($isAuthenticated);
