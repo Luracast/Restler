@@ -280,7 +280,7 @@ class CommentParser
                 $value[self::$embeddedDataName]
                     += $data[$param][self::$embeddedDataName];
             }
-            $data[$param] = $value + $data[$param];
+            $data[$param] = $value . $data[$param];
         }
     }
 
