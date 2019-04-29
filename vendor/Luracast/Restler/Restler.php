@@ -991,7 +991,7 @@ class Restler extends EventDispatcher
         $this->dispatch('compose');
         $this->composeHeaders();
         /**
-         * @var iCompose Default Composer
+         * @var iCompose $compose
          */
         $compose = Scope::get(Defaults::$composeClass);
         $this->responseData = is_null($this->responseData) &&
