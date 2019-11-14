@@ -471,8 +471,12 @@ class Validator implements iValidate
 
                 case 'string' :
                     if (!is_string($input)) {
-                        $error .= '. Expecting alpha numeric value';
-                        break;
+                        if ($info->fix) {
+                            $input = strval($input);
+                        } else {
+                            $error .= '. Expecting alpha numeric value';
+                            break;
+                        }
                     }
                     if ($info->required && $input === '') {
                         $error = "$name is required.";
