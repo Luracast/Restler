@@ -171,7 +171,7 @@ class Scope
             return false;
         $divider = '\\';
         $qualified = false;
-        if ($className{0} == $divider) {
+        if ($className[0] == $divider) {
             $qualified = trim($className, $divider);
         } elseif (array_key_exists($className, $scope)) {
             $qualified = $scope[$className];
