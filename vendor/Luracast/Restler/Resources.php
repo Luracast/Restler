@@ -192,6 +192,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      */
     public function get($id = '')
     {
+        if (!static::$accessControlFunction && Defaults::$accessControlFunction)
+            static::$accessControlFunction = Defaults::$accessControlFunction;
         $version = $this->restler->getRequestedApiVersion();
         if (empty($id)) {
             //do nothing
