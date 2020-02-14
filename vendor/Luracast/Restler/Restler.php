@@ -1243,7 +1243,9 @@ class Restler extends EventDispatcher
                     }
                 }
                 //versioned api
-                if (false !== ($index = strrpos($className, '\\'))) {
+                if (false !== strrpos($className, 'v{$version}')) {
+                    $name = $className;
+                } else if (false !== ($index = strrpos($className, '\\'))) {
                     $name = substr($className, 0, $index)
                         . '\\v{$version}' . substr($className, $index);
                 } else if (false !== ($index = strrpos($className, '_'))) {
