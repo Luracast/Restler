@@ -5,12 +5,12 @@ class SimpleAuth implements iAuthenticate
 {
     const KEY = 'rEsTlEr2';
 
-    function __isAllowed()
+    function isAllowed()
     {
         return isset($_GET['key']) && $_GET['key'] == SimpleAuth::KEY ? TRUE : FALSE;
     }
 
-    public function __getWWWAuthenticateString()
+    public function getWWWAuthenticateString()
     {
         return 'Query name="key"';
     }

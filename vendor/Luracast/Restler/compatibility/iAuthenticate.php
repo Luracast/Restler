@@ -6,5 +6,5 @@
  */
 interface iAuthenticate
 {
-    public function __isAuthenticated();
+    public function isAuthenticated();
 }

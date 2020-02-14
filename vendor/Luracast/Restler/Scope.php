@@ -116,7 +116,7 @@ class Scope
             !isset(static::$instances[$name]->authVerified)
         ) {
             static::$instances[$name]->authVerified = true;
-            $r->__setAuthenticationStatus
+            $r->setAuthenticationStatus
                 (static::get('Restler')->_authenticated);
         }
         if (isset(static::$instances[$name]->initPending)) {

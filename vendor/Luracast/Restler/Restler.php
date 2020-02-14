@@ -850,7 +850,7 @@ class Restler extends EventDispatcher
                 throw new RestException (
                     500, 'Filter Class ' .
                     'should implement iFilter');
-            } else if (!($ok = $filterObj->__isAllowed())) {
+            } else if (!($ok = $filterObj->isAllowed())) {
                 if (is_null($ok)
                     && $filterObj instanceof iUseAuthentication
                 ) {
@@ -1080,7 +1080,7 @@ class Restler extends EventDispatcher
         }
         if ($this->responseCode == 401) {
             $authString = count($this->authClasses)
-                ? Scope::get($this->authClasses[0])->__getWWWAuthenticateString()
+                ? Scope::get($this->authClasses[0])->getWWWAuthenticateString()
                 : 'Unknown';
             @header('WWW-Authenticate: ' . $authString, false);
         }
@@ -1231,7 +1231,7 @@ class Restler extends EventDispatcher
                 $className = Scope::$classAliases[$className];
             }
             if (!$this->cached) {
-                $maxVersionMethod = '__getMaximumSupportedVersion';
+                $maxVersionMethod = 'getMaximumSupportedVersion';
                 if (class_exists($className)) {
                     if (method_exists($className, $maxVersionMethod)) {
                         $max = $className::$maxVersionMethod();

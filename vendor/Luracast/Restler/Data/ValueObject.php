@@ -45,7 +45,7 @@ class ValueObject implements iValueObject
         return $instance;
     }
 
-    public function __toArray()
+    public function toArray()
     {
         $r = get_object_vars($this);
         $methods = get_class_methods($this);

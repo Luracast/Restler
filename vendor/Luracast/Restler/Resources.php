@@ -137,7 +137,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      *
      * @return mixed
      */
-    public function __setAuthenticationStatus($isAuthenticated = false)
+    public function setAuthenticationStatus($isAuthenticated = false)
     {
         $this->_authenticated = $isAuthenticated;
     }
@@ -970,7 +970,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
      * Maximum api version supported by the api class
      * @return int
      */
-    public static function __getMaximumSupportedVersion()
+    public static function getMaximumSupportedVersion()
     {
         return Scope::get('Restler')->getApiVersion();
     }

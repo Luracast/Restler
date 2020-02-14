@@ -8,7 +8,7 @@ class AccessControl implements iAuthenticate
     public static $requires = 'user';
     public static $role = 'user';
 
-    public function __isAllowed()
+    public function isAllowed()
     {
         //hardcoded api_key=>role for brevity
         $roles = array('12345' => 'user', '67890' => 'admin');
@@ -28,7 +28,7 @@ class AccessControl implements iAuthenticate
         return static::$requires == static::$role || static::$role == 'admin';
     }
 
-    public function __getWWWAuthenticateString()
+    public function getWWWAuthenticateString()
     {
         return 'Query name="api_key"';
     }

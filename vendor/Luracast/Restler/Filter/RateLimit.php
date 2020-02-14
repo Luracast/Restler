@@ -74,7 +74,7 @@ class RateLimit implements iFilter, iUseAuthentication
             is_null($authenticatedUsagePerUnit) ? $usagePerUnit : $authenticatedUsagePerUnit;
     }
 
-    public function __isAllowed()
+    public function isAllowed()
     {
         if (static::$authenticatedUsagePerUnit
             == static::$usagePerUnit
@@ -82,7 +82,7 @@ class RateLimit implements iFilter, iUseAuthentication
         return null;
     }
 
-    public function __setAuthenticationStatus($isAuthenticated = false)
+    public function setAuthenticationStatus($isAuthenticated = false)
     {
         header('X-Auth-Status: ' . ($isAuthenticated ? 'true' : 'false'));
         $this->check($isAuthenticated);

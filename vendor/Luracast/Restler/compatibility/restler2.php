@@ -26,7 +26,7 @@ foreach (explode(PATH_SEPARATOR, get_include_path()) as $path)
 AutoLoader::seen($classMap);
 
 //changes in iAuthenticate
-Defaults::$authenticationMethod = '__isAuthenticated';
+Defaults::$authenticationMethod = 'isAuthenticated';
 
 include __DIR__ . '/iAuthenticate.php';
 
