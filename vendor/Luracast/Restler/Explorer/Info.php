@@ -10,8 +10,8 @@ class Info
     public static $description = 'Live API Documentation';
     public static $termsOfServiceUrl = null;
     public static $contactName = 'Restler Support';
-    public static $contactEmail = 'luracast.com/products/restler';
-    public static $contactUrl = 'arul@luracast.com';
+    public static $contactEmail = 'arul@luracast.com';
+    public static $contactUrl = 'luracast.com/products/restler';
     public static $license = 'LGPL-2.1';
     public static $licenseUrl = 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html';
 
