@@ -21,7 +21,7 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc6
+ *
  *
  * @method static void onGet() onGet(Callable $function) fired before reading the request details
  * @method static void onRoute() onRoute(Callable $function) fired before finding the api method
@@ -51,7 +51,7 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  */
 class Restler extends EventDispatcher
 {
-    const VERSION = '3.0.0rc6';
+    const VERSION = '3.1.0';
 
     // ==================================================================
     //

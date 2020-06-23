@@ -20,7 +20,7 @@ use Luracast\Restler\Scope;
  * @package Luracast\Restler
  *
  * @access  hybrid
- * @version 3.0.0rc6
+ * @version 3.1.0
  */
 class Explorer implements iProvideMultiVersionApi
 {
