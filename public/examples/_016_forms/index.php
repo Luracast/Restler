@@ -88,14 +88,25 @@ HtmlFormat::$template = 'blade';
 Validator::$holdException = true;
 
 $themes = array(
-    'amelia', 'cerulean', 'cosmo',
-    'cyborg', 'darkly', 'flatly',
-    'journal', 'lumen', 'readable',
-    'simplex', 'slate', 'spacelab',
-    'superhero', 'united', 'yeti',
+    'cerulean',
+    'cosmo',
+    'cyborg',
+    'darkly',
+    'flatly',
+    'journal',
+    'lumen',
+    'paper',
+    'readable',
+    'sandstone',
+    'simplex',
+    'slate',
+    'spacelab',
+    'superhero',
+    'united',
+    'yeti',
 );
 $theme = isset($_GET['theme']) ? $_GET['theme'] : $themes[array_rand($themes, 1)];
-$style = $theme == 'foundation5' ? 'foundation5' : 'bootstrap3';
+$style = $theme === 'foundation5' ? 'foundation5' : 'bootstrap3';
 HtmlFormat::$data += compact('theme', 'themes', 'style');
 
 Forms::$style = FormStyles::$$style;

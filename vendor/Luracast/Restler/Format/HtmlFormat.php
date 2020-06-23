@@ -101,7 +101,7 @@ class HtmlFormat extends DependentFormat
         $resolver->register('blade', function () use ($engine) {
             return $engine;
         });
-        $phpEngine = new PhpEngine();
+        $phpEngine = new PhpEngine($files);
         $resolver->register('php', function () use ($phpEngine) {
             return $phpEngine;
         });

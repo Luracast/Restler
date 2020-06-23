@@ -34,7 +34,7 @@
                         <li><a href="?theme=foundation5">Foundation</a></li>
                         <li><label>Bootstrap Themes</label></li>
                         @foreach ($themes as $option)
-                        <li><a href="?theme={{ $option }}">{{ String::title($option) }}</a></li>
+                        <li><a href="?theme={{ $option }}">{{ Text::title($option) }}</a></li>
                         @endforeach
                     </ul>
                 </li>
@@ -44,7 +44,7 @@
                     <ul class="dropdown">
                         <li class="has-form">
                             <div class="row" style="min-width: 140px">
-                                {{ Forms::get('POST', 'users/signin') }}
+                                {!! Forms::get('POST', 'users/signin') !!}
                             </div>
                             <p></p>
                         </li>
@@ -64,7 +64,7 @@
         </div>
         <div class="large-8 columns">
             <h3>Sign Up</h3>
-            {{ Forms::get('POST', 'users/signup') }}
+            {!! Forms::get('POST', 'users/signup') !!}
         </div>
     </div>
 
