@@ -5,10 +5,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
-use League\Uri\UriTemplate;
 use Luracast\Restler\Data\Text;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Rize\UriTemplate\UriTemplate;
 
 /**
  * Rest context.
@@ -289,7 +289,7 @@ class RestContext implements Behat\Behat\Context\Context
             $this->_startTime = microtime(true);
             $this->_requestUrl = $this->baseUrl . $path;
             $url = false !== strpos($path, '{')
-                ? (string)(new UriTemplate($path))->expand((array)$this->_restObject)
+                ? (new UriTemplate)->expand($path, (array)$this->_restObject)
                 : $path;
             var_dump($url);
 

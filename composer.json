@@ -36,7 +36,7 @@
         "guzzlehttp/guzzle":"^7.0@dev",
         "bshaffer/oauth2-server-php":"dev-master",
         "behat/behat": "^3.8@dev",
-        "league/uri": "^6.0@dev"
+        "rize/uri-template": "dev-master"
     },
     "repositories":[
         {

@@ -32,8 +32,7 @@ public/examples/_016_forms/cache
 behat
 vendor/guzzlehttp
 vendor/psr/log
-vendor/league/uri
-vendor/league/uri-interfaces
 vendor/psr
 vendor/ralouphie
+vendor/rize
 yaml-lint
