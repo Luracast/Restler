@@ -30,5 +30,10 @@ public/examples/_015_oauth2_server/OAuth2/db
 vendor/bin/behat
 public/examples/_016_forms/cache
 behat
-vendor/guzzlehttp/guzzle
+vendor/guzzlehttp
 vendor/psr/log
+vendor/league/uri
+vendor/league/uri-interfaces
+vendor/psr
+vendor/ralouphie
+yaml-lint

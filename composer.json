@@ -28,28 +28,20 @@
         "bshaffer/oauth2-server-php":"If you want to use OAuth2 for authentication"
     },
     "require":{
-        "php":">=5.3.0"
+        "php": ">=5.4",
+        "ext-json": "*"
     },
     "require-dev":{
-        "guzzlehttp/guzzle":"3.8.1",
-        "behat/behat":"2.5.*@stable",
-        "bshaffer/oauth2-server-php":"v1.0"
+        "ext-libxml": "*",
+        "guzzlehttp/guzzle":"^7.0@dev",
+        "bshaffer/oauth2-server-php":"dev-master",
+        "behat/behat": "^3.8@dev",
+        "league/uri": "^6.0@dev"
     },
     "repositories":[
         {
             "type":"vcs",
             "url":"https://github.com/zendframework/ZendAmf.git"
-        },
-        {
-            "type":"package",
-            "package":{
-                "name":"luracast/explorer",
-                "version":"v3.0.0",
-                "dist":{
-                    "type":"zip",
-                    "url":"https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
-                }
-            }
         }
     ],
     "autoload":{

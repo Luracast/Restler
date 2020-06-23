@@ -1,7 +1,14 @@
 <?php
-use Behat\Behat\Context\BehatContext;
+
 use Behat\Gherkin\Node\PyStringNode;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use League\Uri\UriTemplate;
 use Luracast\Restler\Data\Text;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Rest context.
@@ -14,7 +21,7 @@ use Luracast\Restler\Data\Text;
  * @link       http://luracast.com/products/restler/
  * @version    3.0.0
  */
-class RestContext extends BehatContext
+class RestContext implements Behat\Behat\Context\Context
 {
 
     private $_startTime = null;
@@ -31,50 +38,39 @@ class RestContext extends BehatContext
     private $_charset = null;
     private $_language = null;
     private $_data = null;
-
-    private $_parameters = array();
+    private $baseUrl;
+    /**
+     * @var resource
+     */
+    private $_request_debug_stream;
 
     /**
      * Initializes context.
      * Every scenario gets it's own context object.
+     * @param string $baseUrl
      */
-    public function __construct(array $parameters)
+    public function __construct($baseUrl)
     {
         // Initialize your context here
-
         $this->_restObject = new stdClass();
-        $this->_parameters = $parameters;
-        $this->_client = new Guzzle\Service\Client();
-        //suppress few errors
-        $this->_client
-            ->getEventDispatcher()
-            ->addListener('request.error',
-                function (\Guzzle\Common\Event $event) {
-                    switch ($event['response']->getStatusCode()) {
-                        case 400:
-                        case 401:
-                        case 404:
-                        case 405:
-                        case 406:
-                            $event->stopPropagation();
-                    }
-                });
+        $handler = HandlerStack::create();
+        $handler->push(
+            Middleware::mapRequest(
+                function (RequestInterface $request) {
+                    // Notice that we have to return a request object
+                    $this->_request = $request;
+                    return $request;
+                }
+            )
+        );
+        $this->_client = new Client([
+            'base_uri' => $baseUrl,
+            'handler' => $handler,
+            'allow_redirects' => ['track_redirects' => true],
+        ]);
         $timezone = ini_get('date.timezone');
         if (empty($timezone))
             date_default_timezone_set('UTC');
-    }
-
-    public function getParameter($name)
-    {
-        if (count($this->_parameters) === 0) {
-
-
-            throw new \Exception('Parameters not loaded!');
-        } else {
-
-            $parameters = $this->_parameters;
-            return (isset($parameters[$name])) ? $parameters[$name] : null;
-        }
     }
 
     /**
@@ -244,8 +240,8 @@ class RestContext extends BehatContext
     public function thatItsNumericPropertyIs($propertyName, $propertyValue)
     {
         $this->_restObject->$propertyName = is_float($propertyValue)
-            ? floatval($propertyValue)
-            : intval($propertyValue);
+            ? (float)$propertyValue
+            : (int)$propertyValue;
     }
 
     /**
@@ -260,7 +256,7 @@ class RestContext extends BehatContext
      */
     public function thatItsBooleanPropertyIs($propertyName, $propertyValue)
     {
-        $this->_restObject->$propertyName = $propertyValue == 'true';
+        $this->_restObject->$propertyName = $propertyValue === 'true';
     }
 
     /**
@@ -279,73 +275,65 @@ class RestContext extends BehatContext
 
     /**
      * @When /^I request "([^"]*)"$/
+     * @When /^request "([^"]*)"$/
      */
-    public function iRequest($pageUrl)
+    public function iRequest($path)
     {
-        $this->_startTime = microtime(true);
-        $baseUrl = $this->getParameter('base_url');
-        $this->_requestUrl = $baseUrl . $pageUrl;
-        $url = false !== strpos($pageUrl, '{')
-            ? array($this->_requestUrl, (array)$this->_restObject)
-            : $this->_requestUrl;
+        $path = ltrim($path, '/');
+        try {
+            $parts = explode(' ', $path);
+            if (2 === count($parts)) {
+                $this->_restObjectMethod = $parts[0];
+                $path = $parts[1];
+            }
+            $this->_startTime = microtime(true);
+            $this->_requestUrl = $this->baseUrl . $path;
+            $url = false !== strpos($path, '{')
+                ? (string)(new UriTemplate($path))->expand((array)$this->_restObject)
+                : $path;
+            var_dump($url);
 
-        switch (strtoupper($this->_restObjectMethod)) {
-            case 'HEAD':
+            $method = strtoupper($this->_restObjectMethod);
 
-                $this->_request = $this->_client
-                    ->head($url, $this->_headers);
-                $this->_response = $this->_request->send();
-                break;
-            case 'GET':
-                $this->_request = $this->_client
-                    ->get($url, $this->_headers);
-                $this->_response = $this->_request->send();
-                break;
-            case 'POST':
-                $postFields = is_object($this->_restObject)
-                    ? (array)$this->_restObject
-                    : $this->_restObject;
-                $this->_request = $this->_client
-                    ->post($url, $this->_headers,
-                        (empty($this->_requestBody) ? $postFields :
-                            $this->_requestBody));
-                $this->_response = $this->_request->send();
-                break;
-            case 'PUT' :
-                $putFields = is_object($this->_restObject)
-                    ? (array)$this->_restObject
-                    : $this->_restObject;
-                $this->_request = $this->_client
-                    ->put($url, $this->_headers,
-                        (empty($this->_requestBody) ? $putFields :
-                            $this->_requestBody));
-                $this->_response = $this->_request->send();
-                break;
-            case 'PATCH' :
-                $putFields = is_object($this->_restObject)
-                    ? (array)$this->_restObject
-                    : $this->_restObject;
-                $this->_request = $this->_client
-                    ->patch($url, $this->_headers,
-                        (empty($this->_requestBody) ? $putFields :
-                            $this->_requestBody));
-                $this->_response = $this->_request->send();
-                break;
-            case 'DELETE':
-                $this->_request = $this->_client
-                    ->delete($url, $this->_headers);
-                $this->_response = $this->_request->send();
-                break;
+            $this->_request_debug_stream = fopen('php://temp/', 'r+');
+
+            $options = array(
+                'headers' => $this->_headers,
+                'http_errors' => false,
+                'decode_content' => false,
+                'debug' => $this->_request_debug_stream,
+                //'curl' => array(CURLOPT_VERBOSE => true),
+            );
+            if (in_array($method, array('POST', 'PUT', 'PATCH'))) {
+                if (empty($this->_requestBody)) {
+                    $postFields = is_object($this->_restObject)
+                        ? (array)$this->_restObject
+                        : $this->_restObject;
+                    $options['form_params'] = $postFields;
+                } else {
+                    $options['body'] = $this->_requestBody;
+                }
+            }
+            $this->_response = $this->_client->request($method, $url, $options);
+        } catch (ClientException $ce) {
+            $this->_request = $ce->getRequest();
+            $this->_response = $ce->getResponse();
         }
         //detect type, extract data
-        $this->_language = $this->_response->getHeader('Content-Language');
+        $this->_language = $this->_response->getHeaderLine('Content-Language');
 
-        $cType = explode('; ', $this->_response->getHeader('Content-type'));
+        $cType = explode(';', $this->_response->getHeaderLine('Content-type'));
         if (count($cType) > 1) {
-            $charset = $cType[1];
+            $charset = trim($cType[1]);
             $this->_charset = substr($charset, strpos($charset, '=') + 1);
         }
         $cType = $cType[0];
+        if (strpos($cType, '+') > 0) {
+            //look for vendor mime
+            //example 'application/vnd.SomeVendor-v1+json','application/vnd.SomeVendor-v2+json'
+            list($app, $vendor, $extension) = [strtok($cType, '/'), strtok('+'), strtok('')];
+            $cType = "$app/$extension";
+        }
         switch ($cType) {
             case 'application/json':
                 $this->_type = 'json';
@@ -373,15 +361,18 @@ class RestContext extends BehatContext
                         $message = 'unknown error';
                         break;
                 }
-                throw new Exception ('Error parsing JSON, ' . $message
-                    . "\n\n" . $this->echoLastResponse());
+                throw new Exception (
+                    'Error parsing JSON, ' . $message
+                    . "\n\n" . $this->echoLastResponse()
+                );
                 break;
             case 'application/xml':
                 $this->_type = 'xml';
                 libxml_use_internal_errors(true);
                 libxml_disable_entity_loader(true);
                 $this->_data = @simplexml_load_string(
-                    $this->_response->getBody(true));
+                    $this->_response->getBody(true)
+                );
                 if (!$this->_data) {
                     $message = '';
                     foreach (libxml_get_errors() as $error) {
@@ -389,6 +380,9 @@ class RestContext extends BehatContext
                     }
                     throw new Exception ('Error parsing XML, ' . $message);
                 }
+                break;
+            case 'text/html':
+                $this->_type = 'html';
                 break;
         }
     }
@@ -399,7 +393,7 @@ class RestContext extends BehatContext
      */
     public function theResponseIsJson()
     {
-        if ($this->_type != 'json') {
+        if ($this->_type !== 'json') {
             throw new Exception("Response was not JSON\n\n" . $this->echoLastResponse());
         }
     }
@@ -410,7 +404,7 @@ class RestContext extends BehatContext
      */
     public function theResponseIsXml()
     {
-        if ($this->_type != 'xml') {
+        if ($this->_type !== 'xml') {
             throw new Exception("Response was not XML\n\n" . $this->echoLastResponse());
         }
     }
@@ -445,11 +439,12 @@ class RestContext extends BehatContext
             throw new Exception("Response header $header was not found\n\n"
                 . $this->echoLastResponse());
         }
-        if ((string)$this->_response->getHeader($header) !== $value) {
-            throw new Exception("Response header $header ("
-                . (string)$this->_response->getHeader($header)
-                . ") does not match `$value`\n\n"
-                . $this->echoLastResponse());
+        $headerLine = (string)$this->_response->getHeaderLine($header);
+        if ($headerLine !== $value) {
+            throw new Exception(sprintf(
+                "Response header %s (%s) does not match `%s`\n\n%s",
+                $header, $headerLine, $this->echoLastResponse(), $header
+            ));
         }
     }
 
@@ -458,8 +453,8 @@ class RestContext extends BehatContext
      */
     public function theResponseExpiresHeaderShouldBeDatePlusGivenSeconds($seconds)
     {
-        $server_time = strtotime($this->_response->getHeader('Date')) + $seconds;
-        $expires_time = strtotime($this->_response->getHeader('Expires'));
+        $server_time = strtotime($this->_response->getHeaderLine('Date')) + $seconds;
+        $expires_time = strtotime($this->_response->getHeaderLine('Expires'));
         if ($expires_time === $server_time || $expires_time === $server_time + 1)
             return;
         return $this->theResponseHeaderShouldBe(
@@ -546,7 +541,7 @@ class RestContext extends BehatContext
      */
     public function theResponseIsJsonWithType($type)
     {
-        if ($this->_type != 'json') {
+        if ($this->_type !== 'json') {
             throw new Exception("Response was not JSON\n\n" . $this->echoLastResponse());
         }
 
@@ -622,7 +617,7 @@ class RestContext extends BehatContext
     public function thePropertyEqualsNumber($propertyName, $propertyValue)
     {
         $propertyValue = is_float($propertyValue)
-            ? floatval($propertyValue) : intval($propertyValue);
+            ? (float)$propertyValue : (int)$propertyValue;
         return $this->thePropertyEquals($propertyName, $propertyValue);
     }
 
@@ -682,6 +677,37 @@ class RestContext extends BehatContext
      */
     public function echoLastResponse()
     {
-        $this->printDebug("$this->_request\n$this->_response");
+        global $argv;
+        $level = 1;
+        if (in_array('-v', $argv) || in_array('--verbose=1', $argv)) {
+            $level = 2;
+        } elseif (in_array('-vv', $argv) || in_array('--verbose=2', $argv)) {
+            $level = 3;
+        } elseif (in_array('-vvv', $argv) || in_array('--verbose=3', $argv)) {
+            $level = 4;
+        }
+        //echo "$this->_request\n$this->_response";
+        if ($level >= 2 && is_resource($this->_request_debug_stream)) {
+            rewind($this->_request_debug_stream);
+            echo stream_get_contents($this->_request_debug_stream) . PHP_EOL . PHP_EOL;
+        }
+        if ($level >= 1) {
+            /** @var RequestInterface $req */
+            $req = $this->_request;
+            echo $req->getMethod() . ' ' . $req->getUri() . ' HTTP/' . $req->getProtocolVersion() . PHP_EOL;
+            foreach ($req->getHeaders() as $k => $v) {
+                echo ucwords($k) . ': ' . implode(', ', $v) . PHP_EOL;
+            }
+            echo PHP_EOL;
+            echo urldecode((string)$req->getBody()) . PHP_EOL . PHP_EOL;
+        }
+        /** @var ResponseInterface $res */
+        $res = $this->_response;
+        echo 'HTTP/' . $res->getProtocolVersion() . ' ' . $res->getStatusCode() . ' ' . $res->getReasonPhrase() . PHP_EOL;
+        foreach ($res->getHeaders() as $k => $v) {
+            echo ucwords($k) . ': ' . implode(', ', $v) . PHP_EOL;
+        }
+        echo PHP_EOL;
+        echo (string)$res->getBody();
     }
 }
