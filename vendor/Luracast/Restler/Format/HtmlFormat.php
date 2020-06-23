@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Format;
 
 use Exception;
@@ -18,6 +19,10 @@ use Luracast\Restler\Restler;
 use Luracast\Restler\Scope;
 use Luracast\Restler\UI\Nav;
 use Luracast\Restler\Util;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 /**
  * Html template format
@@ -29,10 +34,13 @@ use Luracast\Restler\Util;
  * @copyright  2010 Luracast
  * @license    http://www.opensource.org/licenses/lgpl-license.php LGPL
  * @link       http://luracast.com/products/restler/
- * @version    3.0.0rc6
+ *
  */
 class HtmlFormat extends DependentFormat
 {
+    const BLADE = 'Illuminate\View\View';
+    const TWIG = 'Twig\Environment';
+    const MUSTACHE = 'Mustache_Engine';
     public static $mime = 'text/html';
     public static $extension = 'html';
     public static $view;
@@ -84,11 +92,12 @@ class HtmlFormat extends DependentFormat
         }
     }
 
-    public function getDependencyMap(){
+    public function getDependencyMap()
+    {
         return array(
-            'Illuminate\View\View' => 'illuminate/view:4.2.*',
-            'Twig_Environment' => 'twig/twig:v1.13.*',
-            'Mustache_Engine' => 'mustache/mustache:dev-master',
+            self::BLADE => 'illuminate/view:^8',
+            self::TWIG => 'twig/twig:^3',
+            self::MUSTACHE => 'mustache/mustache:dev-master',
         );
     }
 
@@ -128,32 +137,40 @@ class HtmlFormat extends DependentFormat
         return $view->render();
     }
 
-    public static function twig(array $data, $debug = true)
+    /**
+     * @param array|object $data
+     * @param bool $debug
+     * @return string
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
+    public static function twig($data, $debug = true)
     {
-        $loader = new \Twig_Loader_Filesystem(static::$viewPath);
-        $twig = new \Twig_Environment($loader, array(
+        $loader = new FilesystemLoader(static::$viewPath);
+        $twig = new Environment($loader, array(
             'cache' => static::$cacheDirectory,
             'debug' => $debug,
             'use_strict_variables' => $debug,
         ));
         if ($debug)
-            $twig->addExtension(new \Twig_Extension_Debug());
+            $twig->addExtension(new DebugExtension());
 
         $twig->addFunction(
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'form',
                 'Luracast\Restler\UI\Forms::get',
                 array('is_safe' => array('html'))
             )
         );
         $twig->addFunction(
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'form_key',
                 'Luracast\Restler\UI\Forms::key'
             )
         );
         $twig->addFunction(
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'nav',
                 'Luracast\Restler\UI\Nav::get'
             )
@@ -172,17 +189,28 @@ class HtmlFormat extends DependentFormat
             return false;
         });
 
-        $template = $twig->loadTemplate(static::getViewFile());
-        return $template->render($data);
+        $template = $twig->load(static::getViewFile());
+        return $template->render((array)$data);
     }
 
-    public static function handlebar(array $data, $debug = true)
+    /**
+     * @param array|object $data
+     * @param bool $debug
+     * @return string
+     */
+    public static function handlebar($data, $debug = true)
     {
         return static::mustache($data, $debug);
     }
 
-    public static function mustache(array $data, $debug = true)
+    /**
+     * @param array|object $data
+     * @param bool $debug
+     * @return string
+     */
+    public static function mustache($data, $debug = true)
     {
+        $data = (array)$data;
         if (!isset($data['nav']))
             $data['nav'] = array_values(Nav::get());
         $options = array(
@@ -206,7 +234,13 @@ class HtmlFormat extends DependentFormat
         return $m->render(static::getViewFile(), $data);
     }
 
-    public static function php(array $data, $debug = true)
+    /**
+     * @param array|object $data
+     * @param bool $debug
+     * @return string
+     * @throws RestException
+     */
+    public static function php($data, $debug = true)
     {
         if (static::$view == 'debug')
             static::$viewPath = dirname(__DIR__) . '/views';
@@ -222,6 +256,7 @@ class HtmlFormat extends DependentFormat
 
         $path = static::$viewPath . DIRECTORY_SEPARATOR;
         $template = function ($view) use ($data, $path) {
+            $data = (array)$data;
             $form = function () {
                 return call_user_func_array(
                     'Luracast\Restler\UI\Forms::get',
@@ -239,6 +274,7 @@ class HtmlFormat extends DependentFormat
             if (!isset($data['nav']))
                 $data['nav'] = $nav;
 
+
             $_ = function () use ($data, $path) {
                 extract($data);
                 $args = func_get_args();
@@ -254,7 +290,7 @@ class HtmlFormat extends DependentFormat
                             ) {
                                 $str = '';
                                 foreach ($arrays as $arr) {
-                                    extract($arr);
+                                    extract((array)$arr);
                                     $str .= include $file;
                                 }
                                 return $str;
@@ -287,15 +323,15 @@ class HtmlFormat extends DependentFormat
     /**
      * Encode the given data in the format
      *
-     * @param array   $data                resulting data that needs to
+     * @param array $data resulting data that needs to
      *                                     be encoded in the given format
-     * @param boolean $humanReadable       set to TRUE when restler
+     * @param boolean $humanReadable set to TRUE when restler
      *                                     is not running in production mode.
      *                                     Formatter has to make the encoded
      *                                     output more human readable
      *
-     * @throws \Exception
      * @return string encoded string
+     * @throws \Exception
      */
     public function encode($data, $humanReadable = false)
     {
@@ -358,7 +394,9 @@ class HtmlFormat extends DependentFormat
             if ($value) {
                 $data = Util::nestedValue($data, explode('.', $value));
             }
-            $data += static::$data;
+            if (is_array($data)) {
+                $data += static::$data;
+            }
             if (false === ($i = strrpos(self::$view, '.'))) {
                 $template = self::$template;
             } else {
@@ -375,11 +413,11 @@ class HtmlFormat extends DependentFormat
             }
             if (method_exists($class = get_called_class(), $template)) {
                 if ($template == 'blade') {
-                    $this->checkDependency('Illuminate\View\View');
+                    $this->checkDependency(self::BLADE);
                 } elseif ($template == 'twig') {
-                    $this->checkDependency('Twig_Environment');
+                    $this->checkDependency(self::TWIG);
                 } elseif ($template == 'mustache' || $template == 'handlebar') {
-                    $this->checkDependency('Mustache_Engine');
+                    $this->checkDependency(self::MUSTACHE);
                 }
                 return call_user_func("$class::$template", $data, $humanReadable);
             }

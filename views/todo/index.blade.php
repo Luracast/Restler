@@ -8,7 +8,7 @@
 
     <!-- Including the jQuery UI Human Theme -->
     <link rel="stylesheet"
-          href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/themes/humanity/jquery-ui.css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.min.css"
           type="text/css" media="all"/>
 
     <!-- Our own stylesheet -->
@@ -28,7 +28,7 @@
 
     <ul class="todoList">
         @foreach ($response as $res)
-            @include('todo.list', $res)
+            @include('todo.list', $res->jsonSerialize())
         @endforeach
     </ul>
 
@@ -45,10 +45,8 @@
 
 <!-- Including our scripts -->
 
-<script type="text/javascript"
-        src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-<script type="text/javascript"
-        src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.0/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="script.js"></script>
 
 </body>

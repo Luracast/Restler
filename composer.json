@@ -37,7 +37,9 @@
         "bshaffer/oauth2-server-php":"dev-master",
         "behat/behat": "^3.8@dev",
         "rize/uri-template": "dev-master",
-        "illuminate/view": "^8.0@dev"
+        "illuminate/view": "^8",
+        "twig/twig": "^3",
+        "mustache/mustache": "dev-master"
     },
     "repositories":[
         {

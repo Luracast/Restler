@@ -1,5 +1,8 @@
 <?php
+
 namespace DB;
+
+use JsonSerializable;
 use Luracast\Restler\Data\iValueObject;
 use Luracast\Restler\Util;
 
@@ -10,7 +13,7 @@ use Luracast\Restler\Util;
  *
  * @package DB
  */
-class Task implements iValueObject
+class Task implements iValueObject, JsonSerializable
 {
     public $id = 0;
     public $position = 0;
@@ -43,5 +46,10 @@ class Task implements iValueObject
     public function __toString()
     {
         return "Task(id = $this->id, position = $this->position, text = $this->text)";
+    }
+
+    public function jsonSerialize()
+    {
+        return (array)$this;
     }
 }

@@ -26,6 +26,7 @@ build/*
 public/examples/_014_oauth2_client/cache
 public/examples/_015_oauth2_server/cache
 public/examples/_015_oauth2_server/OAuth2/db
+public/examples/_013_html/cache
 vendor/bin
 public/examples/_016_forms/cache
 behat
