@@ -1,6 +1,6 @@
 ## Protected API 
 
- This example requires `PHP >= 5.3` and taggeed under `authentication` `authorization`
+ This example requires `PHP >= 5.4` and taggeed under `authentication` `authorization`
 
 
 Not all the API exposed needs to be public, we need to protect
@@ -55,13 +55,13 @@ GET [restricted](index.php/restricted)
 }
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [restricted?key=rEsTlEr2](index.php/restricted?key=rEsTlEr2)
+GET [restricted?key=rEsTlEr3](index.php/restricted?key=rEsTlEr3)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "protected method"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [secured?key=rEsTlEr2](index.php/secured?key=rEsTlEr2)
+GET [secured?key=rEsTlEr3](index.php/secured?key=rEsTlEr3)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 "protected class"

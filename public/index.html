@@ -97,7 +97,8 @@ var _gaq = _gaq || [];
 <h1>
 <img src="examples/resources/Restler.png" alt="Restler"> Luracast Restler</h1>
 
-<p><a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/stable.png" alt="Latest Stable Version"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/downloads.png" alt="Total Downloads"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/unstable.png" alt="Latest Unstable Version"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/license.png" alt="License"></a></p>
+<p><a href="https://gitter.im/Luracast/Restler" target="_blank"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
+<a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/stable.png" alt="Latest Stable Version"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/downloads.png" alt="Total Downloads"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/unstable.png" alt="Latest Unstable Version"></a> <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/license.png" alt="License"></a></p>
 
 <p><a id="version-3-0-release-candidate-5" class="anchor"></a></p>
 <h3>Version 3.0 Release Candidate 5</h3>
@@ -107,7 +108,7 @@ var _gaq = _gaq || [];
 <p>Just deal with your business logic in php, restler will take care of the REST!</p>
 
 <blockquote>
-  <p>if you do not have PHP &gt;= 5.3.2 on your server and wont be able to upgrade you may
+  <p>if you do not have PHP &gt;= 5.4 on your server and wont be able to upgrade you may
   use <a href="https://github.com/Luracast/Restler/tree/v2" target="_blank">Restler 2</a> instead</p>
 </blockquote>
 
@@ -125,17 +126,18 @@ var _gaq = _gaq || [];
 <li><a href="#quick-start-guide" target="_blank">Quick Start Guide</a></li>
 <li><a href="#change-log" target="_blank">Change Log</a></li>
 </ul>
+
 <p><a id="features" class="anchor"></a></p>
 <h2>Features</h2>
 
 <ul>
 <li>No Learning Curve</li>
-<li>Light weight</li>
+<li>Lightweight</li>
 <li>Flexible</li>
 <li>Highly Customizable</li>
 <li>Many Examples that can be tried on your localhost to get started</li>
 <li>Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH
-via header or request parameter (method)</li>
+via the header or request parameter (method)</li>
 <li>Supports both RESTful and Pragmatic REST API Design</li>
 <li>Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource
 Sharing and JSONP</li>
@@ -224,22 +226,24 @@ support</li>
 </ul>
 </li>
 </ul>
+
 <p><a id="git-repository-and-the-branches" class="anchor"></a></p>
 <h2>Git Repository and the Branches</h2>
 
 <ol>
-<li><p>Most stable and recent version is maintained at the <code>master</code> branch, previous
-versions are kept in the branches such as <code>v1</code> and <code>v2</code></p></li>
-<li><p>Version branch with the current version such as <code>v3</code> is used for building up
+<li><p><code>master</code> branch holds the most stable and recent version. Previous
+versions are in the branches such as <code>v1</code>, <code>v2</code>.</p></li>
+<li><p>Version branches with the current version, such as <code>v3</code> is used for building up
 the next release. It's documentation may not be updated frequently and thus
 reserved for the daring ones.</p></li>
 <li><p>Feature branches such as <code>../features/html</code> and <code>../features/router</code> are purely
 for experimentation purpose to try out a feature</p></li>
 </ol>
+
 <p><a id="installation" class="anchor"></a></p>
 <h2>Installation</h2>
 
-<p>Make sure PHP 5.3.2 or above (at least 5.3.4 recommended to avoid potential bugs)
+<p>Make sure PHP 5.4 or above (we recommend at least 7.2 to avoid potential bugs)
 is available on your server</p>
 
 <p><a id="1--install-composer" class="anchor"></a></p>
@@ -257,7 +261,7 @@ are on Windows, you can use the composer
 <p><a id="option-1--using-composer-create-project" class="anchor"></a></p>
 <h4>Option 1. Using composer create-project</h4>
 
-<p>You may install Restler by running the create project command in your terminal.
+<p>You may install Restler by running the <code>create project</code> command in your terminal.
 Replace {projectName} with your actual project name. It will create a folder
 with that name and install Restler.</p>
 
@@ -268,9 +272,9 @@ with that name and install Restler.</p>
   <p><strong>Note:-</strong></p>
   
   <ol>
-<li><p>If you do not want the additional formats and BDD tools you can include
+  <li><p>If you do not want the additional formats and BDD tools you can include
   <code>--no-dev</code> to enforce exclusion of dev packages.</p></li>
-  <li><p>If you want to try the bleading edge v3 branch or any of the feature
+  <li><p>If you want to try the bleeding edge v3 branch or any of the feature
   branches include <code>3.x-dev</code> or <code>dev-../features/html</code> in the above command</p></li>
   </ol>
 </blockquote>
@@ -278,10 +282,10 @@ with that name and install Restler.</p>
 <p><a id="option-2--downloading-from-github" class="anchor"></a></p>
 <h4>Option 2. Downloading from github</h4>
 
-<p>Once Composer is installed, download the <a href="" target="_blank">latest version</a> of the Restler
+<p>Once installing Composer, download the <a href="https://github.com/Luracast/Restler/releases" target="_blank">latest version</a> of the Restler
 framework and extract its contents into a directory on your server. Next, in the
 root of your Restler project, run the <code>php composer.phar install</code>
-(or <code>composer install</code>) command to install all of the framework's dependencies.
+(or <code>composer install --no-dev</code>) command to install all the framework's dependencies.
 This process requires Git to be installed on the server to successfully complete
 the installation.</p>
 
@@ -289,7 +293,7 @@ the installation.</p>
 <code>php composer.phar update</code> command.</p>
 
 <blockquote>
-  <p><strong>Note:-</strong> If are not allowed to install composer and git on your server, you
+  <p><strong>Note:-</strong> If you can't install <strong>composer</strong> and or <strong>git</strong> on your server, you
   can install and run them on your development machine. The resulting files and
   folders can be uploaded and used on the server.</p>
 </blockquote>
@@ -297,16 +301,16 @@ the installation.</p>
 <p><a id="3--configure" class="anchor"></a></p>
 <h3>3. Configure</h3>
 
-<p>Ideally public folder should be mapped as your web root, It is optional, but
-recommended to avoid exposing unneeded files and folders.</p>
+<p>Ideally, public folder should be mapped as your web root, It is optional, but
+advisable to avoid exposing unneeded files and folders.</p>
 
 <p><a id="4--try-it-out" class="anchor"></a></p>
-<h3>4. Try it out</h3>
+<h3>4. Try it out.</h3>
 
 <p>Try the live examples in your localhost</p>
 
 <p><a id="5--run-some-test" class="anchor"></a></p>
-<h3>5. Run some test</h3>
+<h3>5. Run some test.</h3>
 
 <p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p>
 
@@ -361,7 +365,7 @@ $r-&gt;handle(); //serve the response
 
 <p><strong>Enable URL Rewriting</strong></p>
 
-<p>Make sure all the requests are routed to index.php by enabling URL Rewriting for
+<p>Make sure to route all requests to <code>index.php</code> by enabling URL Rewriting for
 your website</p>
 
 <p>For example:-</p>
@@ -474,13 +478,13 @@ $r-&gt;handle(); //serve the response
 </code></pre>
 
 <p><a id="7--start-production" class="anchor"></a></p>
-<h3>7. Start Production</h3>
+<h3>7. Start Production.</h3>
 
-<p>By default Restler runs in debug mode more fine tuned for API developer, by
-showing detailed error messages and prettifying the api result to human readbale
+<p>By default, Restler runs in debug mode more fine-tuned for API developer, by
+showing detailed error messages and prettifying the api result to human readable
 form</p>
 
-<p>By turning on production mode you will gain some performance boost as it will
+<p>By turning on production mode you will gain performance boost as it will
 cache the routes (comment parsing happens only once instead of every api call),
 few other files and avoid giving out debug information</p>
 
@@ -504,19 +508,20 @@ $r = new Restler(true); //turn on production mode by passing true.
 <h3>Restler 3.0 RC5</h3>
 
 <ul>
-<li>Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
+<li>Scope (a dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
 <li>Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.</li>
-<li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity</li>
-<li>HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.</li>
+<li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarity</li>
+<li>HtmlFormat now supports auto templating to load a relevant template for an API method based on the mapped url.</li>
 <li>Tag, a utility class for generating html tags in object oriented way.</li>
-<li>Emmet class that extends a subset of emmet to create a a template engine.</li>
+<li>Emmet class extends a subset of <strong>emmet</strong> to create a template engine.</li>
 <li>Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.</li>
-<li>Validator improved to allow suppressing validation errors from throwing exceptions immediatly, so that API call can reach the API method</li>
+<li>Validator improved to allow suppressing validation errors from throwing exceptions immediately, so that API call can reach the API method</li>
 <li>Validator improved to be form validation friendly.</li>
 <li>Nav class creating html navigation interface.</li>
-<li>OAuth examles updgrated to use version 1.0 of OAuth2 library.</li>
+<li>OAuth examples upgraded to use version 1.0 of OAuth2 library.</li>
 <li>Many bug fixes and improvements.</li>
 </ul>
+
 <p><a id="restler-3-0-rc4" class="anchor"></a></p>
 <h3>Restler 3.0 RC4</h3>
 
@@ -534,7 +539,7 @@ the only parameter</li>
 <li>Fixes to composer.json and publish stable release as composer package on
 packagist.</li>
 <li>New Routes class with improved routing, including wild card routes and smart
-routing based on paramter type.</li>
+routing based on parameter type.</li>
 <li>Possibility to use any autoloader including composer's autoloader for maximum
 interoperability</li>
 <li>Moved to using the <a href="https://packagist.org/packages/rodneyrehm/plist" target="_blank">rodneyrehm/plist</a>
@@ -549,6 +554,7 @@ Restler works out of the box.</li>
 <li>Added branch alias to indicate that v3 is the snapshot for v3.0.x-dev</li>
 <li>Released Restler as package on packagist.</li>
 </ul>
+
 <p><a id="restler-3-0-rc3" class="anchor"></a></p>
 <h3>Restler 3.0 RC3</h3>
 
@@ -557,10 +563,10 @@ Restler works out of the box.</li>
 <li>Added JSONP support with JsFormat class by extending JsonFormat.</li>
 <li>Fixes fatal error when the JSON sent in the request body is not an object or
 array</li>
-<li>Improves inline comment parsing by array conversion when delimiter is found
+<li>Improves inline comment parsing by array conversion upon finding a delimiter
 and tag is not @pattern</li>
 <li>RateLimit class re-written to support all range of time units
-second|minute|hour|day|week|month to have fine grained control</li>
+second|minute|hour|day|week|month to have fine-grained control</li>
 <li>Resources class improved to include description for body parameters</li>
 <li>Fixes Resources not to include namespace when the return type is array of
 custom class</li>
@@ -589,6 +595,7 @@ name is a begins with part of the other API</li>
 the response</li>
 <li>Documentation improvements and minor bug fixes</li>
 </ul>
+
 <p><a id="restler-3-0-rc2" class="anchor"></a></p>
 <h3>Restler 3.0 RC2</h3>
 
@@ -618,6 +625,7 @@ correctly</li>
 </li>
 <li>CRUD example updated to include PATCH support</li>
 </ul>
+
 <p><a id="restler-3-0" class="anchor"></a></p>
 <h3>Restler 3.0</h3>
 
@@ -629,6 +637,7 @@ mind for</p>
 <li>RESTfulness and/or Pragmatic REST</li>
 <li>API Design</li>
 </ul>
+
 <p><strong>Restler 3.0</strong></p>
 
 <ul>
@@ -666,11 +675,12 @@ filters to find out about user authentication status</li>
 <li>iFilter interface updated to provide charset support</li>
 <li>...(more to follow)</li>
 </ul>
+
 <p><a id="restler-2-0" class="anchor"></a></p>
 <h3>Restler 2.0</h3>
 
-<p>Restler 2.0 is a major rewrite to use convention over configuration and it is
-optimized for performance. Here are some of the major changes and improvements</p>
+<p>Restler 2.0 is a major rewrite to use convention over configuration, and it is
+optimized for performance. Here are some major changes and improvements.</p>
 
 <ul>
 <li>PHPDoc comments to map a method to URI are now optional.</li>
@@ -679,7 +689,7 @@ automatically to the method name (<code>gateway\classname\methodname\param1\...<
 <li>If we do not specify the second parameter for
 <code>$restler-&gt;addAPIClass</code> it will be mapped to the class name instead of mapping
 it to the root</li>
-<li>Restler 2 is written for PHP 5.3 and above but it make use of compat.php and
+<li>Restler 2 requires PHP 5.3 and above but it makes use of compat.php and
 work on any version of PHP starting from PHP 5.0</li>
 </ul>
 

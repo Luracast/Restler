@@ -1,6 +1,6 @@
 ## Error Response 
 
- This example requires `PHP >= 5.3` and taggeed under `exception` `http status` `validation`
+ This example requires `PHP >= 5.4` and taggeed under `exception` `http status` `validation`
 
 
 API methods can make use of RestException class to provide

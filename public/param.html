@@ -125,7 +125,7 @@ that is added to model class properties.</p>
 </code></pre>
 
 <p>Overrides the parameter mapping, defines where to expect the parameter from.
-Value should be one of the following</p>
+Value should be one of the following.</p>
 
 <ul>
 <li>
@@ -137,6 +137,7 @@ Value should be one of the following</p>
 <li>
 <strong>head</strong> as part of the http header</li>
 </ul>
+
 <p>Please note that unlike path and head other values are only suggestive and
 primarily used by API Explorer to build the interface</p>
 
@@ -171,12 +172,28 @@ date formats respectively. Timestamp will be validated as Unix timestamp.</p>
 
 <strong>Code:</strong><p>Following api class shows various usage examples</p>
 <pre><code class="php">&lt;?php
+
 class Type
 {
+
+    /**
+     * UUID validation
+     *
+     * @param string $uuid {@from body}{@type uuid}
+     *
+     * @return string {@type uuid}
+     */
+    function postUUID($uuid)
+    {
+        return $uuid;
+    }
+
     /**
      * Email validation
      *
      * @param string $email {@from body}{@type email}
+     *
+     * @return string {@type email}
      */
     function postEmail($email)
     {
@@ -187,6 +204,8 @@ class Type
      * Date validation
      *
      * @param string $date {@from body}{@type date}
+     *
+     * @return string {@type date}
      */
     function postDate($date)
     {
@@ -197,6 +216,8 @@ class Type
      * Array of dates
      *
      * @param array $dates Dates array{@from body}{@type date}
+     *
+     * @return array {@type date}
      */
     function postDates(array $dates)
     {
@@ -207,6 +228,8 @@ class Type
      * DateTime validation
      *
      * @param string $datetime {@from body}{@type datetime}
+     *
+     * @return string {@type datetime}
      */
     function postDatetime($datetime)
     {
@@ -217,6 +240,8 @@ class Type
      * time validation
      *
      * @param string $time {@from body}{@type time}
+     *
+     * @return string {@type time}
      */
     function postTime($time)
     {
@@ -226,7 +251,9 @@ class Type
     /**
      * time validation in 12 hour format
      *
-     * @param string $time {@from body}{@type time12}
+     * @param string $time12 {@from body}{@type time12}
+     *
+     * @return string {@type time12}
      */
     function postTime12($time12)
     {
@@ -237,6 +264,8 @@ class Type
      * Timestamp validation
      *
      * @param string $timestamp {@from body}{@type timestamp}
+     *
+     * @return string {@type timestamp}
      */
     function postTimestamp($timestamp)
     {
@@ -247,6 +276,8 @@ class Type
      * Integer validation
      *
      * @param array $integers {@type int}
+     *
+     * @return array {@type int}
      */
     function postIntegers(array $integers)
     {
@@ -257,6 +288,8 @@ class Type
      * Array of numbers
      *
      * @param array $numbers {@type float}
+     *
+     * @return array {@type float}
      */
     function postNumbers(array $numbers)
     {
@@ -266,17 +299,21 @@ class Type
     /**
      * Array of time strings
      *
-     * @param array $timestamp {@from body}{@type time}
+     * @param array $times {@from body}{@type time}
+     *
+     * @return array {@type time}
      */
-    function postTimes(array $timestamps)
+    function postTimes(array $times)
     {
-        return $timestamps;
+        return $times;
     }
 
     /**
      * Array of timestamps
      *
-     * @param array $timestamp {@from body}{@type timestamp}
+     * @param array $timestamps {@from body}{@type timestamp}
+     *
+     * @return array {@type timestamp}
      */
     function postTimestamps(array $timestamps)
     {
@@ -300,7 +337,7 @@ class Type
      *
      * @param array $authors {@type Author}
      *
-     * @return mixed
+     * @return array {@type Author}
      */
     function postAuthors(array $authors)
     {
@@ -312,7 +349,7 @@ class Type
      *
      * @param array $object {@type associative}
      *
-     * @return array
+     * @return array {@type associative}
      */
     function postObject(array $object)
     {
@@ -324,7 +361,7 @@ class Type
      *
      * @param array $array {@type indexed}
      *
-     * @return array
+     * @return array {@type indexed}
      */
     function postArray(array $array)
     {
@@ -363,6 +400,52 @@ class Author
 <pre><code class="gherkin">@param @type
 Feature: Type Attribute
 
+  Scenario Outline: valid UUID version 1
+    Given that I send {"uuid":&lt;uuid&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/uuid"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;lowercase&gt;
+
+    Examples:
+      | uuid                                   | lowercase                              |
+      | "4b972cba-f138-11e7-8c3f-9a214cf093ae" | "4b972cba-f138-11e7-8c3f-9a214cf093ae" |
+      | "4b973020-f138-11e7-8c3f-9a214cf093ae" | "4b973020-f138-11e7-8c3f-9a214cf093ae" |
+      | "4B973200-F138-11E7-8C3F-9A214CF093AE" | "4b973200-f138-11e7-8c3f-9a214cf093ae" |
+      | "4b9733b8-f138-11e7-8c3f-9a214cf093ae" | "4b9733b8-f138-11e7-8c3f-9a214cf093ae" |
+
+  Scenario Outline: valid UUID version 4
+    Given that I send {"uuid":&lt;uuid&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/uuid"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the response equals &lt;lowercase&gt;
+
+    Examples:
+      | uuid                                   | lowercase                              |
+      | "040FDD24-CD36-4B94-A5E5-3AD72917686F" | "040fdd24-cd36-4b94-a5e5-3ad72917686f" |
+      | "16bea809-4d60-42b8-9de2-03d464979f74" | "16bea809-4d60-42b8-9de2-03d464979f74" |
+      | "c0b32c01-3892-4202-a955-dc1ae8323ca3" | "c0b32c01-3892-4202-a955-dc1ae8323ca3" |
+      | "fd71a4f8-5423-48b1-863d-fea243503d59" | "fd71a4f8-5423-48b1-863d-fea243503d59" |
+
+  Scenario Outline: Invalid UUID
+    Given that I send {"uuid":&lt;uuid&gt;}
+    And the request is sent as JSON
+    When I request "/tests/param/type/uuid"
+    Then the response status code should be 400
+
+    Examples:
+      | uuid                                    |
+      | "040fdd24-cd36-4b94-a5e5-3ad72917686"   |
+      | "16bea8$9-4d60-42b8-9de2-03d464979f_4"  |
+      | "c0b32c01-3892-4202-a955-dc1ae8323c"    |
+      | "fd71a4f8-5423-48b1-863d-fea243503d593" |
+      | "fd71a4f-54238-48b1-863d-fea243503d59"  |
+
   Scenario Outline: Email
     Given that I send {"email":&lt;email&gt;}
     And the request is sent as JSON
@@ -372,11 +455,11 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;email&gt;
 
-  Examples:
-    | email                 |
-    | "$A12345@example.com" |
-    | "!def!xyz%abc@my.co"  |
-    | "sane@h.io"           |
+    Examples:
+      | email                 |
+      | "$A12345@example.com" |
+      | "!def!xyz%abc@my.co"  |
+      | "sane@h.io"           |
 
   Scenario Outline: Email as the only body
     Given that I send &lt;email&gt;
@@ -387,11 +470,11 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;email&gt;
 
-  Examples:
-    | email                 |
-    | "$A12345@example.com" |
-    | "!def!xyz%abc@my.co"  |
-    | "sane@h.io"           |
+    Examples:
+      | email                 |
+      | "$A12345@example.com" |
+      | "!def!xyz%abc@my.co"  |
+      | "sane@h.io"           |
 
   Scenario Outline: Invalid Email
     Given that I send {"email":&lt;email&gt;}
@@ -400,11 +483,11 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | email              |
-    | "some.thing@wrong" |
-    | "missing@dot"      |
-    | "missing.at"       |
+    Examples:
+      | email              |
+      | "some.thing@wrong" |
+      | "missing@dot"      |
+      | "missing.at"       |
 
   Scenario Outline: Invalid Email as the only body
     Given that I send &lt;email&gt;
@@ -413,11 +496,11 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | email              |
-    | "some.thing@wrong" |
-    | "missing@dot"      |
-    | "missing.at"       |
+    Examples:
+      | email              |
+      | "some.thing@wrong" |
+      | "missing@dot"      |
+      | "missing.at"       |
 
   Scenario Outline: Date
     Given that I send {"date":&lt;date&gt;}
@@ -428,11 +511,11 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;date&gt;
 
-  Examples:
-    | date         |
-    | "2013-08-10" |
-    | "1974-03-30" |
-    | "1600-12-17" |
+    Examples:
+      | date         |
+      | "2013-08-10" |
+      | "1974-03-30" |
+      | "1600-12-17" |
 
   Scenario Outline: Date as the only body
     Given that I send &lt;date&gt;
@@ -443,11 +526,11 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;date&gt;
 
-  Examples:
-    | date         |
-    | "2013-08-10" |
-    | "1974-03-30" |
-    | "1600-12-17" |
+    Examples:
+      | date         |
+      | "2013-08-10" |
+      | "1974-03-30" |
+      | "1600-12-17" |
 
   Scenario Outline: Invalid Date
     Given that I send {"date":&lt;date&gt;}
@@ -456,13 +539,13 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | date         |
-    | "YYY-MM-DD"  |
-    | "10-08-2013" |
-    | "2013-13-10" |
-    | "2013-02-30" |
-    | "2013/08/10" |
+    Examples:
+      | date         |
+      | "YYY-MM-DD"  |
+      | "10-08-2013" |
+      | "2013-13-10" |
+      | "2013-02-30" |
+      | "2013/08/10" |
 
   Scenario Outline: Invalid Date as the only body
     Given that I send &lt;date&gt;
@@ -471,13 +554,13 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | date         |
-    | "YYY-MM-DD"  |
-    | "10-08-2013" |
-    | "2013-13-10" |
-    | "2013-02-30" |
-    | "2013/08/10" |
+    Examples:
+      | date         |
+      | "YYY-MM-DD"  |
+      | "10-08-2013" |
+      | "2013-13-10" |
+      | "2013-02-30" |
+      | "2013/08/10" |
 
   Scenario Outline: Date and Time
     Given that I send {"datetime":&lt;datetime&gt;}
@@ -488,9 +571,9 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;datetime&gt;
 
-  Examples:
-    | datetime              |
-    | "2013-08-10 00:34:18" |
+    Examples:
+      | datetime              |
+      | "2013-08-10 00:34:18" |
 
   Scenario Outline: Invalid Date and Time
     Given that I send {"datetime":&lt;datetime&gt;}
@@ -499,11 +582,11 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | datetime              |
-    | "2013-08-10"          |
-    | "2013-08-10 25:70:11" |
-    | "2013/08/10 00:34:18" |
+    Examples:
+      | datetime              |
+      | "2013-08-10"          |
+      | "2013-08-10 25:70:11" |
+      | "2013/08/10 00:34:18" |
 
   Scenario Outline: Time Stamp
     Given that I send {"timestamp":&lt;timestamp&gt;}
@@ -514,14 +597,14 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | timestamp    | expected   |
-    | "1376094488" | 1376094488 |
-    | 1376094488   | 1376094488 |
-    | "0123"       | 123        |
-    | 123.0        | 123        |
-    | 1            | 1          |
-    | 0            | 0          |
+    Examples:
+      | timestamp    | expected   |
+      | "1376094488" | 1376094488 |
+      | 1376094488   | 1376094488 |
+      | "0123"       | 123        |
+      | 123.0        | 123        |
+      | 1            | 1          |
+      | 0            | 0          |
 
   Scenario Outline: Time Stamp as the only body
     Given that I send &lt;timestamp&gt;
@@ -532,13 +615,13 @@ Feature: Type Attribute
     And the type is "string"
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | timestamp    | expected   |
-    | "1376094488" | 1376094488 |
-    | 1376094488   | 1376094488 |
-    | "0123"       | 123        |
-    | 123.0        | 123        |
-    | 1            | 1          |
+    Examples:
+      | timestamp    | expected   |
+      | "1376094488" | 1376094488 |
+      | 1376094488   | 1376094488 |
+      | "0123"       | 123        |
+      | 123.0        | 123        |
+      | 1            | 1          |
 
   Scenario Outline: Invalid Time Stamp
     Given that I send {"timestamp":&lt;timestamp&gt;}
@@ -547,12 +630,12 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | timestamp             |
-    | "2013-08-10"          |
-    | "2013-08-10 00:34:18" |
-    | "0xFF"                |
-    | 1.1                   |
+    Examples:
+      | timestamp             |
+      | "2013-08-10"          |
+      | "2013-08-10 00:34:18" |
+      | "0xFF"                |
+      | 1.1                   |
 
   Scenario Outline: Invalid Time Stamp as the only body
     Given that I send &lt;timestamp&gt;
@@ -561,12 +644,12 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | timestamp             |
-    | "2013-08-10"          |
-    | "2013-08-10 00:34:18" |
-    | "0xFF"                |
-    | 1.1                   |
+    Examples:
+      | timestamp             |
+      | "2013-08-10"          |
+      | "2013-08-10 00:34:18" |
+      | "0xFF"                |
+      | 1.1                   |
 
   Scenario Outline: An Array of Integers
     Given that I send {"integers":&lt;integers&gt;}
@@ -576,12 +659,12 @@ Feature: Type Attribute
     And the response is JSON
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | integers          | expected          |
-    | []                | []                |
-    | {}                | []                |
-    | [1,3298473984,23] | [1,3298473984,23] |
-    | [0]               | [0]               |
+    Examples:
+      | integers          | expected          |
+      | []                | []                |
+      | {}                | []                |
+      | [1,3298473984,23] | [1,3298473984,23] |
+      | [0]               | [0]               |
 
   Scenario Outline: An Array of Integers as the only body
     Given that I send &lt;integers&gt;
@@ -591,12 +674,12 @@ Feature: Type Attribute
     And the response is JSON
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | integers          | expected          |
-    | []                | []                |
-    | {}                | []                |
-    | [1,3298473984,23] | [1,3298473984,23] |
-    | [0]               | [0]               |
+    Examples:
+      | integers          | expected          |
+      | []                | []                |
+      | {}                | []                |
+      | [1,3298473984,23] | [1,3298473984,23] |
+      | [0]               | [0]               |
 
   Scenario Outline: Invalid Array of Integers
     Given that I send {"integers":&lt;integers&gt;}
@@ -605,13 +688,13 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | integers        |
-    | ""              |
-    | [true,false]    |
-    | [null]          |
-    | [1.34]          |
-    | {"key":"value"} |
+    Examples:
+      | integers        |
+      | ""              |
+      | [true,false]    |
+      | [null]          |
+      | [1.34]          |
+      | {"key":"value"} |
 
   Scenario Outline: Invalid Array of Integers as the only body
     Given that I send &lt;integers&gt;
@@ -620,13 +703,13 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | integers        |
-    | ""              |
-    | [true,false]    |
-    | [null]          |
-    | [1.34]          |
-    | {"key":"value"} |
+    Examples:
+      | integers        |
+      | ""              |
+      | [true,false]    |
+      | [null]          |
+      | [1.34]          |
+      | {"key":"value"} |
 
   Scenario Outline: An Array of Floating Points
     Given that I send {"numbers":&lt;numbers&gt;}
@@ -636,12 +719,12 @@ Feature: Type Attribute
     And the response is JSON
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | numbers            | expected           |
-    | []                 | []                 |
-    | {}                 | []                 |
-    | [1,329.8473984,23] | [1,329.8473984,23] |
-    | [0.00001]          | [1.0e-5]           |
+    Examples:
+      | numbers            | expected           |
+      | []                 | []                 |
+      | {}                 | []                 |
+      | [1,329.8473984,23] | [1,329.8473984,23] |
+      | [0.00001]          | [1.0e-5]           |
 
   Scenario Outline: An Array of Floating Points as the only body
     Given that I send &lt;numbers&gt;
@@ -651,13 +734,13 @@ Feature: Type Attribute
     And the response is JSON
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | numbers            | expected           |
-    | []                 | []                 |
-    | {}                 | []                 |
-    | [1,329.8473984,23] | [1,329.8473984,23] |
-    | [0.00001]          | [1.0e-5]           |
-    | [0.10e-4]          | [1.0e-5]           |
+    Examples:
+      | numbers            | expected           |
+      | []                 | []                 |
+      | {}                 | []                 |
+      | [1,329.8473984,23] | [1,329.8473984,23] |
+      | [0.00001]          | [1.0e-5]           |
+      | [0.10e-4]          | [1.0e-5]           |
 
   Scenario Outline: Invalid Array of Floats as the only body
     Given that I send &lt;numbers&gt;
@@ -666,12 +749,12 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | numbers         |
-    | ""              |
-    | [true,false]    |
-    | [null]          |
-    | {"key":"value"} |
+    Examples:
+      | numbers         |
+      | ""              |
+      | [true,false]    |
+      | [null]          |
+      | {"key":"value"} |
 
   Scenario Outline: Custom Class
     Given that I send &lt;author&gt;
@@ -681,11 +764,11 @@ Feature: Type Attribute
     And the response is JSON
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | author                                      | expected                                    |
-    | {"name":"Arul"}                             | {"name":"Arul","email":"name@domain.com"}                |
-    | {"name":"Arul","email":"arul@luracast.com"} | {"name":"Arul","email":"arul@luracast.com"} |
-    | {"name":"name","email":"a@b.c"}             | {"name":"name","email":"a@b.c"}             |
+    Examples:
+      | author                                      | expected                                    |
+      | {"name":"Arul"}                             | {"name":"Arul","email":"name@domain.com"}   |
+      | {"name":"Arul","email":"arul@luracast.com"} | {"name":"Arul","email":"arul@luracast.com"} |
+      | {"name":"name","email":"a@b.c"}             | {"name":"name","email":"a@b.c"}             |
 
   Scenario Outline: Invalid data for Custom Class
     Given that I send &lt;author&gt;
@@ -694,15 +777,16 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | author                         |
-    | ""                             |
-    | [true,false]                   |
-    | [null]                         |
-    | {"key":"value"}                |
-    | {"name":"12","email":"a@b.c"}  |
-    | {"email":"a@b.c"}              |
-    | {"email":"ab.c","name":"1234"} |
+    Examples:
+      | author                         |
+      | ""                             |
+      | [true,false]                   |
+      | [null]                         |
+      | {"key":"value"}                |
+      | {"name":"12","email":"a@b.c"}  |
+      | {"email":"a@b.c"}              |
+      | {"email":"ab.c","name":"1234"} |
+      | {"email":"a@b.c","name":"ab"}  |
 
   Scenario Outline: Array of Custom Class objects
     Given that I send &lt;authors&gt;
@@ -712,11 +796,11 @@ Feature: Type Attribute
     And the response is JSON
     And the response equals &lt;expected&gt;
 
-  Examples:
-    | authors                                       | expected                                      |
-    | [{"name":"Arul"}]                             | [{"name":"Arul","email":"name@domain.com"}]                |
-    | [{"name":"Arul","email":"arul@luracast.com"}] | [{"name":"Arul","email":"arul@luracast.com"}] |
-    | [{"name":"name","email":"a@b.c"}]             | [{"name":"name","email":"a@b.c"}]             |
+    Examples:
+      | authors                                       | expected                                      |
+      | [{"name":"Arul"}]                             | [{"name":"Arul","email":"name@domain.com"}]   |
+      | [{"name":"Arul","email":"arul@luracast.com"}] | [{"name":"Arul","email":"arul@luracast.com"}] |
+      | [{"name":"name","email":"a@b.c"}]             | [{"name":"name","email":"a@b.c"}]             |
 
   Scenario Outline: Invalid data for array of Custom Class objects
     Given that I send &lt;authors&gt;
@@ -725,15 +809,15 @@ Feature: Type Attribute
     Then the response status code should be 400
     And the response is JSON
 
-  Examples:
-    | authors                        |
-    | ""                             |
-    | [true,false]                   |
-    | [null]                         |
-    | {"key":"value"}                |
-    | {"name":"12","email":"a@b.c"}  |
-    | {"email":"a@b.c"}              |
-    | {"email":"ab.c","name":"1234"} |</code></pre>
+    Examples:
+      | authors                        |
+      | ""                             |
+      | [true,false]                   |
+      | [null]                         |
+      | {"key":"value"}                |
+      | {"name":"12","email":"a@b.c"}  |
+      | {"email":"a@b.c"}              |
+      | {"email":"ab.c","name":"1234"} |</code></pre>
 
 <p><a id="choice" class="anchor"></a></p>
 <h2>@choice</h2>
@@ -916,13 +1000,14 @@ Feature: Minimum and Maximum
 
 <p>Suggests the validator to attempt fixing the validation problem. In the above
 example Validator will trim off the excess characters instead of throwing an
-exception</p>
+exception.</p>
 
 <strong>Code:</strong><p>Following api class shows various usage examples</p>
 <pre><code class="php">&lt;?php
 /**
- * Class MinMax provides an api to check min and max
- * attributes for array, int, and string
+ * Class MinMaxFix provides an api to check min and max
+ * attributes for array, int, and string.
+ * It also suggests the validator to fix the values if possible
  */
 class MinMaxFix
 {
@@ -1063,6 +1148,25 @@ Feature: Minimum and Maximum with Fix
  */
 class Validation
 {
+    /**
+     * Make sure string is converted properly to bool
+     * @param bool $value {@from query}
+     * @return bool
+     */
+    function getBoolean($value)
+    {
+        return $value;
+    }
+
+    /**
+     * Make sure string is converted properly to bool
+     * @param bool $value {@from query}{@fix true}
+     * @return bool
+     */
+    function getBoolFix($value)
+    {
+        return $value;
+    }
 
     /**
      * Validate with regex
@@ -1084,6 +1188,123 @@ class Validation
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Validation
+
+  Scenario: Consider "true" string as true
+    When I request "/tests/param/validation/boolean?value=true"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Consider "TruE" string as true
+    When I request "/tests/param/validation/boolean?value=TruE"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Consider "false" string as false
+    When I request "/tests/param/validation/boolean?value=false"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Consider "FALSE" string as false
+    When I request "/tests/param/validation/boolean?value=FALSE"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Consider number 1 as true
+    When I request "/tests/param/validation/boolean?value=1"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Consider number 0 as false
+    When I request "/tests/param/validation/boolean?value=0"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Don't accept any number for a boolean
+    When I request "/tests/param/validation/boolean?value=30873"
+    Then the response status code should be 400
+
+  Scenario: Don't accept fractional number for a boolean
+    When I request "/tests/param/validation/boolean?value=0.234"
+    Then the response status code should be 400
+
+  Scenario: Don't accept any string for a boolean
+    When I request "/tests/param/validation/boolean?value=not_boolean"
+    Then the response status code should be 400
+
+  Scenario: Fix "true" string as true
+    When I request "/tests/param/validation/boolfix?value=true"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix "false" string as false
+    When I request "/tests/param/validation/boolfix?value=true"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix number 1 as true
+    When I request "/tests/param/validation/boolfix?value=1"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix number 0 as false
+    When I request "/tests/param/validation/boolfix?value=0"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Fix positive numbers as a boolean true
+    When I request "/tests/param/validation/boolfix?value=30873"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix negative numbers as a boolean true
+    When I request "/tests/param/validation/boolfix?value=-23"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix fractional numbers as a boolean true
+    When I request "/tests/param/validation/boolfix?value=0.3"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix non empty string as a boolean true
+    When I request "/tests/param/validation/boolfix?value=not_empty"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix empty string as a boolean false
+    When I request "/tests/param/validation/boolfix?value="
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
 
   Scenario Outline: Valid Password
     Given that I send {"password":&lt;password&gt;}
@@ -1129,7 +1350,8 @@ Feature: Validation
                         {@message Strong password with at least one alpha and one numeric character is required}
 </code></pre>
 
-<p>Used by the validator to show a custom error message when invalid value is submitted. Use it to list the requirements for a parameter</p>
+<p>Used by the validator to show a custom error message on invalid value submission. 
+Use it to list the requirements for a parameter.</p>
 
 <strong>Code:</strong><p>Following api class shows various usage examples</p>
 <pre><code class="php">&lt;?php
@@ -1139,6 +1361,25 @@ Feature: Validation
  */
 class Validation
 {
+    /**
+     * Make sure string is converted properly to bool
+     * @param bool $value {@from query}
+     * @return bool
+     */
+    function getBoolean($value)
+    {
+        return $value;
+    }
+
+    /**
+     * Make sure string is converted properly to bool
+     * @param bool $value {@from query}{@fix true}
+     * @return bool
+     */
+    function getBoolFix($value)
+    {
+        return $value;
+    }
 
     /**
      * Validate with regex
@@ -1160,6 +1401,123 @@ class Validation
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Validation
+
+  Scenario: Consider "true" string as true
+    When I request "/tests/param/validation/boolean?value=true"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Consider "TruE" string as true
+    When I request "/tests/param/validation/boolean?value=TruE"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Consider "false" string as false
+    When I request "/tests/param/validation/boolean?value=false"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Consider "FALSE" string as false
+    When I request "/tests/param/validation/boolean?value=FALSE"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Consider number 1 as true
+    When I request "/tests/param/validation/boolean?value=1"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Consider number 0 as false
+    When I request "/tests/param/validation/boolean?value=0"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Don't accept any number for a boolean
+    When I request "/tests/param/validation/boolean?value=30873"
+    Then the response status code should be 400
+
+  Scenario: Don't accept fractional number for a boolean
+    When I request "/tests/param/validation/boolean?value=0.234"
+    Then the response status code should be 400
+
+  Scenario: Don't accept any string for a boolean
+    When I request "/tests/param/validation/boolean?value=not_boolean"
+    Then the response status code should be 400
+
+  Scenario: Fix "true" string as true
+    When I request "/tests/param/validation/boolfix?value=true"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix "false" string as false
+    When I request "/tests/param/validation/boolfix?value=true"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix number 1 as true
+    When I request "/tests/param/validation/boolfix?value=1"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix number 0 as false
+    When I request "/tests/param/validation/boolfix?value=0"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
+
+  Scenario: Fix positive numbers as a boolean true
+    When I request "/tests/param/validation/boolfix?value=30873"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix negative numbers as a boolean true
+    When I request "/tests/param/validation/boolfix?value=-23"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix fractional numbers as a boolean true
+    When I request "/tests/param/validation/boolfix?value=0.3"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix non empty string as a boolean true
+    When I request "/tests/param/validation/boolfix?value=not_empty"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals true
+
+  Scenario: Fix empty string as a boolean false
+    When I request "/tests/param/validation/boolfix?value="
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "bool"
+    And the response equals false
 
   Scenario Outline: Valid Password
     Given that I send {"password":&lt;password&gt;}
@@ -1204,7 +1562,7 @@ Feature: Validation
 <pre><code>@param string $name Name {@example Arul Kumaran}
 </code></pre>
 
-<p>Used by the explorer to prefill the value for the parameter</p>
+<p>Used by the explorer to pre-fill the value for the parameter</p>
 
 </article>
 </body>

@@ -1,6 +1,6 @@
 ## CRUD 
 
- This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
+ This example requires `PHP >= 5.4` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
 
 
 Create, Retrieve, Update and Delete using
@@ -63,9 +63,9 @@ This API Server exposes the following URIs
 
     GET    authors      ⇠ Authors::index()
     POST   authors      ⇠ Authors::post()
-    DELETE authors/{id} ⇠ Authors::delete()
     GET    authors/{id} ⇠ Authors::get()
     PUT    authors/{id} ⇠ Authors::put()
+    DELETE authors/{id} ⇠ Authors::delete()
 
 
 *[MySQL.php]: _007_crud/DB/PDO/MySQL.php

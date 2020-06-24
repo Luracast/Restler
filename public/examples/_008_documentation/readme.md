@@ -1,16 +1,16 @@
 ## Documentation 
 
- This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
+ This example requires `PHP >= 5.4` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
 
 
 How to document and let your users explore your API.
-We have modified SwaggerUI to create 
+We have modified SwaggerUI to create
 [Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer)
 which is used [here](explorer/index.html#!/authors-v1).
 
 [![Restler API Explorer](../resources/explorer1.png)](explorer/index.html#!/authors-v1)
 
-We are progressively improving the Authors class from CRUD example 
+We are progressively improving the Authors class from CRUD example
 to Rate Limiting Example to show Best Practices and Restler 3 Features.
 
 Make sure you compare them to understand.
@@ -30,21 +30,19 @@ Happy Exploring! :)
 > 
 > * index.php      (gateway)
 > * Authors.php      (api)
-> * Resources.php      (api)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
-    GET    authors                ⇠ improved\Authors::index()
-    POST   authors                ⇠ improved\Authors::post()
-    DELETE authors/{id}           ⇠ improved\Authors::delete()
-    PATCH  authors/{id}           ⇠ improved\Authors::patch()
-    PUT    authors/{id}           ⇠ improved\Authors::put()
-    GET    authors/{id}           ⇠ improved\Authors::get()
-    GET    resources              ⇠ Luracast\Restler\Resources::index()
-    GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
+    GET    authors          ⇠ improved\Authors::index()
+    POST   authors          ⇠ improved\Authors::post()
+    GET    authors/{id}     ⇠ improved\Authors::get()
+    PUT    authors/{id}     ⇠ improved\Authors::put()
+    PATCH  authors/{id}     ⇠ improved\Authors::patch()
+    DELETE authors/{id}     ⇠ improved\Authors::delete()
+    GET    explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+    GET    explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
 
 
 
@@ -55,7 +53,6 @@ This API Server exposes the following URIs
 
 *[index.php]: _008_documentation/index.php
 *[Authors.php]: _008_documentation/improved/Authors.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

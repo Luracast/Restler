@@ -1,6 +1,6 @@
 ## OAuth2 Server 
 
- This example requires `PHP >= 5.3.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.4.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 ### Setting up the server example
@@ -30,8 +30,8 @@ To look at the server start from the client app [here](../_014_oauth2_client)
 This API Server exposes the following URIs
 
     GET  access    ⇠ Auth\Server::access()
-    POST authorize ⇠ Auth\Server::postAuthorize()
     GET  authorize ⇠ Auth\Server::authorize()
+    POST authorize ⇠ Auth\Server::postAuthorize()
     POST grant     ⇠ Auth\Server::postGrant()
 
 

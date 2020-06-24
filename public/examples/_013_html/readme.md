@@ -1,6 +1,6 @@
 ## Html Format 
 
- This example requires `PHP >= 5.3` and taggeed under `view` `html` `twig` `mustache` `handlebar` `php` `template`
+ This example requires `PHP >= 5.4` and taggeed under `view` `html` `twig` `mustache` `handlebar` `php` `template`
 
 
 A special format that lets us render a template with the api result
@@ -51,10 +51,10 @@ This API Server exposes the following URIs
     GET    resources              ⇠ Luracast\Restler\Resources::index()
     GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
-    POST   tasks                  ⇠ Tasks::post()
     GET    tasks                  ⇠ Tasks::index()
-    PATCH  tasks/{id}             ⇠ Tasks::patch()
+    POST   tasks                  ⇠ Tasks::post()
     GET    tasks/{id}             ⇠ Tasks::get()
+    PATCH  tasks/{id}             ⇠ Tasks::patch()
     DELETE tasks/{id}             ⇠ Tasks::delete()
 
 

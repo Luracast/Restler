@@ -1,6 +1,6 @@
 ## Forms Example 
 
- This example requires `PHP >= 5.3` and taggeed under `form` `validation` `blade` `html` `bootstrap` `foundation` `emmet`
+ This example requires `PHP >= 5.4` and taggeed under `form` `validation` `blade` `html` `bootstrap` `foundation` `emmet`
 
 
 Forms is a utility class that builds web forms in one of the following in built styles

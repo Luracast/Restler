@@ -1,6 +1,6 @@
 ## Access Control 
 
- This example requires `PHP >= 5.3` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.4` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 This example shows how you can extend the authentication system to create
@@ -19,19 +19,17 @@ Try it out yourself [here](explorer/index.html#!/v1)
 > 
 > * index.php      (gateway)
 > * Access.php      (api)
-> * Resources.php      (api)
 > * AccessControl.php      (auth)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
-    GET admin                  ⇠ Access::admin()
-    GET all                    ⇠ Access::all()
-    GET resources              ⇠ Luracast\Restler\Resources::index()
-    GET resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET resources/{id}         ⇠ Luracast\Restler\Resources::get()
-    GET user                   ⇠ Access::user()
+    GET admin            ⇠ Access::admin()
+    GET all              ⇠ Access::all()
+    GET explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+    GET explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
+    GET user             ⇠ Access::user()
 
 
 
@@ -42,7 +40,6 @@ This API Server exposes the following URIs
 
 *[index.php]: _010_access_control/index.php
 *[Access.php]: _010_access_control/Access.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php

@@ -131,7 +131,6 @@
             <li><a href="../_008_documentation/readme.html" title="Commenting can be more rewarding">Documentation</a></li>
             <li><a href="../_009_rate_limiting/readme.html" title="Abuse no more">Rate Limiting</a></li>
             <li><a href="../_010_access_control/readme.html" title="Who can do what">Access Control</a></li>
-            <li><a href="../_011_versioning/readme.html" title="using the URL">Versioning</a></li>
             <li><a href="../_012_vendor_mime/readme.html" title="custom media type for versioning">Vendor MIME</a></li>
             <li><a href="../_013_html/readme.html" title="rendering custom views">Html Format</a></li>
             <li><a href="../_014_oauth2_client/readme.html" title="to consume protected API">OAuth2 Client</a></li>
@@ -224,7 +223,7 @@
 
 <li><tag title="Vendor Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">vendor</tag></li>
 
-<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;../_011_versioning/readme.html&quot;&gt;Versioning&lt;/a&gt; &lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag><badge>2</badge></li>
+<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;../_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag></li>
 
 <li><tag title="View Example(s)" data-content="&lt;a href=&quot;../_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">view</tag></li>
 
@@ -233,7 +232,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>8</small></div>
-<p><a id="documentation" class="anchor"></a><h2>Documentation <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="documentation" class="anchor"></a><h2>Documentation <requires>PHP >= 5.4</requires></h2></p>
 
 <p><tag>create</tag>
  <tag>retrieve</tag>
@@ -249,13 +248,13 @@
  <tag>debug</tag></p>
 
 <p>How to document and let your users explore your API.
-We have modified SwaggerUI to create 
+We have modified SwaggerUI to create
 <a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a>
 which is used <a href="explorer/index.html#!/authors-v1" target="_blank">here</a>.</p>
 
 <p><a href="explorer/index.html#!/authors-v1" target="_blank"><img src="../resources/explorer1.png" alt="Restler API Explorer" /></a></p>
 
-<p>We are progressively improving the Authors class from CRUD example 
+<p>We are progressively improving the Authors class from CRUD example
 to Rate Limiting Example to show Best Practices and Restler 3 Features.</p>
 
 <p>Make sure you compare them to understand.</p>
@@ -279,7 +278,6 @@ mode. Try changing rester to run in production mode (<code>$r = new Restler(true
   <ul>
   <li><abbr title="_008_documentation/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_008_documentation/improved/Authors.php">Authors.php</abbr>      (api)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -287,15 +285,14 @@ mode. Try changing rester to run in production mode (<code>$r = new Restler(true
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET    authors                ⇠ improved\Authors::index()
-POST   authors                ⇠ improved\Authors::post()
-DELETE authors/{id}           ⇠ improved\Authors::delete()
-PATCH  authors/{id}           ⇠ improved\Authors::patch()
-PUT    authors/{id}           ⇠ improved\Authors::put()
-GET    authors/{id}           ⇠ improved\Authors::get()
-GET    resources              ⇠ Luracast\Restler\Resources::index()
-GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET    authors          ⇠ improved\Authors::index()
+POST   authors          ⇠ improved\Authors::post()
+GET    authors/{id}     ⇠ improved\Authors::get()
+PUT    authors/{id}     ⇠ improved\Authors::put()
+PATCH  authors/{id}     ⇠ improved\Authors::patch()
+DELETE authors/{id}     ⇠ improved\Authors::delete()
+GET    explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+GET    explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
 </code></pre>
 
 </article>

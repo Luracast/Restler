@@ -1,6 +1,6 @@
 ## Hello World Example 
 
- This example requires `PHP >= 5.3` 
+ This example requires `PHP >= 5.4` 
 
 <tag>basic`
 
@@ -40,10 +40,10 @@ GET [say/hello?to=R.Arul%20Kumaran](say/hello?to=R.Arul%20Kumaran)
 "Hello R.Arul Kumaran!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [say/hi?to=restler3.0](say/hi?to=restler3.0)
+GET [say/hi?to=restler3.1](say/hi?to=restler3.1)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"Hi restler3.0!"
+"Hi restler3.1!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -65,10 +65,10 @@ GET [index.php/say/hello?to=R.Arul%20Kumaran](index.php/say/hello?to=R.Arul%20Ku
 "Hello R.Arul Kumaran!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-GET [index.php/say/hi?to=restler3.0](index.php/say/hi?to=restler3.0)
+GET [index.php/say/hi?to=restler3.1](index.php/say/hi?to=restler3.1)
 :    
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"Hi restler3.0!"
+"Hi restler3.1!"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 

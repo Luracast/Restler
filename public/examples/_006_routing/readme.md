@@ -1,6 +1,6 @@
 ## Routing 
 
- This example requires `PHP >= 5.3` and taggeed under `routing` `get` `post` `put` `delete` `patch`
+ This example requires `PHP >= 5.4` and taggeed under `routing` `get` `post` `put` `delete` `patch`
 
 
 ### Two ways of Routing

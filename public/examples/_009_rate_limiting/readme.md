@@ -1,6 +1,6 @@
 ## Rate Limiting 
 
- This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `filter` `throttle` `rate-limiting`
+ This example requires `PHP >= 5.4` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `filter` `throttle` `rate-limiting`
 
 
 How to Rate Limit API access using a Filter class that implements
@@ -14,7 +14,7 @@ when the user is Authenticated
 
 Key in `r3rocks` as the API key in the Explorer to see how rate limit changes
 
-We are progressively improving the Authors class from CRUD example 
+We are progressively improving the Authors class from CRUD example
 to show Best Practices and Restler 3 Features.
 
 Make sure you compare them to understand.
@@ -35,23 +35,21 @@ PHP_SESSION cookie using the Developer Tools in your browser.
 > * RateLimit.php      (filter)
 > * SessionCache.php      (helper)
 > * Authors.php      (api)
-> * Resources.php      (api)
-> * KeyAuth.php      (auth)
 > * Author.php      (helper)
+> * KeyAuth.php      (auth)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
-    GET    authors                ⇠ ratelimited\Authors::index()
-    POST   authors                ⇠ ratelimited\Authors::post()
-    DELETE authors/{id}           ⇠ ratelimited\Authors::delete()
-    PATCH  authors/{id}           ⇠ ratelimited\Authors::patch()
-    PUT    authors/{id}           ⇠ ratelimited\Authors::put()
-    GET    authors/{id}           ⇠ ratelimited\Authors::get()
-    GET    resources              ⇠ Luracast\Restler\Resources::index()
-    GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
+    GET    authors          ⇠ ratelimited\Authors::index()
+    POST   authors          ⇠ ratelimited\Authors::post()
+    GET    authors/{id}     ⇠ ratelimited\Authors::get()
+    PUT    authors/{id}     ⇠ ratelimited\Authors::put()
+    PATCH  authors/{id}     ⇠ ratelimited\Authors::patch()
+    DELETE authors/{id}     ⇠ ratelimited\Authors::delete()
+    GET    explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+    GET    explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
 
 
 
@@ -87,9 +85,8 @@ bin/behat  features/examples/_009_rate_limiting.feature
 *[RateLimit.php]: ../../vendor/Luracast/Restler/Filter/RateLimit.php
 *[SessionCache.php]: _009_rate_limiting/SessionCache.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
-*[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[Author.php]: _009_rate_limiting/Author.php
+*[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

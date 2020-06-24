@@ -291,7 +291,6 @@ class RestContext implements Behat\Behat\Context\Context
             $url = false !== strpos($path, '{')
                 ? (new UriTemplate)->expand($path, (array)$this->_restObject)
                 : $path;
-            var_dump($url);
 
             $method = strtoupper($this->_restObjectMethod);
 
