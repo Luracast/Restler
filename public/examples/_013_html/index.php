@@ -3,7 +3,7 @@
 Title: Html Format
 Tagline: rendering custom views
 Tags: view,html,twig,mustache,handlebar,php,template
-Requires: PHP >= 5.3
+Requires: PHP >= 5.4
 Description: A special format that lets us render a template with the api result
 
 It currently supports the following template libraries/formats

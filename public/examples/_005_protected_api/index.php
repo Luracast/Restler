@@ -3,7 +3,7 @@
  Title: Protected API
  Tagline: Creating restricted zone
  Tags: authentication, authorization
- Requires: PHP >= 5.3
+ Requires: PHP >= 5.4
  Description: Not all the API exposed needs to be public, we need to protect
  some of our API.
  Here are three ways to protect a method
@@ -30,9 +30,9 @@ Example 1: GET restricted returns
   }
 }
 
- Example 2: GET restricted?key=rEsTlEr2 returns "protected method"
+ Example 2: GET restricted?key=rEsTlEr3 returns "protected method"
 
- Example 3: GET secured?key=rEsTlEr2 returns "protected class"
+ Example 3: GET secured?key=rEsTlEr3 returns "protected class"
 */
 
 require_once '../../../vendor/restler.php';

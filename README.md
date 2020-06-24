@@ -9,7 +9,7 @@ Restler is a simple and effective multi-format Web API Server written in PHP.
 
 Just deal with your business logic in php, restler will take care of the REST!
 
-> if you do not have PHP >= 5.3.2 on your server and wont be able to upgrade you may
+> if you do not have PHP >= 5.4 on your server and wont be able to upgrade you may
 > use [Restler 2](https://github.com/Luracast/Restler/tree/v2) instead
 
 ### Restler 3 - *Better APIs by Design*
@@ -26,12 +26,12 @@ Features
 --------
 
 * No Learning Curve
-* Light weight
+* Lightweight
 * Flexible
 * Highly Customizable
 * Many Examples that can be tried on your localhost to get started
 * Supports HTTP request methods HEAD, GET, POST, PUT, DELETE, OPTIONS and PATCH
-  via header or request parameter (method)
+  via the header or request parameter (method)
 * Supports both RESTful and Pragmatic REST API Design
 * Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource
   Sharing and JSONP
@@ -75,10 +75,10 @@ Features
 Git Repository and the Branches
 -------------------------------
 
-1. Most stable and recent version is maintained at the `master` branch, previous
-   versions are kept in the branches such as `v1` and `v2`
+1. `master` branch holds the most stable and recent version. Previous
+   versions are in the branches such as `v1`, `v2`.
 
-2. Version branch with the current version such as `v3` is used for building up
+2. Version branches with the current version, such as `v3` is used for building up
    the next release. It's documentation may not be updated frequently and thus
    reserved for the daring ones.
 
@@ -89,7 +89,7 @@ Git Repository and the Branches
 Installation
 ------------
 
-Make sure PHP 5.3.2 or above (at least 5.3.4 recommended to avoid potential bugs)
+Make sure PHP 5.4 or above (we recommend at least 7.2 to avoid potential bugs)
 is available on your server
 
 ### 1. Install Composer
@@ -104,7 +104,7 @@ are on Windows, you can use the composer
 
 #### Option 1. Using composer create-project
 
-You may install Restler by running the create project command in your terminal.
+You may install Restler by running the `create project` command in your terminal.
 Replace {projectName} with your actual project name. It will create a folder
 with that name and install Restler.
 
@@ -116,36 +116,36 @@ php composer.phar create-project luracast/restler {projectName}
 > 1. If you do not want the additional formats and BDD tools you can include
 >    `--no-dev` to enforce exclusion of dev packages.
 >
-> 2. If you want to try the bleading edge v3 branch or any of the feature
+> 2. If you want to try the bleeding edge v3 branch or any of the feature
 >    branches include `3.x-dev` or `dev-features/html` in the above command
 
 #### Option 2. Downloading from github
 
-Once Composer is installed, download the [latest version]() of the Restler
+Once installing Composer, download the [latest version](https://github.com/Luracast/Restler/releases) of the Restler
 framework and extract its contents into a directory on your server. Next, in the
 root of your Restler project, run the `php composer.phar install`
-(or `composer install`) command to install all of the framework's dependencies.
+(or `composer install --no-dev`) command to install all the framework's dependencies.
 This process requires Git to be installed on the server to successfully complete
 the installation.
 
 If you want to update the Restler framework, you may issue the
 `php composer.phar update` command.
 
-> **Note:-** If are not allowed to install composer and git on your server, you
+> **Note:-** If you can't install **composer** and or **git** on your server, you
 > can install and run them on your development machine. The resulting files and
 > folders can be uploaded and used on the server.
 
 
 ### 3. Configure
 
-Ideally public folder should be mapped as your web root, It is optional, but
-recommended to avoid exposing unneeded files and folders.
+Ideally, public folder should be mapped as your web root, It is optional, but
+advisable to avoid exposing unneeded files and folders.
 
-### 4. Try it out
+### 4. Try it out.
 
 Try the live examples in your localhost
 
-### 5. Run some test
+### 5. Run some test.
 
 Update the base_url specified in `behat.yml` and then try the following command
 
@@ -203,7 +203,7 @@ $r->handle(); //serve the response
 
 **Enable URL Rewriting**
 
-Make sure all the requests are routed to index.php by enabling URL Rewriting for
+Make sure to route all requests to `index.php` by enabling URL Rewriting for
 your website
 
 For example:-
@@ -310,13 +310,13 @@ $r->addAuthenticationClass('CustomAuth'); //Add Authentication classes as needed
 $r->handle(); //serve the response
 ```
 
-### 7. Start Production
+### 7. Start Production.
 
-By default Restler runs in debug mode more fine tuned for API developer, by
-showing detailed error messages and prettifying the api result to human readbale
+By default, Restler runs in debug mode more fine-tuned for API developer, by
+showing detailed error messages and prettifying the api result to human readable
 form
 
-By turning on production mode you will gain some performance boost as it will
+By turning on production mode you will gain performance boost as it will
 cache the routes (comment parsing happens only once instead of every api call),
 few other files and avoid giving out debug information
 
@@ -339,17 +339,17 @@ Change Log
 ----------
 ### Restler 3.0 RC5
 
- * Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.
+ * Scope (a dependency injection container) is added. It's register method allows adding api classes that has some dependencies.
  * Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.
- * HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity
- * HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.
+ * HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarity
+ * HtmlFormat now supports auto templating to load a relevant template for an API method based on the mapped url.
  * Tag, a utility class for generating html tags in object oriented way.
- * Emmet class that extends a subset of emmet to create a a template engine.
+ * Emmet class extends a subset of **emmet** to create a template engine.
  * Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.
- * Validator improved to allow suppressing validation errors from throwing exceptions immediatly, so that API call can reach the API method
+ * Validator improved to allow suppressing validation errors from throwing exceptions immediately, so that API call can reach the API method
  * Validator improved to be form validation friendly.
  * Nav class creating html navigation interface.
- * OAuth examles updgrated to use version 1.0 of OAuth2 library.
+ * OAuth examples upgraded to use version 1.0 of OAuth2 library.
  * Many bug fixes and improvements.
 
 
@@ -367,7 +367,7 @@ Change Log
  * Fixes to composer.json and publish stable release as composer package on
    packagist.
  * New Routes class with improved routing, including wild card routes and smart
-   routing based on paramter type.
+   routing based on parameter type.
  * Possibility to use any autoloader including composer's autoloader for maximum
    interoperability
  * Moved to using the [rodneyrehm/plist](https://packagist.org/packages/rodneyrehm/plist)
@@ -387,10 +387,10 @@ Change Log
 * Added JSONP support with JsFormat class by extending JsonFormat.
 * Fixes fatal error when the JSON sent in the request body is not an object or
   array
-* Improves inline comment parsing by array conversion when delimiter is found
+* Improves inline comment parsing by array conversion upon finding a delimiter
   and tag is not @pattern
 * RateLimit class re-written to support all range of time units
-  second|minute|hour|day|week|month to have fine grained control
+  second|minute|hour|day|week|month to have fine-grained control
 * Resources class improved to include description for body parameters
 * Fixes Resources not to include namespace when the return type is array of
   custom class
@@ -473,8 +473,8 @@ mind for
 
 ### Restler 2.0
 
-Restler 2.0 is a major rewrite to use convention over configuration and it is
-optimized for performance. Here are some of the major changes and improvements
+Restler 2.0 is a major rewrite to use convention over configuration, and it is
+optimized for performance. Here are some major changes and improvements.
 
 * PHPDoc comments to map a method to URI are now optional.
 * All public methods that does not begin with an underscore are mapped
@@ -482,5 +482,5 @@ optimized for performance. Here are some of the major changes and improvements
 * If we do not specify the second parameter for
   `$restler->addAPIClass` it will be mapped to the class name instead of mapping
    it to the root
-* Restler 2 is written for PHP 5.3 and above but it make use of compat.php and
+* Restler 2 requires PHP 5.3 and above but it makes use of compat.php and
   work on any version of PHP starting from PHP 5.0

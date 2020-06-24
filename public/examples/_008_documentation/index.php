@@ -3,15 +3,15 @@
 Title: Documentation
 Tagline: Commenting can be more rewarding
 Tags: create, retrieve, read, update, delete, post, get, put, routing, doc, production, debug
-Requires: PHP >= 5.3
+Requires: PHP >= 5.4
 Description: How to document and let your users explore your API.
-We have modified SwaggerUI to create 
+We have modified SwaggerUI to create
 [Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer)
 which is used [here](explorer/index.html#!/authors-v1).
 
 [![Restler API Explorer](../resources/explorer1.png)](explorer/index.html#!/authors-v1)
 
-We are progressively improving the Authors class from CRUD example 
+We are progressively improving the Authors class from CRUD example
 to Rate Limiting Example to show Best Practices and Restler 3 Features.
 
 Make sure you compare them to understand.

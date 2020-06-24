@@ -2,7 +2,7 @@
 /*
  Tagline: Less is more
  Tags: basic, validation, http status
- Requires: PHP >= 5.3
+ Requires: PHP >= 5.4
  Description: Shows the bare minimum code needed to get your RESTful api server
  up and running
 

@@ -3,7 +3,7 @@
 Title: Versioning
 Tagline: using the URL
 Tags: versioning
-Requires: PHP >= 5.3
+Requires: PHP >= 5.4
 Description:
 This example shows how to version your API using namespace. Restler supports
 both url based versioning (this example) and vendor specific media type

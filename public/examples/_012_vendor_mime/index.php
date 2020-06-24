@@ -3,7 +3,7 @@
 Title: Vendor MIME
 Tagline: custom media type for versioning
 Tags: versioning,mime,mediatype,vendor,custom
-Requires: PHP >= 5.3
+Requires: PHP >= 5.4
 Description:
 This example shows how to use vendor specific media types for versioning
 

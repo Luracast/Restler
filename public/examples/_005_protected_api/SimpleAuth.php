@@ -3,11 +3,11 @@ use Luracast\Restler\iAuthenticate;
 
 class SimpleAuth implements iAuthenticate
 {
-    const KEY = 'rEsTlEr2';
+    const KEY = 'rEsTlEr3';
 
     function __isAllowed()
     {
-        return isset($_GET['key']) && $_GET['key'] == SimpleAuth::KEY ? TRUE : FALSE;
+        return isset($_GET['key']) && $_GET['key'] == SimpleAuth::KEY;
     }
 
     public function __getWWWAuthenticateString()

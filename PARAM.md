@@ -24,7 +24,7 @@ in the examples below
     @param string $name user name {@from body}
 
 Overrides the parameter mapping, defines where to expect the parameter from.
-Value should be one of the following
+Value should be one of the following.
 
  - **path** as part of url
  - **query** as part of the query string
@@ -112,7 +112,7 @@ Take a look at [MinMax API Class](public/tests/param/MinMax.php) and tests in
     
 Suggests the validator to attempt fixing the validation problem. In the above
 example Validator will trim off the excess characters instead of throwing an
-exception
+exception.
 
 Take a look at [MinMaxFix API Class](public/tests/param/MinMaxFix.php) and
 tests in [minmaxfix.feature](features/tests/param/minmaxfix.feature)
@@ -145,7 +145,8 @@ tests in [minmaxfix.feature](features/tests/param/validation.feature)
     @param string $password Password 
     						{@message Strong password with at least one alpha and one numeric character is required}
     
-Used by the validator to show a custom error message when invalid value is submitted. Use it to list the requirements for a parameter
+Used by the validator to show a custom error message on invalid value submission. 
+Use it to list the requirements for a parameter.
 
 Take a look at [MinMaxFix API Class](public/tests/param/Validation.php) and
 tests in [minmaxfix.feature](features/tests/param/validation.feature)
@@ -160,4 +161,4 @@ tests in [minmaxfix.feature](features/tests/param/validation.feature)
 
     @param string $name Name {@example Arul Kumaran}
     
-Used by the explorer to prefill the value for the parameter
+Used by the explorer to pre-fill the value for the parameter

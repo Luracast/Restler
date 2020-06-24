@@ -3,7 +3,7 @@
 Title: Access Control
 Tagline: Who can do what
 Tags: access-control, acl, secure, authentication, authorization
-Requires: PHP >= 5.3
+Requires: PHP >= 5.4
 Description:
 This example shows how you can extend the authentication system to create
 a robust access control system. As a added bonus we also restrict api

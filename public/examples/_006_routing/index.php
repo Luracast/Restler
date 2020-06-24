@@ -3,7 +3,7 @@
 Title: Routing
 Tagline: Ways to map api methods to url
 Tags: routing, get, post, put, delete, patch
-Requires: PHP >= 5.3
+Requires: PHP >= 5.4
 Description:
 
 ### Two ways of Routing

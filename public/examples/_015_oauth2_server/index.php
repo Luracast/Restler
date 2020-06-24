@@ -3,7 +3,7 @@
 Title: OAuth2 Server
 Tagline: offering protected API
 Tags: access-control, acl, secure, authentication, authorization
-Requires:  PHP >= 5.3.9
+Requires:  PHP >= 5.4.9
 Description:
 
 ### Setting up the server example

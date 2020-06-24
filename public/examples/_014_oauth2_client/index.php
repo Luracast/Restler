@@ -3,7 +3,7 @@
 Title: OAuth2 Client
 Tagline: to consume protected API
 Tags: access-control, acl, secure, authentication, authorization
-Requires:  PHP >= 5.3.9
+Requires:  PHP >= 5.4.9
 Description:
 
 ### Setting up the client example
@@ -24,15 +24,15 @@ Content:
 This example is part 1 in a 2 part example that shows how Restler can
 be integrated with the popular [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/)
 library. This section -- the "client" -- is about asking for access rights and keeping a record of the
-important state mechanisms required to communicate with Restler once access has been granted. 
+important state mechanisms required to communicate with Restler once access has been granted.
 
-If you're not familiar with OAuth, it's worth familiarizing yourself with the 
+If you're not familiar with OAuth, it's worth familiarizing yourself with the
 basics and in particular understanding the various workflow that OAuth 2.0 offers.
 The following two links may help:
 
-- [Official OAuth Specification](http://tools.ietf.org/html/draft-ietf-oauth-v2): 
+- [Official OAuth Specification](http://tools.ietf.org/html/draft-ietf-oauth-v2):
   a bit dry but if you want the "facts" they're there.
-- [OAuth2 Simplified](http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified): 
+- [OAuth2 Simplified](http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified):
   a nicely summarized overview of how to think through the key aspects of OAuth 2.0
 
 The role of the `client application` in OAuth is two-fold:
@@ -53,20 +53,20 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:
 ## Workflow ##
 In this example the `OAuth server` is setup to manage the `authorization code` grant. Holistically
 there really two parts to the process. First, the client must get authorization from the server and then
-it will use that authorization (in the form of an "access token") to authenticate with the REST API from 
+it will use that authorization (in the form of an "access token") to authenticate with the REST API from
 that point forward. The two flows are illustrated below:
 
 [![Authorization Code Flow](../resources/auth-code-workflow-thumb.png)](../resources/auth-code-workflow.png)
 
 ###Authorization###
-The client apps role in authentication is two-fold. First it must direct the user to the server to start 
+The client apps role in authentication is two-fold. First it must direct the user to the server to start
 the process. And second, when the authorization has completed the client application's *callback* function will be executed
-and it will be responsible for saving the authorization information. 
+and it will be responsible for saving the authorization information.
 
 ###Authentication###
-Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's 
-authorization status in each RESTful API request. This is achieved by the client application adding a *query parameter* of 
-'code' set to the access token that the OAuth Server provided to the application in the authorization step. 
+Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's
+authorization status in each RESTful API request. This is achieved by the client application adding a *query parameter* of
+'code' set to the access token that the OAuth Server provided to the application in the authorization step.
 
 > **Note:-**
 > there is an optional parameter on the server that allows the Access Token to be passed as a header variable instead of a
@@ -75,7 +75,7 @@ authorization status in each RESTful API request. This is achieved by the client
 ## In Conclusion ##
 The "client application" plays an important role in the OAuth interaction and while your Restler server's primarily role will
 likely be to play the *server* role in this process it is useful to know that both client and server are available as part of
-the [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) module and both are easily made available to Restler. 
+the [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) module and both are easily made available to Restler.
 
 For more information on how to start using this functionality with Restler be sure to look at the [OAuth Server example](../_015_oauth2_server/index.php).
 */

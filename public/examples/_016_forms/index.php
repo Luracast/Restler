@@ -2,7 +2,7 @@
 /*
  Tagline: to capture user input
  Tags: form, validation, blade, html, bootstrap, foundation, emmet
- Requires: PHP >= 5.3
+ Requires: PHP >= 5.4
 
  Description:
 
