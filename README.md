@@ -1,6 +1,6 @@
 ![Restler](public/examples/resources/Restler.png) Luracast Restler
 ==================================================================
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/Luracast/Restler?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Luracast/Restler)
 [![Latest Stable Version](https://poser.pugx.org/luracast/restler/v/stable.png)](https://packagist.org/packages/luracast/restler) [![Total Downloads](https://poser.pugx.org/luracast/restler/downloads.png)](https://packagist.org/packages/luracast/restler) [![Latest Unstable Version](https://poser.pugx.org/luracast/restler/v/unstable.png)](https://packagist.org/packages/luracast/restler) [![License](https://poser.pugx.org/luracast/restler/license.png)](https://packagist.org/packages/luracast/restler)
 
 ### Version 3.0 Release Candidate 5
