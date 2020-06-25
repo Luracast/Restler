@@ -2,5 +2,9 @@
 Feature: HTTP Status Codes
 
   Scenario: I should be able to suppress status code 404
-    When I request "/examples/_001_helloworld?suppress_response_codes=true"
+    When I request "examples/_001_helloworld?suppress_response_codes=true"
     Then the response status code should be 200
+
+  Scenario: I should be able to suppress status code 404
+    When I request "examples/_001_helloworld"
+    Then the response status code should be 404

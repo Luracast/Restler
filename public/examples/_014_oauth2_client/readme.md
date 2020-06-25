@@ -1,6 +1,6 @@
 ## OAuth2 Client 
 
- This example requires `PHP >= 5.4.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.4.9` and tagged under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 ### Setting up the client example
@@ -88,6 +88,29 @@ the [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) modul
 For more information on how to start using this functionality with Restler be sure to look at the [OAuth Server example](../_015_oauth2_server/index.php).
 
 
+
+
+We expect the following behaviour from this example.
+
+```gherkin
+
+@example14 @oauth
+Feature: Testing OAuth Client
+
+  Scenario: Getting Html response
+    When I request "examples/_014_oauth2_client/index.html"
+    Then the response status code should be 200
+    And the response is HTML
+
+```
+
+It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure `base_url`
+in `behat.yml` is updated according to your web server.
+
+```bash
+bin/behat  features/examples/_014_oauth2_client.feature
+```
 
 
 

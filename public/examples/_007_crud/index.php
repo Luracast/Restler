@@ -46,9 +46,9 @@ But since the session wont be working, next request wont reflect the
 change done by previous request, anyway you get the idea. You may use any of the following files
 instead of Session.php to get full functionality.
 
-> * SerializedFile.php (helper)
-> * Sqlite.php (helper)
-> * MySQL.php (helper)
+> * MySQLDataProvider.php (helper)
+> * SqliteDataProvider.php (helper)
+> * SerializedFileDataProvider.php (helper)
 
 by un-commenting the respective line in Authors.php and commenting others.
 

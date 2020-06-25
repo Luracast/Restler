@@ -1,6 +1,6 @@
 ## OAuth2 Server 
 
- This example requires `PHP >= 5.4.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.4.9` and tagged under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 ### Setting up the server example

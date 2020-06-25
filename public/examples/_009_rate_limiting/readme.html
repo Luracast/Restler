@@ -281,7 +281,6 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
   <ul>
   <li><abbr title="_009_rate_limiting/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Filter/RateLimit.php">RateLimit.php</abbr>      (filter)</li>
-  <li><abbr title="_009_rate_limiting/SessionCache.php">SessionCache.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/ratelimited/Authors.php">Authors.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/Author.php">Author.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/KeyAuth.php">KeyAuth.php</abbr>      (auth)</li>
@@ -304,14 +303,75 @@ GET    explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
 
 <p>We expect the following behaviour from this example.</p>
 
-<pre><code class="gherkin"><br />@example9 @crud
+<pre><code class="gherkin"><br />@example9 @rate-limit
 Feature: Testing Rate Limiting Example
 
-  Scenario: Failing to delete missing Author with JSON
+  Scenario: Creating new Author by POSTing vars
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    When I request "examples/_009_rate_limiting/authors"
+    Then the response status code should be 201
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Creating new Author with JSON
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    And the request is sent as JSON
+    When I request "examples/_009_rate_limiting/authors"
+    Then the response status code should be 201
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Updating Author with JSON without Authentication
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "examples/_009_rate_limiting/authors/{id}"
+    Then the response status code should be 401
+    And the response "WWW-Authenticate" header should be 'Query name="api_key"'
+    And the response should be JSON
+    And the "error.message" property equals "Unauthorized"
+
+  Scenario: Updating Author with JSON with Authentication
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the "name" property equals "Jac"
+
+  Scenario: Given url is valid for other http method(s)
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "examples/_009_rate_limiting/authors"
+    Then the response status code should be 405
+    And the response "Allow" header should be "GET, POST"
+
+  Scenario: Deleting Author
     Given that I want to delete an "Author"
-    And his "id" is 2000
-    When I request "/examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    And his "id" is 1
+    When I request "examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has an "id" property
+
+  Scenario: Deleting with invalid author id
+    Given that I want to delete an "Author"
+    And his "id" is 1
+    When I request "examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
     Then the response status code should be 404
+    And the response should be JSON
 </code></pre>
 
 <p>It can be tested by running the following command on terminal/command line

@@ -39,7 +39,7 @@ Which will be `Luracast\WeightManagement\v2` for this example
 
 If a class remains the same across few versions of the api, we can implement
 `iProvideMultiVersionApi` interface which is simply defining `__getMaximumSupportedVersion`
-method which returns the maximum supported version. Take a look at `Resources`
+method which returns the maximum supported version. Take a look at `Explorer`
 class for a sample implementation.
 
 Try this example and the version differences in the explorer [here](explorer/index.html#!/v2)

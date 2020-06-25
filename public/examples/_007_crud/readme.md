@@ -1,6 +1,6 @@
 ## CRUD 
 
- This example requires `PHP >= 5.4` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
+ This example requires `PHP >= 5.4` and tagged under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
 
 
 Create, Retrieve, Update and Delete using
@@ -45,9 +45,9 @@ But since the session wont be working, next request wont reflect the
 change done by previous request, anyway you get the idea. You may use any of the following files
 instead of Session.php to get full functionality.
 
-> * SerializedFile.php (helper)
-> * Sqlite.php (helper)
-> * MySQL.php (helper)
+> * MySQLDataProvider.php (helper)
+> * SqliteDataProvider.php (helper)
+> * SerializedFileDataProvider.php (helper)
 
 by un-commenting the respective line in Authors.php and commenting others.
 
@@ -55,7 +55,7 @@ by un-commenting the respective line in Authors.php and commenting others.
 > 
 > * index.php      (gateway)
 > * Authors.php      (api)
-> * Session.php      (helper)
+> * SessionDataProvider.php      (helper)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
@@ -68,9 +68,9 @@ This API Server exposes the following URIs
     DELETE authors/{id} ⇠ Authors::delete()
 
 
-*[MySQL.php]: _007_crud/DB/PDO/MySQL.php
-*[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
-*[SerializedFile.php]: _007_crud/DB/SerializedFile.php
+*[MySQLDataProvider.php]: common/MySQLDataProvider.php
+*[SqliteDataProvider.php]: common/SqliteDataProvider.php
+*[SerializedFileDataProvider.php]: common/SerializedFileDataProvider.php
 
 
 
@@ -191,7 +191,7 @@ Feature: Testing CRUD Example
     Given that I want to make a new "Author"
     And his "name" is "Chris"
     And his "email" is "chris@world.com"
-    When I request "/examples/_007_crud/authors"
+    When I request "examples/_007_crud/authors"
     Then the response status code should be 200
     And the response should be JSON
     And the response has a "id" property
@@ -201,7 +201,7 @@ Feature: Testing CRUD Example
     And his "name" is "Chris"
     And his "email" is "chris@world.com"
     And the request is sent as JSON
-    When I request "/examples/_007_crud/authors"
+    When I request "examples/_007_crud/authors"
     Then the response status code should be 200
     And the response should be JSON
     And the response has a "id" property
@@ -212,7 +212,7 @@ Feature: Testing CRUD Example
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
-    When I request "/examples/_007_crud/authors/{id}"
+    When I request "examples/_007_crud/authors/{id}"
     Then the response status code should be 200
     And the response should be JSON
     And the response has a "id" property
@@ -223,13 +223,14 @@ Feature: Testing CRUD Example
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
-    When I request "/examples/_007_crud/authors"
+    When I request "examples/_007_crud/authors"
     Then the response status code should be 405
+    And the response "Allow" header should be "GET, POST"
 
   Scenario: Deleting Author
     Given that I want to delete an "Author"
     And his "id" is 1
-    When I request "/examples/_007_crud/authors/{id}"
+    When I request "examples/_007_crud/authors/{id}"
     Then the response status code should be 200
     And the response should be JSON
     And the response has an "id" property
@@ -247,7 +248,7 @@ bin/behat  features/examples/_007_crud.feature
 
 *[index.php]: _007_crud/index.php
 *[Authors.php]: _007_crud/Authors.php
-*[Session.php]: _007_crud/DB/Session.php
+*[SessionDataProvider.php]: ../../public/examples/common/SessionDataProvider.php
 *[restler.php]: ../../vendor/restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

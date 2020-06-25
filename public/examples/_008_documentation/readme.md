@@ -1,6 +1,6 @@
 ## Documentation 
 
- This example requires `PHP >= 5.4` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
+ This example requires `PHP >= 5.4` and tagged under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
 
 
 How to document and let your users explore your API.
@@ -37,6 +37,7 @@ This API Server exposes the following URIs
 
     GET    authors          ⇠ improved\Authors::index()
     POST   authors          ⇠ improved\Authors::post()
+    PATCH  authors/reset    ⇠ improved\Authors::patchReset()
     GET    authors/{id}     ⇠ improved\Authors::get()
     PUT    authors/{id}     ⇠ improved\Authors::put()
     PATCH  authors/{id}     ⇠ improved\Authors::patch()
@@ -48,6 +49,90 @@ This API Server exposes the following URIs
 
 
 
+
+
+We expect the following behaviour from this example.
+
+```gherkin
+
+@example8 @documentation
+Feature: Testing Documentation Example
+
+  Scenario: Resetting data to begin tests
+    When I request "PATCH examples/_008_documentation/authors/reset.json"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response equals true
+
+  Scenario: Creating new Author by POSTing vars
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    When I request "examples/_008_documentation/authors"
+    Then the response status code should be 201
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Creating new Author with JSON
+    Given that I want to make a new "Author"
+    And his "name" is "Chris"
+    And his "email" is "chris@world.com"
+    And the request is sent as JSON
+    When I request "examples/_008_documentation/authors"
+    Then the response status code should be 201
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Updating Author with JSON
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "examples/_008_documentation/authors/{id}"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has a "id" property
+
+  Scenario: Given url is valid for other http method(s)
+    Given that I want to update "Author"
+    And his "name" is "Jac"
+    And his "email" is "jac@wright.com"
+    And his "id" is 1
+    And the request is sent as JSON
+    When I request "examples/_008_documentation/authors"
+    Then the response status code should be 405
+    And the response "Allow" header should be "GET, POST"
+
+  Scenario: Deleting Author
+    Given that I want to delete an "Author"
+    And his "id" is 1
+    When I request "examples/_008_documentation/authors/{id}"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has an "id" property
+
+  Scenario: Deleting with invalid author id
+    Given that I want to delete an "Author"
+    And his "id" is 1
+    When I request "examples/_008_documentation/authors/{id}"
+    Then the response status code should be 404
+    And the response should be JSON
+
+  Scenario: Checking Redirect of Explorer
+    When I request "examples/_008_documentation/explorer"
+    Then the response redirects to "examples/_008_documentation/explorer/"
+    And the response should be HTML
+
+```
+
+It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure `base_url`
+in `behat.yml` is updated according to your web server.
+
+```bash
+bin/behat  features/examples/_008_documentation.feature
+```
 
 
 

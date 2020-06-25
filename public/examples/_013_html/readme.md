@@ -1,6 +1,6 @@
 ## Html Format 
 
- This example requires `PHP >= 5.4` and taggeed under `view` `html` `twig` `mustache` `handlebar` `php` `template`
+ This example requires `PHP >= 5.4` and tagged under `view` `html` `twig` `mustache` `handlebar` `php` `template`
 
 
 A special format that lets us render a template with the api result
@@ -53,6 +53,7 @@ This API Server exposes the following URIs
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
     GET    tasks                  ⇠ Tasks::index()
     POST   tasks                  ⇠ Tasks::post()
+    PATCH  tasks/reset            ⇠ Tasks::patchReset()
     GET    tasks/{id}             ⇠ Tasks::get()
     PATCH  tasks/{id}             ⇠ Tasks::patch()
     DELETE tasks/{id}             ⇠ Tasks::delete()
@@ -85,6 +86,71 @@ same resource and url, you can try the json version of the tasks api using the
 API Explorer [here](explorer/index.html)
 
 
+
+
+We expect the following behaviour from this example.
+
+```gherkin
+
+@example13 @html
+Feature: Testing Html
+
+  Scenario: Resetting data to begin tests
+    When I request "PATCH examples/_013_html/tasks/reset"
+    Then the response status code should be 200
+    And the response is JSON
+    And the value equals true
+
+  Scenario: Getting Html response
+    When I request "examples/_013_html/tasks.html"
+    Then the response status code should be 200
+    And the response is HTML
+
+  Scenario: Getting Json response
+    When I request "examples/_013_html/tasks.json"
+    Then the response status code should be 200
+    And the response is JSON
+
+  Scenario: Getting Html response for a tag
+    When I request "examples/_013_html/tasks/1.html"
+    Then the response status code should be 200
+    And the response is HTML
+
+  Scenario: Getting Json response for a tag
+    When I request "examples/_013_html/tasks/2.json"
+    Then the response status code should be 200
+    And the response is JSON
+
+  Scenario: Deleting a task
+    Given that I want to delete a "Task"
+    And its "id" is 1
+    When I request "examples/_013_html/tasks/{id}.json"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response has an "id" property
+
+  Scenario: Getting Html response for a missing tag
+    When I request "examples/_013_html/tasks/1.html"
+    Then the response status code should be 404
+    And the response is HTML
+
+  Scenario: Getting Json response for a deleted tag
+    When I request "examples/_013_html/tasks/1.json"
+    Then the response status code should be 404
+    And the response is JSON
+    And the response has a "error" property
+
+
+
+```
+
+It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure `base_url`
+in `behat.yml` is updated according to your web server.
+
+```bash
+bin/behat  features/examples/_013_html.feature
+```
 
 
 

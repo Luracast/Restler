@@ -2,9 +2,11 @@
 
 use Behat\Gherkin\Node\PyStringNode;
 use GuzzleHttp\Client;
+use GuzzleHttp\Cookie\FileCookieJar;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
+use GuzzleHttp\RedirectMiddleware;
 use Luracast\Restler\Data\Text;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -23,7 +25,7 @@ use Rize\UriTemplate\UriTemplate;
  */
 class RestContext implements Behat\Behat\Context\Context
 {
-
+    const COOKIE_FILE = 'behat-guzzle-cookie-data.json';
     private $_startTime = null;
     private $_restObject = null;
     private $_headers = array();
@@ -47,6 +49,7 @@ class RestContext implements Behat\Behat\Context\Context
     /**
      * Initializes context.
      * Every scenario gets it's own context object.
+     *
      * @param string $baseUrl
      */
     public function __construct($baseUrl)
@@ -54,23 +57,25 @@ class RestContext implements Behat\Behat\Context\Context
         // Initialize your context here
         $this->_restObject = new stdClass();
         $handler = HandlerStack::create();
-        $handler->push(
-            Middleware::mapRequest(
-                function (RequestInterface $request) {
-                    // Notice that we have to return a request object
-                    $this->_request = $request;
-                    return $request;
-                }
-            )
-        );
+        $handler->push(Middleware::mapRequest(
+            function (RequestInterface $request) {
+                // Notice that we have to return a request object
+                $this->_request = $request;
+                return $request;
+            }
+        ));
+        $this->baseUrl = $baseUrl;
+        $cookieJar = new FileCookieJar(self::COOKIE_FILE, true);
         $this->_client = new Client([
-            'base_uri' => $baseUrl,
-            'handler' => $handler,
+            'base_uri'        => $baseUrl,
+            'handler'         => $handler,
             'allow_redirects' => ['track_redirects' => true],
+            'cookies'         => $cookieJar
         ]);
         $timezone = ini_get('date.timezone');
-        if (empty($timezone))
+        if (empty($timezone)) {
             date_default_timezone_set('UTC');
+        }
     }
 
     /**
@@ -123,9 +128,10 @@ class RestContext implements Behat\Behat\Context\Context
     public function theResponseContains($response)
     {
         $data = json_encode($this->_data);
-        if (!Text::contains($data, $response))
+        if (!Text::contains($data, $response)) {
             throw new Exception("Response value does not contain '$response' only\n\n"
                 . $this->echoLastResponse());
+        }
     }
 
     /**
@@ -147,9 +153,10 @@ class RestContext implements Behat\Behat\Context\Context
     public function theResponseEquals($response)
     {
         $data = json_encode($this->_data);
-        if ($data !== $response)
+        if ($data !== $response) {
             throw new Exception("Response value does not match '$response'\n\n"
                 . $this->echoLastResponse());
+        }
     }
 
     /**
@@ -279,13 +286,12 @@ class RestContext implements Behat\Behat\Context\Context
      */
     public function iRequest($path)
     {
-        $path = ltrim($path, '/');
         try {
-            $parts = explode(' ', $path);
+            $parts = explode(' ', ltrim($path, '/'));
             if (2 === count($parts)) {
                 $this->_restObjectMethod = $parts[0];
-                $path = $parts[1];
             }
+            $path = end($parts);
             $this->_startTime = microtime(true);
             $this->_requestUrl = $this->baseUrl . $path;
             $url = false !== strpos($path, '{')
@@ -297,10 +303,10 @@ class RestContext implements Behat\Behat\Context\Context
             $this->_request_debug_stream = fopen('php://temp/', 'r+');
 
             $options = array(
-                'headers' => $this->_headers,
-                'http_errors' => false,
+                'headers'        => $this->_headers,
+                'http_errors'    => false,
                 'decode_content' => false,
-                'debug' => $this->_request_debug_stream,
+                'debug'          => $this->_request_debug_stream,
                 //'curl' => array(CURLOPT_VERBOSE => true),
             );
             if (in_array($method, array('POST', 'PUT', 'PATCH'))) {
@@ -387,6 +393,21 @@ class RestContext implements Behat\Behat\Context\Context
     }
 
     /**
+     * @Then the response redirects to :expectedPath
+     */
+    public function theResponseRedirectsTo($expectedPath)
+    {
+        $redirect = $this->_response->getHeaderLine(RedirectMiddleware::HISTORY_HEADER);
+        if (empty($redirect)) {
+            throw new Exception("Response was not Redirected\n\n" . $this->echoLastResponse());
+        }
+        $expectedPath = $this->baseUrl . ltrim($expectedPath, '/');
+        if ($expectedPath !== $redirect) {
+            throw new Exception("Redirect did not go to '$expectedPath'\n(actual: '$redirect')\n\n" . $this->echoLastResponse());
+        }
+    }
+
+    /**
      * @Then /^the response is JSON$/
      * @Then /^the response should be JSON$/
      */
@@ -405,6 +426,17 @@ class RestContext implements Behat\Behat\Context\Context
     {
         if ($this->_type !== 'xml') {
             throw new Exception("Response was not XML\n\n" . $this->echoLastResponse());
+        }
+    }
+
+    /**
+     * @Then /^the response is HTML$/
+     * @Then /^the response should be HTML$/
+     */
+    public function theResponseIsHtml()
+    {
+        if ($this->_type != 'html') {
+            throw new Exception("Response was not Html\n\n" . $this->echoLastResponse());
         }
     }
 
@@ -454,8 +486,9 @@ class RestContext implements Behat\Behat\Context\Context
     {
         $server_time = strtotime($this->_response->getHeaderLine('Date')) + $seconds;
         $expires_time = strtotime($this->_response->getHeaderLine('Expires'));
-        if ($expires_time === $server_time || $expires_time === $server_time + 1)
+        if ($expires_time === $server_time || $expires_time === $server_time + 1) {
             return;
+        }
         return $this->theResponseHeaderShouldBe(
             'Expires',
             gmdate('D, d M Y H:i:s \G\M\T', $server_time)
@@ -487,19 +520,33 @@ class RestContext implements Behat\Behat\Context\Context
         switch ($type) {
             case 'bool':
             case 'boolean':
-                if (is_bool($data)) return;
+                if (is_bool($data)) {
+                    return;
+                }
             case 'string':
-                if (is_string($data)) return;
+                if (is_string($data)) {
+                    return;
+                }
             case 'int':
-                if (is_int($data)) return;
+                if (is_int($data)) {
+                    return;
+                }
             case 'float':
-                if (is_float($data)) return;
+                if (is_float($data)) {
+                    return;
+                }
             case 'array' :
-                if (is_array($data)) return;
+                if (is_array($data)) {
+                    return;
+                }
             case 'object' :
-                if (is_object($data)) return;
+                if (is_object($data)) {
+                    return;
+                }
             case 'null' :
-                if (is_null($data)) return;
+                if (is_null($data)) {
+                    return;
+                }
         }
 
         throw new Exception("Response is not of type '$type'\n\n" .
@@ -512,9 +559,10 @@ class RestContext implements Behat\Behat\Context\Context
     public function theValueEquals($sample)
     {
         $data = $this->_data;
-        if ($data !== $sample)
+        if ($data !== $sample) {
             throw new Exception("Response value does not match '$sample'\n\n"
                 . $this->echoLastResponse());
+        }
     }
 
     /**
@@ -548,17 +596,29 @@ class RestContext implements Behat\Behat\Context\Context
 
         switch ($type) {
             case 'string':
-                if (is_string($data)) return;
+                if (is_string($data)) {
+                    return;
+                }
             case 'int':
-                if (is_int($data)) return;
+                if (is_int($data)) {
+                    return;
+                }
             case 'float':
-                if (is_float($data)) return;
+                if (is_float($data)) {
+                    return;
+                }
             case 'array' :
-                if (is_array($data)) return;
+                if (is_array($data)) {
+                    return;
+                }
             case 'object' :
-                if (is_object($data)) return;
+                if (is_object($data)) {
+                    return;
+                }
             case 'null' :
-                if (is_null($data)) return;
+                if (is_null($data)) {
+                    return;
+                }
         }
 
         throw new Exception("Response was JSON\n but not of type '$type'\n\n" .
@@ -587,26 +647,45 @@ class RestContext implements Behat\Behat\Context\Context
 
     /**
      * @Then /^the "([^"]*)" property equals "([^"]*)"$/
+     * @Then /^the "([^"]*)" property equals (null)$/
+     * @Then /^the "([^"]*)" property is (null)$/
      */
-    public function thePropertyEquals($propertyName, $propertyValue)
+    public function thePropertyEquals($propertyName, $propertyValue = null)
     {
         $data = $this->_data;
 
+        if ('null' === $propertyValue) {
+            $propertyValue = null;
+        }
+
         if (!empty($data)) {
-            if (!isset($data->$propertyName)) {
-                throw new Exception("Property '"
-                    . $propertyName . "' is not set!\n\n"
-                    . $this->echoLastResponse());
+            $p = $data;
+            $properties = explode('.', $propertyName);
+            foreach ($properties as $property) {
+                if (!isset($p->$property) && !is_null($propertyValue)) {
+                    throw new Exception(
+                        "Property '"
+                        . $propertyName . "' is not set!\n\n"
+                        . $this->echoLastResponse()
+                    );
+                }
+                $p = $p->$property;
             }
-            if ($data->$propertyName != $propertyValue) {
-                throw new \Exception('Property value mismatch! (given: '
-                    . $propertyValue . ', match: '
-                    . $data->$propertyName . ")\n\n"
-                    . $this->echoLastResponse());
+            if ($p != $propertyValue) {
+                throw new \Exception(
+                    sprintf(
+                        "Property value mismatch! (given: %s, expected: %s)\n\n%s",
+                        $this->typeFormat($p),
+                        $this->typeFormat($propertyValue),
+                        $this->echoLastResponse()
+                    )
+                );
             }
         } else {
-            throw new Exception("Response was not JSON\n\n"
-                . $this->_response->getBody(true));
+            throw new Exception(
+                "Response was not JSON\n\n"
+                . $this->_response->getBody(true)
+            );
         }
     }
 
@@ -708,5 +787,19 @@ class RestContext implements Behat\Behat\Context\Context
         }
         echo PHP_EOL;
         echo (string)$res->getBody();
+    }
+
+    private function typeFormat($value)
+    {
+        if (is_null($value)) {
+            return 'null';
+        }
+        if (is_bool($value)) {
+            return $value ? 'true' : 'false';
+        }
+        if (is_array($value) || is_object($value)) {
+            return json_encode($value);
+        }
+        return $value = '"' . $value . '"';
     }
 }

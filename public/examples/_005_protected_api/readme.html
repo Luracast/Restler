@@ -306,6 +306,42 @@ GET simpleauth/key ⇠ SimpleAuth::key()
 </dd>
 </dl>
 
+<p>We expect the following behaviour from this example.</p>
+
+<pre><code class="gherkin"><br />@example5 @protected-api
+Feature: Testing Protected Api
+
+  Scenario: Calling restricted api without a key
+    When I request "examples/_005_protected_api/restricted"
+    Then the response status code should be 401
+
+  Scenario: Calling restricted api with invalid key
+    When I request "examples/_005_protected_api/restricted?key=not-valid"
+    Then the response status code should be 401
+
+  Scenario: Calling restricted api with valid key
+    When I request "examples/_005_protected_api/restricted?key=rEsTlEr3"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "protected method"
+
+  Scenario: Calling restricted api class with valid key
+    When I request "examples/_005_protected_api/secured?key=rEsTlEr3"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "protected class"
+
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">bin/behat  features/examples/_005_protected_api.feature
+</code></pre>
+
 </article>
 <footer>
 &#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>

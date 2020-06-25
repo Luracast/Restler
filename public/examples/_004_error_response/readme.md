@@ -1,6 +1,6 @@
 ## Error Response 
 
- This example requires `PHP >= 5.4` and taggeed under `exception` `http status` `validation`
+ This example requires `PHP >= 5.4` and tagged under `exception` `http status` `validation`
 
 
 API methods can make use of RestException class to provide
@@ -59,6 +59,39 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+
+
+We expect the following behaviour from this example.
+
+```gherkin
+
+@example4 @error-response
+Feature: Testing Error Response
+
+  Scenario: Calling currency format without a number
+    When I request "examples/_004_error_response/currency/format"
+    Then the response status code should be 400
+
+  Scenario: Calling currency format with invalid number
+    When I request "examples/_004_error_response/currency/format?number=not_a_number"
+    Then the response status code should be 400
+
+  Scenario: Calling currency format with invalid number
+    When I request "examples/_004_error_response/currency/format?number=55"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "$55.00"
+
+```
+
+It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure `base_url`
+in `behat.yml` is updated according to your web server.
+
+```bash
+bin/behat  features/examples/_004_error_response.feature
+```
 
 
 

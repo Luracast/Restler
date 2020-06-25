@@ -286,13 +286,13 @@ the class level similar to <em>index</em></p>
 
 <p>But since the session wont be working, next request wont reflect the
 change done by previous request, anyway you get the idea. You may use any of the following files
-instead of <abbr title="_007_crud/DB/Session.php">Session.php</abbr> to get full functionality.</p>
+instead of Session.php to get full functionality.</p>
 
 <blockquote>
   <ul>
-  <li><abbr title="_007_crud/DB/SerializedFile.php">SerializedFile.php</abbr> (helper)</li>
-  <li><abbr title="_007_crud/DB/PDO/Sqlite.php">Sqlite.php</abbr> (helper)</li>
-  <li><abbr title="_007_crud/DB/PDO/MySQL.php">MySQL.php</abbr> (helper)</li>
+  <li><abbr title="common/MySQLDataProvider.php">MySQLDataProvider.php</abbr> (helper)</li>
+  <li><abbr title="common/SqliteDataProvider.php">SqliteDataProvider.php</abbr> (helper)</li>
+  <li><abbr title="common/SerializedFileDataProvider.php">SerializedFileDataProvider.php</abbr> (helper)</li>
   </ul>
 </blockquote>
 
@@ -304,7 +304,7 @@ instead of <abbr title="_007_crud/DB/Session.php">Session.php</abbr> to get full
   <ul>
   <li><abbr title="_007_crud/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_007_crud/Authors.php">Authors.php</abbr>      (api)</li>
-  <li><abbr title="_007_crud/DB/Session.php">Session.php</abbr>      (helper)</li>
+  <li><abbr title="../../public/examples/common/SessionDataProvider.php">SessionDataProvider.php</abbr>      (helper)</li>
   <li><abbr title="../../vendor/restler.php">restler.php</abbr>      (framework)</li>
   <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
@@ -431,7 +431,7 @@ Feature: Testing CRUD Example
     Given that I want to make a new "Author"
     And his "name" is "Chris"
     And his "email" is "chris@world.com"
-    When I request "/examples/_007_crud/authors"
+    When I request "examples/_007_crud/authors"
     Then the response status code should be 200
     And the response should be JSON
     And the response has a "id" property
@@ -441,7 +441,7 @@ Feature: Testing CRUD Example
     And his "name" is "Chris"
     And his "email" is "chris@world.com"
     And the request is sent as JSON
-    When I request "/examples/_007_crud/authors"
+    When I request "examples/_007_crud/authors"
     Then the response status code should be 200
     And the response should be JSON
     And the response has a "id" property
@@ -452,7 +452,7 @@ Feature: Testing CRUD Example
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
-    When I request "/examples/_007_crud/authors/{id}"
+    When I request "examples/_007_crud/authors/{id}"
     Then the response status code should be 200
     And the response should be JSON
     And the response has a "id" property
@@ -463,13 +463,14 @@ Feature: Testing CRUD Example
     And his "email" is "jac@wright.com"
     And his "id" is 1
     And the request is sent as JSON
-    When I request "/examples/_007_crud/authors"
+    When I request "examples/_007_crud/authors"
     Then the response status code should be 405
+    And the response "Allow" header should be "GET, POST"
 
   Scenario: Deleting Author
     Given that I want to delete an "Author"
     And his "id" is 1
-    When I request "/examples/_007_crud/authors/{id}"
+    When I request "examples/_007_crud/authors/{id}"
     Then the response status code should be 200
     And the response should be JSON
     And the response has an "id" property

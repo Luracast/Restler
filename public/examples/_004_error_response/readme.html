@@ -298,6 +298,35 @@
 </dd>
 </dl>
 
+<p>We expect the following behaviour from this example.</p>
+
+<pre><code class="gherkin"><br />@example4 @error-response
+Feature: Testing Error Response
+
+  Scenario: Calling currency format without a number
+    When I request "examples/_004_error_response/currency/format"
+    Then the response status code should be 400
+
+  Scenario: Calling currency format with invalid number
+    When I request "examples/_004_error_response/currency/format?number=not_a_number"
+    Then the response status code should be 400
+
+  Scenario: Calling currency format with invalid number
+    When I request "examples/_004_error_response/currency/format?number=55"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "$55.00"
+
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">bin/behat  features/examples/_004_error_response.feature
+</code></pre>
+
 </article>
 <footer>
 &#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>

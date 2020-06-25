@@ -40,3 +40,4 @@ vendor/voku
 vendor/rize
 vendor/nesbot
 vendor/doctrine
+behat-guzzle-cookie-data.json
