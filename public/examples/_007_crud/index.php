@@ -153,14 +153,13 @@ Content-Type: application/json
 }
 ```
 
- Helpers: DB\Session
+ Helpers: SessionDataProvider
 
  Content:
 
-*[MySQL.php]: _007_crud/DB/PDO/MySQL.php
-*[Sqlite.php]: _007_crud/DB/PDO/Sqlite.php
-*[SerializedFile.php]: _007_crud/DB/SerializedFile.php
-
+*[MySQLDataProvider.php]: common/MySQLDataProvider.php
+*[SqliteDataProvider.php]: common/SqliteDataProvider.php
+*[SerializedFileDataProvider.php]: common/SerializedFileDataProvider.php
 */
 require_once '../../../vendor/restler.php';
 use Luracast\Restler\Restler;

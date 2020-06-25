@@ -29,8 +29,6 @@ Happy Exploring! :)
 */
 
 require_once '../../../vendor/restler.php';
-//reuse the SessionDB from CRUD Example
-require_once '../_007_crud/DB/Session.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

@@ -5,7 +5,7 @@
  * Make sure this folder has sufficient write permission
  * for this script to create the file.
  */
-class DB_Serialized_File
+class SerializedFileDataProvider implements DataProviderInterface
 {
     private $arr;
     private $modifed = FALSE;
@@ -18,7 +18,7 @@ class DB_Serialized_File
         if (file_exists($file)) {
             $this->arr = require_once $file;
         } else {
-            $this->install();
+            $this->reset();
         }
     }
     function __destruct ()
@@ -77,19 +77,20 @@ class DB_Serialized_File
         if ($index === FALSE)
             return FALSE;
         $this->modifed = TRUE;
-        return array_shift(array_splice($this->arr['rs'], $index, 1));
+        $rs = array_splice($this->arr['rs'], $index, 1);
+        return array_shift($rs);
     }
-    private function install ()
+    function reset()
     {
         /** install initial data **/
         $this->arr = array();
         $this->arr['rs'] = array(
-        array('id' => 1,
-        'name' => 'Jac Wright',
-        'email' => 'jacwright@gmail.com'),
-        array('id' => 2,
-        'name' => 'Arul Kumaran',
-        'email' => 'arul@luracast.com'));
+            array('id' => 1,
+                  'name' => 'Jac Wright',
+                  'email' => 'jacwright@gmail.com'),
+            array('id' => 2,
+                  'name' => 'Arul Kumaran',
+                  'email' => 'arul@luracast.com'));
         $this->arr['pk'] = 5;
         $this->modifed = TRUE;
     }

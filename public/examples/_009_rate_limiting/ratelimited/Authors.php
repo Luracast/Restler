@@ -1,16 +1,18 @@
 <?php
 namespace ratelimited;
+use DataProviderInterface;
 use Luracast\Restler\RestException;
-use DB_Session;
+use SessionDataProvider;
 use Author;
 
 class Authors
 {
+    /** @var DataProviderInterface  */
     public $dp;
 
     function __construct()
     {
-        $this->dp = new DB_Session();
+        $this->dp = new SessionDataProvider();
     }
 
     /**

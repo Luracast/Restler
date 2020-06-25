@@ -41,8 +41,6 @@ use Luracast\Restler\Explorer;
 use Luracast\Restler\Filter\RateLimit;
 
 require_once '../../../vendor/restler.php';
-//reuse the SessionDB from CRUD Example
-require_once '../_007_crud/DB/Session.php';
 
 //used only for demo, comment the following line
 Defaults::$cacheClass = 'SessionCache';

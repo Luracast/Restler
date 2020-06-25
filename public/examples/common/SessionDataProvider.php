@@ -2,13 +2,13 @@
 /**
  * Fake Database. All records are stored in $_SESSION
  */
-class DB_Session
+class SessionDataProvider implements DataProviderInterface
 {
     function __construct ()
     {
         @session_start();
         if (! isset($_SESSION['pk'])) {
-            $this->install();
+            $this->reset();
         }
     }
     private function pk ()
@@ -58,15 +58,16 @@ class DB_Session
         $record = array_splice($_SESSION['rs'], $index, 1);
         return array_shift($record);
     }
-    private function install ()
+
+    function reset()
     {
         /** install initial data **/
         $_SESSION['pk'] = 5;
         $_SESSION['rs'] = array(
-        array('id' => 1, 'name' => 'Jac Wright',
-        'email' => 'jacwright@gmail.com'),
-        array('id' => 2, 'name' => 'Arul Kumaran',
-        'email' => 'arul@luracast.com'));
+            array('id' => 1, 'name' => 'Jac Wright',
+                  'email' => 'jacwright@gmail.com'),
+            array('id' => 2, 'name' => 'Arul Kumaran',
+                  'email' => 'arul@luracast.com'));
     }
 }
 

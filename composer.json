@@ -52,6 +52,9 @@
             "Luracast\\Restler":"vendor/"
         }
     },
+    "autoload-dev": {
+        "classmap": ["public/examples/common"]
+    },
     "minimum-stability": "dev",
     "conflict": {
         "restler/framework":"3.*"

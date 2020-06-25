@@ -8,9 +8,10 @@
  * This class will create the table with sample data
  * automatically on first `get` or `get($id)` request
  */
+
 use Luracast\Restler\RestException;
 
-class DB_PDO_MySQL
+class MySQLDataProvider implements DataProviderInterface
 {
     private $db;
 
@@ -39,7 +40,7 @@ class DB_PDO_MySQL
         }
     }
 
-    function get($id, $installTableOnFailure = FALSE)
+    function get($id, $installTableOnFailure = false)
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
@@ -50,13 +51,13 @@ class DB_PDO_MySQL
             if (!$installTableOnFailure && $e->getCode() == '42S02') {
                 //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
                 $this->install();
-                return $this->get($id, TRUE);
+                return $this->get($id, true);
             }
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
     }
 
-    function getAll($installTableOnFailure = FALSE)
+    function getAll($installTableOnFailure = false)
     {
         $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         try {
@@ -66,7 +67,7 @@ class DB_PDO_MySQL
             if (!$installTableOnFailure && $e->getCode() == '42S02') {
                 //SQLSTATE[42S02]: Base table or view not found: 1146 Table 'authors' doesn't exist
                 $this->install();
-                return $this->getAll(TRUE);
+                return $this->getAll(true);
             }
             throw new RestException(501, 'MySQL: ' . $e->getMessage());
         }
@@ -75,24 +76,27 @@ class DB_PDO_MySQL
     function insert($rec)
     {
         $sql = $this->db->prepare("INSERT INTO authors (name, email) VALUES (:name, :email)");
-        if (!$sql->execute(array(':name' => $rec['name'], ':email' => $rec['email'])))
-            return FALSE;
+        if (!$sql->execute(array(':name' => $rec['name'], ':email' => $rec['email']))) {
+            return false;
+        }
         return $this->get($this->db->lastInsertId());
     }
 
     function update($id, $rec)
     {
         $sql = $this->db->prepare("UPDATE authors SET name = :name, email = :email WHERE id = :id");
-        if (!$sql->execute(array(':id' => $id, ':name' => $rec['name'], ':email' => $rec['email'])))
-            return FALSE;
+        if (!$sql->execute(array(':id' => $id, ':name' => $rec['name'], ':email' => $rec['email']))) {
+            return false;
+        }
         return $this->get($id);
     }
 
     function delete($id)
     {
         $r = $this->get($id);
-        if (!$r || !$this->db->prepare('DELETE FROM authors WHERE id = ?')->execute(array($id)))
-            return FALSE;
+        if (!$r || !$this->db->prepare('DELETE FROM authors WHERE id = ?')->execute(array($id))) {
+            return false;
+        }
         return $r;
     }
 
@@ -123,6 +127,12 @@ class DB_PDO_MySQL
             "INSERT INTO authors (name, email) VALUES ('Jac  Wright', 'jacwright@gmail.com');
              INSERT INTO authors (name, email) VALUES ('Arul Kumaran', 'arul@luracast.com');"
         );
+    }
+
+    function reset()
+    {
+        $this->db->exec('DROP TABLE authors IF EXISTS;');
+        $this->install();
     }
 }
 

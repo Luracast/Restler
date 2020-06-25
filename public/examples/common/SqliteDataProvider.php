@@ -5,54 +5,64 @@
  * Make sure this folder has sufficient write permission
  * for this page to create the file.
  */
-use Luracast\Restler\RestException;
-use PDO;
 
-class DB_PDO_Sqlite
+class SqliteDataProvider implements DataProviderInterface
 {
+    const DATA_FILE = '/data_pdo_sqlite.sq3';
     private $db;
-    function __construct ()
+
+    function __construct()
     {
-        $file = dirname(__FILE__) . '/data_pdo_sqlite.sq3';
+        $file = dirname(__FILE__) . self::DATA_FILE;
         $db_found = file_exists($file);
         $this->db = new PDO('sqlite:' . $file);
         $this->db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        if (!$db_found)
+        if (!$db_found) {
             $this->install();
+        }
     }
-    function get ($id)
+
+    function get($id)
     {
         $sql = $this->db->prepare('SELECT * FROM authors WHERE id = :id');
         $sql->execute(array(':id' => $id));
         return $this->id2int($sql->fetch());
     }
-    function getAll ()
+
+    function getAll()
     {
         $stmt = $this->db->query('SELECT * FROM authors');
         return $this->id2int($stmt->fetchAll());
     }
-    function insert ($rec)
+
+    function insert($rec)
     {
         $sql = $this->db->prepare("INSERT INTO authors (name, email) VALUES (:name, :email)");
-        if (!$sql->executie(array(':name' => $rec['name'], ':email' => $rec['email'])))
-            return FALSE;
+        if (!$sql->executie(array(':name' => $rec['name'], ':email' => $rec['email']))) {
+            return false;
+        }
         return $this->get($this->db->lastInsertId());
     }
-    function update ($id, $rec)
+
+    function update($id, $rec)
     {
         $sql = $this->db->prepare("UPDATE authors SET name = :name, email = :email WHERE id = :id");
-        if (!$sql->execute(array(':id' => $id, ':name' => $rec['name'], ':email' => $rec['email'])))
-            return FALSE;
+        if (!$sql->execute(array(':id' => $id, ':name' => $rec['name'], ':email' => $rec['email']))) {
+            return false;
+        }
         return $this->get($id);
     }
-    function delete ($id)
+
+    function delete($id)
     {
         $r = $this->get($id);
-        if (!$r || !$this->db->prepare('DELETE FROM authors WHERE id = ?')->execute(array($id)))
-            return FALSE;
+        if (!$r || !$this->db->prepare('DELETE FROM authors WHERE id = ?')->execute(array($id))) {
+            return false;
+        }
         return $r;
     }
-    private function id2int ($r)
+
+    private function id2int($r)
     {
         if (is_array($r)) {
             if (isset($r['id'])) {
@@ -65,18 +75,25 @@ class DB_PDO_Sqlite
         }
         return $r;
     }
-    private function install ()
+
+    private function install()
     {
         $this->db->exec(
-        "CREATE TABLE authors(
+            "CREATE TABLE authors(
             'id' INTEGER PRIMARY KEY AUTOINCREMENT,
             'name' TEXT,
             'email' TEXT
         )");
         $this->db->exec(
-        "INSERT INTO authors (name, email) VALUES ('Jac Wright', 'jacwright@gmail.com');
+            "INSERT INTO authors (name, email) VALUES ('Jac Wright', 'jacwright@gmail.com');
          INSERT INTO authors (name, email) VALUES ('Arul Kumaran', 'arul@luracast.com');
         ");
+    }
+
+    function reset()
+    {
+        unlink(dirname(__FILE__) . self::DATA_FILE);
+        $this->install();
     }
 }
 
