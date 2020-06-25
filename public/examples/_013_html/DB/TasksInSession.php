@@ -1,7 +1,8 @@
 <?php
+
 namespace DB;
+
 use Luracast\Restler\RestException;
-use Luracast\Restler\Util;
 
 /**
  * Fake Database. All records are stored in $_SESSION
@@ -64,8 +65,9 @@ class TasksInSession implements iTasks
     public function get($id)
     {
         $position = $this->find($id);
-        if ($position === FALSE)
+        if ($position === false) {
             throw new RestException(404, 'no such task');
+        }
         /**
          * @var Task;
          */
@@ -81,7 +83,7 @@ class TasksInSession implements iTasks
                 return $position;
             }
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -105,20 +107,22 @@ class TasksInSession implements iTasks
      * @param int   $id
      * @param array $data
      *
-     * @throws \Luracast\Restler\RestException 404
      * @return Task
+     * @throws \Luracast\Restler\RestException 404
      */
     public function update($id, array $data)
     {
         $position = $this->find($id);
-        if ($position === FALSE)
+        if ($position === false) {
             throw new RestException(404, 'no such task');
+        }
         /**
          * @var Task;
          */
         $task = $_SESSION['tasks'][$position];
-        if (isset($data['text']))
+        if (isset($data['text'])) {
             $task->text = $data['text'];
+        }
         if (isset($data['position'])) {
             $new_pos = min(count($_SESSION['tasks']), $data['position']);
             $new_pos = max(0, $new_pos);
@@ -137,14 +141,15 @@ class TasksInSession implements iTasks
      *
      * @param int $id
      *
-     * @throws \Luracast\Restler\RestException 404
      * @return Task
+     * @throws \Luracast\Restler\RestException 404
      */
     public function delete($id)
     {
         $position = $this->find($id);
-        if ($position === FALSE)
+        if ($position === false) {
             throw new RestException(404, 'no such task');
+        }
         /**
          * @var Task;
          */
@@ -152,5 +157,11 @@ class TasksInSession implements iTasks
         array_splice($_SESSION['tasks'], $position, 1);
         $task->position = -1;
         return $task;
+    }
+
+    public function reset()
+    {
+        session_destroy();
+        return true;
     }
 }

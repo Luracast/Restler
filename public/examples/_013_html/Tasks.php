@@ -89,4 +89,13 @@ class Tasks
         return $this->db->delete($id);
     }
 
+    /**
+     * reset for tests
+     */
+    function patchReset()
+    {
+        $this->db->reset();
+        return true;
+    }
+
 }

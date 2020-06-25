@@ -1,4 +1,5 @@
 <?php
+
 namespace DB;
 
 interface iTasks
@@ -53,4 +54,6 @@ interface iTasks
      * @return null
      */
     public function install();
+
+    public function reset();
 }
