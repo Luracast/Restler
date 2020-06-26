@@ -70,13 +70,7 @@ var _gaq = _gaq || [];
                 <ul><li><a href="forms.html#label" title="Forms - @label">@label</a></li></ul>
                 <ul><li><a href="forms.html#field" title="Forms - @field">@field</a></li></ul>
                 <ul><li><a href="forms.html#message" title="Forms - @message">@message</a></li></ul>
-                <ul><li><a href="forms.html#form" title="Forms - @form">@form</a></li></ul>
-                <ul><li><a href="forms.html#input" title="Forms - @input">@input</a></li></ul>
-                <ul><li><a href="forms.html#textarea" title="Forms - @textarea">@textarea</a></li></ul>
-                <ul><li><a href="forms.html#radio" title="Forms - @radio">@radio</a></li></ul>
-                <ul><li><a href="forms.html#select" title="Forms - @select">@select</a></li></ul>
-                <ul><li><a href="forms.html#submit" title="Forms - @submit">@submit</a></li></ul>
-                <ul><li><a href="forms.html#fieldset" title="Forms - @fieldset">@fieldset</a></li></ul>
+                <ul><li><a href="forms.html#emmet-templates" title="Forms - Emmet Templates">Emmet Templates</a></li></ul>
             </li>
             <li><a href="param.html#param-and--var" title="@param and @var">Param</a>
                 <ul><li><a href="param.html#from" title="Param - @from">@from</a></li></ul>
@@ -138,29 +132,51 @@ var _gaq = _gaq || [];
 <p><a id="field" class="anchor"></a></p>
 <h2>@field</h2>
 
+<p><strong>Syntax:</strong></p>
+
+<pre><code>@param type $name [Description] {@field InputType}
+</code></pre>
+
+<p><strong>Example:</strong></p>
+
+<pre><code>@param int $age [Description] {@field number} {@min 6} {@max 22}
+</code></pre>
+
+<p>Html field type used for capturing the value. 
+Some possible values are,
+ - input
+ - checkbox (for boolean)
+ - radio (requires @choice)
+ - password
+ - select (requires @choice)
+ - text
+ - hidden</p>
+
+<p>When not specified, it will try to guess the field type</p>
+
 <p><a id="message" class="anchor"></a></p>
 <h2>@message</h2>
 
-<p><a id="form" class="anchor"></a></p>
-<h2>@form</h2>
+<p><strong>Syntax:</strong></p>
 
-<p><a id="input" class="anchor"></a></p>
-<h2>@input</h2>
+<pre><code>@param type $name [Description] {@message text}
+</code></pre>
 
-<p><a id="textarea" class="anchor"></a></p>
-<h2>@textarea</h2>
+<p><strong>Example:</strong></p>
 
-<p><a id="radio" class="anchor"></a></p>
-<h2>@radio</h2>
+<pre><code>@param int $age [Description] {@message age restriction requires age between 6 and 22} {@min 6} {@max 22}
+</code></pre>
 
-<p><a id="select" class="anchor"></a></p>
-<h2>@select</h2>
+<p>Custom error message to display when validation fails.</p>
 
-<p><a id="submit" class="anchor"></a></p>
-<h2>@submit</h2>
+<p><a id="emmet-templates" class="anchor"></a></p>
+<h2>Emmet Templates</h2>
 
-<p><a id="fieldset" class="anchor"></a></p>
-<h2>@fieldset</h2>
+<p><a id="form---input---textarea---radio---select---submit--and--fieldset" class="anchor"></a></p>
+<h3>@form, @input, @textarea, @radio, @select, @submit, and @fieldset</h3>
+
+<p>Allows you to customize how a form element rendering from the selected form style.
+Use Emmet syntax for that purpose. Take a look at FormStyles.php for an example.</p>
 
 </article>
 </body>
