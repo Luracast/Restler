@@ -48,8 +48,8 @@
         }
     ],
     "autoload":{
-        "psr-0":{
-            "Luracast\\Restler":"vendor/"
+        "psr-4":{
+            "Luracast\\Restler\\":"vendor/Luracast/Restler"
         }
     },
     "autoload-dev": {
