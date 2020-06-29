@@ -50,7 +50,7 @@ class Util
      * When the deeply nested property is found its value is returned, otherwise
      * false is returned.
      *
-     * @param array $from array to extract the value from
+     * @param array|object $from array to extract the value from
      * @param string|array $key ... pass more to go deeply inside the array
      *                              alternatively you can pass a single array
      *
