@@ -15,6 +15,7 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  * inspired by the RestServer code from
  * <http://jacwright.com/blog/resources/RestServer.txt>
  *
+ *
  * @category   Framework
  * @package    Restler
  * @author     R.Arul Kumaran <arul@luracast.com>
@@ -48,6 +49,9 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  * @method void onRespond() onRespond(Callable $function) fired before sending response
  * @method void onComplete() onComplete(Callable $function) fired after sending response
  * @method void onMessage() onMessage(Callable $function) fired before composing error response
+ *
+ * @property bool|null  _authenticated
+ * @property bool _authVerified
  */
 class Restler extends EventDispatcher
 {
