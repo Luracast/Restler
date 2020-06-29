@@ -393,6 +393,22 @@ class RestContext implements Behat\Behat\Context\Context
     }
 
     /**
+     * @When I accept :header
+     */
+    public function accept($header)
+    {
+        $this->_headers['Accept'] = $header;
+    }
+
+    /**
+     * @When accept language :language
+     */
+    public function acceptLanguage($language)
+    {
+        $this->_headers['Accept-Language'] = $language;
+    }
+
+    /**
      * @Then the response redirects to :expectedPath
      */
     public function theResponseRedirectsTo($expectedPath)
@@ -462,7 +478,7 @@ class RestContext implements Behat\Behat\Context\Context
     }
 
     /**
-     * @Then /^the response "([^"]*)" header should be "([^"]*)"$/
+     * @Then /^the response :header header should be :value$/
      */
     public function theResponseHeaderShouldBe($header, $value)
     {
