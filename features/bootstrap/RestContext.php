@@ -478,7 +478,7 @@ class RestContext implements Behat\Behat\Context\Context
     }
 
     /**
-     * @Then /^the response :header header should be :value$/
+     * @Then the response :header header should be :value
      */
     public function theResponseHeaderShouldBe($header, $value)
     {
