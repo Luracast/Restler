@@ -1,6 +1,12 @@
 @example9 @rate-limit
 Feature: Testing Rate Limiting Example
 
+  Scenario: Resetting data to begin tests
+    When I request "PATCH examples/_009_rate_limiting/authors/reset.json"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response equals true
+
   Scenario: Creating new Author by POSTing vars
     Given that I want to make a new "Author"
     And his "name" is "Chris"
