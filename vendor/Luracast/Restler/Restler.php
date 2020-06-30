@@ -697,6 +697,8 @@ class Restler extends EventDispatcher
      *  - media type
      *  - charset
      *  - language
+     *
+     * @throws RestException
      */
     protected function negotiate()
     {
