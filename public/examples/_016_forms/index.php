@@ -106,10 +106,10 @@ $themes = array(
     'yeti',
 );
 $theme = isset($_GET['theme']) ? $_GET['theme'] : $themes[array_rand($themes, 1)];
-$style = $theme === 'foundation5' ? 'foundation5' : 'bootstrap3';
+$style = $theme === 'Foundation5' ? 'Foundation5' : 'Bootstrap3';
 HtmlFormat::$data += compact('theme', 'themes', 'style');
-
-Forms::$style = FormStyles::$$style;
+$class = 'Luracast\\Restler\\UI\\'.$style.'Form';
+Forms::setStyles(new $class);
 
 $r = new Restler();
 $r->setSupportedFormats('HtmlFormat');
