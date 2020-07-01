@@ -43,6 +43,7 @@ This API Server exposes the following URIs
 
     GET    authors          ⇠ ratelimited\Authors::index()
     POST   authors          ⇠ ratelimited\Authors::post()
+    PATCH  authors/reset    ⇠ ratelimited\Authors::patchReset()
     GET    authors/{id}     ⇠ ratelimited\Authors::get()
     PUT    authors/{id}     ⇠ ratelimited\Authors::put()
     PATCH  authors/{id}     ⇠ ratelimited\Authors::patch()
@@ -62,6 +63,12 @@ We expect the following behaviour from this example.
 
 @example9 @rate-limit
 Feature: Testing Rate Limiting Example
+
+  Scenario: Resetting data to begin tests
+    When I request "PATCH examples/_009_rate_limiting/authors/reset.json"
+    Then the response status code should be 200
+    And the response should be JSON
+    And the response equals true
 
   Scenario: Creating new Author by POSTing vars
     Given that I want to make a new "Author"
@@ -129,6 +136,7 @@ Feature: Testing Rate Limiting Example
     When I request "examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
     Then the response status code should be 404
     And the response should be JSON
+
 ```
 
 It can be tested by running the following command on terminal/command line

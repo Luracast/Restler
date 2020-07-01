@@ -1323,7 +1323,7 @@ Feature: Validation
     Then the response status code should be 400
     And the response is JSON
     And the type is "object"
-    And the "error.message" property equals "Strong password with at least one alpha and one numeric character is required"
+    And the "error.message" property equals "Bad Request: Strong password with at least one alpha and one numeric character is required"
 
   Examples:
     | password   |
@@ -1537,7 +1537,7 @@ Feature: Validation
     Then the response status code should be 400
     And the response is JSON
     And the type is "object"
-    And the "error.message" property equals "Strong password with at least one alpha and one numeric character is required"
+    And the "error.message" property equals "Bad Request: Strong password with at least one alpha and one numeric character is required"
 
   Examples:
     | password   |
