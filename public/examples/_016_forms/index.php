@@ -77,9 +77,8 @@ $loader = include '../../../vendor/autoload.php';
 $loader->setUseIncludePath(true);
 
 use Luracast\Restler\Data\Validator;
-use Luracast\Restler\Restler;
-use Luracast\Restler\Defaults;
 use Luracast\Restler\Format\HtmlFormat;
+use Luracast\Restler\Restler;
 use Luracast\Restler\UI\Forms;
 use Luracast\Restler\UI\FormStyles;
 
@@ -106,10 +105,11 @@ $themes = array(
     'yeti',
 );
 $theme = isset($_GET['theme']) ? $_GET['theme'] : $themes[array_rand($themes, 1)];
-$style = $theme === 'Foundation5' ? 'Foundation5' : 'Bootstrap3';
-HtmlFormat::$data += compact('theme', 'themes', 'style');
-$class = 'Luracast\\Restler\\UI\\'.$style.'Form';
+$style = $theme === 'foundation5' ? 'Foundation5' : 'Bootstrap3';
+$class = 'Luracast\\Restler\\UI\\' . $style . 'Form';
 Forms::setStyles(new $class);
+$style = strtolower($style);
+HtmlFormat::$data += compact('theme', 'themes', 'style');
 
 $r = new Restler();
 $r->setSupportedFormats('HtmlFormat');
