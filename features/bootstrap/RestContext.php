@@ -373,8 +373,10 @@ class RestContext implements Behat\Behat\Context\Context
                 break;
             case 'application/xml':
                 $this->_type = 'xml';
-                libxml_use_internal_errors(true);
-                libxml_disable_entity_loader(true);
+                @libxml_use_internal_errors(true);
+                if (\LIBXML_VERSION < 20900) {
+                    libxml_disable_entity_loader(true);
+                }
                 $this->_data = @simplexml_load_string(
                     $this->_response->getBody(true)
                 );
