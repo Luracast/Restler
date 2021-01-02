@@ -296,6 +296,9 @@ class Explorer implements iProvideMultiVersionApi
             $info = new ValidationInfo($param);
             $description = isset($param['description']) ? $param['description'] : '';
             if ('body' == $info->from) {
+                if ($param['name'] === Defaults::$fullRequestDataName) {
+                    continue;
+                }
                 if ($info->required) {
                     $required = true;
                 }
