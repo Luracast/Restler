@@ -13,6 +13,7 @@ use stdClass;
 use Luracast\Restler\Data\Text;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Scope;
+use Luracast\Restler\Defaults;
 
 /**
  * Class Explorer
@@ -213,6 +214,7 @@ class Explorer implements iProvideMultiVersionApi
     private function paths($version = 1)
     {
         $map = Routes::findAll(static::$excludedPaths + array($this->base()), static::$excludedHttpMethods, $version);
+        $prefix = Defaults::$useUrlBasedVersioning ? "/v$version" : '';
         $paths = array();
         foreach ($map as $path => $data) {
             $access = $data[0]['access'];
@@ -226,7 +228,7 @@ class Explorer implements iProvideMultiVersionApi
                     continue;
                 }
                 $url = $route['url'];
-                $paths["/$url"][strtolower($route['httpMethod'])] = $this->operation($route);
+                $paths["$prefix/$url"][strtolower($route['httpMethod'])] = $this->operation($route);
             }
         }
 
