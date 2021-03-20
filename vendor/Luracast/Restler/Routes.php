@@ -430,7 +430,7 @@ class Routes
                     $details = $value[$httpMethod]['metadata']['param'][$index];
                     if ($k[0] == 's' || strpos($k, static::pathVarTypeOf($v)) === 0) {
                         //remove the newlines
-                        $data[$details['name']] = trim($v, PHP_EOL);
+                        $data[$details['name']] = trim(urldecode($v), PHP_EOL);
                     } else {
                         $status = 400;
                         $message = 'invalid value specified for `'
