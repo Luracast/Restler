@@ -403,9 +403,11 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 return
                     $a->operations[0]->httpMethod ==
                     $b->operations[0]->httpMethod
-                        ? $a->path > $b->path
-                        : $order[$a->operations[0]->httpMethod] >
-                        $order[$b->operations[0]->httpMethod];
+                        ? strcmp($a->path, $b->path)
+                        : strcmp(
+                            $order[$a->operations[0]->httpMethod],
+                            $order[$b->operations[0]->httpMethod]
+                        );
 
             }
         );
@@ -923,7 +925,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Accept:application/json',
         ));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);        
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         $result = json_decode(curl_exec($ch));
         $http_status = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
         return array($http_status, $result);
