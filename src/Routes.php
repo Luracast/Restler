@@ -133,10 +133,10 @@ class Routes
             }
             foreach ($params as $param) {
                 $children = array();
-                $type = version_compare(phpversion(), '7.0.0', '<') ?
-                  // PHP < 7.0
+                $type = version_compare(phpversion(), '8.0.0', '<') ?
+                  // PHP < 8.0
                   ($param->isArray() ? 'array' : $param->getClass()) :
-                  // PHP >= 7.0
+                  // PHP >= 8.0
                   ($param->getType() && $param->getType()->getName() === 'array' ? 'array' : (
                     $param->getType() && !$param->getType()->isBuiltin()
                         ? new ReflectionClass($param->getType()->getName())
