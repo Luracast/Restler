@@ -11,3 +11,4 @@ tag.sh
 bin/*
 build
 cache
+public/examples/_015_oauth2_server/Auth/db/oauth.sqlite
