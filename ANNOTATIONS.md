@@ -192,7 +192,7 @@ are same as that of @param so they are documented under [@param](PARAM.md)
     
 **Example:**
 
-    @pformat HtmlFormat
+    @format HtmlFormat
     
 IF you want to force the request and or response format for a specific api method @format comment can be used
 
