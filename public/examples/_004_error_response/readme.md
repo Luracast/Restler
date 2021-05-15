@@ -64,6 +64,6 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 
 *[index.php]: _004_error_response/index.php
 *[Currency.php]: _004_error_response/Currency.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

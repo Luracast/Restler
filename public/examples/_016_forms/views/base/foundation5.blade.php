@@ -34,7 +34,7 @@
                         <li><a href="?theme=foundation5">Foundation</a></li>
                         <li><label>Bootstrap Themes</label></li>
                         @foreach ($themes as $option)
-                        <li><a href="?theme={{ $option }}">{{ String::title($option) }}</a></li>
+                        <li><a href="?theme={{ $option }}">{{ Text::title($option) }}</a></li>
                         @endforeach
                     </ul>
                 </li>

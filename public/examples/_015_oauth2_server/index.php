@@ -130,7 +130,7 @@ data. Brett Shaffers's [OAuth2 Server ](http://bshaffer.github.io/oauth2-server-
 server side of the interaction but provides both client and server components and both are now readily available to
 Restler customers who want to offer or connect-into the world of OAuth2.
 */
-require_once "../../../vendor/restler.php";
+require_once "../../../restler.php";
 use Luracast\Restler\Restler;
 
 $r = new Restler();

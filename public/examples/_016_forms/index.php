@@ -73,8 +73,7 @@ See bootstrap3.blade.php and foundation5.blade.php
 *[bootstrap3.blade.php]: _016_forms/views/base/bootstrap3.blade.php
 *[foundation5.blade.php]: _016_forms/views/base/foundation5.blade.php
  */
-$loader = include '../../../vendor/autoload.php';
-$loader->setUseIncludePath(true);
+include '../../../restler.php';
 
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
@@ -86,9 +85,10 @@ HtmlFormat::$viewPath = __DIR__ . '/views';
 HtmlFormat::$template = 'blade';
 
 $themes = array(
-    'amelia', 'cerulean', 'cosmo',
+    'cerulean', 'cosmo',
     'cyborg', 'darkly', 'flatly',
-    'journal', 'lumen', 'readable',
+    'journal', 'lumen', 'paper',
+    'readable', 'sandstone',
     'simplex', 'slate', 'spacelab',
     'superhero', 'united', 'yeti',
 );

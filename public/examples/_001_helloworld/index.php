@@ -12,7 +12,7 @@
  the generated routes are lesser with Restler 3.
  Look at [Routes](../_006_routing/readme.html) example to understand.
  */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

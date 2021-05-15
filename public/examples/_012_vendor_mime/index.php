@@ -117,7 +117,7 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 ```
 
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Restler;
 

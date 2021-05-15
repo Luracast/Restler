@@ -6,7 +6,7 @@
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 
-require_once "../../../vendor/restler.php";
+require_once "../../../restler.php";
 
 Defaults::$crossOriginResourceSharing = true;
 

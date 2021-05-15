@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Format;
 
 use Exception;
@@ -10,7 +11,6 @@ use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 use Illuminate\View\View;
-use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\Obj;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\RestException;
@@ -79,6 +79,9 @@ class HtmlFormat extends Format
         }
         if (!static::$viewPath) {
             $array = explode('vendor', __DIR__, 2);
+            if (1 === count($array)) {
+                $array = explode('src', __DIR__, 2);
+            }
             static::$viewPath = $array[0] . 'views';
         }
     }
@@ -109,7 +112,7 @@ class HtmlFormat extends Format
             }
             return false;
         }, true, true);
-        
+
         $viewFinder = new FileViewFinder($files, array(static::$viewPath));
         $factory = new Factory($resolver, $viewFinder, new Dispatcher());
         $path = $viewFinder->find(self::$view);
@@ -169,6 +172,22 @@ class HtmlFormat extends Format
         return $template->render($data);
     }
 
+    public static function getViewFile($fullPath = false, $includeExtension = true)
+    {
+        $v = $fullPath ? static::$viewPath . '/' : '';
+        $v .= static::$view;
+        if ($includeExtension)
+            $v .= '.' . static::getViewExtension();
+        return $v;
+    }
+
+    public static function getViewExtension()
+    {
+        return isset(static::$customTemplateExtensions[static::$template])
+            ? static::$customTemplateExtensions[static::$template]
+            : static::$template;
+    }
+
     public static function handlebar(array $data, $debug = true)
     {
         return static::mustache($data, $debug);
@@ -186,17 +205,17 @@ class HtmlFormat extends Format
             $data['nav'] = array_values(Nav::get());
         $options = array(
             'loader' => new \Mustache_Loader_FilesystemLoader(
-                    static::$viewPath,
-                    array('extension' => static::getViewExtension())
-                ),
+                static::$viewPath,
+                array('extension' => static::getViewExtension())
+            ),
             'helpers' => array(
                 'form' => function ($text, \Mustache_LambdaHelper $m) {
-                        $params = explode(',', $m->render($text));
-                        return call_user_func_array(
-                            'Luracast\Restler\UI\Forms::get',
-                            $params
-                        );
-                    },
+                    $params = explode(',', $m->render($text));
+                    return call_user_func_array(
+                        'Luracast\Restler\UI\Forms::get',
+                        $params
+                    );
+                },
             )
         );
         if (!$debug)
@@ -286,15 +305,15 @@ class HtmlFormat extends Format
     /**
      * Encode the given data in the format
      *
-     * @param array   $data                resulting data that needs to
+     * @param array $data resulting data that needs to
      *                                     be encoded in the given format
-     * @param boolean $humanReadable       set to TRUE when restler
+     * @param boolean $humanReadable set to TRUE when restler
      *                                     is not running in production mode.
      *                                     Formatter has to make the encoded
      *                                     output more human readable
      *
-     * @throws \Exception
      * @return string encoded string
+     * @throws \Exception
      */
     public function encode($data, $humanReadable = false)
     {
@@ -382,22 +401,6 @@ class HtmlFormat extends Format
             $this->reset();
             throw $e;
         }
-    }
-
-    public static function getViewExtension()
-    {
-        return isset(static::$customTemplateExtensions[static::$template])
-            ? static::$customTemplateExtensions[static::$template]
-            : static::$template;
-    }
-
-    public static function getViewFile($fullPath = false, $includeExtension = true)
-    {
-        $v = $fullPath ? static::$viewPath . '/' : '';
-        $v .= static::$view;
-        if ($includeExtension)
-            $v .= '.' . static::getViewExtension();
-        return $v;
     }
 
     private function reset()

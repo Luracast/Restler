@@ -137,6 +137,6 @@ bin/behat  features/examples/_002_minimal.feature
 
 *[index.php]: _002_minimal/index.php
 *[Math.php]: _002_minimal/Math.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

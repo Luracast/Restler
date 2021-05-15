@@ -101,7 +101,7 @@ Example 4: GET v2/bmi?height=162cm returns
 Content:
 
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Restler;
 

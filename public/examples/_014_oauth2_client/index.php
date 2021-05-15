@@ -79,7 +79,7 @@ the [OAuth 2.0 Server ](http://bshaffer.github.io/oauth2-server-php-docs/) modul
 
 For more information on how to start using this functionality with Restler be sure to look at the [OAuth Server example](../_015_oauth2_server/index.php).
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 use Auth\Client;
 

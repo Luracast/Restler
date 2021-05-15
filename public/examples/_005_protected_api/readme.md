@@ -75,6 +75,6 @@ GET [secured?key=rEsTlEr2](index.php/secured?key=rEsTlEr2)
 *[Simple.php]: _005_protected_api/Simple.php
 *[Secured.php]: _005_protected_api/Secured.php
 *[SimpleAuth.php]: _005_protected_api/SimpleAuth.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

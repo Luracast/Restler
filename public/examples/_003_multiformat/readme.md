@@ -134,7 +134,7 @@ bin/behat  features/examples/_003_multiformat.feature
 
 *[index.php]: _003_multiformat/index.php
 *[BMI.php]: _003_multiformat/BMI.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 *[XmlFormat.php]: ../../vendor/Luracast/Restler/Format/XmlFormat.php
 

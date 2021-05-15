@@ -40,7 +40,7 @@ use Luracast\Restler\Defaults;
 use Luracast\Restler\Filter\RateLimit;
 use Luracast\Restler\Restler;
 
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 //reuse the SessionDB from CRUD Example
 require_once '../_007_crud/DB/Session.php';
 

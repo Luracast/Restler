@@ -66,7 +66,7 @@ same resource and url, you can try the json version of the tasks api using the
 API Explorer [here](explorer/index.html)
 
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Format\HtmlFormat;
 

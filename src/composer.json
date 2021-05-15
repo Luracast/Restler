@@ -3,7 +3,7 @@
     "description":"Just the Restler Framework without the tests and examples",
     "type":"library",
     "keywords":["server","api","framework","REST"],
-    "homepage":"http://luracast.com/products/restler/",
+    "homepage":"https://luracast.com/products/restler/",
     "license":"LGPL-2.1",
     "authors":[
         {
@@ -33,7 +33,6 @@
         "php":">=5.3.0"
     },
     "require-dev":{
-        "luracast/explorer":"*",
         "rodneyrehm/plist":"dev-master",
         "zendframework/zendamf":"dev-master",
         "symfony/yaml":"*",
@@ -45,17 +44,6 @@
         {
             "type":"vcs",
             "url":"https://github.com/zendframework/ZendAmf.git"
-        },
-        {
-            "type":"package",
-            "package":{
-                "name":"luracast/explorer",
-                "version":"v3.0.0",
-                "dist":{
-                    "type":"zip",
-                    "url":"https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
-                }
-            }
         }
     ],
     "autoload":{
@@ -65,6 +53,6 @@
     },
     "target-dir": "Luracast/Restler",
     "replace": {
-        "luracast/restler":"3.*"
+        "../vendor/Luracast/Restler":"3.*"
     }
 }

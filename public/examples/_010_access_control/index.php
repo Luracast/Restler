@@ -17,7 +17,7 @@ When the `api_key` is
 
 Try it out yourself [here](explorer/index.html#!/v1)
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

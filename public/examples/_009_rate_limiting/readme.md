@@ -90,7 +90,7 @@ bin/behat  features/examples/_009_rate_limiting.feature
 *[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[Author.php]: _009_rate_limiting/Author.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 
 *[Author.php]: _009_rate_limiting/Author.php

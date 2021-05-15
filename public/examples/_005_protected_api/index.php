@@ -35,7 +35,7 @@ Example 1: GET restricted returns
  Example 3: GET secured?key=rEsTlEr2 returns "protected class"
 */
 
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

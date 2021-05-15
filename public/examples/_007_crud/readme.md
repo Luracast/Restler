@@ -24,7 +24,7 @@ the class level similar to *index*
 For simplicity and making it work out of the box this example is using
  a session based fake database, thus depending on a client that
  supports PHP Session Cookies. You may use
- [REST Console](https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#)
+ [REST Console](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo)
  an extension for Chrome or
  [RESTClient](https://addons.mozilla.org/en-US/firefox/addon/restclient/)
  a firefox extension.
@@ -248,6 +248,6 @@ bin/behat  features/examples/_007_crud.feature
 *[index.php]: _007_crud/index.php
 *[Authors.php]: _007_crud/Authors.php
 *[Session.php]: _007_crud/DB/Session.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

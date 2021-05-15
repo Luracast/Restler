@@ -25,7 +25,7 @@ the class level similar to *index*
 For simplicity and making it work out of the box this example is using
  a session based fake database, thus depending on a client that
  supports PHP Session Cookies. You may use
- [REST Console](https://chrome.google.com/webstore/detail/faceofpmfclkengnkgkgjkcibdbhemoc#)
+ [REST Console](https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo)
  an extension for Chrome or
  [RESTClient](https://addons.mozilla.org/en-US/firefox/addon/restclient/)
  a firefox extension.
@@ -162,7 +162,7 @@ Content-Type: application/json
 *[SerializedFile.php]: _007_crud/DB/SerializedFile.php
 
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();
