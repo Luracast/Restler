@@ -1,6 +1,6 @@
 ## Error Response 
 
- This example requires `PHP >= 5.3` and taggeed under `exception` `http status` `validation`
+ This example requires `PHP >= 5.3` and tagged under `exception` `http status` `validation`
 
 
 API methods can make use of RestException class to provide
@@ -65,5 +65,5 @@ GET [currency/format?number=55](index.php/currency/format?number=55)
 *[index.php]: _004_error_response/index.php
 *[Currency.php]: _004_error_response/Currency.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

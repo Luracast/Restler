@@ -1,6 +1,6 @@
 ## Multi-format 
 
- This example requires `PHP >= 5.3` and taggeed under `json` `xml`
+ This example requires `PHP >= 5.3` and tagged under `json` `xml`
 
 
 This BMI calculator service shows how you can serve data in different
@@ -135,6 +135,6 @@ bin/behat  features/examples/_003_multiformat.feature
 *[index.php]: _003_multiformat/index.php
 *[BMI.php]: _003_multiformat/BMI.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
-*[XmlFormat.php]: ../../vendor/Luracast/Restler/Format/XmlFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
+*[XmlFormat.php]: ../../src/Format/XmlFormat.php
 

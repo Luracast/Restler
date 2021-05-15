@@ -13,7 +13,7 @@
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/hacks.css" />
-
+ 
 <script type="text/javascript" src="../resources/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript" src="../resources/facebox.js"></script>
@@ -120,7 +120,7 @@
             <a href="../index.html">Examples</a>
         </h3>
         <ul>
-
+            
             <li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
             <li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
             <li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
@@ -250,7 +250,7 @@
 
 <ul>
 <li>twig template library</li>
-<li>bshaffer's oauth2 libaray</li>
+<li>bshaffer's oauth2 library</li>
 </ul></li>
 <li>make sure <code>public/examples/_015_oauth2_server/cache</code> has write permissions to create the compiled template files</li>
 <li>make sure <code>public/examples/_015_oauth2_server/Auth/db</code> has write permission, this is where <code>oauth.sqlite</code> file be
@@ -265,20 +265,20 @@ created at run time</li>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
-
+  
   <ul>
   <li><abbr title="_015_oauth2_server/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_015_oauth2_server/Auth/Server.php">Server.php</abbr>      (auth)</li>
   <li><abbr title="../../restler.php">restler.php</abbr>      (framework)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
+  <li><abbr title="../../src/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 
 <p>This API Server exposes the following URIs</p>
 
 <pre><code>GET  access    ⇠ Auth\Server::access()
-POST authorize ⇠ Auth\Server::postAuthorize()
 GET  authorize ⇠ Auth\Server::authorize()
+POST authorize ⇠ Auth\Server::postAuthorize()
 POST grant     ⇠ Auth\Server::postGrant()
 </code></pre>
 
@@ -313,7 +313,7 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:</p>
 <ul>
 <li><strong>Implicit</strong>: typically for browser based or mobile apps</li>
 <li><strong>Authorization Code</strong>: typically for apps running on a server</li>
-<li><strong>Password Credentials</strong>: typically used for apps that are owned by the same organisation as the OAuth service
+<li><strong>Password Credentials</strong>: typically used for apps that are owned by the same organization as the OAuth service
 provider (aka, the Twitter client, etc.)</li>
 <li><strong>Client Credentials</strong>: used by client's who want to update meta information about their site (URL's, logo's, etc.)</li>
 <li><strong>JWT Auth Grant</strong>: the client submits a <em>JSON Web Token</em> in a request to the token endpoint. An access token

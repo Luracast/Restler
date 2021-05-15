@@ -1,6 +1,6 @@
 ## Vendor MIME 
 
- This example requires `PHP >= 5.3` and taggeed under `versioning` `mime` `mediatype` `vendor` `custom`
+ This example requires `PHP >= 5.3` and tagged under `versioning` `mime` `mediatype` `vendor` `custom`
 
 
 This example shows how to use vendor specific media types for versioning
@@ -136,7 +136,7 @@ Content-Type: application/vnd.SomeVendor-v2+json; charset=utf-8
 *[index.php]: _012_vendor_mime/index.php
 *[v1\BMI.php]: _012_vendor_mime/SomeVendor/v1/BMI.php
 *[v2\BMI.php]: _012_vendor_mime/SomeVendor/v2/BMI.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

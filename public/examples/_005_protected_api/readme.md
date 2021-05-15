@@ -1,6 +1,6 @@
 ## Protected API 
 
- This example requires `PHP >= 5.3` and taggeed under `authentication` `authorization`
+ This example requires `PHP >= 5.3` and tagged under `authentication` `authorization`
 
 
 Not all the API exposed needs to be public, we need to protect
@@ -76,5 +76,5 @@ GET [secured?key=rEsTlEr2](index.php/secured?key=rEsTlEr2)
 *[Secured.php]: _005_protected_api/Secured.php
 *[SimpleAuth.php]: _005_protected_api/SimpleAuth.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

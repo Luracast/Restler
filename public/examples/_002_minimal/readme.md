@@ -1,6 +1,6 @@
 ## Minimal Example 
 
- This example requires `PHP >= 5.3` and taggeed under `basic` `validation` `http status`
+ This example requires `PHP >= 5.3` and tagged under `basic` `validation` `http status`
 
 
 Shows the bare minimum code needed to get your RESTful api server
@@ -138,5 +138,5 @@ bin/behat  features/examples/_002_minimal.feature
 *[index.php]: _002_minimal/index.php
 *[Math.php]: _002_minimal/Math.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

@@ -13,7 +13,7 @@
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/hacks.css" />
-
+ 
 <script type="text/javascript" src="../resources/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript" src="../resources/facebox.js"></script>
@@ -120,7 +120,7 @@
             <a href="../index.html">Examples</a>
         </h3>
         <ul>
-
+            
             <li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
             <li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
             <li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
@@ -261,12 +261,12 @@
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
-
+  
   <ul>
   <li><abbr title="_014_oauth2_client/index.php">index.php</abbr>      (gateway)</li>
   <li><abbr title="_014_oauth2_client/Auth/Client.php">Client.php</abbr>      (api)</li>
   <li><abbr title="../../restler.php">restler.php</abbr>      (framework)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
+  <li><abbr title="../../src/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 
@@ -281,14 +281,14 @@ be integrated with the popular <a href="http://bshaffer.github.io/oauth2-server-
 library. This section -- the "client" -- is about asking for access rights and keeping a record of the
 important state mechanisms required to communicate with Restler once access has been granted.</p>
 
-<p>If you're not familiar with OAuth, it's worth familiarizing yourself with the
+<p>If you're not familiar with OAuth, it's worth familiarizing yourself with the 
 basics and in particular understanding the various workflow that OAuth 2.0 offers.
 The following two links may help:</p>
 
 <ul>
-<li><a href="http://tools.ietf.org/html/draft-ietf-oauth-v2" target="_blank">Official OAuth Specification</a>:
+<li><a href="http://tools.ietf.org/html/draft-ietf-oauth-v2" target="_blank">Official OAuth Specification</a>: 
 a bit dry but if you want the "facts" they're there.</li>
-<li><a href="http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified" target="_blank">OAuth2 Simplified</a>:
+<li><a href="http://aaronparecki.com/articles/2012/07/29/1/oauth2-simplified" target="_blank">OAuth2 Simplified</a>: 
 a nicely summarized overview of how to think through the key aspects of OAuth 2.0</li>
 </ul>
 
@@ -315,21 +315,21 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:</p>
 
 <p>In this example the <code>OAuth server</code> is setup to manage the <code>authorization code</code> grant. Holistically
 there really two parts to the process. First, the client must get authorization from the server and then
-it will use that authorization (in the form of an "access token") to authenticate with the REST API from
+it will use that authorization (in the form of an "access token") to authenticate with the REST API from 
 that point forward. The two flows are illustrated below:</p>
 
 <p><a href="../resources/auth-code-workflow.png" target="_blank"><img src="../resources/auth-code-workflow-thumb.png" alt="Authorization Code Flow" /></a></p>
 
 <p><a id="authorization" class="anchor"></a><h3>Authorization</h3></p>
 
-<p>The client apps role in authentication is two-fold. First it must direct the user to the server to start
+<p>The client apps role in authentication is two-fold. First it must direct the user to the server to start 
 the process. And second, when the authorization has completed the client application's <em>callback</em> function will be executed
 and it will be responsible for saving the authorization information.</p>
 
 <p><a id="authentication" class="anchor"></a><h3>Authentication</h3></p>
 
-<p>Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's
-authorization status in each RESTful API request. This is achieved by the client application adding a <em>query parameter</em> of
+<p>Once the proper authorization has been attained by the client app, it's sole responsibility is to pass along it's 
+authorization status in each RESTful API request. This is achieved by the client application adding a <em>query parameter</em> of 
 'code' set to the access token that the OAuth Server provided to the application in the authorization step.</p>
 
 <blockquote>

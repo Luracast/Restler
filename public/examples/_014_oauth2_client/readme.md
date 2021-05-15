@@ -1,6 +1,6 @@
 ## OAuth2 Client 
 
- This example requires `PHP >= 5.3.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.3.9` and tagged under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 ### Setting up the client example
@@ -94,5 +94,5 @@ For more information on how to start using this functionality with Restler be su
 *[index.php]: _014_oauth2_client/index.php
 *[Client.php]: _014_oauth2_client/Auth/Client.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

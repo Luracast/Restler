@@ -1,6 +1,6 @@
 ## Rate Limiting 
 
- This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `filter` `throttle` `rate-limiting`
+ This example requires `PHP >= 5.3` and tagged under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `filter` `throttle` `rate-limiting`
 
 
 How to Rate Limit API access using a Filter class that implements
@@ -45,10 +45,10 @@ This API Server exposes the following URIs
 
     GET    authors                ⇠ ratelimited\Authors::index()
     POST   authors                ⇠ ratelimited\Authors::post()
-    DELETE authors/{id}           ⇠ ratelimited\Authors::delete()
-    PATCH  authors/{id}           ⇠ ratelimited\Authors::patch()
-    PUT    authors/{id}           ⇠ ratelimited\Authors::put()
     GET    authors/{id}           ⇠ ratelimited\Authors::get()
+    PUT    authors/{id}           ⇠ ratelimited\Authors::put()
+    PATCH  authors/{id}           ⇠ ratelimited\Authors::patch()
+    DELETE authors/{id}           ⇠ ratelimited\Authors::delete()
     GET    resources              ⇠ Luracast\Restler\Resources::index()
     GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
@@ -84,13 +84,13 @@ bin/behat  features/examples/_009_rate_limiting.feature
 
 
 *[index.php]: _009_rate_limiting/index.php
-*[RateLimit.php]: ../../vendor/Luracast/Restler/Filter/RateLimit.php
+*[RateLimit.php]: ../../src/Filter/RateLimit.php
 *[SessionCache.php]: _009_rate_limiting/SessionCache.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[Author.php]: _009_rate_limiting/Author.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 
 *[Author.php]: _009_rate_limiting/Author.php

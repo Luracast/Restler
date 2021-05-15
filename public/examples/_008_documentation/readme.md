@@ -1,6 +1,6 @@
 ## Documentation 
 
- This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
+ This example requires `PHP >= 5.3` and tagged under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing` `doc` `production` `debug`
 
 
 How to document and let your users explore your API.
@@ -38,10 +38,10 @@ This API Server exposes the following URIs
 
     GET    authors                ⇠ improved\Authors::index()
     POST   authors                ⇠ improved\Authors::post()
-    DELETE authors/{id}           ⇠ improved\Authors::delete()
-    PATCH  authors/{id}           ⇠ improved\Authors::patch()
-    PUT    authors/{id}           ⇠ improved\Authors::put()
     GET    authors/{id}           ⇠ improved\Authors::get()
+    PUT    authors/{id}           ⇠ improved\Authors::put()
+    PATCH  authors/{id}           ⇠ improved\Authors::patch()
+    DELETE authors/{id}           ⇠ improved\Authors::delete()
     GET    resources              ⇠ Luracast\Restler\Resources::index()
     GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
@@ -55,7 +55,7 @@ This API Server exposes the following URIs
 
 *[index.php]: _008_documentation/index.php
 *[Authors.php]: _008_documentation/improved/Authors.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

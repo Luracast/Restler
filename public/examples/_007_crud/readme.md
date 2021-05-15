@@ -1,6 +1,6 @@
 ## CRUD 
 
- This example requires `PHP >= 5.3` and taggeed under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
+ This example requires `PHP >= 5.3` and tagged under `create` `retrieve` `read` `update` `delete` `post` `get` `put` `routing`
 
 
 Create, Retrieve, Update and Delete using
@@ -63,9 +63,9 @@ This API Server exposes the following URIs
 
     GET    authors      ⇠ Authors::index()
     POST   authors      ⇠ Authors::post()
-    DELETE authors/{id} ⇠ Authors::delete()
     GET    authors/{id} ⇠ Authors::get()
     PUT    authors/{id} ⇠ Authors::put()
+    DELETE authors/{id} ⇠ Authors::delete()
 
 
 *[MySQL.php]: _007_crud/DB/PDO/MySQL.php
@@ -249,5 +249,5 @@ bin/behat  features/examples/_007_crud.feature
 *[Authors.php]: _007_crud/Authors.php
 *[Session.php]: _007_crud/DB/Session.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

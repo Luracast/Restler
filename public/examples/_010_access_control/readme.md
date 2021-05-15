@@ -1,6 +1,6 @@
 ## Access Control 
 
- This example requires `PHP >= 5.3` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.3` and tagged under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 This example shows how you can extend the authentication system to create
@@ -42,8 +42,8 @@ This API Server exposes the following URIs
 
 *[index.php]: _010_access_control/index.php
 *[Access.php]: _010_access_control/Access.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

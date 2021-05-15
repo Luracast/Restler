@@ -1,6 +1,6 @@
 ## Html Format 
 
- This example requires `PHP >= 5.3` and taggeed under `view` `html` `twig` `mustache` `handlebar` `php` `template`
+ This example requires `PHP >= 5.3` and tagged under `view` `html` `twig` `mustache` `handlebar` `php` `template`
 
 
 A special format that lets us render a template with the api result
@@ -51,10 +51,10 @@ This API Server exposes the following URIs
     GET    resources              ⇠ Luracast\Restler\Resources::index()
     GET    resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
     GET    resources/{id}         ⇠ Luracast\Restler\Resources::get()
-    POST   tasks                  ⇠ Tasks::post()
     GET    tasks                  ⇠ Tasks::index()
-    PATCH  tasks/{id}             ⇠ Tasks::patch()
+    POST   tasks                  ⇠ Tasks::post()
     GET    tasks/{id}             ⇠ Tasks::get()
+    PATCH  tasks/{id}             ⇠ Tasks::patch()
     DELETE tasks/{id}             ⇠ Tasks::delete()
 
 
@@ -91,8 +91,8 @@ API Explorer [here](explorer/index.html)
 *[index.php]: _013_html/index.php
 *[Tasks.php]: _013_html/Tasks.php
 *[Task.php]: _013_html/DB/Task.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
-*[HtmlFormat.php]: ../../vendor/Luracast/Restler/Format/HtmlFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
+*[HtmlFormat.php]: ../../src/Format/HtmlFormat.php
 

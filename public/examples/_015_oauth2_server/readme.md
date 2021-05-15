@@ -1,6 +1,6 @@
 ## OAuth2 Server 
 
- This example requires `PHP >= 5.3.9` and taggeed under `access-control` `acl` `secure` `authentication` `authorization`
+ This example requires `PHP >= 5.3.9` and tagged under `access-control` `acl` `secure` `authentication` `authorization`
 
 
 ### Setting up the server example
@@ -9,7 +9,7 @@ In order to run this example on your localhost do the following
 
 1. run composer update to make sure you have
     - twig template library
-    - bshaffer's oauth2 libaray
+    - bshaffer's oauth2 library
 2. make sure `public/examples/_015_oauth2_server/cache` has write permissions to create the compiled template files
 3. make sure `public/examples/_015_oauth2_server/Auth/db` has write permission, this is where `oauth.sqlite` file be
    created at run time
@@ -30,8 +30,8 @@ To look at the server start from the client app [here](../_014_oauth2_client)
 This API Server exposes the following URIs
 
     GET  access    ⇠ Auth\Server::access()
-    POST authorize ⇠ Auth\Server::postAuthorize()
     GET  authorize ⇠ Auth\Server::authorize()
+    POST authorize ⇠ Auth\Server::postAuthorize()
     POST grant     ⇠ Auth\Server::postGrant()
 
 
@@ -61,7 +61,7 @@ The standard grant-types that OAuth 2.0 Server  supports out-of-the-box are:
 
 - **Implicit**: typically for browser based or mobile apps
 - **Authorization Code**: typically for apps running on a server
-- **Password Credentials**: typically used for apps that are owned by the same organisation as the OAuth service
+- **Password Credentials**: typically used for apps that are owned by the same organization as the OAuth service
   provider (aka, the Twitter client, etc.)
 - **Client Credentials**: used by client's who want to update meta information about their site (URL's, logo's, etc.)
 - **JWT Auth Grant**: the client submits a *JSON Web Token* in a request to the token endpoint. An access token
@@ -147,5 +147,5 @@ Restler customers who want to offer or connect-into the world of OAuth2.
 *[index.php]: _015_oauth2_server/index.php
 *[Server.php]: _015_oauth2_server/Auth/Server.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

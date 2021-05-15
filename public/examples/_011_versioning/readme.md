@@ -1,6 +1,6 @@
 ## Versioning 
 
- This example requires `PHP >= 5.3` and taggeed under `versioning`
+ This example requires `PHP >= 5.3` and tagged under `versioning`
 
 
 This example shows how to version your API using namespace. Restler supports
@@ -142,7 +142,7 @@ GET [v2/bmi?height=162cm](index.php/v2/bmi?height=162cm)
 *[index.php]: _011_versioning/index.php
 *[v1\BMI.php]: _011_versioning/v1/BMI.php
 *[v2\BMI.php]: _011_versioning/v2/BMI.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 
