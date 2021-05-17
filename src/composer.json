@@ -33,6 +33,7 @@
         "php":">=5.3.0"
     },
     "require-dev":{
+        "luracast/explorer":"*",
         "rodneyrehm/plist":"dev-master",
         "zendframework/zendamf":"dev-master",
         "symfony/yaml":"*",
@@ -43,7 +44,18 @@
     "repositories":[
         {
             "type":"vcs",
-            "url":"https://github.com/zendframework/ZendAmf.git"
+            "url":"https://github.com/zendframework/ZendAmf.git",
+        },
+        {
+            "type":"package",
+            "package":{
+                "name":"luracast/explorer",
+                "version":"v3.0.0",
+                "dist":{
+                    "type":"zip",
+                    "url":"https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
+                }
+            }
         }
     ],
     "autoload":{
@@ -51,7 +63,6 @@
             "Luracast\\Restler":""
         }
     },
-    "target-dir": "Luracast/Restler",
     "replace": {
         "../vendor/Luracast/Restler":"3.*"
     }

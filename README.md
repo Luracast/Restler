@@ -1,4 +1,4 @@
-![Restler](public/examples/resources/Restler.png) Luracast Restler
+![Restler](public/examples/resources/restler.svg) Luracast Restler
 ==================================================================
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Luracast/Restler)
 [![Latest Stable Version](https://poser.pugx.org/luracast/restler/v/stable.png)](https://packagist.org/packages/luracast/restler) 
@@ -6,7 +6,9 @@
 [![Latest Unstable Version](https://poser.pugx.org/luracast/restler/v/unstable.png)](https://packagist.org/packages/luracast/restler) 
 [![License](https://poser.pugx.org/luracast/restler/license.png)](https://packagist.org/packages/luracast/restler)
 
-### Version 3.0 Release Candidate 5
+### Version 4
+
+> upgraded from version 3 RC5 for latest PHP support
 
 Restler is a simple and effective multi-format Web API Server written in PHP.
 
@@ -38,7 +40,7 @@ Features
 * Supports both RESTful and Pragmatic REST API Design
 * Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource
   Sharing and JSONP
-* Two way format(media type) conversion both send and receive
+* Two-way format(media type) conversion both send and receive
     * Pluggable content Formatter framework and api
     * Comes with JSON, XML, Yaml, Amf, and Plist(both XML and Binary) format
       support
@@ -54,13 +56,9 @@ Features
         * URL part to Method parameter mapping
         * Query parameters to Method parameter mapping
         * Request body to Method parameter mapping
-        * `[planned]` Header to Method parameter mapping
 * Cache built-in
     * Client Side Caching support
     * Proxy Caching support
-    * Server Side Caching
-        * `[planned]` ETag, If-None-Match support
-        * `[planned]` Last-Modified, If-Modified-Since support
 * API Features
     * Always supports URLEncoded format for simplified input (POST vars)
     * Automatic parameter validation and type conversion
@@ -68,7 +66,6 @@ Features
     * API documentation and discovery using [Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer)
     * Throttling and Performance tuning
 * Management
-    * `[planned]` Unit Testing using [PHPUnit](https://github.com/sebastianbergmann/phpunit/)
     * Behavior Driven API testing using [Behat](http://behat.org/) and [Guzzle](https://github.com/guzzle/guzzle)
     * Command line Project Management using [Respect/Foundation](https://github.com/Respect/Foundation)
     * Dependency Management using [Composer](http://getcomposer.org/)
@@ -92,7 +89,7 @@ Git Repository and the Branches
 Installation
 ------------
 
-Make sure PHP 5.3.2 or above (at least 5.3.4 recommended to avoid potential bugs)
+Make sure PHP 5.3.2 or above (at least 5.3.4 recommended avoiding potential bugs)
 is available on your server
 
 ### 1. Install Composer
@@ -142,7 +139,7 @@ If you want to update the Restler framework, you may issue the
 ### 3. Configure
 
 Ideally public folder should be mapped as your web root, It is optional, but
-recommended to avoid exposing unneeded files and folders.
+recommended avoiding exposing unneeded files and folders.
 
 ### 4. Try it out
 
@@ -175,7 +172,7 @@ Feature: Testing CRUD Example
 
 ```
 
-All set, Happy Restling! :)
+All set, Happy RESTling! :)
 
 Quick Start Guide
 -----------------
@@ -340,19 +337,25 @@ $r = new Restler(true); //turn on production mode by passing true.
 
 Change Log
 ----------
+### Restler 4
+
+ * Support for PHP 8
+ * Corrects the source path to be outside the vendor directory
+
 ### Restler 3.0 RC5
 
- * Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.
+ * Support for PHP 7.4 added
+ * Scope (a dependency injection container) is added. It's register method allows adding api classes that has some dependencies.
  * Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.
- * HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity
+ * HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarity
  * HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.
- * Tag, a utility class for generating html tags in object oriented way.
- * Emmet class that extends a subset of emmet to create a a template engine.
+ * Tag, a utility class for generating html tags in object-oriented way.
+ * Emmet class that extends a subset of emmet to create a template engine.
  * Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.
- * Validator improved to allow suppressing validation errors from throwing exceptions immediatly, so that API call can reach the API method
+ * Validator improved to allow suppressing validation errors from throwing exceptions immediately, so that API call can reach the API method
  * Validator improved to be form validation friendly.
  * Nav class creating html navigation interface.
- * OAuth examles updgrated to use version 1.0 of OAuth2 library.
+ * OAuth examples upgraded to use version 1.0 of OAuth2 library.
  * Many bug fixes and improvements.
 
 
@@ -485,5 +488,5 @@ optimized for performance. Here are some of the major changes and improvements
 * If we do not specify the second parameter for
   `$restler->addAPIClass` it will be mapped to the class name instead of mapping
    it to the root
-* Restler 2 is written for PHP 5.3 and above but it make use of compat.php and
+* Restler 2 is written for PHP 5.3 and above, but it makes use of compat.php and
   work on any version of PHP starting from PHP 5.0

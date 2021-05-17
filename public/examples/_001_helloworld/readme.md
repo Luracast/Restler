@@ -5,7 +5,7 @@
 <tag>basic`
 
 
-Basic hello world example to get started with Restler 3.
+Basic hello world example to get started with Restler 4.
 
 > This API Server is made using the following php files/folders
 > 
@@ -21,7 +21,7 @@ This API Server exposes the following URIs
 
 
 > **Note:-** If you have used Restler 2 before, you will wonder why
- the generated routes are lesser with Restler 3.
+ the generated routes are lesser with Restler 4.
  Look at [Routes](../_006_routing/readme.html) example to understand.
 
 

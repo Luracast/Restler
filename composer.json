@@ -36,6 +36,7 @@
         "php":">=5.3.0"
     },
     "require-dev":{
+        "luracast/explorer":"*",
         "guzzle/guzzle":"~3.1.1",
         "behat/behat":"2.5.*@stable",
         "rodneyrehm/plist":"dev-master",
@@ -49,7 +50,18 @@
     "repositories":[
         {
             "type":"vcs",
-            "url":"https://github.com/zendframework/ZendAmf.git"
+            "url":"https://github.com/zendframework/ZendAmf.git",
+        },
+        {
+            "type":"package",
+            "package":{
+                "name":"luracast/explorer",
+                "version":"v3.0.0",
+                "dist":{
+                    "type":"zip",
+                    "url":"https://github.com/Luracast/Restler-API-Explorer/zipball/v3.0.0"
+                }
+            }
         }
     ],
     "autoload":{

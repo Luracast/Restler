@@ -170,7 +170,7 @@ templates['main'] = template(function (Handlebars,depth0,helpers,partials,data) 
   foundHelper = helpers.basePath;
   if (foundHelper) { stack1 = foundHelper.call(depth0, {hash:{}}); }
   else { stack1 = depth0.basePath; stack1 = typeof stack1 === functionType ? stack1() : stack1; }
-  buffer += escapeExpression(stack1) + " - <span style=\"font-variant: small-caps\"> powered by <a target=\"_blank\" href=\"http://luracast.com/products/restler/\">Luracast Restler</a> and\n        <a target=\"_blank\" href=\"http://swagger.wordnik.com/\">Swagger UI</a></span>\n        </h4>\n    </div>\n</div>";
+  buffer += escapeExpression(stack1) + " - <span style=\"font-variant: small-caps\"> powered by <a target=\"_blank\" href=\"http://luracast.com/products/restler/\">Luracast Restler</a> and\n        <a target=\"_blank\" href=\"https://swagger.io/tools/swagger-ui//\">Swagger UI</a></span>\n        </h4>\n    </div>\n</div>";
   return buffer;});
 })();
 

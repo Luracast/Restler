@@ -34,6 +34,7 @@
  Example 3: GET currency/format?number=55 returns "USD55.00"
 */
 
+error_reporting(E_ALL ^ E_DEPRECATED); //turning of deprecated warning for money_format
 require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 

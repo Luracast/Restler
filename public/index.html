@@ -37,7 +37,7 @@ var _gaq = _gaq || [];
 </ul>
 </nav>
 <nav id="left">
-        <img src="examples/resources/Restler3.gif" width="126"
+        <img src="examples/resources/restler.svg" width="126"
             height="126" title="Luracast Restler " />
         <h3>
             <a href="index.html#luracast-restler">Quick Start</a>
@@ -93,9 +93,9 @@ var _gaq = _gaq || [];
     </nav>
 <article>
 
-<p><a id="luracast-restler" class="anchor"></a></p>
+<p><a id="restler--public-examples-resources-restler-svg--luracast-restler" class="anchor"></a></p>
 <h1>
-<img src="examples/resources/Restler.png" alt="Restler"> Luracast Restler</h1>
+<img src="examples/resources/restler.svg" alt="Restler"> Luracast Restler</h1>
 
 <p><a href="https://gitter.im/Luracast/Restler" target="_blank"><img src="https://badges.gitter.im/Join%20Chat.svg" alt="Gitter"></a>
 <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/stable.png" alt="Latest Stable Version"></a> 
@@ -103,8 +103,12 @@ var _gaq = _gaq || [];
 <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/v/unstable.png" alt="Latest Unstable Version"></a> 
 <a href="https://packagist.org/packages/luracast/restler" target="_blank"><img src="https://poser.pugx.org/luracast/restler/license.png" alt="License"></a></p>
 
-<p><a id="version-3-0-release-candidate-5" class="anchor"></a></p>
-<h3>Version 3.0 Release Candidate 5</h3>
+<p><a id="version-4" class="anchor"></a></p>
+<h3>Version 4</h3>
+
+<blockquote>
+  <p>upgraded from version 3 RC5 for latest PHP support</p>
+</blockquote>
 
 <p>Restler is a simple and effective multi-format Web API Server written in PHP.</p>
 
@@ -144,7 +148,7 @@ via header or request parameter (method)</li>
 <li>Supports both RESTful and Pragmatic REST API Design</li>
 <li>Clients can use X-HTTP-Method-Override header, supports Cross Origin Resource
 Sharing and JSONP</li>
-<li>Two way format(media type) conversion both send and receive
+<li>Two-way format(media type) conversion both send and receive
 
 <ul>
 <li>Pluggable content Formatter framework and api</li>
@@ -180,8 +184,6 @@ support</li>
 <li>URL part to Method parameter mapping</li>
 <li>Query parameters to Method parameter mapping</li>
 <li>Request body to Method parameter mapping</li>
-<li>
-<code>[planned]</code> Header to Method parameter mapping</li>
 </ul>
 </li>
 </ul>
@@ -191,15 +193,6 @@ support</li>
 <ul>
 <li>Client Side Caching support</li>
 <li>Proxy Caching support</li>
-<li>Server Side Caching
-
-<ul>
-<li>
-<code>[planned]</code> ETag, If-None-Match support</li>
-<li>
-<code>[planned]</code> Last-Modified, If-Modified-Since support</li>
-</ul>
-</li>
 </ul>
 </li>
 <li>API Features
@@ -216,9 +209,6 @@ support</li>
 <li>Management
 
 <ul>
-<li>
-<code>[planned]</code> Unit Testing using <a href="https://github.com/sebastianbergmann/phpunit/" target="_blank">PHPUnit</a>
-</li>
 <li>Behavior Driven API testing using <a href="http://behat.org/" target="_blank">Behat</a> and <a href="https://github.com/guzzle/guzzle" target="_blank">Guzzle</a>
 </li>
 <li>Command line Project Management using <a href="https://github.com/Respect/Foundation" target="_blank">Respect/Foundation</a>
@@ -246,7 +236,7 @@ for experimentation purpose to try out a feature</p></li>
 <p><a id="installation" class="anchor"></a></p>
 <h2>Installation</h2>
 
-<p>Make sure PHP 5.3.2 or above (at least 5.3.4 recommended to avoid potential bugs)
+<p>Make sure PHP 5.3.2 or above (at least 5.3.4 recommended avoiding potential bugs)
 is available on your server</p>
 
 <p><a id="1--install-composer" class="anchor"></a></p>
@@ -305,7 +295,7 @@ the installation.</p>
 <h3>3. Configure</h3>
 
 <p>Ideally public folder should be mapped as your web root, It is optional, but
-recommended to avoid exposing unneeded files and folders.</p>
+recommended avoiding exposing unneeded files and folders.</p>
 
 <p><a id="4--try-it-out" class="anchor"></a></p>
 <h3>4. Try it out</h3>
@@ -336,7 +326,7 @@ recommended to avoid exposing unneeded files and folders.</p>
 
 </code></pre>
 
-<p>All set, Happy Restling! :)</p>
+<p>All set, Happy RESTling! :)</p>
 
 <p><a id="quick-start-guide" class="anchor"></a></p>
 <h2>Quick Start Guide</h2>
@@ -507,21 +497,30 @@ $r = new Restler(true); //turn on production mode by passing true.
 <p><a id="change-log" class="anchor"></a></p>
 <h2>Change Log</h2>
 
+<p><a id="restler-4" class="anchor"></a></p>
+<h3>Restler 4</h3>
+
+<ul>
+<li>Support for PHP 8</li>
+<li>Corrects the source path to be outside the vendor directory</li>
+</ul>
+
 <p><a id="restler-3-0-rc5" class="anchor"></a></p>
 <h3>Restler 3.0 RC5</h3>
 
 <ul>
-<li>Scope (an dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
+<li>Support for PHP 7.4 added</li>
+<li>Scope (a dependency injection container) is added. It's register method allows adding api classes that has some dependencies.</li>
 <li>Improves HtmlFormat to support blade templates and makes it easily extendable to add your own templates.</li>
-<li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarrity</li>
+<li>HtmlFormat::$format has been renamed as HtmlFormat::$template for better clarity</li>
 <li>HtmlFormat now supports auto templating to load relevant template for an API method based on the mapped url.</li>
-<li>Tag, a utility class for generating html tags in object oriented way.</li>
-<li>Emmet class that extends a subset of emmet to create a a template engine.</li>
+<li>Tag, a utility class for generating html tags in object-oriented way.</li>
+<li>Emmet class that extends a subset of emmet to create a template engine.</li>
 <li>Forms class to auto generate forms for any API method prebuilt in HTML5, Twitter Bootstrap 3, Zurb Foundation formats.</li>
-<li>Validator improved to allow suppressing validation errors from throwing exceptions immediatly, so that API call can reach the API method</li>
+<li>Validator improved to allow suppressing validation errors from throwing exceptions immediately, so that API call can reach the API method</li>
 <li>Validator improved to be form validation friendly.</li>
 <li>Nav class creating html navigation interface.</li>
-<li>OAuth examles updgrated to use version 1.0 of OAuth2 library.</li>
+<li>OAuth examples upgraded to use version 1.0 of OAuth2 library.</li>
 <li>Many bug fixes and improvements.</li>
 </ul>
 
@@ -692,7 +691,7 @@ automatically to the method name (<code>gateway\classname\methodname\param1\...<
 <li>If we do not specify the second parameter for
 <code>$restler-&gt;addAPIClass</code> it will be mapped to the class name instead of mapping
 it to the root</li>
-<li>Restler 2 is written for PHP 5.3 and above but it make use of compat.php and
+<li>Restler 2 is written for PHP 5.3 and above, but it makes use of compat.php and
 work on any version of PHP starting from PHP 5.0</li>
 </ul>
 
