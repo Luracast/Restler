@@ -50,7 +50,7 @@
     "repositories":[
         {
             "type":"vcs",
-            "url":"https://github.com/zendframework/ZendAmf.git",
+            "url":"https://github.com/zendframework/ZendAmf.git"
         },
         {
             "type":"package",

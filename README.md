@@ -339,6 +339,7 @@ Change Log
 ----------
 ### Restler 4
 
+ * Semantic versioning to move forward
  * Support for PHP 8
  * Corrects the source path to be outside the vendor directory
 
