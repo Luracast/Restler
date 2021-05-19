@@ -278,7 +278,7 @@ with that name and install Restler.</p>
 <p>Once Composer is installed, download the <a href="" target="_blank">latest version</a> of the Restler
 framework and extract its contents into a directory on your server. Next, in the
 root of your Restler project, run the <code>php composer.phar install</code>
-(or <code>composer install</code>) command to install all of the framework's dependencies.
+(or <code>composer install</code>) command to install all the framework's dependencies.
 This process requires Git to be installed on the server to successfully complete
 the installation.</p>
 
@@ -307,7 +307,7 @@ recommended avoiding exposing unneeded files and folders.</p>
 
 <p>Update the base_url specified in <code>behat.yml</code> and then try the following command</p>
 
-<pre><code class="console"><br>bin/behat
+<pre><code class="console"><br>vendor/bin/behat
 
 </code></pre>
 
@@ -345,7 +345,7 @@ your application by following these steps</p>
 <p>Create the <strong>gateway (index.php)</strong> as follows</p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();
@@ -419,7 +419,7 @@ PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000</p>
 <p><strong>Fine tune to suit your needs</strong></p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 //set the defaults to match your requirements
@@ -462,7 +462,7 @@ root on your browser</p>
 <p>In order to protect your api, authenticate and allow valid users</p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 $r = new Restler();
 $r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
@@ -482,7 +482,7 @@ cache the routes (comment parsing happens only once instead of every api call),
 few other files and avoid giving out debug information</p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 
 //setup restler
@@ -682,7 +682,7 @@ filters to find out about user authentication status</li>
 <p><a id="restler-2-0" class="anchor"></a></p>
 <h3>Restler 2.0</h3>
 
-<p>Restler 2.0 is a major rewrite to use convention over configuration and it is
+<p>Restler 2.0 is a major rewrite to use convention over configuration, and it is
 optimized for performance. Here are some of the major changes and improvements</p>
 
 <ul>

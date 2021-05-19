@@ -124,7 +124,7 @@ php composer.phar create-project luracast/restler {projectName}
 Once Composer is installed, download the [latest version]() of the Restler
 framework and extract its contents into a directory on your server. Next, in the
 root of your Restler project, run the `php composer.phar install`
-(or `composer install`) command to install all of the framework's dependencies.
+(or `composer install`) command to install all the framework's dependencies.
 This process requires Git to be installed on the server to successfully complete
 the installation.
 
@@ -151,7 +151,7 @@ Update the base_url specified in `behat.yml` and then try the following command
 
 ```console
 
-bin/behat
+vendor/bin/behat
 
 ```
 
@@ -191,7 +191,7 @@ Create the **gateway (index.php)** as follows
 
 ```php
 <?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();
@@ -262,7 +262,7 @@ PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000
 
 ```php
 <?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 //set the defaults to match your requirements
@@ -302,7 +302,7 @@ In order to protect your api, authenticate and allow valid users
 
 ```php
 <?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 $r = new Restler();
 $r->addAPIClass('YourApiClassNameHere'); // repeat for more
@@ -322,7 +322,7 @@ few other files and avoid giving out debug information
 
 ```php
 <?php
-require_once '../../../vendor/restler.php';
+require_once '../restler.php';
 use Luracast\Restler\Restler;
 
 //setup restler
@@ -480,7 +480,7 @@ mind for
 
 ### Restler 2.0
 
-Restler 2.0 is a major rewrite to use convention over configuration and it is
+Restler 2.0 is a major rewrite to use convention over configuration, and it is
 optimized for performance. Here are some of the major changes and improvements
 
 * PHPDoc comments to map a method to URI are now optional.
