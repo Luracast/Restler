@@ -113,8 +113,15 @@ class Routes
             }
             foreach ($params as $param) {
                 $children = array();
-                $type =
-                    $param->isArray() ? 'array' : $param->getClass();
+                $type = version_compare(phpversion(), '7.0.0', '<') ?
+                    // PHP < 7.0
+                    ($param->isArray() ? 'array' : $param->getClass()) :
+                    // PHP >= 7.0
+                    ($param->getType() && $param->getType()->getName() === 'array' ? 'array' : (
+                    $param->getType() && !$param->getType()->isBuiltin()
+                        ? new ReflectionClass($param->getType()->getName())
+                        : null
+                    ));
                 $arguments[$param->getName()] = $position;
                 $defaults[$position] = $param->isDefaultValueAvailable() ?
                     $param->getDefaultValue() : null;

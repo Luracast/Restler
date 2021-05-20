@@ -47,7 +47,7 @@
 
                     <div class="dropdown-menu" style="padding: 15px; padding-bottom: 0px;">
                         <!-- Login form here -->
-                        {{ Forms::get('POST', 'users/signin') }}
+                        {!! Forms::get('POST', 'users/signin') !!}
                         <p>&nbsp;</p>
                     </div>
                 </li>
@@ -68,7 +68,7 @@
             </div>
             <div class="col-md-8">
                 <h3>Sign Up</h3>
-                {{ Forms::get('POST', 'users/signup') }}
+                {!! Forms::get('POST', 'users/signup') !!}
             </div>
         </div>
     </div>

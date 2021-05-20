@@ -2,7 +2,7 @@
 Feature: Minimum and Maximum with Fix
 
   Scenario Outline: Int
-    When I request "/tests/param/minmaxfix/int/<number>"
+    When I request "tests/param/minmaxfix/int/<number>"
     Then the response status code should be 200
     And the response is JSON
     And the type is "int"
@@ -22,7 +22,7 @@ Feature: Minimum and Maximum with Fix
   Scenario Outline: String
     Given that I send {"string":<string>}
     And the request is sent as JSON
-    When I request "/tests/param/minmaxfix/string"
+    When I request "tests/param/minmaxfix/string"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -43,7 +43,7 @@ Feature: Minimum and Maximum with Fix
   Scenario Outline: Array out of maximum range
     Given that I send <array>
     And the request is sent as JSON
-    When I request "/tests/param/minmaxfix/array"
+    When I request "tests/param/minmaxfix/array"
     Then the response status code should be 200
     And the response is JSON
     And the response equals <expected>
@@ -61,7 +61,7 @@ Feature: Minimum and Maximum with Fix
   Scenario Outline: Array short of minimum is not expected
     Given that I send <array>
     And the request is sent as JSON
-    When I request "/tests/param/minmaxfix/array"
+    When I request "tests/param/minmaxfix/array"
     Then the response status code should be 400
     And the response is JSON
 

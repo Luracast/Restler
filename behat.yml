@@ -1,5 +1,7 @@
 # behat.yml
 default:
-    context:
-        parameters:
-            base_url: http://localhost/r4
+  suites:
+    default:
+      contexts:
+        - RestContext:
+            - http://localhost/r4/
