@@ -336,7 +336,6 @@ class RestContext implements Context
             $url = false !== strpos($path, '{')
                 ? (new UriTemplate)->expand($path, (array)$this->_restObject)
                 : $path;
-            echo $url.PHP_EOL;
             $method = strtoupper($this->_restObjectMethod);
 
             $this->_request_debug_stream = fopen('php://temp/', 'r+');
