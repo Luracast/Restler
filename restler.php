@@ -1,4 +1,7 @@
 <?php
+use Luracast\Restler\Defaults;
+use Luracast\Restler\Format\HtmlFormat;
+
 if (is_readable(__DIR__ . '/vendor/autoload.php')) {
     //if composer auto loader is found use it
     $loader = require __DIR__ . '/vendor/autoload.php';
@@ -13,3 +16,5 @@ if (is_readable(__DIR__ . '/vendor/autoload.php')) {
         return $loader;
     });
 }
+Defaults::$cacheDirectory = __DIR__ . '/cache';
+HtmlFormat::$viewPath = __DIR__ . '/views';
