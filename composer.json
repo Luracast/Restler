@@ -53,8 +53,5 @@
     "minimum-stability": "dev",
     "conflict": {
         "restler/framework":"3.*"
-    },
-    "config": {
-        "bin-dir": "./"
     }
 }
