@@ -17,7 +17,7 @@ Just deal with your business logic in php, restler will take care of the REST!
 ### Restler - *Better APIs by Design*
 
 * [Developer Home](https://luracast.com/products/restler/)
-* [Live Examples](https://restler4.luracast.com/)
+* [Live Examples](https://restler5.luracast.com/)
 * Updates on [Facebook](https://www.facebook.com/Luracast) and [Twitter](https://twitter.com/Luracast)
 * [Features](#features)
 * [Installation](#installation)
