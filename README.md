@@ -217,23 +217,24 @@ DirectoryIndex index.php
 If you are on Nginx, you have to make sure you set the `server_name` and pass the PHP scripts to fast cgi (PHP-FPM)
 listening on 127.0.0.1:9000
 
-    server {
-            listen        80;
-            server_name   api.luracast.com; //change it to match your server name
+```
+server {
+    listen        80;
+    server_name   api.luracast.com; //change it to match your server name
 
-            //... other stuff
+    //... other stuff
 
-            location ~ \.php$ {
-                root           /var/www/html;
-                fastcgi_pass   127.0.0.1:9000;
-                fastcgi_index  index.php;
-                fastcgi_param  SCRIPT_FILENAME  /var/www/html/$fastcgi_script_name;
-                include        fastcgi_params;
-            }
-
-            //... other stuff
-
+    location ~ \.php$ {
+        root           /var/www/html;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /var/www/html/$fastcgi_script_name;
+        include        fastcgi_params;
     }
+
+    //... other stuff
+}
+```
 
 > **Note:-** This requires PHP, PHP-FPM to be properly installed and configured.
 > Refer to [PHP FastCGI](http://wiki.nginx.org/PHPFcgiExample) example for more
@@ -357,20 +358,22 @@ Change Log
 * Restler class now allows overriding the status code by setting `$this->restler->responseCode` from the api method.
 * Improved Forms class to send the embedded properties to emmet template. For example
 
-  	/**
-  	 * {@id form1}
-  	 *
-  	 * @param string $name
-  	 * @param int $age
-  	*/
+```
+/**
+ * {@id form1}
+ *
+ * @param string $name
+ * @param int $age
+*/
+```
 
   Generates the following form
 
-  	    <form role="form" id="form1" method="POST" ...
+    <form role="form" id="form1" method="POST" ...
 
   because the emmet template has id in it (see below)
 
-  	    form[role=form id=$id# name=$name# method=$method# action=$action# enctype=$enctype#]
+    form[role=form id=$id# name=$name# method=$method# action=$action# enctype=$enctype#]
 
 * Forms class uses embedded properties with `@param` comments to set html attributes (for example id, accept etc) easily
 * FormStyles improved.

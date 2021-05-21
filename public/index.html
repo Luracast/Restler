@@ -373,21 +373,20 @@ $r-&gt;handle(); //serve the response
 listening on 127.0.0.1:9000</p>
 
 <pre><code>server {
-        listen        80;
-        server_name   api.luracast.com; //change it to match your server name
+    listen        80;
+    server_name   api.luracast.com; //change it to match your server name
 
-        //... other stuff
+    //... other stuff
 
-        location ~ \.php$ {
-            root           /var/www/html;
-            fastcgi_pass   127.0.0.1:9000;
-            fastcgi_index  index.php;
-            fastcgi_param  SCRIPT_FILENAME  /var/www/html/$fastcgi_script_name;
-            include        fastcgi_params;
-        }
+    location ~ \.php$ {
+        root           /var/www/html;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  /var/www/html/$fastcgi_script_name;
+        include        fastcgi_params;
+    }
 
-        //... other stuff
-
+    //... other stuff
 }
 </code></pre>
 
@@ -532,18 +531,16 @@ in the following cases when</p>
 </ul>
 </li>
 <li><p>Restler class now allows overriding the status code by setting <code>$this-&gt;restler-&gt;responseCode</code> from the api method.</p></li>
-<li>
-<p>Improved Forms class to send the embedded properties to emmet template. For example</p>
-
-<p>/**</p>
-
-<ul>
-<li>{@id form1}</li>
-<li>
-<li>@param string $name</li>
-<li>@param int $age
-*/</li>
+<li>Improved Forms class to send the embedded properties to emmet template. For example</li>
 </ul>
+
+<pre><code>/**
+ * {@id form1}
+ *
+ * @param string $name
+ * @param int $age
+*/
+</code></pre>
 
 <p>Generates the following form</p>
 
@@ -554,8 +551,9 @@ in the following cases when</p>
 
 <pre><code>form[role=form id=$id# name=$name# method=$method# action=$action# enctype=$enctype#]
 </code></pre>
-</li>
-<li><p>Forms class uses embedded properties with <code>@param</code> comments to set html attributes (for example id, accept etc) easily</p></li>
+
+<ul>
+<li>Forms class uses embedded properties with <code>@param</code> comments to set html attributes (for example id, accept etc) easily</li>
 <li>FormStyles improved.</li>
 <li>Validator is now initialized by scope so that we can set its properties with <code>@class</code> comment. <strong>Example:
 -</strong>  <code>@class Validator {@holdException}</code> makes the validator to hold the exceptions instead of throwing</li>
