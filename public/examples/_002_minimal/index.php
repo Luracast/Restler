@@ -30,7 +30,7 @@ Content:
 
  */
 
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 //smart auto loader helps loading a namespaced class with just the name part
 use Luracast\Restler\Restler;
 

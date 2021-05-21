@@ -40,7 +40,7 @@ use Luracast\Restler\Defaults;
 use Luracast\Restler\Explorer;
 use Luracast\Restler\Filter\RateLimit;
 
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 
 //used only for demo, comment the following line
 Defaults::$cacheClass = 'SessionCache';

@@ -161,7 +161,7 @@ Content-Type: application/json
 *[SqliteDataProvider.php]: common/SqliteDataProvider.php
 *[SerializedFileDataProvider.php]: common/SerializedFileDataProvider.php
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

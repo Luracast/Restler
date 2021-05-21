@@ -143,6 +143,6 @@ GET [v2/bmi?height=162cm](index.php/v2/bmi?height=162cm)
 *[v1\BMI.php]: _011_versioning/v1/BMI.php
 *[v2\BMI.php]: _011_versioning/v2/BMI.php
 *[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

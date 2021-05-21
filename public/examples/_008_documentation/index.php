@@ -28,7 +28,7 @@ mode. Try changing rester to run in production mode (`$r = new Restler(true)`)
 Happy Exploring! :)
 */
 
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

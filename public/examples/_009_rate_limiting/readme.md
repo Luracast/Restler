@@ -154,7 +154,7 @@ bin/behat  features/examples/_009_rate_limiting.feature
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
 *[Author.php]: ../../public/examples/_009_rate_limiting/Author.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 
 *[Author.php]: _009_rate_limiting/Author.php

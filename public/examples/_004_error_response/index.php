@@ -34,7 +34,7 @@
  Example 3: GET currency/format?number=55 returns "USD55.00"
 */
 
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

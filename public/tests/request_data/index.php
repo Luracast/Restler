@@ -5,7 +5,7 @@
 
 use Luracast\Restler\Restler;
 
-require_once "../../../vendor/restler.php";
+require_once "../../../restler.php";
 
 $r = new Restler();
 $r->setSupportedFormats('JsonFormat','CsvFormat');

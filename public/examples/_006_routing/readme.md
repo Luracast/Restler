@@ -236,6 +236,6 @@ bin/behat  features/examples/_006_routing.feature
 
 *[index.php]: _006_routing/index.php
 *[Api.php]: _006_routing/Api.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

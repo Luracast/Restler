@@ -126,6 +126,6 @@ bin/behat  features/examples/_010_access_control.feature
 *[index.php]: _010_access_control/index.php
 *[Access.php]: _010_access_control/Access.php
 *[AccessControl.php]: _010_access_control/AccessControl.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

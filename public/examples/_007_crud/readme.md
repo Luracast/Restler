@@ -249,6 +249,6 @@ bin/behat  features/examples/_007_crud.feature
 *[index.php]: _007_crud/index.php
 *[Authors.php]: _007_crud/Authors.php
 *[SessionDataProvider.php]: ../../public/examples/common/SessionDataProvider.php
-*[restler.php]: ../../vendor/restler.php
+*[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
 

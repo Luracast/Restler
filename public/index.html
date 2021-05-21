@@ -264,7 +264,7 @@ with that name and install Restler.</p>
 
 <blockquote>
   <p><strong>Note:-</strong></p>
-  
+
   <ol>
   <li><p>If you do not want the additional formats and BDD tools you can include
   <code>--no-dev</code> to enforce exclusion of dev packages.</p></li>
@@ -346,7 +346,7 @@ your application by following these steps</p>
 <p>Create the <strong>gateway (index.php)</strong> as follows</p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();
@@ -420,7 +420,7 @@ PHP scripts to fast cgi (PHP-FPM) listening on 127.0.0.1:9000</p>
 <p><strong>Fine tune to suit your needs</strong></p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 //set the defaults to match your requirements
@@ -463,7 +463,7 @@ root on your browser</p>
 <p>In order to protect your api, authenticate and allow valid users</p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 $r = new Restler();
 $r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
@@ -483,7 +483,7 @@ cache the routes (comment parsing happens only once instead of every api call),
 few other files and avoid giving out debug information</p>
 
 <pre><code class="php">&lt;?php
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 //setup restler

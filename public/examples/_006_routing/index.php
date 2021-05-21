@@ -124,7 +124,7 @@ Example 7: GET api/all returns
 "you have called Api::allIsMine()"
 
 */
-require_once '../../../vendor/restler.php';
+require_once '../../../restler.php';
 use Luracast\Restler\Restler;
 
 $r = new Restler();

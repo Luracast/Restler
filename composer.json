@@ -3,19 +3,14 @@
     "description":"Restler is a simple and effective multi-format Web API Server framework written in PHP. Just deal with your business logic in php, Restler will take care of the REST!",
     "type":"library",
     "keywords":["server","api","framework","REST"],
-    "homepage":"http://luracast.com/products/restler/",
-    "license":"LGPL-2.1",
+    "homepage":"https://luracast.com/products/restler/",
+    "license":"LGPL-2.1-or-later",
     "authors":[
         {
             "name":"Luracast",
             "email":"arul@luracast.com"
         }
     ],
-    "extra":{
-        "branch-alias":{
-            "v3":"v3.0.x-dev"
-        }
-    },
     "suggest":{
         "guzzle/guzzle":"RESTful api HTTP client framework (see require-dev for details)",
         "behat/behat":"Behaviour driven development testing framework (see require-dev for details)",
@@ -33,11 +28,11 @@
     },
     "require-dev":{
         "ext-libxml": "*",
-        "guzzlehttp/guzzle":"^7.0@dev",
+        "guzzlehttp/guzzle":"~7",
         "bshaffer/oauth2-server-php":"dev-master",
         "behat/behat": "^3.8@dev",
         "rize/uri-template": "dev-master",
-        "illuminate/view": "^8",
+        "illuminate/view": "^8 || ^7",
         "twig/twig": "^3",
         "mustache/mustache": "dev-master"
     },
@@ -49,7 +44,7 @@
     ],
     "autoload":{
         "psr-4":{
-            "Luracast\\Restler\\":"vendor/Luracast/Restler"
+            "Luracast\\Restler\\":"src/"
         }
     },
     "autoload-dev": {
