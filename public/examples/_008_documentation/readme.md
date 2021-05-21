@@ -11,7 +11,7 @@ which is used [here](explorer/index.html#!/authors-v1).
 [![Restler API Explorer](../resources/explorer1.png)](explorer/index.html#!/authors-v1)
 
 We are progressively improving the Authors class from CRUD example
-to Rate Limiting Example to show Best Practices and Restler 3 Features.
+to Rate Limiting Example to show Best Practices and Restler 5 Features.
 
 Make sure you compare them to understand.
 

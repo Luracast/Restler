@@ -42,3 +42,4 @@ vendor/nesbot
 vendor/doctrine
 behat-guzzle-cookie-data.json
 cache
+public/examples/_014_oauth2_client/cache

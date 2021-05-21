@@ -7,7 +7,7 @@ class Currency
     function format($number = null)
     {
         /**
-         * There is a better way to validate in Restler 3
+         * There is a better way to validate in Restler 5
          * Here we manually validate to show the use of exceptions
          */
         if (is_null($number)) {

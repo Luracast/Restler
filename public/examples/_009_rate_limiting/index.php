@@ -16,7 +16,7 @@ when the user is Authenticated
 Key in `r3rocks` as the API key in the Explorer to see how rate limit changes
 
 We are progressively improving the Authors class from CRUD example
-to show Best Practices and Restler 3 Features.
+to show Best Practices and Restler 5 Features.
 
 Make sure you compare them to understand.
 
