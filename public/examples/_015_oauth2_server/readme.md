@@ -147,5 +147,5 @@ Restler customers who want to offer or connect-into the world of OAuth2.
 *[index.php]: _015_oauth2_server/index.php
 *[Server.php]: _015_oauth2_server/Auth/Server.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

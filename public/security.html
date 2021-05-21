@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Luracast Restler  Forms</title>
+<title>Luracast Restler  Security</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="examples/resources/highlight.css">
 <link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
@@ -91,96 +91,45 @@ var _gaq = _gaq || [];
     </nav>
 <article>
 
-<p><a id="forms" class="anchor"></a></p>
-<h1>Forms</h1>
+<p><a id="security-policy" class="anchor"></a></p>
+<h1>Security Policy</h1>
 
-<p>Forms class generates html forms from http method and target url.</p>
+<p><a id="supported-versions" class="anchor"></a></p>
+<h2>Supported Versions</h2>
 
-<p>Following attributes can be used for customizing the generated forms.</p>
+<table>
+<thead>
+<tr>
+  <th>Version</th>
+  <th>Supported</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>6.0.x</td>
+  <td>:white_check_mark:</td>
+</tr>
+<tr>
+  <td>5.0.x</td>
+  <td>:white_check_mark:</td>
+</tr>
+<tr>
+  <td>4.0.x</td>
+  <td>:white_check_mark:</td>
+</tr>
+<tr>
+  <td>&lt; 4.0</td>
+  <td>:x:</td>
+</tr>
+</tbody>
+</table>
 
-<p><a id="label" class="anchor"></a></p>
-<h2>@label</h2>
+<p><a id="reporting-a-vulnerability" class="anchor"></a></p>
+<h2>Reporting a Vulnerability</h2>
 
-<p><a id="with--param" class="anchor"></a></p>
-<h3>With @param</h3>
+<p><strong>DO NOT PUBLISH SECURITY REPORTS PUBLICLY.</strong></p>
 
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@param type $name [Description] {@label Custom Name}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@param string $name [Description] {@label Customer's Name}
-</code></pre>
-
-<p>Restler automatically creates a label for each param by using camelCasing and underscore in parameter names. For example <code>$firstName</code>, <code>$first_name</code> to <code>First Name</code>. If you want to override and specify a label yourself use the above annotation.</p>
-
-<hr>
-
-<p><a id="with--return" class="anchor"></a></p>
-<h3>With @return</h3>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@return type {@label Custom Name}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@return array {@label Sign In}
-</code></pre>
-
-<p>Restler by default uses <code>Submit</code> as the default text for form submit buttons. You can customize that using the above annotation.</p>
-
-<p><a id="field" class="anchor"></a></p>
-<h2>@field</h2>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@param type $name [Description] {@field InputType}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@param int $age [Description] {@field number} {@min 6} {@max 22}
-</code></pre>
-
-<p>Html field type used for capturing the value. 
-Some possible values are,
- - input
- - checkbox (for boolean)
- - radio (requires @choice)
- - password
- - select (requires @choice)
- - text
- - hidden</p>
-
-<p>When not specified, it will try to guess the field type</p>
-
-<p><a id="message" class="anchor"></a></p>
-<h2>@message</h2>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@param type $name [Description] {@message text}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@param int $age [Description] {@message age restriction requires age between 6 and 22} {@min 6} {@max 22}
-</code></pre>
-
-<p>Custom error message to display when validation fails.</p>
-
-<p><a id="emmet-templates" class="anchor"></a></p>
-<h2>Emmet Templates</h2>
-
-<p><a id="form---input---textarea---radio---select---submit--and--fieldset" class="anchor"></a></p>
-<h3>@form, @input, @textarea, @radio, @select, @submit, and @fieldset</h3>
-
-<p>Allows you to customize how a form element rendering from the selected form style.
-Use Emmet syntax for that purpose. Take a look at FormStyles.php for an example.</p>
+<p>If you found any issues that might have security implications, please send a report to arul[at]luracast.com</p>
 
 </article>
 </body>

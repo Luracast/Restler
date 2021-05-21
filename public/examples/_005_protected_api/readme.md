@@ -116,5 +116,5 @@ bin/behat  features/examples/_005_protected_api.feature
 *[Secured.php]: _005_protected_api/Secured.php
 *[SimpleAuth.php]: _005_protected_api/SimpleAuth.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

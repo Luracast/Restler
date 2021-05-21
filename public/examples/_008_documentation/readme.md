@@ -139,5 +139,5 @@ bin/behat  features/examples/_008_documentation.feature
 *[index.php]: _008_documentation/index.php
 *[Authors.php]: _008_documentation/improved/Authors.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

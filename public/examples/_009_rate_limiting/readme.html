@@ -13,8 +13,8 @@
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/hacks.css" />
-
-<script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
+ 
+<script type="text/javascript" src="../resources/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
@@ -114,13 +114,13 @@
 </nav>
     <div id="codeviewer" style="display: none;"></div>
     <nav id="left">
-        <img src="../resources/Restler3.gif" width="126"
+        <img src="../resources/restler.svg" width="126"
             height="126" title="Luracast Restler 3" />
         <h3>
             <a href="../index.html">Examples</a>
         </h3>
         <ul>
-
+            
             <li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
             <li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
             <li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
@@ -264,7 +264,7 @@ to show Best Practices and Restler 3 Features.</p>
 
 <blockquote>
   <p><strong>Note:-</strong></p>
-
+  
   <ol>
   <li><p>Using session variables as DB and Cache is useless for real life and wrong. We are using it
   Only for demo purpose. Since API Explorer is browser based it works well with that.</p></li>
@@ -277,15 +277,15 @@ PHP_SESSION cookie using the Developer Tools in your browser.</p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
-
+  
   <ul>
   <li><abbr title="_009_rate_limiting/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Filter/RateLimit.php">RateLimit.php</abbr>      (filter)</li>
+  <li><abbr title="../../src/Filter/RateLimit.php">RateLimit.php</abbr>      (filter)</li>
   <li><abbr title="_009_rate_limiting/ratelimited/Authors.php">Authors.php</abbr>      (api)</li>
   <li><abbr title="_009_rate_limiting/Author.php">Author.php</abbr>      (helper)</li>
   <li><abbr title="_009_rate_limiting/KeyAuth.php">KeyAuth.php</abbr>      (auth)</li>
   <li><abbr title="../../restler.php">restler.php</abbr>      (framework)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
+  <li><abbr title="../../src/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 

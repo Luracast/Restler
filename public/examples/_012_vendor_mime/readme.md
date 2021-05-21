@@ -185,7 +185,7 @@ bin/behat  features/examples/_012_vendor_mime.feature
 *[index.php]: _012_vendor_mime/index.php
 *[v1\BMI.php]: _012_vendor_mime/SomeVendor/v1/BMI.php
 *[v2\BMI.php]: _012_vendor_mime/SomeVendor/v2/BMI.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

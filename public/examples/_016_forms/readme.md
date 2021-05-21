@@ -92,6 +92,6 @@ This API Server exposes the following URIs
 *[Users.php]: _016_forms/Users.php
 *[Address.php]: _016_forms/Address.php
 *[restler.php]: ../../restler.php
-*[HtmlFormat.php]: ../../vendor/Luracast/Restler/Format/HtmlFormat.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[HtmlFormat.php]: ../../src/Format/HtmlFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

@@ -157,8 +157,8 @@ bin/behat  features/examples/_013_html.feature
 *[index.php]: _013_html/index.php
 *[Tasks.php]: _013_html/Tasks.php
 *[Task.php]: _013_html/DB/Task.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[Resources.php]: ../../src/Resources.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
-*[HtmlFormat.php]: ../../vendor/Luracast/Restler/Format/HtmlFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
+*[HtmlFormat.php]: ../../src/Format/HtmlFormat.php
 

@@ -117,5 +117,5 @@ bin/behat  features/examples/_014_oauth2_client.feature
 *[index.php]: _014_oauth2_client/index.php
 *[Client.php]: _014_oauth2_client/Auth/Client.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 
