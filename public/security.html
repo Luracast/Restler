@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Luracast Restler  Forms</title>
+<title>Luracast Restler  Security</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="examples/resources/highlight.css">
 <link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
@@ -97,74 +97,45 @@ var _gaq = _gaq || [];
     </nav>
 <article>
 
-<p><a id="forms" class="anchor"></a></p>
-<h1>Forms</h1>
+<p><a id="security-policy" class="anchor"></a></p>
+<h1>Security Policy</h1>
 
-<p>Forms class generates html forms from http method and target url.</p>
+<p><a id="supported-versions" class="anchor"></a></p>
+<h2>Supported Versions</h2>
 
-<p>Following attributes can be used for customizing the generated forms.</p>
+<table>
+<thead>
+<tr>
+  <th>Version</th>
+  <th>Supported</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>6.0.x</td>
+  <td>✅</td>
+</tr>
+<tr>
+  <td>5.0.x</td>
+  <td>✅</td>
+</tr>
+<tr>
+  <td>4.0.x</td>
+  <td>✅</td>
+</tr>
+<tr>
+  <td>&lt; 4.0</td>
+  <td>❌</td>
+</tr>
+</tbody>
+</table>
 
-<p><a id="label" class="anchor"></a></p>
-<h2>@label</h2>
+<p><a id="reporting-a-vulnerability" class="anchor"></a></p>
+<h2>Reporting a Vulnerability</h2>
 
-<p><a id="with--param" class="anchor"></a></p>
-<h3>With @param</h3>
+<p><strong>DO NOT PUBLISH SECURITY REPORTS PUBLICLY.</strong></p>
 
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@param type $name [Description] {@label Custom Name}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@param string $name [Description] {@label Customer's Name}
-</code></pre>
-
-<p>Restler automatically creates label for each param by using camelCasing and underscore in parameter names. For example <code>$firstName</code>, <code>$first_name</code> to <code>First Name</code>. If you want to override and specify a label yourself use the above annotation.</p>
-
-<hr>
-
-<p><a id="with--return" class="anchor"></a></p>
-<h3>With @return</h3>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@return type {@label Custom Name}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@return array {@label Sign In}
-</code></pre>
-
-<p>Restler by default uses <code>Submit</code> as the default text for form submit buttons. You can customize that using the above anotation.</p>
-
-<p><a id="field" class="anchor"></a></p>
-<h2>@field</h2>
-
-<p><a id="message" class="anchor"></a></p>
-<h2>@message</h2>
-
-<p><a id="form" class="anchor"></a></p>
-<h2>@form</h2>
-
-<p><a id="input" class="anchor"></a></p>
-<h2>@input</h2>
-
-<p><a id="textarea" class="anchor"></a></p>
-<h2>@textarea</h2>
-
-<p><a id="radio" class="anchor"></a></p>
-<h2>@radio</h2>
-
-<p><a id="select" class="anchor"></a></p>
-<h2>@select</h2>
-
-<p><a id="submit" class="anchor"></a></p>
-<h2>@submit</h2>
-
-<p><a id="fieldset" class="anchor"></a></p>
-<h2>@fieldset</h2>
+<p>If you found any issues that might have security implications, please send a report to arul[at]luracast.com</p>
 
 </article>
 </body>

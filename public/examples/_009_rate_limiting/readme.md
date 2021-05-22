@@ -69,8 +69,9 @@ Feature: Testing Rate Limiting Example
   Scenario: Failing to delete missing Author with JSON
     Given that I want to delete an "Author"
     And his "id" is 2000
-    When I request "/examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
+    When I request "examples/_009_rate_limiting/authors/{id}?api_key=r3rocks"
     Then the response status code should be 404
+
 ```
 
 It can be tested by running the following command on terminal/command line
@@ -89,7 +90,7 @@ bin/behat  features/examples/_009_rate_limiting.feature
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
 *[Resources.php]: ../../src/Resources.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
-*[Author.php]: _009_rate_limiting/Author.php
+*[Author.php]: ../../public/examples/_009_rate_limiting/Author.php
 *[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

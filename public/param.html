@@ -88,6 +88,10 @@ var _gaq = _gaq || [];
                 <ul><li><a href="param.html#message" title="Param - @message">@message</a></li></ul>
                 <ul><li><a href="param.html#example" title="Param - @example">@example</a></li></ul>
             </li>
+            <li><a href="security.html#security-policy" title="Security Policy">Security</a>
+                <ul><li><a href="security.html#supported-versions" title="Security - Supported Versions">Supported Versions</a></li></ul>
+                <ul><li><a href="security.html#reporting-a-vulnerability" title="Security - Reporting A Vulnerability">Reporting A Vulnerability</a></li></ul>
+            </li>
 
         </ul>
     </nav>
@@ -367,7 +371,7 @@ Feature: Type Attribute
   Scenario Outline: Email
     Given that I send {"email":&lt;email&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/email"
+    When I request "tests/param/type/email"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -382,7 +386,7 @@ Feature: Type Attribute
   Scenario Outline: Email as the only body
     Given that I send &lt;email&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/email"
+    When I request "tests/param/type/email"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -397,7 +401,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Email
     Given that I send {"email":&lt;email&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/email"
+    When I request "tests/param/type/email"
     Then the response status code should be 400
     And the response is JSON
 
@@ -410,7 +414,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Email as the only body
     Given that I send &lt;email&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/email"
+    When I request "tests/param/type/email"
     Then the response status code should be 400
     And the response is JSON
 
@@ -423,7 +427,7 @@ Feature: Type Attribute
   Scenario Outline: Date
     Given that I send {"date":&lt;date&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/date"
+    When I request "tests/param/type/date"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -438,7 +442,7 @@ Feature: Type Attribute
   Scenario Outline: Date as the only body
     Given that I send &lt;date&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/date"
+    When I request "tests/param/type/date"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -453,7 +457,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Date
     Given that I send {"date":&lt;date&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/date"
+    When I request "tests/param/type/date"
     Then the response status code should be 400
     And the response is JSON
 
@@ -468,7 +472,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Date as the only body
     Given that I send &lt;date&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/date"
+    When I request "tests/param/type/date"
     Then the response status code should be 400
     And the response is JSON
 
@@ -483,7 +487,7 @@ Feature: Type Attribute
   Scenario Outline: Date and Time
     Given that I send {"datetime":&lt;datetime&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/datetime"
+    When I request "tests/param/type/datetime"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -496,7 +500,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Date and Time
     Given that I send {"datetime":&lt;datetime&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/datetime"
+    When I request "tests/param/type/datetime"
     Then the response status code should be 400
     And the response is JSON
 
@@ -509,10 +513,10 @@ Feature: Type Attribute
   Scenario Outline: Time Stamp
     Given that I send {"timestamp":&lt;timestamp&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/timestamp"
+    When I request "tests/param/type/timestamp"
     Then the response status code should be 200
     And the response is JSON
-    And the type is "string"
+    And the type is "int"
     And the response equals &lt;expected&gt;
 
   Examples:
@@ -527,10 +531,10 @@ Feature: Type Attribute
   Scenario Outline: Time Stamp as the only body
     Given that I send &lt;timestamp&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/timestamp"
+    When I request "tests/param/type/timestamp"
     Then the response status code should be 200
     And the response is JSON
-    And the type is "string"
+    And the type is "int"
     And the response equals &lt;expected&gt;
 
   Examples:
@@ -544,7 +548,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Time Stamp
     Given that I send {"timestamp":&lt;timestamp&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/timestamp"
+    When I request "tests/param/type/timestamp"
     Then the response status code should be 400
     And the response is JSON
 
@@ -558,7 +562,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Time Stamp as the only body
     Given that I send &lt;timestamp&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/timestamp"
+    When I request "tests/param/type/timestamp"
     Then the response status code should be 400
     And the response is JSON
 
@@ -572,7 +576,7 @@ Feature: Type Attribute
   Scenario Outline: An Array of Integers
     Given that I send {"integers":&lt;integers&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/integers"
+    When I request "tests/param/type/integers"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -587,7 +591,7 @@ Feature: Type Attribute
   Scenario Outline: An Array of Integers as the only body
     Given that I send &lt;integers&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/integers"
+    When I request "tests/param/type/integers"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -602,7 +606,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Array of Integers
     Given that I send {"integers":&lt;integers&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/integers"
+    When I request "tests/param/type/integers"
     Then the response status code should be 400
     And the response is JSON
 
@@ -617,7 +621,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Array of Integers as the only body
     Given that I send &lt;integers&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/integers"
+    When I request "tests/param/type/integers"
     Then the response status code should be 400
     And the response is JSON
 
@@ -632,7 +636,7 @@ Feature: Type Attribute
   Scenario Outline: An Array of Floating Points
     Given that I send {"numbers":&lt;numbers&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/type/numbers"
+    When I request "tests/param/type/numbers"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -647,7 +651,7 @@ Feature: Type Attribute
   Scenario Outline: An Array of Floating Points as the only body
     Given that I send &lt;numbers&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/numbers"
+    When I request "tests/param/type/numbers"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -663,7 +667,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid Array of Floats as the only body
     Given that I send &lt;numbers&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/numbers"
+    When I request "tests/param/type/numbers"
     Then the response status code should be 400
     And the response is JSON
 
@@ -677,7 +681,7 @@ Feature: Type Attribute
   Scenario Outline: Custom Class
     Given that I send &lt;author&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/author"
+    When I request "tests/param/type/author"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -691,7 +695,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid data for Custom Class
     Given that I send &lt;author&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/author"
+    When I request "tests/param/type/author"
     Then the response status code should be 400
     And the response is JSON
 
@@ -708,7 +712,7 @@ Feature: Type Attribute
   Scenario Outline: Array of Custom Class objects
     Given that I send &lt;authors&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/authors"
+    When I request "tests/param/type/authors"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -722,7 +726,7 @@ Feature: Type Attribute
   Scenario Outline: Invalid data for array of Custom Class objects
     Given that I send &lt;authors&gt;
     And the request is sent as JSON
-    When I request "/tests/param/type/authors"
+    When I request "tests/param/type/authors"
     Then the response status code should be 400
     And the response is JSON
 
@@ -734,7 +738,8 @@ Feature: Type Attribute
     | {"key":"value"}                |
     | {"name":"12","email":"a@b.c"}  |
     | {"email":"a@b.c"}              |
-    | {"email":"ab.c","name":"1234"} |</code></pre>
+    | {"email":"ab.c","name":"1234"} |
+</code></pre>
 
 <p><a id="choice" class="anchor"></a></p>
 <h2>@choice</h2>
@@ -832,7 +837,7 @@ class MinMax
 Feature: Minimum and Maximum
 
   Scenario Outline: Int
-    When I request "/tests/param/minmax/int/&lt;number&gt;"
+    When I request "tests/param/minmax/int/&lt;number&gt;"
     Then the response status code should be 200
     And the response is JSON
     And the type is "int"
@@ -846,36 +851,36 @@ Feature: Minimum and Maximum
       |   5    |
 
   Scenario: Int lower than the minimum
-    When I request "/tests/param/minmax/int/1"
+    When I request "tests/param/minmax/int/1"
     Then the response status code should be 400
     And the response is JSON
 
   Scenario: Int higher than maximum
-    When I request "/tests/param/minmax/int/6"
+    When I request "tests/param/minmax/int/6"
     Then the response status code should be 400
     And the response is JSON
 
   Scenario: String
-    When I request "/tests/param/minmax/string/me"
+    When I request "tests/param/minmax/string/me"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
     And the value equals "me"
 
   Scenario: Short String
-    When I request "/tests/param/minmax/string/i"
+    When I request "tests/param/minmax/string/i"
     Then the response status code should be 400
     And the response is JSON
 
   Scenario: Lengthy String
-    When I request "/tests/param/minmax/string/arulkumaran"
+    When I request "tests/param/minmax/string/arulkumaran"
     Then the response status code should be 400
     And the response is JSON
 
   Scenario Outline: Array
     Given that I send &lt;data&gt;
     And the request is sent as JSON
-    When I request "/tests/param/minmax/array"
+    When I request "tests/param/minmax/array"
     Then the response status code should be 200
     And the response is JSON
 
@@ -889,7 +894,7 @@ Feature: Minimum and Maximum
   Scenario Outline: Array out of range
     Given that I send &lt;data&gt;
     And the request is sent as JSON
-    When I request "/tests/param/minmax/array"
+    When I request "tests/param/minmax/array"
     Then the response status code should be 400
     And the response is JSON
 
@@ -971,7 +976,7 @@ class MinMaxFix
 Feature: Minimum and Maximum with Fix
 
   Scenario Outline: Int
-    When I request "/tests/param/minmaxfix/int/&lt;number&gt;"
+    When I request "tests/param/minmaxfix/int/&lt;number&gt;"
     Then the response status code should be 200
     And the response is JSON
     And the type is "int"
@@ -991,7 +996,7 @@ Feature: Minimum and Maximum with Fix
   Scenario Outline: String
     Given that I send {"string":&lt;string&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/minmaxfix/string"
+    When I request "tests/param/minmaxfix/string"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -1012,7 +1017,7 @@ Feature: Minimum and Maximum with Fix
   Scenario Outline: Array out of maximum range
     Given that I send &lt;array&gt;
     And the request is sent as JSON
-    When I request "/tests/param/minmaxfix/array"
+    When I request "tests/param/minmaxfix/array"
     Then the response status code should be 200
     And the response is JSON
     And the response equals &lt;expected&gt;
@@ -1030,7 +1035,7 @@ Feature: Minimum and Maximum with Fix
   Scenario Outline: Array short of minimum is not expected
     Given that I send &lt;array&gt;
     And the request is sent as JSON
-    When I request "/tests/param/minmaxfix/array"
+    When I request "tests/param/minmaxfix/array"
     Then the response status code should be 400
     And the response is JSON
 
@@ -1089,7 +1094,7 @@ Feature: Validation
   Scenario Outline: Valid Password
     Given that I send {"password":&lt;password&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/validation/pattern"
+    When I request "tests/param/validation/pattern"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -1104,17 +1109,18 @@ Feature: Validation
   Scenario Outline: Invalid Password
     Given that I send {"password":&lt;password&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/validation/pattern"
+    When I request "tests/param/validation/pattern"
     Then the response status code should be 400
     And the response is JSON
-    And the type is "string"
+    And the type is "object"
     And the response contains "Bad Request: Strong password with at least one alpha and one numeric character is required"
 
   Examples:
     | password   |
     | "arul"     |
     | "12345678" |
-    | "ONEtwo"   |</code></pre>
+    | "ONEtwo"   |
+</code></pre>
 
 <p><a id="message" class="anchor"></a></p>
 <h2>@message</h2>
@@ -1165,7 +1171,7 @@ Feature: Validation
   Scenario Outline: Valid Password
     Given that I send {"password":&lt;password&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/validation/pattern"
+    When I request "tests/param/validation/pattern"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -1180,17 +1186,18 @@ Feature: Validation
   Scenario Outline: Invalid Password
     Given that I send {"password":&lt;password&gt;}
     And the request is sent as JSON
-    When I request "/tests/param/validation/pattern"
+    When I request "tests/param/validation/pattern"
     Then the response status code should be 400
     And the response is JSON
-    And the type is "string"
+    And the type is "object"
     And the response contains "Bad Request: Strong password with at least one alpha and one numeric character is required"
 
   Examples:
     | password   |
     | "arul"     |
     | "12345678" |
-    | "ONEtwo"   |</code></pre>
+    | "ONEtwo"   |
+</code></pre>
 
 <p><a id="example" class="anchor"></a></p>
 <h2>@example</h2>

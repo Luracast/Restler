@@ -322,7 +322,7 @@ Rewriting is not supported in your server. If you are on Apache Server, make sur
 Feature: Testing Helloworld Example
 
   Scenario: Saying Hello world
-    When I request "/examples/_001_helloworld/say/hello"
+    When I request "examples/_001_helloworld/say/hello"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
@@ -330,31 +330,32 @@ Feature: Testing Helloworld Example
 
   Scenario: Saying Hello Restler
     Given that "to" is set to "Restler"
-    When I request "/examples/_001_helloworld/say/hello{?to}"
+    When I request "examples/_001_helloworld/say/hello{?to}"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
     And the value equals "Hello Restler!"
 
   Scenario: Saying
-    When I request "/examples/_001_helloworld/say"
+    When I request "examples/_001_helloworld/say"
     Then the response status code should be 404
     And the response is JSON
     And the type is "array"
 
   Scenario: Saying Hi
-    When I request "/examples/_001_helloworld/say/hi"
+    When I request "examples/_001_helloworld/say/hi"
     Then the response status code should be 400
     And the response is JSON
     And the type is "array"
 
   Scenario: Saying Hi Arul
     Given that "to" is set to "Arul"
-    When I request "/examples/_001_helloworld/say/hi{?to}"
+    When I request "examples/_001_helloworld/say/hi{?to}"
     Then the response status code should be 200
     And the response is JSON
     And the type is "string"
     And the value equals "Hi Arul!"
+
 </code></pre>
 
 <p>It can be tested by running the following command on terminal/command line
@@ -366,7 +367,7 @@ in <code>behat.yml</code> is updated according to your web server.</p>
 
 </article>
 <footer>
-&#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
+&#169; 2010 <a title="Luracast.com" href="https://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
 </footer>
 </body>
 </html>
