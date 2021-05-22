@@ -2,92 +2,74 @@
   IR_Black style (c) Vasily Mikhailitchenko <vaskas@programica.ru>
 */
 
-pre code {
-    display: block; padding: 0.5em;
-    background: #000; color: #f8f8f8;
+.hljs {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5em;
+  background: #000;
+  color: #f8f8f8;
 }
 
-pre .shebang,
-pre .comment,
-pre .template_comment,
-pre .javadoc {
-    color: #7c7c7c;
+.hljs-comment,
+.hljs-quote,
+.hljs-meta {
+  color: #7c7c7c;
 }
 
-pre .keyword,
-pre .tag,
-pre .tex .command,
-pre .request,
-pre .status,
-pre .clojure .attribute {
-    color: #96CBFE;
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-tag,
+.hljs-name {
+  color: #96cbfe;
 }
 
-pre .sub .keyword,
-pre .method,
-pre .list .title,
-pre .nginx .title {
-    color: #FFFFB6;
+.hljs-attribute,
+.hljs-selector-id {
+  color: #ffffb6;
 }
 
-pre .string,
-pre .tag .value,
-pre .cdata,
-pre .filter .argument,
-pre .attr_selector,
-pre .apache .cbracket,
-pre .date {
-    color: #A8FF60;
+.hljs-string,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-addition {
+  color: #a8ff60;
 }
 
-pre .subst {
-    color: #DAEFA3;
+.hljs-subst {
+  color: #daefa3;
 }
 
-pre .regexp {
-    color: #E9C062;
+.hljs-regexp,
+.hljs-link {
+  color: #e9c062;
 }
 
-pre .title,
-pre .sub .identifier,
-pre .pi,
-pre .decorator,
-pre .tex .special,
-pre .haskell .type,
-pre .constant,
-pre .smalltalk .class,
-pre .javadoctag,
-pre .yardoctag,
-pre .phpdoc,
-pre .annotation,
-pre .nginx .built_in {
-    color: #FFFFB6;
+.hljs-title,
+.hljs-section,
+.hljs-type,
+.hljs-doctag {
+  color: #ffffb6;
 }
 
-pre .symbol,
-pre .ruby .symbol .string,
-pre .number,
-pre .variable,
-pre .vbscript,
-pre .literal {
-    color: #C6C5FE;
+.hljs-symbol,
+.hljs-bullet,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-literal {
+  color: #c6c5fe;
 }
 
-pre .css .tag {
-    color: #96CBFE;
+.hljs-number,
+.hljs-deletion {
+  color:#ff73fd;
 }
 
-pre .css .rules .property,
-pre .css .id {
-    color: #FFFFB6;
+.hljs-emphasis {
+  font-style: italic;
 }
 
-pre .css .class {
-    color: #FFF;
-}
-
-pre .hexcolor {
-    color: #C6C5FE;
+.hljs-strong {
+  font-weight: bold;
 }
 
 pre .number {

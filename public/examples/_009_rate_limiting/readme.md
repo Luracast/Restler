@@ -152,7 +152,7 @@ bin/behat  features/examples/_009_rate_limiting.feature
 *[index.php]: _009_rate_limiting/index.php
 *[RateLimit.php]: ../../src/Filter/RateLimit.php
 *[Authors.php]: _009_rate_limiting/ratelimited/Authors.php
-*[Author.php]: _009_rate_limiting/Author.php
+*[Author.php]: ../../public/examples/_009_rate_limiting/Author.php
 *[KeyAuth.php]: _009_rate_limiting/KeyAuth.php
 *[restler.php]: ../../restler.php
 *[JsonFormat.php]: ../../src/Format/JsonFormat.php
