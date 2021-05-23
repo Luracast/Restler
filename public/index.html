@@ -259,7 +259,7 @@ project name. It will create a folder with that name and install Restler.</p>
 </blockquote>
 
 <p><a id="option-2--downloading-from-github" class="anchor"></a></p>
-<h4>Option 2. Downloading from github</h4>
+<h4>Option 2. Downloading from GitHub</h4>
 
 <p>After installing Composer, download the <a href="" target="_blank">latest version</a> of the Restler framework and extract its contents into a
 directory on your server. Next, in the root of your Restler project, run the <code>php composer.phar install</code>
@@ -284,7 +284,11 @@ files and folders.</p>
 <p><a id="4--try-it-out" class="anchor"></a></p>
 <h3>4. Try it out</h3>
 
-<p>Try the live examples in your localhost</p>
+<p>Try the live examples in your localhost.</p>
+
+<blockquote>
+  <p>You may launch the PHP's built-in server with <code>composer serve</code> command.</p>
+</blockquote>
 
 <p><a id="5--run-some-test" class="anchor"></a></p>
 <h3>5. Run some test</h3>
@@ -294,6 +298,10 @@ files and folders.</p>
 <pre><code class="console"><br>vendor/bin/behat
 
 </code></pre>
+
+<blockquote>
+  <p>alternatively you can run <code>composer test</code></p>
+</blockquote>
 
 <p>This will test the examples against the behaviors expected, for example</p>
 
@@ -484,6 +492,9 @@ $r = new Restler(true); //turn on production mode by passing true.
 <li>Semantic versioning to move forward</li>
 <li>Support for PHP 8</li>
 <li>Corrects the source path to be outside the vendor directory</li>
+<li>Adds php development server support with <code>composer serve</code> command.</li>
+<li>Ability to run the tests with <code>composer test</code> command after running the server 
+with <code>composer serve</code> in another window.</li>
 </ul>
 
 <p><a id="restler-3-0-rc6" class="anchor"></a></p>

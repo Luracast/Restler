@@ -53,5 +53,13 @@
     "minimum-stability": "dev",
     "conflict": {
         "restler/framework":"3.*"
+    },
+    "scripts": {
+        "test": "behat --stop-on-failure --profile=default --colors",
+        "serve": "php -S localhost:8080 -t public server.php"
+    },
+    "scripts-descriptions": {
+        "test": "Runs behat tests",
+        "serve": "Starts php built-in web server"
     }
 }

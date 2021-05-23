@@ -108,7 +108,7 @@ php composer.phar create-project luracast/restler {projectName}
 > 2. If you want to try the bleading edge v3 branch or any of the feature
      >    branches include `3.x-dev` or `dev-features/html` in the above command
 
-#### Option 2. Downloading from github
+#### Option 2. Downloading from GitHub
 
 After installing Composer, download the [latest version]() of the Restler framework and extract its contents into a
 directory on your server. Next, in the root of your Restler project, run the `php composer.phar install`
@@ -129,7 +129,8 @@ files and folders.
 
 ### 4. Try it out
 
-Try the live examples in your localhost
+Try the live examples in your localhost. 
+> You may launch the PHP's built-in server with `composer serve` command.
 
 ### 5. Run some test
 
@@ -140,6 +141,7 @@ Update the base_url specified in `behat.yml` and then try the following command
 vendor/bin/behat
 
 ```
+> alternatively you can run `composer test`
 
 This will test the examples against the behaviors expected, for example
 
@@ -323,6 +325,9 @@ Change Log
 * Semantic versioning to move forward
 * Support for PHP 8
 * Corrects the source path to be outside the vendor directory
+* Adds php development server support with `composer serve` command.
+* Ability to run the tests with `composer test` command after running the server 
+  with `composer serve` in another window.
 
 ### Restler 3.0 RC6
 
