@@ -18,7 +18,7 @@ function exceptions()
     global $call_trace;
     $r = Util::$restler;
     $source = $r->_exceptions;
-    if (count($source)) {
+    if ($source && count($source)) {
         $source = end($source);
         $traces = array();
         do {
@@ -91,6 +91,9 @@ function render($data, $shadow=true)
                 // value, with hyperlinked hyperlinks
                 if (is_bool($value)) {
                     $value = $value ? 'true' : 'false';
+                }
+                if($value instanceof Closure) {
+                    $value = "closure()";
                 }
                 $value = htmlentities($value, ENT_COMPAT, 'UTF-8');
                 if (strpos($value, 'http://') === 0) {
