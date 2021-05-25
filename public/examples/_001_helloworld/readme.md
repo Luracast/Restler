@@ -16,8 +16,8 @@ Basic hello world example to get started with Restler 4.
 
 This API Server exposes the following URIs
 
-    GET say/hello⇠ Say::hello()
-    GET say/hi ⇠ Say::hi()
+    GET say/hello ⇠ Say::hello()
+    GET say/hi    ⇠ Say::hi()
 
 
 > **Note:-** If you have used Restler 2 before, you will wonder why
@@ -123,7 +123,7 @@ from the project root (where the vendor folder resides). Make sure `base_url`
 in `behat.yml` is updated according to your web server.
 
 ```bash
-bin/behat  features/examples/_001_helloworld.feature
+vendor/bin/behat  features/examples/_001_helloworld.feature
 ```
 
 

@@ -75,8 +75,8 @@ Features
 Git Repository and the Branches
 -------------------------------
 
-1. Most stable and recent version is maintained at the `master` branch, previous
-   versions are kept in the branches such as `v1` and `v2`
+1. Most stable and recent version is at the `master` branch, previous
+   versions are in the branches such as `v1` and `v2`
 
 2. Version branch with the current version such as `v3` is used for building up
    the next release. It's documentation may not be updated frequently and thus
@@ -131,7 +131,7 @@ the installation.
 If you want to update the Restler framework, you may issue the
 `php composer.phar update` command.
 
-> **Note:-** If are not allowed to install composer and git on your server, you
+> **Note:-** If you are not allowed to install composer and git on your server, you
 > can install and run them on your development machine. The resulting files and
 > folders can be uploaded and used on the server.
 
