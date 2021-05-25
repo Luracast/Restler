@@ -149,7 +149,7 @@ from the project root (where the vendor folder resides). Make sure `base_url`
 in `behat.yml` is updated according to your web server.
 
 ```bash
-bin/behat  features/examples/_013_html.feature
+vendor/bin/behat  features/examples/_013_html.feature
 ```
 
 
