@@ -13,8 +13,8 @@
 <link rel="stylesheet" type="text/css" href="../resources/facebox.css" />
 
 <link rel="stylesheet" type="text/css" href="../resources/hacks.css" />
-
-<script type="text/javascript" src="../resources/jquery-1.7.2.min.js"></script>
+ 
+<script type="text/javascript" src="../resources/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript" src="../resources/facebox.js"></script>
 
@@ -102,8 +102,8 @@
 <body>
     <nav class="floating-menu">
 <ul>
-<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
-<li><a title="Getting Started with Restler" href="../.."><img src="../resources/quickstart.png" width="16" height="16"/> Start</a></li>
+<li><a title="Restler Home" target="_blank" href="https://luracast.com/products/restler/"><img src="../resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a title="Getting Started with Restler" href="../.."><img src="../resources/documentation.png" width="16" height="16"/> Documentation</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
 <li><a class="active" href="../index.html"><img src="../resources/examples.png" width="16" height="16"/> Examples</a></li>
 <li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="../resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
@@ -114,13 +114,13 @@
 </nav>
     <div id="codeviewer" style="display: none;"></div>
     <nav id="left">
-        <img src="../resources/Restler3.gif" width="126"
+        <img src="../resources/restler.svg" width="126"
             height="126" title="Luracast Restler 5" />
         <h3>
             <a href="../index.html">Examples</a>
         </h3>
         <ul>
-
+            
             <li><a href="../_001_helloworld/readme.html" title="Let's say hello!">Hello World</a></li>
             <li><a href="../_002_minimal/readme.html" title="Less is more">Minimal</a></li>
             <li><a href="../_003_multiformat/readme.html" title="Serving what the client wants">Multi-format</a></li>
@@ -233,7 +233,7 @@
     </nav>
     <article id="page">
 <div class="right"><small>11</small></div>
-<p><a id="versioning" class="anchor"></a><h2>Versioning <requires>PHP >= 5.3</requires></h2></p>
+<p><a id="versioning" class="anchor"></a><h2>Versioning <requires>PHP >= 5.4</requires></h2></p>
 
 <p><tag>versioning</tag></p>
 
@@ -270,38 +270,34 @@ You need to namespace it as <code>{vendor}\{product}\v{version}</code></p>
 
 <p>If a class remains the same across few versions of the api, we can implement
 <code>iProvideMultiVersionApi</code> interface which is simply defining <code>__getMaximumSupportedVersion</code>
-method which returns the maximum supported version. Take a look at <code>Resources</code>
+method which returns the maximum supported version. Take a look at <code>Explorer</code>
 class for a sample implementation.</p>
 
 <p>Try this example and the version differences in the explorer <a href="explorer/index.html#!/v2" target="_blank">here</a></p>
 
 <blockquote>
   <p>This API Server is made using the following php files/folders</p>
-
+  
   <ul>
   <li><abbr title="_011_versioning/index.php">index.php</abbr>      (gateway)</li>
-  <li><abbr title="_011_versioning/v1/BMI.php">v1\BMI.php</abbr>      (api)</li>
-  <li><abbr title="_011_versioning/v2/BMI.php">v2\BMI.php</abbr>      (api)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Resources.php">Resources.php</abbr>      (api)</li>
+  <li><abbr title="Restler-v1/public/examples/_011_versioning/v1/BMI.php">v1\BMI.php</abbr>      (api)</li>
+  <li><abbr title="Restler-v2/public/examples/_011_versioning/v2/BMI.php">v2\BMI.php</abbr>      (api)</li>
   <li><abbr title="../../restler.php">restler.php</abbr>      (framework)</li>
-  <li><abbr title="../../vendor/Luracast/Restler/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
+  <li><abbr title="../../src/Format/JsonFormat.php">JsonFormat.php</abbr>      (format)</li>
   </ul>
 </blockquote>
 
 <p>This API Server exposes the following URIs</p>
 
-<pre><code>GET bmi                       ⇠ v2\BMI::index()
-GET resources                 ⇠ Luracast\Restler\Resources::index()
-GET resources/verifyaccess    ⇠ Luracast\Restler\Resources::verifyAccess()
-GET resources/{id}            ⇠ Luracast\Restler\Resources::get()
-GET v1/bmi                    ⇠ v1\BMI::index()
-GET v1/resources              ⇠ Luracast\Restler\Resources::index()
-GET v1/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-GET v1/resources/{id}         ⇠ Luracast\Restler\Resources::get()
-GET v2/bmi                    ⇠ v2\BMI::index()
-GET v2/resources              ⇠ Luracast\Restler\Resources::index()
-GET v2/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-GET v2/resources/{id}         ⇠ Luracast\Restler\Resources::get()
+<pre><code>GET bmi                 ⇠ v2\BMI::index()
+GET explorer/*          ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+GET explorer/swagger    ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
+GET v1/bmi              ⇠ v1\BMI::index()
+GET v1/explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+GET v1/explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
+GET v2/bmi              ⇠ v2\BMI::index()
+GET v2/explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+GET v2/explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
 </code></pre>
 
 <p>Try the following links in your browser</p>
@@ -370,9 +366,58 @@ GET v2/resources/{id}         ⇠ Luracast\Restler\Resources::get()
 }
 </code></pre></dd>
 
+<p>We expect the following behaviour from this example.</p>
+
+<pre><code class="gherkin"><br />@example11 @versioning
+Feature: Testing Versioning
+
+  Scenario: Access version 1 as default
+    When I request "examples/_011_versioning/bmi?height=190"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "array"
+    And the response has a "bmi" property
+    And the "message" property equals "Normal weight"
+    And the "metric.height" property equals "190 centimeters"
+
+  Scenario: Access version 1 by url
+    When I request "examples/_011_versioning/v1/bmi?height=190"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "array"
+    And the response has a "bmi" property
+    And the "message" property equals "Normal weight"
+    And the "metric.height" property equals "190 centimeters"
+
+  Scenario: Access version 2 by url and passing invalid argument
+    When I request "examples/_011_versioning/v2/bmi?height=190"
+    Then the response status code should be 400
+    And the response is JSON
+    And the type is "array"
+    And the "error.message" property equals "Bad Request: invalid height unit"
+
+  Scenario: Access version 2 by url
+    When I request "examples/_011_versioning/v2/bmi?height=190cm"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "array"
+    And the response has a "bmi" property
+    And the "message" property equals "Normal weight"
+    And the "metric.height" property equals "190 centimeters"
+
+</code></pre>
+
+<p>It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure <code>base_url</code>
+in <code>behat.yml</code> is updated according to your web server.</p>
+
+<pre><code class="bash">bin/behat  features/examples/_011_versioning.feature
+</code></pre>
+
 </article>
 <footer>
-&#169; 2010 <a title="Luracast.com" href="http://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
+&#169; 2010 <a title="Luracast.com" href="https://luracast.com"><img src="../resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
 </footer>
+<script>hljs.initHighlighting();</script>
 </body>
 </html>

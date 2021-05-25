@@ -16,8 +16,8 @@ Basic hello world example to get started with Restler 5.
 
 This API Server exposes the following URIs
 
-    GET say/hello⇠ Say::hello()
-    GET say/hi ⇠ Say::hi()
+    GET say/hello ⇠ Say::hello()
+    GET say/hi    ⇠ Say::hi()
 
 
 > **Note:-** If you have used Restler 2 before, you will wonder why

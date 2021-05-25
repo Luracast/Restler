@@ -1,6 +1,6 @@
 ## Versioning 
 
- This example requires `PHP >= 5.3` and taggeed under `versioning`
+ This example requires `PHP >= 5.4` and tagged under `versioning`
 
 
 This example shows how to version your API using namespace. Restler supports
@@ -37,7 +37,7 @@ Which will be `Luracast\WeightManagement\v2` for this example
 
 If a class remains the same across few versions of the api, we can implement
 `iProvideMultiVersionApi` interface which is simply defining `__getMaximumSupportedVersion`
-method which returns the maximum supported version. Take a look at `Resources`
+method which returns the maximum supported version. Take a look at `Explorer`
 class for a sample implementation.
 
 Try this example and the version differences in the explorer [here](explorer/index.html#!/v2)
@@ -47,24 +47,20 @@ Try this example and the version differences in the explorer [here](explorer/ind
 > * index.php      (gateway)
 > * v1\BMI.php      (api)
 > * v2\BMI.php      (api)
-> * Resources.php      (api)
 > * restler.php      (framework)
 > * JsonFormat.php      (format)
 
 This API Server exposes the following URIs
 
-    GET bmi                       ⇠ v2\BMI::index()
-    GET resources                 ⇠ Luracast\Restler\Resources::index()
-    GET resources/verifyaccess    ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET resources/{id}            ⇠ Luracast\Restler\Resources::get()
-    GET v1/bmi                    ⇠ v1\BMI::index()
-    GET v1/resources              ⇠ Luracast\Restler\Resources::index()
-    GET v1/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET v1/resources/{id}         ⇠ Luracast\Restler\Resources::get()
-    GET v2/bmi                    ⇠ v2\BMI::index()
-    GET v2/resources              ⇠ Luracast\Restler\Resources::index()
-    GET v2/resources/verifyaccess ⇠ Luracast\Restler\Resources::verifyAccess()
-    GET v2/resources/{id}         ⇠ Luracast\Restler\Resources::get()
+    GET bmi                 ⇠ v2\BMI::index()
+    GET explorer/*          ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+    GET explorer/swagger    ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
+    GET v1/bmi              ⇠ v1\BMI::index()
+    GET v1/explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+    GET v1/explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
+    GET v2/bmi              ⇠ v2\BMI::index()
+    GET v2/explorer/*       ⇠ Luracast\Restler\Explorer\v2\Explorer::get()
+    GET v2/explorer/swagger ⇠ Luracast\Restler\Explorer\v2\Explorer::swagger()
 
 
 
@@ -138,11 +134,62 @@ GET [v2/bmi?height=162cm](index.php/v2/bmi?height=162cm)
 
 
 
+We expect the following behaviour from this example.
+
+```gherkin
+
+@example11 @versioning
+Feature: Testing Versioning
+
+  Scenario: Access version 1 as default
+    When I request "examples/_011_versioning/bmi?height=190"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "array"
+    And the response has a "bmi" property
+    And the "message" property equals "Normal weight"
+    And the "metric.height" property equals "190 centimeters"
+
+  Scenario: Access version 1 by url
+    When I request "examples/_011_versioning/v1/bmi?height=190"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "array"
+    And the response has a "bmi" property
+    And the "message" property equals "Normal weight"
+    And the "metric.height" property equals "190 centimeters"
+
+  Scenario: Access version 2 by url and passing invalid argument
+    When I request "examples/_011_versioning/v2/bmi?height=190"
+    Then the response status code should be 400
+    And the response is JSON
+    And the type is "array"
+    And the "error.message" property equals "Bad Request: invalid height unit"
+
+  Scenario: Access version 2 by url
+    When I request "examples/_011_versioning/v2/bmi?height=190cm"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "array"
+    And the response has a "bmi" property
+    And the "message" property equals "Normal weight"
+    And the "metric.height" property equals "190 centimeters"
+
+```
+
+It can be tested by running the following command on terminal/command line
+from the project root (where the vendor folder resides). Make sure `base_url`
+in `behat.yml` is updated according to your web server.
+
+```bash
+bin/behat  features/examples/_011_versioning.feature
+```
+
+
 
 *[index.php]: _011_versioning/index.php
-*[v1\BMI.php]: _011_versioning/v1/BMI.php
-*[v2\BMI.php]: _011_versioning/v2/BMI.php
-*[Resources.php]: ../../vendor/Luracast/Restler/Resources.php
+*[v1\BMI.php]: Restler-v1/public/examples/_011_versioning/v1/BMI.php
+*[v2\BMI.php]: Restler-v2/public/examples/_011_versioning/v2/BMI.php
 *[restler.php]: ../../restler.php
-*[JsonFormat.php]: ../../vendor/Luracast/Restler/Format/JsonFormat.php
+*[JsonFormat.php]: ../../src/Format/JsonFormat.php
 

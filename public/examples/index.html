@@ -102,8 +102,8 @@
 <body>
     <nav class="floating-menu">
 <ul>
-<li><a title="Restler Home" target="_blank" href="http://luracast.com/products/restler/"><img src="resources/home.png" width="16" height="16"/> Home</a></li>
-<li><a title="Getting Started with Restler" href=".."><img src="resources/quickstart.png" width="16" height="16"/> Start</a></li>
+<li><a title="Restler Home" target="_blank" href="https://luracast.com/products/restler/"><img src="resources/home.png" width="16" height="16"/> Home</a></li>
+<li><a title="Getting Started with Restler" href=".."><img src="resources/documentation.png" width="16" height="16"/> Documentation</a></li>
 <!--<li><a title="Using Restler" href="#">Guide</a></li><li><a title="Restler API Reference" href="#">API</a></li>-->
 <li><a class="active" href="index.html"><img src="resources/examples.png" width="16" height="16"/> Examples</a></li>
 <li><a title="Share your knowledge by answering user questions in Stack Overflow." target="_blank" href="http://bit.ly/Restler-QA"><img src="resources/stackoverflow.png" width="16" height="16"/> Support</a></li>
@@ -131,6 +131,7 @@
             <li><a href="_008_documentation/readme.html" title="Commenting can be more rewarding">Documentation</a></li>
             <li><a href="_009_rate_limiting/readme.html" title="Abuse no more">Rate Limiting</a></li>
             <li><a href="_010_access_control/readme.html" title="Who can do what">Access Control</a></li>
+            <li><a href="_011_versioning/readme.html" title="using the URL">Versioning</a></li>
             <li><a href="_012_vendor_mime/readme.html" title="custom media type for versioning">Vendor MIME</a></li>
             <li><a href="_013_html/readme.html" title="rendering custom views">Html Format</a></li>
             <li><a href="_014_oauth2_client/readme.html" title="to consume protected API">OAuth2 Client</a></li>
@@ -223,7 +224,7 @@
 
 <li><tag title="Vendor Example(s)" data-content="&lt;a href=&quot;_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">vendor</tag></li>
 
-<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag></li>
+<li><tag title="Versioning Example(s)" data-content="&lt;a href=&quot;_011_versioning/readme.html&quot;&gt;Versioning&lt;/a&gt; &lt;a href=&quot;_012_vendor_mime/readme.html&quot;&gt;Vendor MIME&lt;/a&gt;">versioning</tag><badge>2</badge></li>
 
 <li><tag title="View Example(s)" data-content="&lt;a href=&quot;_013_html/readme.html&quot;&gt;Html Format&lt;/a&gt;">view</tag></li>
 
@@ -327,6 +328,12 @@ a robust access control system...">
 <span>Access Control
 <small><i>Who can do what</i></small>
 </span> <span class="right">&nbsp;10</span></a></li>
+ <li><a href="_011_versioning/readme.html" title="This example shows how to version your API using namespace. Restler supports
+both url based versioning (this example) and vendor specific media type
+versioning (next example)...">
+<span>Versioning
+<small><i>using the URL</i></small>
+</span> <span class="right">&nbsp;11</span></a></li>
  <li><a href="_012_vendor_mime/readme.html" title="This example shows how to use vendor specific media types for versioning
 
 ###Vendor-Specific Media Types
@@ -335,7 +342,7 @@ a robust access control system...">
 > controlled by a `vendor`...">
 <span>Vendor MIME
 <small><i>custom media type for versioning</i></small>
-</span> <span class="right">&nbsp;11</span></a></li>
+</span> <span class="right">&nbsp;12</span></a></li>
  <li><a href="_013_html/readme.html" title="A special format that lets us render a template with the api result
 
 It currently supports the following template libraries/formats
@@ -351,7 +358,7 @@ data and more information
 [![Debug View](...">
 <span>Html Format
 <small><i>rendering custom views</i></small>
-</span> <span class="right">&nbsp;12</span></a></li>
+</span> <span class="right">&nbsp;13</span></a></li>
  <li><a href="_014_oauth2_client/readme.html" title="### Setting up the client example
 
 In order to run this example on your localhost do the following
@@ -359,7 +366,7 @@ In order to run this example on your localhost do the following
 1...">
 <span>OAuth2 Client
 <small><i>to consume protected API</i></small>
-</span> <span class="right">&nbsp;13</span></a></li>
+</span> <span class="right">&nbsp;14</span></a></li>
  <li><a href="_015_oauth2_server/readme.html" title="### Setting up the server example
 
 In order to run this example on your localhost do the following
@@ -367,7 +374,7 @@ In order to run this example on your localhost do the following
 1...">
 <span>OAuth2 Server
 <small><i>offering protected API</i></small>
-</span> <span class="right">&nbsp;14</span></a></li>
+</span> <span class="right">&nbsp;15</span></a></li>
  <li><a href="_016_forms/readme.html" title="Forms is a utility class that builds web forms in one of the following in built styles
 
   - Plain Html 5
@@ -398,7 +405,7 @@ Forms is using Emmet templates, with which adding more styles is very easy
 Emmet Templates is built with a subset of Emmet as in [emmet...">
 <span>Forms
 <small><i>to capture user input</i></small>
-</span> <span class="right">&nbsp;15</span></a></li>
+</span> <span class="right">&nbsp;16</span></a></li>
 
 </ol>
 <p> </p>
@@ -412,5 +419,6 @@ Emmet Templates is built with a subset of Emmet as in [emmet...">
 <footer>
 &#169; 2010 <a title="Luracast.com" href="https://luracast.com"><img src="resources/Luracast_dark.png" width="180" height="32" title="Helping Developers with Tools, Utilities, Frameworks and Services"/></a>
 </footer>
+<script>hljs.initHighlighting();</script>
 </body>
 </html>
