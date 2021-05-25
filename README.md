@@ -17,7 +17,7 @@ Just deal with your business logic in php, restler will take care of the REST!
 ### Restler - *Better APIs by Design*
 
 * [Developer Home](https://luracast.com/products/restler/)
-* [Live Examples](https://restler5.luracast.com/)
+* [Documentation](https://restler5.luracast.com/) with live examples
 * Updates on [Facebook](https://www.facebook.com/Luracast) and [Twitter](https://twitter.com/Luracast)
 * [Features](#features)
 * [Installation](#installation)
@@ -68,19 +68,21 @@ Features
 Git Repository and the Branches
 -------------------------------
 
-1. Most stable and recent version is maintained at the `master` branch, previous versions are in the branches such
-   as `v1`, `v2`, `v3`, and `v4`.
+1. Most stable and recent version is at the `master` branch, previous versions are in the version branches such
+   as `v4`, `v3`, `v2`, and `v1`.
 
 2. Version branch with the current version such as `v5` is used for building up the next release. It's documentation may
    not be updated frequently and thus reserved for the daring ones.
 
 3. Feature branches such as `features/html` and `features/router` are purely for experimentation purpose to try out a
-   feature
+   feature. They may be merged when ready.
 
-Installation
-------------
+Test Drive
+----------
 
-Make sure PHP 5.4 or above is available on your server. We recommended using the latest version for better performance.
+Install this repository to try out the examples.
+
+> Make sure PHP 5.4 or above is available on your server. We recommended using the latest version for better performance.
 
 ### 1. Install Composer
 
@@ -166,8 +168,25 @@ All set, Happy RESTling! :)
 Quick Start Guide
 -----------------
 
-Once you have got restler installed with the above steps, you can quickly create your application by following these
-steps
+We have two options to create your own restler api server
+
+ 1. Most convenient option is using application templates such as [Restler Application](https://github.com/Luracast/Restler-Framework) 
+    which has integrations with many packages to help us with the business logic as well. 
+    If you choose this option, select a branch in that repository and proceed with 
+    the instructions available there.
+    
+ 2. Create a project from scratch so that you have full control over every aspect of your application. 
+    If you choose this option, follow along with the steps below.
+    - create a folder to hold your project and open it in the terminal.
+    - run `composer init` and follow along to create `composer.json`
+    - when it is asking for dependencies, type `restler/framework` and `^5` for the version constraint.
+    - alternatively, you can leave it blank and create the composer.json first and then run `composer require restler/framework:^5`
+    
+> we are using `restler/framework` instead of `luracast/restler` to reduce the space required for the package. 
+> It is coming from https://github.com/Luracast/Restler-Framework it contains only the contents of src folder here.
+    
+> Even when you are building from scratch, checking out the application templates will help with folder structure 
+> decisions and finding other useful packages.
 
 ### 1. Write API
 
@@ -175,11 +194,12 @@ Create your **API classes** with all needed public and protected methods
 
 ### 2. Open the Gateway
 
-Create the **gateway (index.php)** as follows
+Create the **gateway (public/index.php)** as follows
 
 ```php
 <?php
-require_once '../restler.php';
+require_once __DIR__.'/../vendor/autoload.php';
+
 use Luracast\Restler\Restler;
 
 $r = new Restler();
@@ -248,7 +268,7 @@ server {
 
 ```php
 <?php
-require_once '../restler.php';
+require_once __DIR__.'/../vendor/autoload.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 //set the defaults to match your requirements
@@ -256,17 +276,10 @@ Defaults::$throttle = 20; //time in milliseconds for bandwidth throttling
 //setup restler
 $r = new Restler();
 $r->addAPIClass('YourApiClassNameHere'); // repeat for more
-$r->addAPIClass('Resources'); //from restler framework for API Explorer
+$r->addAPIClass('Explorer'); //from restler framework for API Explorer
 $r->addFilterClass('RateLimit'); //Add Filters as needed
 $r->handle(); //serve the response
 ```
-
-If you have successfully completed Installation Step 2, you should have
-[Restler API Explorer](https://github.com/Luracast/Restler-API-Explorer) installed in `vendor/Luracast/explorer` folder.
-Create a symbolic link of
-`vendor/Luracast/explorer/dist` or copy the folder and name it as `explorer`
-
-Place the explorer in the same folder as the `index.php`
 
 Explore the api and try it out by openings `explorer/index.html` from the web root on your browser
 
@@ -336,9 +349,9 @@ Change Log
 * Adds PassThrough class to serve files outside your web root, including secure downloads
 * Adds Explorer class (v1 swagger 1.2 spec, and v2 swagger 2.0 spec) as a potential 
   replacement to Resources class (swagger 1.1 spec)
-    * Explorer comes bundled with Restler Explorer so that you need not manually download and configure it
+    * Explorer comes bundled with the html, css, and assets. So that you need not manually download and configure it
     * Explorer combines the parameters that are expected in the request body to create a unique model for swagger
-    * Restler Explorer comes bundled, so you can map to it to your url of choice. 
+    * Since Restler Explorer comes bundled, you can map to it to your url of choice. 
       For example `$restler->addAPIClass("Luracast/Restler/Explorer", 'swagger')` maps it to `/swagger`.
     * Explorer metadata can be easily customized with ExplorerInfo class
 

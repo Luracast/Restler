@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Luracast Restler  Forms</title>
+<title>Luracast Restler  Stages</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="examples/resources/highlight.css">
 <link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
@@ -93,96 +93,162 @@ var _gaq = _gaq || [];
     </nav>
 <article>
 
-<p><a id="forms" class="anchor"></a></p>
-<h1>Forms</h1>
+<p><a id="stages" class="anchor"></a></p>
+<h1>Stages</h1>
 
-<p>Forms class generates html forms from http method and target url.</p>
+<p><a id="stages-of-handling-a-request-in-restler" class="anchor"></a></p>
+<h3>Stages of handling a request in restler</h3>
 
-<p>Following attributes can be used for customizing the generated forms.</p>
+<p>When restler receives a request it handles it in the following stages:</p>
 
-<p><a id="label" class="anchor"></a></p>
-<h2>@label</h2>
+<ol>
+<li>
+<strong>get</strong>: Restler identifies request method, url, data and format</li>
+<li>
+<strong>route</strong>: Finding out a matching route for the request</li>
+<li>
+<strong>negotiate</strong> Applies content negotiation as requested by the api client.</li>
+<li>
+<strong>preAuthFilter</strong>: If there is a filer applicable to the route before authentication it is applied.</li>
+<li>
+<strong>Authenticate</strong>: If the selected route requires authentication it is applied.</li>
+<li>
+<strong>postAuthFilter</strong>: If there is a filer applicable to the route after successful authentication it is applied.</li>
+<li>
+<strong>validate</strong>: Applies validation for each and every parameter as defined through the phpdoc comments.</li>
+<li>
+<strong>call</strong>: Finally calls the php method with the validated parameters.</li>
+<li>
+<strong>message</strong>: Return value of the above call sent as the response in the selected format.</li>
+</ol>
 
-<p><a id="with--param" class="anchor"></a></p>
-<h3>With @param</h3>
+<p>A successful request goes through all the above stages. Whereas a failed request runs until the stage of the failure
+and then returns a composed failure message taking the fail fast approach for improved performance.</p>
 
-<p><strong>Syntax:</strong></p>
+<p>We can subscribe to any of the following events to listen to them.</p>
 
-<pre><code>@param type $name [Description] {@label Custom Name}
+<table>
+<thead>
+<tr>
+  <th>method</th>
+  <th>signature</th>
+  <th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>onGet</td>
+  <td>onGet(Callable $function)</td>
+  <td>fired before reading the request details</td>
+</tr>
+<tr>
+  <td>onRoute</td>
+  <td>onRoute(Callable $function)</td>
+  <td>fired before finding the api method</td>
+</tr>
+<tr>
+  <td>onNegotiate</td>
+  <td>onNegotiate(Callable $function)</td>
+  <td>fired before content negotiation</td>
+</tr>
+<tr>
+  <td>onPreAuthFilter</td>
+  <td>onPreAuthFilter(Callable $function)</td>
+  <td>fired before pre auth filtering</td>
+</tr>
+<tr>
+  <td>onAuthenticate</td>
+  <td>onAuthenticate(Callable $function)</td>
+  <td>fired before auth</td>
+</tr>
+<tr>
+  <td>onPostAuthFilter</td>
+  <td>onPostAuthFilter(Callable $function)</td>
+  <td>fired before post auth filtering onValidate()</td>
+</tr>
+<tr>
+  <td>onValidate</td>
+  <td>onValidate(Callable $function)</td>
+  <td>fired before validation</td>
+</tr>
+<tr>
+  <td>onCall</td>
+  <td>onCall(Callable $function)</td>
+  <td>fired before api method call</td>
+</tr>
+<tr>
+  <td>onCompose</td>
+  <td>onCompose(Callable $function)</td>
+  <td>fired before composing response</td>
+</tr>
+<tr>
+  <td>onRespond</td>
+  <td>onRespond(Callable $function)</td>
+  <td>fired before sending response</td>
+</tr>
+<tr>
+  <td>onComplete</td>
+  <td>onComplete(Callable $function)</td>
+  <td>fired after sending response</td>
+</tr>
+<tr>
+  <td>onMessage</td>
+  <td>onMessage(Callable $function)</td>
+  <td>fired before composing error response</td>
+</tr>
+</tbody>
+</table>
+
+<p>These methods are available both statically and dynamically at runtime. so both the following examples are valid.</p>
+
+<p><a id="usage-examples" class="anchor"></a></p>
+<h3>Usage Examples:</h3>
+
+<p><a id="1--logging-successful-api-responses" class="anchor"></a></p>
+<h4>1. Logging successful api responses</h4>
+
+<p>We can use <code>onComplete</code> method for logging.</p>
+
+<pre><code class="php">require_once '../vendor/autoload.php';
+
+use Luracast\Restler\Restler;
+use Luracast\Restler\User;
+
+$r = new Restler();
+
+$r-&gt;onComplete(function () use ($r) {
+    $log = array(
+        'api'     =&gt;json_encode($r-&gt;apiMethodInfo-&gt;parameters),
+        'ip'      =&gt; User::getIpAddress(),
+        'route'   =&gt; $r-&gt;apiMethodInfo-&gt;className.'::'.$r-&gt;apiMethodInfo-&gt;methodName,
+        'method'  =&gt; $r-&gt;requestMethod,
+        'parameters' =&gt; json_encode($r-&gt;apiMethodInfo-&gt;parameters)
+    );
+    print_r($log); //your logging function here!
+});
+
+$r-&gt;addAPIClass('Say');
+$r-&gt;handle();
 </code></pre>
 
-<p><strong>Example:</strong></p>
+<p><a id="2--lazily-setting-form-style" class="anchor"></a></p>
+<h4>2. Lazily setting form style.</h4>
 
-<pre><code>@param string $name [Description] {@label Customer's Name}
+<pre><code class="php">require_once '../vendor/autoload.php';
+
+use Luracast\Restler\Restler;
+use Luracast\Restler\UI\Forms;
+use Luracast\Restler\UI\Foundation5Form;
+
+//no dependency on restler instance so it can be called statically
+Restler::onCall(function () { 
+    Forms::setStyles(new Foundation5Form());
+});
+
+$r = new Restler();
+$r-&gt;addAPIClass('Something');
+$r-&gt;handle();
 </code></pre>
-
-<p>Restler automatically creates a label for each param by using camelCasing and underscore in parameter names. For example <code>$firstName</code>, <code>$first_name</code> to <code>First Name</code>. If you want to override and specify a label yourself use the above annotation.</p>
-
-<hr>
-
-<p><a id="with--return" class="anchor"></a></p>
-<h3>With @return</h3>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@return type {@label Custom Name}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@return array {@label Sign In}
-</code></pre>
-
-<p>Restler by default uses <code>Submit</code> as the default text for form submit buttons. You can customize that using the above annotation.</p>
-
-<p><a id="field" class="anchor"></a></p>
-<h2>@field</h2>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@param type $name [Description] {@field InputType}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@param int $age [Description] {@field number} {@min 6} {@max 22}
-</code></pre>
-
-<p>Html field type used for capturing the value. 
-Some possible values are,
- - input
- - checkbox (for boolean)
- - radio (requires @choice)
- - password
- - select (requires @choice)
- - text
- - hidden</p>
-
-<p>When not specified, it will try to guess the field type</p>
-
-<p><a id="message" class="anchor"></a></p>
-<h2>@message</h2>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@param type $name [Description] {@message text}
-</code></pre>
-
-<p><strong>Example:</strong></p>
-
-<pre><code>@param int $age [Description] {@message age restriction requires age between 6 and 22} {@min 6} {@max 22}
-</code></pre>
-
-<p>Custom error message to display when validation fails.</p>
-
-<p><a id="emmet-templates" class="anchor"></a></p>
-<h2>Emmet Templates</h2>
-
-<p><a id="form---input---textarea---radio---select---submit--and--fieldset" class="anchor"></a></p>
-<h3>@form, @input, @textarea, @radio, @select, @submit, and @fieldset</h3>
-
-<p>Allows you to customize how a form element rendering from the selected form style.
-Use Emmet syntax for that purpose. Take a look at FormStyles.php for an example.</p>
 
 </article>
 </body>

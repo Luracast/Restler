@@ -86,6 +86,8 @@ var _gaq = _gaq || [];
                 <ul><li><a href="security.html#supported-versions" title="Security - Supported Versions">Supported Versions</a></li></ul>
                 <ul><li><a href="security.html#reporting-a-vulnerability" title="Security - Reporting A Vulnerability">Reporting A Vulnerability</a></li></ul>
             </li>
+            <li><a href="stages.html#stages" title="Stages">Stages</a>
+            </li>
 
         </ul>
     </nav>
@@ -118,7 +120,8 @@ var _gaq = _gaq || [];
 
 <ul>
 <li><a href="https://luracast.com/products/restler/" target="_blank">Developer Home</a></li>
-<li><a href="https://restler5.luracast.com/" target="_blank">Live Examples</a></li>
+<li>
+<a href="https://restler5.luracast.com/" target="_blank">Documentation</a> with live examples</li>
 <li>Updates on <a href="https://www.facebook.com/Luracast" target="_blank">Facebook</a> and <a href="https://twitter.com/Luracast" target="_blank">Twitter</a>
 </li>
 <li><a href="#features" target="_blank">Features</a></li>
@@ -214,18 +217,22 @@ var _gaq = _gaq || [];
 <h2>Git Repository and the Branches</h2>
 
 <ol>
-<li><p>Most stable and recent version is maintained at the <code>master</code> branch, previous versions are in the branches such
-as <code>v1</code>, <code>v2</code>, <code>v3</code>, and <code>v4</code>.</p></li>
+<li><p>Most stable and recent version is at the <code>master</code> branch, previous versions are in the version branches such
+as <code>v4</code>, <code>v3</code>, <code>v2</code>, and <code>v1</code>.</p></li>
 <li><p>Version branch with the current version such as <code>v5</code> is used for building up the next release. It's documentation may
 not be updated frequently and thus reserved for the daring ones.</p></li>
 <li><p>Feature branches such as <code>../features/html</code> and <code>../features/router</code> are purely for experimentation purpose to try out a
-feature</p></li>
+feature. They may be merged when ready.</p></li>
 </ol>
 
-<p><a id="installation" class="anchor"></a></p>
-<h2>Installation</h2>
+<p><a id="test-drive" class="anchor"></a></p>
+<h2>Test Drive</h2>
 
-<p>Make sure PHP 5.4 or above is available on your server. We recommended using the latest version for better performance.</p>
+<p>Install this repository to try out the examples.</p>
+
+<blockquote>
+  <p>Make sure PHP 5.4 or above is available on your server. We recommended using the latest version for better performance.</p>
+</blockquote>
 
 <p><a id="1--install-composer" class="anchor"></a></p>
 <h3>1. Install Composer</h3>
@@ -324,8 +331,37 @@ files and folders.</p>
 <p><a id="quick-start-guide" class="anchor"></a></p>
 <h2>Quick Start Guide</h2>
 
-<p>Once you have got restler installed with the above steps, you can quickly create your application by following these
-steps</p>
+<p>We have two options to create your own restler api server</p>
+
+<ol>
+<li><p>Most convenient option is using application templates such as <a href="https://github.com/Luracast/Restler-Framework" target="_blank">Restler Application</a> 
+which has integrations with many packages to help us with the business logic as well. 
+If you choose this option, select a branch in that repository and proceed with 
+the instructions available there.</p></li>
+<li>
+<p>Create a project from scratch so that you have full control over every aspect of your application. 
+If you choose this option, follow along with the steps below.</p>
+
+<ul>
+<li>create a folder to hold your project and open it in the terminal.</li>
+<li>run <code>composer init</code> and follow along to create <code>composer.json</code>
+</li>
+<li>when it is asking for dependencies, type <code>restler/framework</code> and <code>^5</code> for the version constraint.</li>
+<li>alternatively, you can leave it blank and create the composer.json first and then run <code>composer require restler/framework:^5</code>
+</li>
+</ul>
+</li>
+</ol>
+
+<blockquote>
+  <p>we are using <code>restler/framework</code> instead of <code>luracast/restler</code> to reduce the space required for the package. 
+  It is coming from https://github.com/Luracast/Restler-Framework it contains only the contents of src folder here.</p>
+</blockquote>
+
+<blockquote>
+  <p>Even when you are building from scratch, checking out the application templates will help with folder structure 
+  decisions and finding other useful packages.</p>
+</blockquote>
 
 <p><a id="1--write-api" class="anchor"></a></p>
 <h3>1. Write API</h3>
@@ -338,7 +374,8 @@ steps</p>
 <p>Create the <strong>gateway (index.php)</strong> as follows</p>
 
 <pre><code class="php">&lt;?php
-require_once '../restler.php';
+require_once __DIR__.'/../vendor/autoload.php';
+
 use Luracast\Restler\Restler;
 
 $r = new Restler();
@@ -410,7 +447,7 @@ listening on 127.0.0.1:9000</p>
 <p><strong>Fine tune to suit your needs</strong></p>
 
 <pre><code class="php">&lt;?php
-require_once '../restler.php';
+require_once __DIR__.'/../vendor/autoload.php';
 use Luracast\Restler\Restler;
 use Luracast\Restler\Defaults;
 //set the defaults to match your requirements
@@ -418,17 +455,10 @@ Defaults::$throttle = 20; //time in milliseconds for bandwidth throttling
 //setup restler
 $r = new Restler();
 $r-&gt;addAPIClass('YourApiClassNameHere'); // repeat for more
-$r-&gt;addAPIClass('Resources'); //from restler framework for API Explorer
+$r-&gt;addAPIClass('Explorer'); //from restler framework for API Explorer
 $r-&gt;addFilterClass('RateLimit'); //Add Filters as needed
 $r-&gt;handle(); //serve the response
 </code></pre>
-
-<p>If you have successfully completed Installation Step 2, you should have
-<a href="https://github.com/Luracast/Restler-API-Explorer" target="_blank">Restler API Explorer</a> installed in <code>vendor/Luracast/explorer</code> folder.
-Create a symbolic link of
-<code>vendor/Luracast/explorer/dist</code> or copy the folder and name it as <code>explorer</code></p>
-
-<p>Place the explorer in the same folder as the <code>index.php</code></p>
 
 <p>Explore the api and try it out by openings <code>explorer/index.html</code> from the web root on your browser</p>
 
@@ -509,9 +539,9 @@ with <code>composer serve</code> in another window.</li>
 replacement to Resources class (swagger 1.1 spec)
 
 <ul>
-<li>Explorer comes bundled with Restler Explorer so that you need not manually download and configure it</li>
+<li>Explorer comes bundled with the html, css, and assets. So that you need not manually download and configure it</li>
 <li>Explorer combines the parameters that are expected in the request body to create a unique model for swagger</li>
-<li>Restler Explorer comes bundled, so you can map to it to your url of choice. 
+<li>Since Restler Explorer comes bundled, you can map to it to your url of choice. 
 For example <code>$restler-&gt;addAPIClass("Luracast/Restler/Explorer", 'swagger')</code> maps it to <code>/swagger</code>.</li>
 <li>Explorer metadata can be easily customized with ExplorerInfo class</li>
 </ul>
