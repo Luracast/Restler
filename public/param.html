@@ -9,10 +9,6 @@
 <script type="text/javascript" src="examples/resources/jquery-3.6.0.min.js"></script>
 
 <script type="text/javascript">
-  hljs.initHighlightingOnLoad();
-</script>
-
-<script type="text/javascript">
 var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-23777019-2']);
   _gaq.push(['_trackPageview']);
@@ -335,7 +331,7 @@ class Author
     public $email = 'name@domain.com';
 }</code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/type.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/type.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Type Attribute
@@ -803,7 +799,7 @@ class MinMax
     }
 }</code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/minmax.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/minmax.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @min @max
 Feature: Minimum and Maximum
@@ -942,7 +938,7 @@ class MinMaxFix
     }
 }</code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/minmaxfix.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/minmaxfix.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @min @max @fix
 Feature: Minimum and Maximum with Fix
@@ -1058,7 +1054,7 @@ class Validation
 
 } </code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/validation.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/validation.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Validation
@@ -1135,7 +1131,7 @@ class Validation
 
 } </code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/validation.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/validation.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Validation
@@ -1187,5 +1183,6 @@ Feature: Validation
 <p>Used by the explorer to prefill the value for the parameter</p>
 
 </article id="top">
+<script>hljs.initHighlighting();</script>
 </body>
 </html>
