@@ -135,7 +135,7 @@ primarily used by API Explorer to build the interface</p>
 <pre><code>@param string $email email id {@type email}
 </code></pre>
 
-<p>Sub types for validation and documentation purpose. Email will validate the
+<p>Subtypes for validation and documentation purpose. Email will validate the
 given string as email. Date and datetime will be validated as standard mysql
 date formats respectively. Timestamp will be validated as Unix timestamp.</p>
 
@@ -369,7 +369,7 @@ class Author
     public $email = 'name@domain.com';
 }</code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/type.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/type.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Type Attribute
@@ -884,7 +884,7 @@ class MinMax
     }
 }</code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/minmax.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/minmax.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @min @max
 Feature: Minimum and Maximum
@@ -1024,7 +1024,7 @@ class MinMaxFix
     }
 }</code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/minmaxfix.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/minmaxfix.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @min @max @fix
 Feature: Minimum and Maximum with Fix
@@ -1159,7 +1159,7 @@ class Validation
 
 } </code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/validation.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/validation.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Validation
@@ -1373,7 +1373,7 @@ class Validation
 
 } </code></pre>
 <strong>Test:</strong><p>Running the following command on the terminal from the project root</p>
-<pre><code class="bash">bin/behat  features/tests/param/validation.feature</code></pre>
+<pre><code class="bash">vendor/bin/behat  features/tests/param/validation.feature</code></pre>
 <p>Will test the above api for the following features</p>
 <pre><code class="gherkin">@param @type
 Feature: Validation

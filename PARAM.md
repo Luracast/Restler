@@ -50,7 +50,7 @@ array
 
     @param string $email email id {@type email}
     
-Sub types for validation and documentation purpose. Email will validate the
+Subtypes for validation and documentation purpose. Email will validate the
 given string as email. Date and datetime will be validated as standard mysql
 date formats respectively. Timestamp will be validated as Unix timestamp.
 
