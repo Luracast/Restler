@@ -4,6 +4,7 @@ namespace Luracast\Restler;
 use Luracast\Restler\Data\ApiMethodInfo;
 use Luracast\Restler\Data\Text;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 use Exception;
@@ -52,9 +53,10 @@ class Routes
      *
      * @param string $className
      * @param string $resourcePath
-     * @param int    $version
+     * @param int $version
      *
      * @throws RestException
+     * @throws ReflectionException
      */
     public static function addAPIClass($className, $resourcePath = '', $version = 1)
     {
@@ -165,7 +167,7 @@ class Routes
                 $m ['default'] = $defaults [$position];
                 $m ['required'] = !$param->isOptional();
                 $contentType = Util::nestedValue($p,'type');
-                if ($type == 'array' && $contentType && $qualified = Scope::resolve($contentType, $scope)) {
+                if ($type === 'array' && $contentType && $qualified = Scope::resolve($contentType, $scope)) {
                     list($p['type'], $children, $modelName) = static::getTypeAndModel(
                         new ReflectionClass($qualified), $scope,
                         $className . Text::title($methodUrl), $p
