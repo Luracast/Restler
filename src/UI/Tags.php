@@ -163,7 +163,7 @@ class Tags implements ArrayAccess, Countable
 
     public function __get($name)
     {
-        if ('parent' == $name)
+        if ('parent' === $name)
             return $this->_parent;
         if (isset($this->attributes[$name]))
             return $this->attributes[$name];
@@ -172,7 +172,7 @@ class Tags implements ArrayAccess, Countable
 
     public function __set($name, $value)
     {
-        if ('parent' == $name) {
+        if ('parent' === $name) {
             if ($this->_parent) {
                 unset($this->_parent[array_search($this, $this->_parent->children)]);
             }

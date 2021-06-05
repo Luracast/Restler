@@ -198,10 +198,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         } elseif (false !== ($pos = strpos($id, '-v'))) {
             //$version = intval(substr($id, $pos + 2));
             $id = substr($id, 0, $pos);
-        } elseif ($id[0] == 'v' && is_numeric($v = substr($id, 1))) {
+        } elseif ($id[0] === 'v' && is_numeric($v = substr($id, 1))) {
             $id = '';
             //$version = $v;
-        } elseif ($id == 'root' || $id == 'index') {
+        } elseif ($id === 'root' || $id === 'index') {
             $id = '';
         }
         $this->_models = new stdClass();
@@ -244,14 +244,14 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
                 foreach (static::$excludedPaths as $exclude) {
                     if (empty($exclude)) {
-                        if ($fullPath == $exclude)
+                        if ($fullPath === $exclude)
                             continue 2;
                     } elseif (Text::beginsWith($fullPath, $exclude)) {
                         continue 2;
                     }
                 }
                 $m = $route['metadata'];
-                if ($id == '' && $m['resourcePath'] != '') {
+                if ($id === '' && $m['resourcePath'] != '') {
                     continue;
                 }
                 if (isset($filter[$httpMethod][$fullPath])) {
@@ -272,10 +272,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
                 $parts = explode('/', $fullPath);
                 $pos = count($parts) - 1;
-                if (count($parts) == 1 && $httpMethod == 'GET') {
+                if (count($parts) === 1 && $httpMethod === 'GET') {
                 } else {
                     for ($i = 0; $i < count($parts); $i++) {
-                        if (strlen($parts[$i]) && $parts[$i][0] == '{') {
+                        if (strlen($parts[$i]) && $parts[$i][0] === '{') {
                             $pos = $i - 1;
                             break;
                         }
@@ -325,7 +325,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     foreach ($m['param'] as $param) {
                         //combine body params as one
                         $p = $this->_parameter($param);
-                        if ($p->paramType == 'body') {
+                        if ($p->paramType === 'body') {
                             $this->_appendToBody($p);
                         } else {
                             $operation->parameters[] = $p;
@@ -349,7 +349,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                             $this->_model($responseClass);
                             $operation->responseClass
                                 = $this->_noNamespace($responseClass);
-                        } elseif (strtolower($responseClass) == 'array') {
+                        } elseif (strtolower($responseClass) === 'array') {
                             $operation->responseClass = 'Array';
                             $rt = $m['return'];
                             if (isset(
@@ -370,7 +370,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
 
                 if (static::$groupOperations) {
                     foreach ($r->apis as $a) {
-                        if ($a->path == "$prefix/$fullPath") {
+                        if ($a->path === "$prefix/$fullPath") {
                             $api = $a;
                             break;
                         }
@@ -531,16 +531,16 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             if (is_array($type)) {
                 $type = array_shift($type);
             }
-            if ($type == 'array') {
+            if ($type === 'array') {
                 $contentType = Util::nestedValue(
                     $param,
                     CommentParser::$embeddedDataName,
                     'type'
                 );
                 if ($contentType) {
-                    if ($contentType == 'indexed') {
+                    if ($contentType === 'indexed') {
                         $type = 'Array';
-                    } elseif ($contentType == 'associative') {
+                    } elseif ($contentType === 'associative') {
                         $type = 'Object';
                     } else {
                         $type = "Array[$contentType]";
@@ -599,7 +599,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $n = isset($this->_bodyParam['names'])
             ? array_values($this->_bodyParam['names'])
             : array();
-        if (count($n) == 1) {
+        if (count($n) === 1) {
             if (isset($this->_models->{$n[0]->dataType})) {
                 // ============ custom class ===================
                 $r = $n[0];
@@ -648,7 +648,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                     $r->defaultValue = "[ ]";
                     return $r;
                 }
-            } elseif ($n[0]->dataType == 'Array') {
+            } elseif ($n[0]->dataType === 'Array') {
                 // ============ array ===============================
                 $r = $n[0];
                 $r->description = "Paste JSON array data here"
@@ -657,7 +657,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 $r->defaultValue = "[\n    {\n        \""
                     . "property\" : \"\"\n    }\n]";
                 return $r;
-            } elseif ($n[0]->dataType == 'Object') {
+            } elseif ($n[0]->dataType === 'Object') {
                 // ============ object ==============================
                 $r = $n[0];
                 $r->description = "Paste JSON object data here"
@@ -671,7 +671,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $p = array_values($this->_bodyParam['description']);
         $r->name = 'REQUEST_BODY';
         $r->description = "Paste JSON data here";
-        if (count($p) == 0 && $this->_fullDataRequested) {
+        if (count($p) === 0 && $this->_fullDataRequested) {
             $r->required = $this->_fullDataRequested->required;
             $r->defaultValue = "{\n    \"property\" : \"\"\n}";
         } else {
@@ -763,7 +763,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             ) {
                 $properties[$key]['required'] = true;
             }
-            if ($type == 'Array') {
+            if ($type === 'Array') {
                 $itemType = Util::nestedValue(
                     $propertyMetaData,
                     CommentParser::$embeddedDataName,
@@ -905,7 +905,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
             $nextVersion = $version + 1;
             if ($nextVersion <= $this->restler->getApiVersion()) {
                 list($status, $data) = $this->_loadResource("/v$nextVersion/resources.json");
-                if ($status == 200) {
+                if ($status === 200) {
                     $r->apis = array_merge($r->apis, $data->apis);
                     $r->apiVersion = $data->apiVersion;
                 }
@@ -936,7 +936,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         foreach ($allRoutes as $fullPath => $routes) {
             $path = explode('/', $fullPath);
             $resource = isset($path[0]) ? $path[0] : '';
-            if ($resource == 'resources' || Text::endsWith($resource, 'index'))
+            if ($resource === 'resources' || Text::endsWith($resource, 'index'))
                 continue;
             foreach ($routes as $httpMethod => $route) {
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
@@ -948,7 +948,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
 
                 foreach (static::$excludedPaths as $exclude) {
                     if (empty($exclude)) {
-                        if ($fullPath == $exclude)
+                        if ($fullPath === $exclude)
                             continue 2;
                     } elseif (Text::beginsWith($fullPath, $exclude)) {
                         continue 2;
@@ -956,8 +956,8 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 }
 
                 $res = $resource
-                    ? ($version == 1 ? "/resources/$resource" : "/v$version/resources/$resource-v$version")
-                    : ($version == 1 ? "/resources/root" : "/v$version/resources/root-v$version");
+                    ? ($version === 1 ? "/resources/$resource" : "/v$version/resources/$resource-v$version")
+                    : ($version === 1 ? "/resources/root" : "/v$version/resources/root-v$version");
 
                 if (empty($map[$res])) {
                     $map[$res] = isset(

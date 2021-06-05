@@ -116,16 +116,16 @@ class Forms implements iFilter
                 $action = $restler->url;
             }
 
-            $info = $restler->url == $action
-            && Util::getRequestMethod() == $method
+            $info = $restler->url === $action
+            && Util::getRequestMethod() === $method
                 ? $restler->apiMethodInfo
                 : Routes::find(
                     trim($action, '/'),
                     $method,
                     $restler->getRequestedApiVersion(),
                     static::$preFill ||
-                    ($restler->requestMethod == $method &&
-                        $restler->url == $action)
+                    ($restler->requestMethod === $method &&
+                        $restler->url === $action)
                         ? $restler->getRequestData()
                         : array()
                 );
@@ -242,13 +242,13 @@ class Forms implements iFilter
             $value = Util::nestedValue($values, $k);
             if (
                 is_scalar($value) ||
-                ($p['type'] == 'array' && is_array($value) && $value == array_values($value)) ||
-                is_object($value) && $p['type'] == get_class($value)
+                ($p['type'] === 'array' && is_array($value) && $value === array_values($value)) ||
+                is_object($value) && $p['type'] === get_class($value)
             ) {
                 $p['value'] = $value;
             }
             static::$validationInfo = $v = new ValidationInfo($p);
-            if ($v->from == 'path') {
+            if ($v->from === 'path') {
                 continue;
             }
             if (!empty($v->children)) {
@@ -257,13 +257,13 @@ class Forms implements iFilter
                     $value = Util::nestedValue($v->value, $n);
                     if (
                         is_scalar($value) ||
-                        ($c['type'] == 'array' && is_array($value) && $value == array_values($value)) ||
-                        is_object($value) && $c['type'] == get_class($value)
+                        ($c['type'] === 'array' && is_array($value) && $value === array_values($value)) ||
+                        is_object($value) && $c['type'] === get_class($value)
                     ) {
                         $c['value'] = $value;
                     }
                     static::$validationInfo = $vc = new ValidationInfo($c);
-                    if ($vc->from == 'path') {
+                    if ($vc->from === 'path') {
                         continue;
                     }
                     $vc->name = $v->name . '[' . $vc->name . ']';
@@ -299,7 +299,7 @@ class Forms implements iFilter
         $options = array();
         $name = $p->name;
         $multiple = null;
-        if ($p->type == 'array' && $p->contentType != 'associative') {
+        if ($p->type === 'array' && $p->contentType != 'associative') {
             $name .= '[]';
             $multiple = true;
         }
@@ -309,12 +309,12 @@ class Forms implements iFilter
                 $option['text'] = isset($p->rules['select'][$i])
                     ? $p->rules['select'][$i]
                     : $choice;
-                if ($choice == $p->value) {
+                if ($choice === $p->value) {
                     $option['selected'] = true;
                 }
                 $options[] = $option;
             }
-        } elseif ($p->type == 'boolean' || $p->type == 'bool') {
+        } elseif ($p->type === 'boolean' || $p->type === 'bool') {
             if (Text::beginsWith($type, 'radio') || Text::beginsWith($type, 'select')) {
                 $options[] = array(
                     'name'  => $p->name,
@@ -362,13 +362,13 @@ class Forms implements iFilter
                 $r += $p->rules;
             }
         }
-        if ($type == 'file') {
+        if ($type === 'file') {
             static::$fileUpload = true;
             if (empty($r['accept'])) {
                 $r['accept'] = implode(', ', UploadFormat::$allowedMimeTypes);
             }
         }
-        if (!empty(Validator::$exceptions[$name]) && static::$info->url == Scope::get('Restler')->url) {
+        if (!empty(Validator::$exceptions[$name]) && static::$info->url === Scope::get('Restler')->url) {
             $r['error'] = 'has-error';
             $r['message'] = Validator::$exceptions[$p->name]->getMessage();
         }
@@ -401,7 +401,7 @@ class Forms implements iFilter
             return $p->$type;
         }
         if ($p->choice) {
-            return $p->type == 'array' ? 'checkbox' : 'select';
+            return $p->type === 'array' ? 'checkbox' : 'select';
         }
         switch ($p->$type) {
             case 'boolean':
@@ -413,7 +413,7 @@ class Forms implements iFilter
             case 'array':
                 return static::guessFieldType($p, 'contentType');
         }
-        if ($p->name == 'password') {
+        if ($p->name === 'password') {
             return 'password';
         }
         return 'text';
@@ -452,7 +452,7 @@ class Forms implements iFilter
      */
     public function __isAllowed()
     {
-        if (session_id() == '') {
+        if (session_id() === '') {
             session_start();
         }
         /** @var Restler $restler */
@@ -460,7 +460,7 @@ class Forms implements iFilter
         $url = $restler->url;
         foreach (static::$excludedPaths as $exclude) {
             if (empty($exclude)) {
-                if ($url == $exclude) {
+                if ($url === $exclude) {
                     return true;
                 }
             } elseif (Text::beginsWith($url, $exclude)) {
@@ -475,7 +475,7 @@ class Forms implements iFilter
                 isset($_POST[static::FORM_KEY]) &&
                 ($target = Util::getRequestMethod() . ' ' . $restler->url) &&
                 isset($_SESSION[static::FORM_KEY][$target]) &&
-                $_POST[static::FORM_KEY] == $_SESSION[static::FORM_KEY][$target]
+                $_POST[static::FORM_KEY] === $_SESSION[static::FORM_KEY][$target]
             ) {
                 return true;
             }

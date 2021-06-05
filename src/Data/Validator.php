@@ -514,11 +514,11 @@ class Validator implements iValidate
                 case 'number' :
                     if (!is_numeric($input)) {
                         $error .= '. Expecting '
-                            . ($info->type == 'int' ? 'integer' : 'numeric')
+                            . ($info->type === 'int' ? 'integer' : 'numeric')
                             . ' value';
                         break;
                     }
-                    if ($info->type == 'int' && (int)$input != $input) {
+                    if ($info->type === 'int' && (int)$input != $input) {
                         if ($info->fix) {
                             $r = (int)$input;
                         } else {
@@ -600,7 +600,7 @@ class Validator implements iValidate
                         }
                     }
                     if ($info->fix) {
-                        return $input ? true : false;
+                        return (bool)$input;
                     }
                     $error .= '. Expecting boolean value';
                     break;
@@ -612,20 +612,20 @@ class Validator implements iValidate
                         $contentType =
                             Util::nestedValue($info, 'contentType') ?: null;
                         if ($info->fix) {
-                            if ($contentType == 'indexed') {
+                            if ($contentType === 'indexed') {
                                 $input = $info->filterArray($input, true);
-                            } elseif ($contentType == 'associative') {
+                            } elseif ($contentType === 'associative') {
                                 $input = $info->filterArray($input, false);
                             }
                         } elseif (
-                            $contentType == 'indexed' &&
+                            $contentType === 'indexed' &&
                             array_values($input) != $input
                         ) {
                             $error .= '. Expecting a list of items but an item is given';
                             break;
                         } elseif (
-                            $contentType == 'associative' &&
-                            array_values($input) == $input &&
+                            $contentType === 'associative' &&
+                            array_values($input) === $input &&
                             count($input)
                         ) {
                             $error .= '. Expecting an item but a list is given';

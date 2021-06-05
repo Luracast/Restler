@@ -251,7 +251,7 @@ class HtmlFormat extends DependentFormat
      */
     public static function php($data, $debug = true)
     {
-        if (static::$view == 'debug') {
+        if (static::$view === 'debug') {
             static::$viewPath = dirname(__DIR__) . '/views';
         }
         $view = static::getViewFile(true);
@@ -429,11 +429,11 @@ class HtmlFormat extends DependentFormat
                 }
             }
             if (method_exists($class = get_called_class(), $template)) {
-                if ($template == 'blade') {
+                if ($template === 'blade') {
                     $this->checkDependency(self::BLADE);
-                } elseif ($template == 'twig') {
+                } elseif ($template === 'twig') {
                     $this->checkDependency(self::TWIG);
-                } elseif ($template == 'mustache' || $template == 'handlebar') {
+                } elseif ($template === 'mustache' || $template === 'handlebar') {
                     $this->checkDependency(self::MUSTACHE);
                 }
                 return call_user_func("$class::$template", $data, $humanReadable);

@@ -66,7 +66,7 @@ class Emmet
                 & $tokens, & $tag
             ) {
                 $digits = 0;
-                if ($delimiter == null)
+                if ($delimiter === null)
                     $delimiter = array(
                         '.' => true,
                         '#' => true,
@@ -87,8 +87,8 @@ class Emmet
                     if ($digits) {
                         $negative = false;
                         $offset = 0;
-                        if ('@' == $t) {
-                            if ('-' == ($t = array_shift($tokens))) {
+                        if ('@' === $t) {
+                            if ('-' === ($t = array_shift($tokens))) {
                                 $negative = true;
                                 if (is_numeric(reset($tokens))) {
                                     $offset = array_shift($tokens);
@@ -98,7 +98,7 @@ class Emmet
                             } else {
                                 array_unshift($tokens, $t);
                             }
-                        } elseif ('#' == ($h = array_shift($tokens))) {
+                        } elseif ('#' === ($h = array_shift($tokens))) {
                             if (!empty($t)) {
                                 $data = Util::nestedValue($data, $t);
                                 if (is_null($data)) {
@@ -139,9 +139,9 @@ class Emmet
                 );
                 if (is_null($a))
                     return;
-                if ('=' == ($v = array_shift($tokens))) {
+                if ('=' === ($v = array_shift($tokens))) {
                     //value
-                    if ('"' == ($v = array_shift($tokens))) {
+                    if ('"' === ($v = array_shift($tokens))) {
                         $text = '';
                         $tag->$a($parseText(
                             $text, $round, $total, $data,
@@ -155,14 +155,14 @@ class Emmet
                             array(' ' => true, ']' => true)
                         ));
                     }
-                    if (' ' == ($v = array_shift($tokens))) {
+                    if (' ' === ($v = array_shift($tokens))) {
                         $self($self, $round, $total, $data);
                     }
-                } elseif (']' == $v) {
+                } elseif (']' === $v) {
                     //end
                     $tag->$a('');
                     return;
-                } elseif (' ' == $v) {
+                } elseif (' ' === $v) {
                     $tag->$a('');
                     $self($self, $round, $total, $data);
                 }
@@ -224,13 +224,13 @@ class Emmet
                         case '>':
                             $isInChild = true;
                             $offsetTokens = null;
-                            if ('{' == ($t = array_shift($tokens))) {
+                            if ('{' === ($t = array_shift($tokens))) {
                                 array_unshift($tokens, $t);
                                 $child = new T();
                                 $tag[] = $child;
                                 $parent = $tag;
                                 $tag = $child;
-                            } elseif ('[' == $t) {
+                            } elseif ('[' === $t) {
                                 array_unshift($tokens, $t);
                             } else {
                                 $child = new T($t);
@@ -246,11 +246,11 @@ class Emmet
                                 $tokens = array();
                                 break;
                             }
-                            if ('{' == ($t = array_shift($tokens))) {
+                            if ('{' === ($t = array_shift($tokens))) {
                                 $tag = $tag->parent;
                                 array_unshift($tokens, $t);
                                 break;
-                            } elseif ('[' == $t) {
+                            } elseif ('[' === $t) {
                                 array_unshift($tokens, $t);
                             } else {
                                 $child = new T($t);
@@ -268,7 +268,7 @@ class Emmet
                             $tag = $tag->parent;
                             if ($tag->parent)
                                 $tag = $tag->parent;
-                            while ('^' == ($t = array_shift($tokens))) {
+                            while ('^' === ($t = array_shift($tokens))) {
                                 if ($tag->parent)
                                     $tag = $tag->parent;
                             }
@@ -302,7 +302,7 @@ class Emmet
                                     }
                                 }
                                 $indexed = array_values($data);
-                                $times = is_array($data) && $indexed == $data
+                                $times = is_array($data) && $indexed === $data
                                     ? count($data) : 0;
                             }
                             $source = $tag;
@@ -343,7 +343,7 @@ class Emmet
                 }
             };
         $parse($parse);
-        return count($root) == 1 ? $root[0] : $root;
+        return count($root) === 1 ? $root[0] : $root;
     }
 
     public static function tokenize($string)
@@ -357,8 +357,8 @@ class Emmet
             $tokens = array();
             for ($i = $start; $i < $pos; $i++) {
                 $token = $string[$i];
-                if (('#' == $token || '.' == $token) &&
-                    (!empty($tokens) || $i == 0)
+                if (('#' === $token || '.' === $token) &&
+                    (!empty($tokens) || $i === 0)
                 ) {
                     $r[] = '';
                 }

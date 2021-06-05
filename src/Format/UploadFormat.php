@@ -93,7 +93,7 @@ class UploadFormat extends Format
             }
         } catch (RestException $e) {
             if (static::$suppressExceptionsAsError) {
-                $file['error'] = $e->getCode() == 413 ? 1 : 6;
+                $file['error'] = $e->getCode() === 413 ? 1 : 6;
                 $file['exception'] = $e;
             } else {
                 throw $e;

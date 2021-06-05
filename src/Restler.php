@@ -404,7 +404,7 @@ class Restler extends EventDispatcher
             if (!$obj instanceof iFormat)
                 throw new Exception('Invalid format class; must implement ' .
                     'iFormat interface');
-            if ($throwException && get_class($obj) == get_class($this->requestFormat)) {
+            if ($throwException && get_class($obj) === get_class($this->requestFormat)) {
                 $throwException = false;
             }
 
@@ -517,9 +517,9 @@ class Restler extends EventDispatcher
                $port = isset($_SERVER['SERVER_PORT']) ? $_SERVER['SERVER_PORT'] : '80';
                $port = isset($_SERVER['HTTP_X_FORWARDED_PORT']) ? $_SERVER['HTTP_X_FORWARDED_PORT'] : $port; // Amazon ELB
             }
-            $https = $port == '443' ||
-                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') || // Amazon ELB
-                (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on');
+            $https = $port === '443' ||
+                (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') || // Amazon ELB
+                (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on');
             $baseUrl = ($https ? 'https://' : 'http://') . $_SERVER['SERVER_NAME'];
             if ($port != '80' && $port != '443')
                 $baseUrl .= ':' . $port;
@@ -537,12 +537,12 @@ class Restler extends EventDispatcher
             rtrim($path, '/') //remove trailing slash if found
         );
 
-        if (Defaults::$useUrlBasedVersioning && strlen($path) && $path[0] == 'v') {
+        if (Defaults::$useUrlBasedVersioning && strlen($path) && $path[0] === 'v') {
             $version = intval(substr($path, 1));
             if ($version && $version <= $this->apiVersion) {
                 $this->requestedApiVersion = $version;
                 $path = explode('/', $path, 2);
-                $path = count($path) == 2 ? $path[1] : '';
+                $path = count($path) === 2 ? $path[1] : '';
             }
         } else {
             $this->requestedApiVersion = $this->apiMinimumVersion;
@@ -572,7 +572,7 @@ class Restler extends EventDispatcher
             if (false !== $pos = strpos($mime, ';')) {
                 $mime = substr($mime, 0, $pos);
             }
-            if ($mime == UrlEncodedFormat::MIME)
+            if ($mime === UrlEncodedFormat::MIME)
                 $format = Scope::get('UrlEncodedFormat');
             elseif (isset($this->formatMap[$mime])) {
                 $format = Scope::get($this->formatMap[$mime]);
@@ -619,9 +619,9 @@ class Restler extends EventDispatcher
     public function getRequestData($includeQueryParameters = true)
     {
         $get = UrlEncodedFormat::decoderTypeFix($_GET);
-        if ($this->requestMethod == 'PUT'
-            || $this->requestMethod == 'PATCH'
-            || $this->requestMethod == 'POST'
+        if ($this->requestMethod === 'PUT'
+            || $this->requestMethod === 'PATCH'
+            || $this->requestMethod === 'POST'
         ) {
             if (!empty($this->requestData)) {
                 return $includeQueryParameters
@@ -712,7 +712,7 @@ class Restler extends EventDispatcher
     protected function negotiateCORS()
     {
         if (
-            $this->requestMethod == 'OPTIONS'
+            $this->requestMethod === 'OPTIONS'
             && Defaults::$crossOriginResourceSharing
         ) {
             if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
@@ -724,7 +724,7 @@ class Restler extends EventDispatcher
                     . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
 
             header('Access-Control-Allow-Origin: ' .
-                ((Defaults::$accessControlAllowOrigin == '*' && isset($_SERVER['HTTP_ORIGIN']))
+                ((Defaults::$accessControlAllowOrigin === '*' && isset($_SERVER['HTTP_ORIGIN']))
                     ? $_SERVER['HTTP_ORIGIN'] : Defaults::$accessControlAllowOrigin));
             header('Access-Control-Allow-Credentials: true');
 
@@ -889,7 +889,7 @@ class Restler extends EventDispatcher
             $langList = Util::sortByPriority($_SERVER['HTTP_ACCEPT_LANGUAGE']);
             foreach ($langList as $lang => $quality) {
                 foreach (Defaults::$supportedLanguages as $supported) {
-                    if (strcasecmp($supported, $lang) == 0) {
+                    if (strcasecmp($supported, $lang) === 0) {
                         $found = true;
                         Defaults::$language = $supported;
                         break 2;
@@ -1093,7 +1093,7 @@ class Restler extends EventDispatcher
     public function composeHeaders(RestException $e = null)
     {
         //only GET method should be cached if allowed by API developer
-        $expires = $this->requestMethod == 'GET' ? Defaults::$headerExpires : 0;
+        $expires = $this->requestMethod === 'GET' ? Defaults::$headerExpires : 0;
         if(!is_array(Defaults::$headerCacheControl))
             Defaults::$headerCacheControl = array(Defaults::$headerCacheControl);
         $cacheControl = Defaults::$headerCacheControl[0];
@@ -1112,7 +1112,7 @@ class Restler extends EventDispatcher
             && isset($_SERVER['HTTP_ORIGIN'])
         ) {
             header('Access-Control-Allow-Origin: ' .
-                (Defaults::$accessControlAllowOrigin == '*'
+                (Defaults::$accessControlAllowOrigin === '*'
                     ? $_SERVER['HTTP_ORIGIN']
                     : Defaults::$accessControlAllowOrigin)
             );
@@ -1167,7 +1167,7 @@ class Restler extends EventDispatcher
                 usleep(1e6 * (Defaults::$throttle / 1e3 - $elapsed));
             }
         }
-        if ($this->responseCode == 401) {
+        if ($this->responseCode === 401) {
             $authString = count($this->authClasses)
                 ? Scope::get($this->authClasses[0])->__getWWWAuthenticateString()
                 : 'Unknown';
@@ -1605,7 +1605,7 @@ class Restler extends EventDispatcher
      */
     public function __get($name)
     {
-        if ($name[0] == '_') {
+        if ($name[0] === '_') {
             $hiddenProperty = substr($name, 1);
             if (isset($this->$hiddenProperty)) {
                 return $this->$hiddenProperty;

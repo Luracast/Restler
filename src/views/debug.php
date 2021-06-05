@@ -115,7 +115,7 @@ function render($data, $shadow=true)
 $reqHeadersArr = array();
 $requestHeaders = $_SERVER['REQUEST_METHOD'] . ' ' . $_SERVER['REQUEST_URI'] . ' ' . $_SERVER['SERVER_PROTOCOL'] . PHP_EOL;
 foreach ($reqHeadersArr as $key => $value) {
-    if ($key == 'Host')
+    if ($key === 'Host')
         continue;
     $requestHeaders .= "$key: $value" . PHP_EOL;
 }

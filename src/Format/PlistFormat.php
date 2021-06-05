@@ -32,7 +32,7 @@ class PlistFormat extends DependentMultiFormat
     public function setMIME($mime)
     {
         static::$mime = $mime;
-        static::$compact = $mime == 'application/x-plist';
+        static::$compact = $mime === 'application/x-plist';
     }
 
     /**

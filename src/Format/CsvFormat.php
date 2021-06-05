@@ -48,7 +48,7 @@ class CsvFormat extends Format implements iDecodeStream
         Obj::$separatorChar = false;
         $data = Obj::toArray($data);
         Obj::$separatorChar = $char;
-        if (is_array($data) && array_values($data) == $data) {
+        if (is_array($data) && array_values($data) === $data) {
             //if indexed array
             $lines = array();
             $row = array_shift($data);

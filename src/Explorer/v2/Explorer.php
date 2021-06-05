@@ -144,7 +144,7 @@ class Explorer implements iProvideMultiVersionApi
      */
     public function get()
     {
-        if (func_num_args() > 1 && func_get_arg(0) == 'swagger') {
+        if (func_num_args() > 1 && func_get_arg(0) === 'swagger') {
             /**
              * BUGFIX:
              * If we use common resourcePath (e.g. $r->addAPIClass([api-class], 'api/shop')), than we must determine resource-ID of e.g. 'api/shop'!
@@ -162,7 +162,7 @@ class Explorer implements iProvideMultiVersionApi
         $redirect = false;
         if (
             (empty($filename) && substr($_SERVER['REQUEST_URI'], -1, 1) != '/') ||
-            $filename == 'index.html'
+            $filename === 'index.html'
         ) {
             $status = 302;
             $url = $this->restler->getBaseUrl() . '/' . $this->base() . '/';
@@ -172,7 +172,7 @@ class Explorer implements iProvideMultiVersionApi
         }
         if (
             isset($this->restler->responseFormat) &&
-            $this->restler->responseFormat->getExtension() == 'js'
+            $this->restler->responseFormat->getExtension() === 'js'
         ) {
             $filename .= '.js';
         }
@@ -267,9 +267,9 @@ class Explorer implements iProvideMultiVersionApi
             $r,
             new ValidationInfo(Util::nestedValue($m, 'return') ?: array())
         );
-        if (is_null($r->type) || 'mixed' == $r->type) {
+        if (is_null($r->type) || 'mixed' === $r->type) {
             $r->type = 'array';
-        } elseif ($r->type == 'null') {
+        } elseif ($r->type === 'null') {
             $r->type = 'void';
         } elseif (Text::contains($r->type, '|')) {
             $r->type = 'array';
@@ -295,7 +295,7 @@ class Explorer implements iProvideMultiVersionApi
         foreach ($route['metadata']['param'] as $param) {
             $info = new ValidationInfo($param);
             $description = isset($param['description']) ? $param['description'] : '';
-            if ('body' == $info->from) {
+            if ('body' === $info->from) {
                 if ($param['name'] === Defaults::$fullRequestDataName) {
                     continue;
                 }
@@ -310,7 +310,7 @@ class Explorer implements iProvideMultiVersionApi
         }
         if (!empty($children)) {
             if (
-                1 == count($children) &&
+                1 === count($children) &&
                 (static::$allowScalarValueOnRequestBody || !empty($children[0]['children']))
             ) {
                 $firstChild = $children[0];
@@ -378,7 +378,7 @@ class Explorer implements iProvideMultiVersionApi
             //TODO: $p->items and $p->uniqueItems boolean
         }
         $p->description = $description;
-        $p->in = $info->from; //$info->from == 'body' ? 'form' : $info->from;
+        $p->in = $info->from; //$info->from === 'body' ? 'form' : $info->from;
         $p->required = $info->required;
 
         //$p->allowMultiple = false;
@@ -458,7 +458,7 @@ class Explorer implements iProvideMultiVersionApi
     {
         //TODO: proper type management
         $type = Util::getShortName($info->type);
-        if ($info->type == 'array') {
+        if ($info->type === 'array') {
             $object->type = 'array';
             if ($info->children) {
                 $contentType = Util::getShortName($info->contentType);
@@ -466,7 +466,7 @@ class Explorer implements iProvideMultiVersionApi
                 $object->items = (object)array(
                     '$ref' => "#/definitions/$contentType"
                 );
-            } elseif ($info->contentType && $info->contentType == 'associative') {
+            } elseif ($info->contentType && $info->contentType === 'associative') {
                 unset($info->contentType);
                 $this->model($info->type = 'Object', array(
                     array(
@@ -516,11 +516,11 @@ class Explorer implements iProvideMultiVersionApi
         }
         $has64bit = PHP_INT_MAX > 2147483647;
         if (isset($object->type)) {
-            if ($object->type == 'integer') {
+            if ($object->type === 'integer') {
                 $object->format = $has64bit
                     ? 'int64'
                     : 'int32';
-            } elseif ($object->type == 'number') {
+            } elseif ($object->type === 'number') {
                 $object->format = $has64bit
                     ? 'double'
                     : 'float';

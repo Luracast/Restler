@@ -127,7 +127,7 @@ class Util
         $fromPath = explode($char, $fromPath);
         $usingPath = explode($char, $usingPath);
         while (count($usingPath)) {
-            if (count($fromPath) && $fromPath[0] == $usingPath[0]) {
+            if (count($fromPath) && $fromPath[0] === $usingPath[0]) {
                 array_shift($fromPath);
             } else {
                 break;
@@ -160,7 +160,7 @@ class Util
         $usingPath = explode($char, $usingPath);
         $commonPath = array();
         while (count($usingPath)) {
-            if (count($fromPath) && $fromPath[0] == $usingPath[0]) {
+            if (count($fromPath) && $fromPath[0] === $usingPath[0]) {
                 $commonPath [] = array_shift($fromPath);
             } else {
                 break;
@@ -190,14 +190,14 @@ class Util
         ) {
             // support for exceptional clients who can't set the header
             $m = strtoupper($_REQUEST[Defaults::$httpMethodOverrideProperty]);
-            if ($m == 'PUT' || $m == 'DELETE' ||
-                $m == 'POST' || $m == 'PATCH'
+            if ($m === 'PUT' || $m === 'DELETE' ||
+                $m === 'POST' || $m === 'PATCH'
             ) {
                 $method = $m;
             }
         }
         // support for HEAD request
-        if ($method == 'HEAD') {
+        if ($method === 'HEAD') {
             $method = 'GET';
         }
         return $method;

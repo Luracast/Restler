@@ -89,7 +89,7 @@ class Routes
         foreach ($methods as $method) {
             $methodUrl = strtolower($method->getName());
             //method name should not begin with _
-            if ($methodUrl[0] == '_') {
+            if ($methodUrl[0] === '_') {
                 continue;
             }
             $doc = $method->getDocComment();
@@ -101,7 +101,7 @@ class Routes
             }
             //@access should not be private
             if (isset($metadata['access'])
-                && $metadata['access'] == 'private'
+                && $metadata['access'] === 'private'
             ) {
                 continue;
             }
@@ -161,7 +161,7 @@ class Routes
                 if (is_null($type) && isset($m['type'])) {
                     $type = $m['type'];
                 }
-                if (isset(static::$fieldTypesByName[$m['name']]) && empty($p['type']) && $type == 'string') {
+                if (isset(static::$fieldTypesByName[$m['name']]) && empty($p['type']) && $type === 'string') {
                     $p['type'] = static::$fieldTypesByName[$m['name']];
                 }
                 $m ['default'] = $defaults [$position];
@@ -189,7 +189,7 @@ class Routes
                 if (isset($modelName)) {
                     $m['model'] = $modelName;
                 }
-                if ($m['name'] == Defaults::$fullRequestDataName) {
+                if ($m['name'] === Defaults::$fullRequestDataName) {
                     $from = 'body';
                     if (!isset($m['type'])) {
                         $type = $m['type'] = 'array';
@@ -215,7 +215,7 @@ class Routes
                     $type = $m['type'] = static::type($defaults[$position]);
                 }
 
-                if ($allowAmbiguity || $from == 'path') {
+                if ($allowAmbiguity || $from === 'path') {
                     $pathParams [] = $position;
                 }
                 $position++;
@@ -224,9 +224,9 @@ class Routes
             if ($method->isProtected()) {
                 $accessLevel = 3;
             } elseif (isset($metadata['access'])) {
-                if ($metadata['access'] == 'protected') {
+                if ($metadata['access'] === 'protected') {
                     $accessLevel = 2;
-                } elseif ($metadata['access'] == 'hybrid') {
+                } elseif ($metadata['access'] === 'hybrid') {
                     $accessLevel = 1;
                 }
             } elseif (isset($metadata['protected'])) {
@@ -266,9 +266,9 @@ class Routes
                             strpos($url, ':' . $p['name']);
                         if ($inPath) {
                             $copy['metadata']['param'][$i][$dataName]['from'] = 'path';
-                        } elseif ($httpMethod == 'GET' || $httpMethod == 'DELETE') {
+                        } elseif ($httpMethod === 'GET' || $httpMethod === 'DELETE') {
                             $copy['metadata']['param'][$i][$dataName]['from'] = 'query';
-                        } elseif (empty($p[$dataName]['from']) || $p[$dataName]['from'] == 'path') {
+                        } elseif (empty($p[$dataName]['from']) || $p[$dataName]['from'] === 'path') {
                             $copy['metadata']['param'][$i][$dataName]['from'] = 'body';
                         }
                     }
@@ -297,15 +297,15 @@ class Routes
                 } else {
                     $httpMethod = 'GET';
                 }
-                if ($methodUrl == 'index') {
+                if ($methodUrl === 'index') {
                     $methodUrl = '';
                 }
                 $url = empty($methodUrl) ? rtrim($resourcePath, '/')
                     : $resourcePath . $methodUrl;
                 for ($position = 0; $position < count($params); $position++) {
                     $from = $metadata['param'][$position][$dataName]['from'];
-                    if ($from == 'body' && ($httpMethod == 'GET' ||
-                            $httpMethod == 'DELETE')
+                    if ($from === 'body' && ($httpMethod === 'GET' ||
+                            $httpMethod === 'DELETE')
                     ) {
                         $call['metadata']['param'][$position][$dataName]['from']
                             = 'query';
@@ -323,7 +323,7 @@ class Routes
                             ? $call['metadata']['param'][$position]['type']
                             : null)
                         . $position . '}';
-                    if ($allowAmbiguity || $position == $lastPathParam) {
+                    if ($allowAmbiguity || $position === $lastPathParam) {
                         static::addPath($url, $call, $httpMethod, $version);
                     }
                 }
@@ -359,13 +359,13 @@ class Routes
             $path
         );
         //check for wildcard routes
-        if (substr($path, -1, 1) == '*') {
+        if (substr($path, -1, 1) === '*') {
             $path = rtrim($path, '/*');
             static::$routes["v$version"]['*'][$path][$httpMethod] = $call;
         } else {
             static::$routes["v$version"][$path][$httpMethod] = $call;
             //create an alias with index if the method name is index
-            if ($call['methodName'] == 'index')
+            if ($call['methodName'] === 'index')
                 static::$routes["v$version"][ltrim("$path/index", '/')][$httpMethod] = $call;
         }
     }
@@ -388,7 +388,7 @@ class Routes
         if (!$p) {
             throw new RestException(
                 404,
-                $version == 1 ? '' : "Version $version is not supported"
+                $version === 1 ? '' : "Version $version is not supported"
             );
         }
         $status = 404;
@@ -416,7 +416,7 @@ class Routes
         }
         //================== dynamic routes =============================
         //add newline char if trailing slash is found
-        if (substr($path, -1) == '/')
+        if (substr($path, -1) === '/')
             $path .= PHP_EOL;
         //if double slash is found fill in newline char;
         $path = str_replace('//', '/' . PHP_EOL . '/', $path);
@@ -437,7 +437,7 @@ class Routes
                     }
                     $index = intval(substr($k, 1));
                     $details = $value[$httpMethod]['metadata']['param'][$index];
-                    if ($k[0] == 's' || strpos($k, static::pathVarTypeOf($v)) === 0) {
+                    if ($k[0] === 's' || strpos($k, static::pathVarTypeOf($v)) === 0) {
                         //remove the newlines
                         $data[$details['name']] = trim($v, PHP_EOL);
                     } else {
@@ -453,14 +453,14 @@ class Routes
                 }
             }
         }
-        if ($status == 404) {
+        if ($status === 404) {
             //check if other methods are allowed
             if (isset($p[$path])) {
                 $status = 405;
                 $methods = array_keys($p[$path]);
             }
         }
-        if ($status == 405) {
+        if ($status === 405) {
             header('Allow: ' . implode(', ', $methods));
         }
         throw new RestException($status, $message);
@@ -483,7 +483,7 @@ class Routes
                     }
                     foreach ($excludedPaths as $exclude) {
                         if (empty($exclude)) {
-                            if ($fullPath == $exclude || $fullPath == 'index')
+                            if ($fullPath === $exclude || $fullPath === 'index')
                                 continue 2;
                         } elseif (Text::beginsWith($fullPath, $exclude)) {
                             continue 2;
@@ -557,14 +557,14 @@ class Routes
                 $lastBodyParamIndex = -1;
                 $lastM = null;
                 foreach ($call['metadata']['param'] as $k => $m) {
-                    if ($m[$dataName]['from'] == 'body') {
+                    if ($m[$dataName]['from'] === 'body') {
                         $bodyParamCount++;
                         $lastBodyParamIndex = $k;
                         $lastM = $m;
                     }
                 }
                 if (
-                    $bodyParamCount == 1 &&
+                    $bodyParamCount === 1 &&
                     !array_key_exists($lastM['name'], $data) &&
                     array_key_exists(Defaults::$fullRequestDataName, $data) &&
                     !is_null($d = $data[Defaults::$fullRequestDataName])
@@ -661,7 +661,7 @@ class Routes
                     if (!isset($prop[$dataName]['label'])) {
                         $prop[$dataName]['label'] = Text::title($prop['name']);
                     }
-                    if (isset(static::$fieldTypesByName[$prop['name']]) && $prop['type'] == 'string' && !isset($prop[$dataName]['type'])) {
+                    if (isset(static::$fieldTypesByName[$prop['name']]) && $prop['type'] === 'string' && !isset($prop[$dataName]['type'])) {
                         $prop[$dataName]['type'] = static::$fieldTypesByName[$prop['name']];
                     }
                     $children[$prop['name']] = $prop;
@@ -788,7 +788,7 @@ class Routes
         $last = 0;
         foreach ($tokens as $token) {
             if (is_string($token)) {
-                if ($reading && ',' == $token) {
+                if ($reading && ',' === $token) {
                     //===== STOP =====//
                     $reading = false;
                     if (!empty($namespace))
@@ -803,7 +803,7 @@ class Routes
                     if (!empty($namespace))
                         $imports[$alias] = trim($namespace, '\\');
                 }
-            } elseif (T_USE == $token[0]) {
+            } elseif (T_USE === $token[0]) {
                 //===== START =====//
                 $reading = true;
                 $namespace = '';
@@ -815,7 +815,7 @@ class Routes
                         continue 2;
                     case T_STRING:
                         $alias = $token[1];
-                        if (T_AS == $last) {
+                        if (T_AS === $last) {
                             break;
                         }
                     //don't break;

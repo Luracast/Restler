@@ -154,13 +154,13 @@ class CommentParser
             $line = trim($line);
             $newParam = false;
             if (empty ($line)) {
-                if ($mode == 0) {
+                if ($mode === 0) {
                     $mode++;
                 } else {
                     $addNewline = true;
                 }
                 continue;
-            } elseif ($line[0] == '@') {
+            } elseif ($line[0] === '@') {
                 $mode = 2;
                 $newParam = true;
             }
@@ -172,7 +172,7 @@ class CommentParser
                         $longDescription = $description;
                         $description[] = array_shift($longDescription);
                         $mode = 1;
-                    } elseif (substr($line, -1) == '.') {
+                    } elseif (substr($line, -1) === '.') {
                         $mode = 1;
                     }
                     break;
@@ -281,7 +281,7 @@ class CommentParser
             }
         } elseif ($allowMultiple) {
             $data[$param][] = $value;
-        } elseif ($param == 'param') {
+        } elseif ($param === 'param') {
             $arr = array(
                 $data[$param],
                 $value
@@ -324,15 +324,15 @@ class CommentParser
             $name = $matches[1];
             $value = $matches[2];
             $subject = str_replace($matches[0], '', $subject);
-            if ($name == 'pattern') {
+            if ($name === 'pattern') {
                 throw new Exception('Inline pattern tag should follow {@pattern /REGEX_PATTERN_HERE/} format and can optionally include PCRE modifiers following the ending `/`');
             } elseif (isset(static::$allowsArrayValue[$name])) {
                 $value = explode(static::$arrayDelimiter, $value);
-            } elseif ($value == 'true' || $value == 'false') {
-                $value = $value == 'true';
-            } elseif ($value == '') {
+            } elseif ($value === 'true' || $value === 'false') {
+                $value = $value === 'true';
+            } elseif ($value === '') {
                 $value = true;
-            } elseif ($name == 'required') {
+            } elseif ($name === 'required') {
                 $value = explode(static::$arrayDelimiter, $value);
             }
             if (defined('Luracast\\Restler\\UI\\HtmlForm::'.$name)) {
@@ -359,7 +359,7 @@ class CommentParser
                     $data = $format->decode($str);
                 }
             } else { // auto detect
-                if ($str[0] == '{') {
+                if ($str[0] === '{') {
                     $d = json_decode($str, true);
                     if (json_last_error() != JSON_ERROR_NONE) {
                         throw new Exception('Error parsing embedded JSON data'
@@ -378,8 +378,8 @@ class CommentParser
                             $d[$key] = $val;
                         }
                         if (is_string($val)) {
-                            if ($val == 'true' || $val == 'false') {
-                                $d[$key] = $val == 'true' ? true : false;
+                            if ($val === 'true' || $val === 'false') {
+                                $d[$key] = $val === 'true' ? true : false;
                             } else {
                                 $val = explode(self::$arrayDelimiter, $val);
                                 if (count($val) > 1) {
@@ -451,7 +451,7 @@ class CommentParser
     {
         $r = array();
         $email = end($value);
-        if ($email[0] == '<') {
+        if ($email[0] === '<') {
             $email = substr($email, 1, -1);
             array_pop($value);
             $r['email'] = $email;
@@ -464,7 +464,7 @@ class CommentParser
     {
         $data = explode('|', array_shift($value));
         $r = array(
-            'type' => count($data) == 1 ? $data[0] : $data
+            'type' => count($data) === 1 ? $data[0] : $data
         );
         $r['description'] = implode(' ', $value);
         return $r;
@@ -476,15 +476,15 @@ class CommentParser
         $data = array_shift($value);
         if (empty($data)) {
             $r['type'] = 'mixed';
-        } elseif ($data[0] == '$') {
+        } elseif ($data[0] === '$') {
             $r['name'] = substr($data, 1);
             $r['type'] = 'mixed';
         } else {
             $data = explode('|', $data);
-            $r['type'] = count($data) == 1 ? $data[0] : $data;
+            $r['type'] = count($data) === 1 ? $data[0] : $data;
 
             $data = array_shift($value);
-            if (!empty($data) && $data[0] == '$') {
+            if (!empty($data) && $data[0] === '$') {
                 $r['name'] = substr($data, 1);
             }
         }
@@ -504,12 +504,12 @@ class CommentParser
         $data = array_shift($value);
         if (empty($data)) {
             $r['type'] = 'mixed';
-        } elseif ($data[0] == '$') {
+        } elseif ($data[0] === '$') {
             $r['name'] = substr($data, 1);
             $r['type'] = 'mixed';
         } else {
             $data = explode('|', $data);
-            $r['type'] = count($data) == 1 ? $data[0] : $data;
+            $r['type'] = count($data) === 1 ? $data[0] : $data;
         }
         if (isset($r['type']) && Text::endsWith($r['type'], '[]')) {
             $r[static::$embeddedDataName]['type'] = substr($r['type'], 0, -2);

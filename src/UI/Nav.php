@@ -65,7 +65,7 @@ class Nav
             if (empty(static::$url))
                 static::$url = '';
             static::$activeTrail = $activeTrail = empty($activeTrail)
-                ? (empty($restler->url) || $restler->url == 'index'
+                ? (empty($restler->url) || $restler->url === 'index'
                     ? static::$root
                     : $restler->url
                 )
@@ -169,7 +169,7 @@ class Nav
         //remove / prefix and / suffixes and any extension
         $trail = strtok(trim($trail, '/'), '.');
         $parts = explode('/', $trail);
-        if (count($parts) == 1 && empty($parts[0]))
+        if (count($parts) === 1 && empty($parts[0]))
             $parts = array(static::$root);
         if (isset($r['fragment'])) {
             $parts[] = $r['fragment'];
@@ -203,12 +203,12 @@ class Nav
         $parts = $r['parts'];
         $last = count($parts) - 1;
         foreach ($parts as $i => $part) {
-            if ($i == $last) {
+            if ($i === $last) {
                 $p[$part]['text'] = $r['label'];
                 $p[$part]['href'] = $r['url'];
                 $p[$part]['class'] = Text::slug($part);
                 /* dynamically do it at run time instead
-                if ($r['path'] == static::$activeTrail)
+                if ($r['path'] === static::$activeTrail)
                     $p[$part]['active'] = true;
                 */
             } elseif (!isset($p[$part])) {

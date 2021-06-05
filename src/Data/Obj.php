@@ -128,7 +128,7 @@ class Obj
                 $array [$key] = $value;
                 $count++;
             }
-            return $forceObjectTypeWhenEmpty && $count == 0 ? $object : $array;
+            return $forceObjectTypeWhenEmpty && $count === 0 ? $object : $array;
         }
 
         return $object;

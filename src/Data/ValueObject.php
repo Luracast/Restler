@@ -50,7 +50,7 @@ class ValueObject implements iValueObject
         $r = get_object_vars($this);
         $methods = get_class_methods($this);
         foreach ($methods as $m) {
-            if (substr($m, 0, 3) == 'get') {
+            if (substr($m, 0, 3) === 'get') {
                 $r [lcfirst(substr($m, 3))] = @$this->{$m} ();
             }
         }

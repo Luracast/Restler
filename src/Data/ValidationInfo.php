@@ -172,7 +172,7 @@ class ValidationInfo implements iValueObject
 
     public static function numericValue($value)
     {
-        return ( int )$value == $value
+        return ( int )$value === $value
             ? ( int )$value
             : floatval($value);
     }
@@ -227,19 +227,19 @@ class ValidationInfo implements iValueObject
         );
         unset($from[CommentParser::$embeddedDataName][$property]);
 
-        if ($property == 'type' && $p == 'array' && $p2) {
+        if ($property === 'type' && $p === 'array' && $p2) {
             $this->contentType = $p2;
             return $p;
         }
         $r = is_null($p2) ? (is_null($p) ? null : $p) : $p2;
         if (!is_null($r)) {
-            if ($property == 'min' || $property == 'max') {
+            if ($property === 'min' || $property === 'max') {
                 return static::numericValue($r);
-            } elseif ($property == 'required' || $property == 'fix') {
+            } elseif ($property === 'required' || $property === 'fix') {
                 return static::booleanValue($r);
-            } elseif ($property == 'choice') {
+            } elseif ($property === 'choice') {
                 return static::arrayValue($r);
-            } elseif ($property == 'pattern') {
+            } elseif ($property === 'pattern') {
                 return static::stringValue($r);
             }
         }
@@ -256,7 +256,7 @@ class ValidationInfo implements iValueObject
         $inner = Util::nestedValue($info, 'properties');
         $this->rules = !empty($inner) ? $inner + $info : $info;
         unset($this->rules['properties']);
-        if (is_string($this->type) && $this->type == 'integer') {
+        if (is_string($this->type) && $this->type === 'integer') {
             $this->type = 'int';
         }
     }

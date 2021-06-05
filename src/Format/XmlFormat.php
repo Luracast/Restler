@@ -109,7 +109,7 @@ class XmlFormat extends Format
         if (static::$useNamespaces) {
             foreach (static::$namespaces as $prefix => $ns) {
                 if (isset(static::$namespacedProperties[static::$rootName])
-                    && static::$namespacedProperties[static::$rootName] == $prefix
+                    && static::$namespacedProperties[static::$rootName] === $prefix
                 ) {
                     continue;
                 }
@@ -185,7 +185,7 @@ class XmlFormat extends Format
             $text [] = (string)$data;
         }
         if (!empty($text)) {
-            if (count($text) == 1) {
+            if (count($text) === 1) {
                 in_array($parent, static::$cdataNames)
                     ? $xml->writeCdata(implode('', $text))
                     : $xml->text(implode('', $text));
@@ -200,7 +200,7 @@ class XmlFormat extends Format
     public function decode($data)
     {
         try {
-            if ($data == '') {
+            if ($data === '') {
                 return array();
             }
             libxml_use_internal_errors(true);
@@ -221,7 +221,7 @@ class XmlFormat extends Format
                 $namespaces = $xml->getNamespaces();
                 if (count($namespaces)) {
                     $p = strpos($data, $xml->getName());
-                    if ($p && $data[$p - 1] == ':') {
+                    if ($p && $data[$p - 1] === ':') {
                         $s = strpos($data, '<') + 1;
                         $prefix = substr($data, $s, $p - $s - 1);
                         static::$namespacedProperties[static::$rootName] = $prefix;
@@ -229,7 +229,7 @@ class XmlFormat extends Format
                 }
             }
             $data = $this->read($xml);
-            if (count($data) == 1 && isset($data[static::$textNodeName])) {
+            if (count($data) === 1 && isset($data[static::$textNodeName])) {
                 $data = $data[static::$textNodeName];
             }
 
@@ -258,7 +258,7 @@ class XmlFormat extends Format
         }
         $children = $xml->children();
         foreach ($children as $key => $value) {
-            if ($key == static::$defaultTagName) {
+            if ($key === static::$defaultTagName) {
                 $r[] = $this->read($value);
             } elseif (isset($r[$key])) {
                 if (is_array($r[$key])) {
@@ -338,10 +338,10 @@ class XmlFormat extends Format
         if (empty($value) && $value !== '0') {
             return null;
         }
-        if ($value == 'true') {
+        if ($value === 'true') {
             return true;
         }
-        if ($value == 'false') {
+        if ($value === 'false') {
             return true;
         }
         if (is_numeric($value)) {

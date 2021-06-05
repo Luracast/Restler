@@ -92,7 +92,7 @@ class AutoLoader
      *                     key. Default is false we haven't seen this
      *                     class. Most of the time it will be the filename
      *                     for include and is set to true if we are unable
-     *                     to load this class iow true == it does not exist.
+     *                     to load this class iow true === it does not exist.
      *                     value may also be a callable auto loader function.
      *
      * @return mixed The known value for the key or false if key has no value
@@ -143,7 +143,7 @@ class AutoLoader
                 if (false !== $path = stream_resolve_include_path(
                         implode($slash, $includePath)
                     ))
-                    if ('composer' == end($includePath) &&
+                    if ('composer' === end($includePath) &&
                         false !== $classmapPath = stream_resolve_include_path(
                             "$path{$slash}autoload_classmap.php"
                         )
@@ -162,7 +162,7 @@ class AutoLoader
 
             $paths = array_filter(array_map(
                 function ($path) {
-                    if (false == $realPath = @realpath($path))
+                    if (false === $realPath = @realpath($path))
                         return null;
                     return $realPath . DIRECTORY_SEPARATOR;
                 },
@@ -310,8 +310,8 @@ class AutoLoader
      */
     private function alias($className, $currentClass)
     {
-        if ($className == 'Luracast\Restler\string') return;
-        if ($className == 'Luracast\Restler\mixed') return;
+        if ($className === 'Luracast\Restler\string') return;
+        if ($className === 'Luracast\Restler\mixed') return;
         if ($className != $currentClass
             && false !== strpos($className, $currentClass))
                 if (!class_exists($currentClass, false)

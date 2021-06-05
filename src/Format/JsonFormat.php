@@ -63,12 +63,12 @@ class JsonFormat extends Format
             self::$unEscapedSlashes = $humanReadable;
         }
         if (is_null(self::$unEscapedUnicode)) {
-            self::$unEscapedUnicode = $this->charset == 'utf-8';
+            self::$unEscapedUnicode = $this->charset === 'utf-8';
         }
 
         $options = 0;
 
-        if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
+        if ((PHP_MAJOR_VERSION === 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
             || PHP_MAJOR_VERSION > 5 // PHP >= 6.0
         ) {
 
@@ -134,7 +134,7 @@ class JsonFormat extends Format
 
         $options = 0;
         if (self::$bigIntAsString) {
-            if ((PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
+            if ((PHP_MAJOR_VERSION === 5 && PHP_MINOR_VERSION >= 4) // PHP >= 5.4
                 || PHP_MAJOR_VERSION > 5 // PHP >= 6.0
             ) {
                 $options |= JSON_BIGINT_AS_STRING;
@@ -214,7 +214,7 @@ class JsonFormat extends Format
                     }
                     break;
                 case '"' :
-                    if ($c == 0) {
+                    if ($c === 0) {
                         $inString = true;
                     } elseif ($c > 0 && $json [$c - 1] != '\\') {
                         $inString = !$inString;
