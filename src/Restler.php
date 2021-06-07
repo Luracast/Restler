@@ -530,10 +530,8 @@ class Restler extends EventDispatcher
 
 
         if ($this->baseUrl !== false) {
-            // var_dump(array($path, ltrim($this->baseUrl, '/')));
             if (0 === strpos($path, ltrim($this->baseUrl, '/'))) {
                 $path = substr($path, strlen($this->baseUrl));
-                // var_dump($path);
             }
         }
 
@@ -557,7 +555,6 @@ class Restler extends EventDispatcher
             $this->requestedApiVersion = $this->apiMinimumVersion;
         }
 
-        // var_dump($path);
         return $path;
     }
 
