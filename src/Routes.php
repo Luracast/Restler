@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler;
 
 use Luracast\Restler\Data\ApiMethodInfo;
@@ -100,7 +101,8 @@ class Routes
                 throw new RestException(500, "Error while parsing comments of `{$className}::{$method->getName()}` method. " . $e->getMessage());
             }
             //@access should not be private
-            if (isset($metadata['access'])
+            if (
+                isset($metadata['access'])
                 && $metadata['access'] === 'private'
             ) {
                 continue;
@@ -136,22 +138,20 @@ class Routes
             foreach ($params as $param) {
                 $children = array();
                 $type = version_compare(phpversion(), '8.0.0', '<') ?
-                  // PHP < 8.0
-                  ($param->isArray() ? 'array' : $param->getClass()) :
-                  // PHP >= 8.0
-                  ($param->getType() && $param->getType()->getName() === 'array' ? 'array' : (
-                    $param->getType() && !$param->getType()->isBuiltin()
+                    // PHP < 8.0
+                    ($param->isArray() ? 'array' : $param->getClass()) :
+                    // PHP >= 8.0
+                    ($param->getType() && $param->getType()->getName() === 'array' ? 'array' : ($param->getType() && !$param->getType()->isBuiltin()
                         ? new ReflectionClass($param->getType()->getName())
-                        : null
-                  ));
+                        : null));
                 $arguments[$param->getName()] = $position;
                 $defaults[$position] = $param->isDefaultValueAvailable() ?
                     $param->getDefaultValue() : null;
                 if (!isset($metadata['param'][$position])) {
                     $metadata['param'][$position] = array();
                 }
-                $m = & $metadata ['param'] [$position];
-                $m ['name'] = $param->getName();
+                $m = &$metadata['param'][$position];
+                $m['name'] = $param->getName();
                 if (!isset($m[$dataName])) {
                     $m[$dataName] = array();
                 }
@@ -164,22 +164,32 @@ class Routes
                 if (isset(static::$fieldTypesByName[$m['name']]) && empty($p['type']) && $type === 'string') {
                     $p['type'] = static::$fieldTypesByName[$m['name']];
                 }
-                $m ['default'] = $defaults [$position];
-                $m ['required'] = !$param->isOptional();
-                $contentType = Util::nestedValue($p,'type');
+                $m['default'] = $defaults[$position];
+                $m['required'] = !$param->isOptional();
+                $contentType = Util::nestedValue($p, 'type');
                 if ($type === 'array' && $contentType && $qualified = Scope::resolve($contentType, $scope)) {
                     list($p['type'], $children, $modelName) = static::getTypeAndModel(
-                        new ReflectionClass($qualified), $scope,
-                        $className . Text::title($methodUrl), $p
+                        new ReflectionClass($qualified),
+                        $scope,
+                        $className . Text::title($methodUrl),
+                        $p
                     );
                 }
                 if ($type instanceof ReflectionClass) {
-                    list($type, $children, $modelName) = static::getTypeAndModel($type, $scope,
-                        $className . Text::title($methodUrl), $p);
+                    list($type, $children, $modelName) = static::getTypeAndModel(
+                        $type,
+                        $scope,
+                        $className . Text::title($methodUrl),
+                        $p
+                    );
                 } elseif ($type && is_string($type) && $qualified = Scope::resolve($type, $scope)) {
                     list($type, $children, $modelName)
-                        = static::getTypeAndModel(new ReflectionClass($qualified), $scope,
-                        $className . Text::title($methodUrl), $p);
+                        = static::getTypeAndModel(
+                            new ReflectionClass($qualified),
+                            $scope,
+                            $className . Text::title($methodUrl),
+                            $p
+                        );
                 }
                 if (isset($type)) {
                     $m['type'] = $type;
@@ -194,12 +204,10 @@ class Routes
                     if (!isset($m['type'])) {
                         $type = $m['type'] = 'array';
                     }
-
                 } elseif (isset($p['from'])) {
                     $from = $p['from'];
                 } else {
-                    if ((isset($type) && Util::isObjectOrArray($type))
-                    ) {
+                    if ((isset($type) && Util::isObjectOrArray($type))) {
                         $from = 'body';
                         if (!isset($type)) {
                             $type = $m['type'] = 'array';
@@ -216,7 +224,7 @@ class Routes
                 }
 
                 if ($allowAmbiguity || $from === 'path') {
-                    $pathParams [] = $position;
+                    $pathParams[] = $position;
                 }
                 $position++;
             }
@@ -251,10 +259,11 @@ class Routes
             // if manual route
             if (preg_match_all(
                 '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)'
-                . '[ \t]*\/?(\S*)/s',
-                $doc, $matches, PREG_SET_ORDER
-            )
-            ) {
+                    . '[ \t]*\/?(\S*)/s',
+                $doc,
+                $matches,
+                PREG_SET_ORDER
+            )) {
                 foreach ($matches as $match) {
                     $httpMethod = $match[1];
                     $url = rtrim($resourcePath . $match[2], '/');
@@ -272,17 +281,21 @@ class Routes
                             $copy['metadata']['param'][$i][$dataName]['from'] = 'body';
                         }
                     }
-                    $url = preg_replace_callback('/{[^}]+}|:[^\/]+/',
+                    $url = preg_replace_callback(
+                        '/{[^}]+}|:[^\/]+/',
                         function ($matches) use ($copy) {
                             $match = trim($matches[0], '{}:');
                             $index = $copy['arguments'][$match];
                             return '{' .
-                            Routes::typeChar(isset(
-                                $copy['metadata']['param'][$index]['type'])
-                                ? $copy['metadata']['param'][$index]['type']
-                                : null)
-                            . $index . '}';
-                        }, $url);
+                                Routes::typeChar(isset(
+                                    $copy['metadata']['param'][$index]['type']
+                                )
+                                    ? $copy['metadata']['param'][$index]['type']
+                                    : null)
+                                . $index . '}';
+                        },
+                        $url
+                    );
                     static::addPath($url, $copy, $httpMethod, $version);
                 }
                 //if auto route enabled, do so
@@ -290,8 +303,9 @@ class Routes
                 // no configuration found so use convention
                 if (preg_match_all(
                     '/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)/i',
-                    $methodUrl, $matches)
-                ) {
+                    $methodUrl,
+                    $matches
+                )) {
                     $httpMethod = strtoupper($matches[0][0]);
                     $methodUrl = substr($methodUrl, strlen($httpMethod));
                 } else {
@@ -304,7 +318,8 @@ class Routes
                     : $resourcePath . $methodUrl;
                 for ($position = 0; $position < count($params); $position++) {
                     $from = $metadata['param'][$position][$dataName]['from'];
-                    if ($from === 'body' && ($httpMethod === 'GET' ||
+                    if (
+                        $from === 'body' && ($httpMethod === 'GET' ||
                             $httpMethod === 'DELETE')
                     ) {
                         $call['metadata']['param'][$position][$dataName]['from']
@@ -347,14 +362,17 @@ class Routes
         return 's';
     }
 
-    protected static function addPath($path, array $call,
-        $httpMethod = 'GET', $version = 1)
-    {
+    protected static function addPath(
+        $path,
+        array $call,
+        $httpMethod = 'GET',
+        $version = 1
+    ) {
         $call['url'] = preg_replace_callback(
             "/\{\S(\d+)\}/",
             function ($matches) use ($call) {
                 return '{' .
-                $call['metadata']['param'][$matches[1]]['name'] . '}';
+                    $call['metadata']['param'][$matches[1]]['name'] . '}';
             },
             $path
         );
@@ -381,9 +399,12 @@ class Routes
      * @throws RestException
      * @return ApiMethodInfo
      */
-    public static function find($path, $httpMethod,
-        $version = 1, array $data = array())
-    {
+    public static function find(
+        $path,
+        $httpMethod,
+        $version = 1,
+        array $data = array()
+    ) {
         $p = Util::nestedValue(static::$routes, "v$version");
         if (!$p) {
             throw new RestException(
@@ -425,8 +446,11 @@ class Routes
             if (!isset($value[$httpMethod])) {
                 continue;
             }
-            $regex = str_replace(array('{', '}'),
-                array('(?P<', '>[^/]+)'), $key);
+            $regex = str_replace(
+                array('{', '}'),
+                array('(?P<', '>[^/]+)'),
+                $key
+            );
             if (preg_match_all(":^$regex$:i", $path, $matches, PREG_SET_ORDER)) {
                 $matches = $matches[0];
                 $found = true;
@@ -475,7 +499,7 @@ class Routes
             $all = $all['*'] + $all;
             unset($all['*']);
         }
-        if(is_array($all)){
+        if (is_array($all)) {
             foreach ($all as $fullPath => $routes) {
                 foreach ($routes as $httpMethod => $route) {
                     if (in_array($httpMethod, $excludedHttpMethods)) {
@@ -535,7 +559,7 @@ class Routes
     protected static function populate(array $call, $data)
     {
         $call['parameters'] = $call['defaults'];
-        $p = & $call['parameters'];
+        $p = &$call['parameters'];
         $dataName = CommentParser::$embeddedDataName;
         foreach ($data as $key => $value) {
             if (isset($call['arguments'][$key])) {
@@ -579,7 +603,7 @@ class Routes
             $stage = end(Scope::get('Restler')->getEvents());
             if (empty($stage))
                 $stage = 'setup';
-            $r = Scope::get($r->className)->$modifier($r, $stage) ? : $r;
+            $r = Scope::get($r->className)->$modifier($r, $stage) ?: $r;
         }
         return $r;
     }
@@ -644,12 +668,12 @@ class Routes
      *
      * @access protected
      */
-    protected static function getTypeAndModel(ReflectionClass $class, array $scope, $prefix='', array $rules=array())
+    protected static function getTypeAndModel(ReflectionClass $class, array $scope, $prefix = '', array $rules = array())
     {
         $className = $class->getName();
         $dataName = CommentParser::$embeddedDataName;
-        if (isset(static::$models[$prefix.$className])) {
-            return static::$models[$prefix.$className];
+        if (isset(static::$models[$prefix . $className])) {
+            return static::$models[$prefix . $className];
         }
         $children = array();
         try {
@@ -741,8 +765,8 @@ class Routes
                 $children[$name][$dataName]['required'] = isset($required[$name]);
             }
         }
-        static::$models[$prefix.$className] = array($className, $children, $prefix.$className);
-        return static::$models[$prefix.$className];
+        static::$models[$prefix . $className] = array($className, $children, $prefix . $className);
+        return static::$models[$prefix . $className];
     }
 
     /**
@@ -818,7 +842,7 @@ class Routes
                         if (T_AS === $last) {
                             break;
                         }
-                    //don't break;
+                        //don't break;
                     case T_NS_SEPARATOR:
                         $namespace .= $token[1];
                         break;
