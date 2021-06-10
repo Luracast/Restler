@@ -11,7 +11,7 @@ class Curl
         $this->options = array_merge(array(
             'debug'      => false,
             'http_port'  => '80',
-            'user_agent' => 'PHP-curl-client (https://github.com/bshaffer/oauth2-server-demo)',
+            'user_agent' => 'PHP-CURL',
             'timeout'    => 20,
             'curlopts'   => null,
             'verifyssl'  => true,
@@ -21,11 +21,11 @@ class Curl
     /**
     * Send a request to the server, receive a response
     *
-    * @param  string   $apiPath       Request API path
+    * @param  string   $url           Request API path
     * @param  array    $parameters    Parameters
     * @param  string   $httpMethod    HTTP method to use
     *
-    * @return string   HTTP response
+    * @return array   HTTP response
     */
     public function request($url, array $parameters = array(), $httpMethod = 'GET', array $options = array())
     {
@@ -95,9 +95,7 @@ class Curl
             $curlOptions[CURLOPT_PROXY] = $options['proxy'];
         }
 
-        $response = $this->doCurlCall($curlOptions);
-
-        return $response;
+        return $this->doCurlCall($curlOptions);
     }
 
     /**
@@ -112,7 +110,7 @@ class Curl
             $this->debug(print_r($response, true));
             return false;
         }
-        return parent::decodeResponse($response);
+        return $response;
     }
 
     protected function doCurlCall(array $curlOptions)

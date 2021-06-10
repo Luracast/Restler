@@ -41,7 +41,7 @@
         "mustache/mustache": "dev-master",
         "twig/twig": "^3",
         "illuminate/view": "^8 || ^7",
-        "bshaffer/oauth2-server-php":"v1.0"
+        "bshaffer/oauth2-server-php":"^1"
     },
     "repositories":[
         {
