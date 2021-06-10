@@ -18,6 +18,10 @@ use Luracast\Restler\Restler;
 use Luracast\Restler\Scope;
 use Luracast\Restler\UI\Nav;
 use Luracast\Restler\Util;
+use Twig\Environment;
+use Twig\Extension\DebugExtension;
+use Twig\Loader\FilesystemLoader;
+use Twig\TwigFunction;
 
 /**
  * Html template format
@@ -123,33 +127,35 @@ class HtmlFormat extends Format
 
     public static function twig(array $data, $debug = true)
     {
-        if (!class_exists('\Twig_Environment', true))
+        if (!class_exists('Twig\Environment', true))
             throw new RestException(500,
                 'Twig templates require twig classes to be installed using `composer install`');
-        $loader = new \Twig_Loader_Filesystem(static::$viewPath);
-        $twig = new \Twig_Environment($loader, array(
-            'cache' => static::$cacheDirectory,
-            'debug' => $debug,
+        $loader = new FilesystemLoader(static::$viewPath);
+        $twig = new Environment($loader, array(
+            'cache'                => is_string(static::$cacheDirectory)
+                ? static::$cacheDirectory : false,
+            'debug'                => $debug,
             'use_strict_variables' => $debug,
         ));
-        if ($debug)
-            $twig->addExtension(new \Twig_Extension_Debug());
+        if ($debug) {
+            $twig->addExtension(new DebugExtension());
+        }
 
         $twig->addFunction(
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'form',
                 'Luracast\Restler\UI\Forms::get',
                 array('is_safe' => array('html'))
             )
         );
         $twig->addFunction(
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'form_key',
                 'Luracast\Restler\UI\Forms::key'
             )
         );
         $twig->addFunction(
-            new \Twig_SimpleFunction(
+            new TwigFunction(
                 'nav',
                 'Luracast\Restler\UI\Nav::get'
             )
@@ -160,7 +166,7 @@ class HtmlFormat extends Format
                 isset(HtmlFormat::$data[$name]) &&
                 is_callable(HtmlFormat::$data[$name])
             ) {
-                return new \Twig_SimpleFunction(
+                return new TwigFunction(
                     $name,
                     HtmlFormat::$data[$name]
                 );
@@ -168,8 +174,8 @@ class HtmlFormat extends Format
             return false;
         });
 
-        $template = $twig->loadTemplate(static::getViewFile());
-        return $template->render($data);
+        $template = $twig->load(static::getViewFile());
+        return $template->render((array)$data);
     }
 
     public static function getViewFile($fullPath = false, $includeExtension = true)

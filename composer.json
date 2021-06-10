@@ -39,7 +39,7 @@
         "zendframework/zendamf":"dev-master",
         "symfony/yaml":"*",
         "mustache/mustache": "dev-master",
-        "twig/twig": "v1.13.0",
+        "twig/twig": "^3",
         "illuminate/view": "^8 || ^7",
         "bshaffer/oauth2-server-php":"v1.0"
     },
