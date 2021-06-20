@@ -48,7 +48,30 @@
         }
     },
     "autoload-dev": {
-        "classmap": ["public/examples/common"]
+        "classmap": [
+            "public/examples/common",
+            "public/examples/_001_helloworld",
+            "public/examples/_002_minimal",
+            "public/examples/_003_multiformat",
+            "public/examples/_004_error_response",
+            "public/examples/_005_protected_api",
+            "public/examples/_006_routing",
+            "public/examples/_007_crud",
+            "public/examples/_008_documentation",
+            "public/examples/_009_rate_limiting",
+            "public/examples/_010_access_control",
+            "public/examples/_011_versioning",
+            "public/examples/_012_vendor_mime",
+            "public/examples/_013_html",
+            "public/examples/_014_oauth2_client",
+            "public/examples/_015_oauth2_server",
+            "public/examples/_016_forms",
+            "public/tests/param",
+            "public/tests/request_data"
+        ]
+    },
+    "config": {
+        "process-timeout": 0
     },
     "minimum-stability": "dev",
     "conflict": {
