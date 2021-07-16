@@ -193,7 +193,10 @@ class Explorer implements iProvideMultiVersionApi
         $r->swagger = static::SWAGGER;
 
         $info = parse_url($this->restler->getBaseUrl());
-        $r->host = $info['host'];
+        $r->host = '';
+        if (isset($info['host'])) {
+            $r->host = $info['host'];
+        }
         if (isset($info['port'])) {
             $r->host .= ':' . $info['port'];
         }
