@@ -4,8 +4,7 @@ use Luracast\Restler\Format\HtmlFormat;
 
 if (is_readable(__DIR__ . '/vendor/autoload.php')) {
     //if composer auto loader is found use it
-    $loader = require __DIR__ . '/vendor/autoload.php';
-    $loader->setUseIncludePath(true);
+    require __DIR__ . '/vendor/autoload.php';
     class_alias('Luracast\\Restler\\Restler', 'Restler');
 } else {
     //otherwise use the restler auto loader

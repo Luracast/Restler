@@ -275,6 +275,8 @@ class Routes
                             strpos($url, ':' . $p['name']);
                         if ($inPath) {
                             $copy['metadata']['param'][$i][$dataName]['from'] = 'path';
+                        } elseif (isset($p[$dataName]['from']) && 'header' === $p[$dataName]['from']) {
+                            continue;
                         } elseif ($httpMethod === 'GET' || $httpMethod === 'DELETE') {
                             $copy['metadata']['param'][$i][$dataName]['from'] = 'query';
                         } elseif (empty($p[$dataName]['from']) || $p[$dataName]['from'] === 'path') {

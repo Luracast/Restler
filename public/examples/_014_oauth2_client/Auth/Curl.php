@@ -27,7 +27,7 @@ class Curl
      *
      * @param array  $options
      *
-     * @return string   HTTP response
+     * @return array   HTTP response
      */
     public function request($url, array $parameters = array(), $httpMethod = 'GET', array $options = array())
     {
@@ -93,9 +93,7 @@ class Curl
             $curlOptions[CURLOPT_PROXY] = $options['proxy'];
         }
 
-        $response = $this->doCurlCall($curlOptions);
-
-        return $response;
+        return $this->doCurlCall($curlOptions);
     }
 
     protected function doCurlCall(array $curlOptions)
