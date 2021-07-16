@@ -528,10 +528,16 @@ class Restler extends EventDispatcher
             $this->baseUrl .= $base;
         }
 
+        $baseUrlInfo = parse_url($this->baseUrl);
+        if (isset($baseUrlInfo['path'])) {
+            $baseUrlCleaned = $baseUrlInfo['path'];
+        } else {
+            $baseUrlCleaned = $this->baseUrl;
+        }
 
-        if ($this->baseUrl !== false) {
-            if (0 === strpos($path, ltrim($this->baseUrl, '/'))) {
-                $path = substr($path, strlen($this->baseUrl));
+        if ($baseUrlCleaned !== false) {
+            if (0 === strpos($path, ltrim($baseUrlCleaned, '/'))) {
+                $path = substr($path, strlen($baseUrlCleaned));
             }
         }
 
