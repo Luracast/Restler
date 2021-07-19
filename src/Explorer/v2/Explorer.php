@@ -403,6 +403,10 @@ class Explorer implements iProvideMultiVersionApi
         $return = Util::nestedValue($route, 'metadata', 'return');
         if (!empty($return)) {
             $this->setType($r[$code]->schema, new ValidationInfo($return));
+
+            if (!empty($return['description'])) {
+                $r[$code]->description = $return['description'];
+            }
         }
 
         if (is_array($throws = Util::nestedValue($route, 'metadata', 'throws'))) {
