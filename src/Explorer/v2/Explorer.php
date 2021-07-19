@@ -176,8 +176,11 @@ class Explorer implements iProvideMultiVersionApi
         ) {
             $filename .= '.js';
         }
-        PassThrough::file(__DIR__ . '/client/' . (empty($filename) ? 'index.html' : $filename), false,
-            0); //60 * 60 * 24);
+        PassThrough::file(
+            __DIR__ . '/client/' . (empty($filename) ? 'index.html' : $filename),
+            false,
+            0
+        ); //60 * 60 * 24);
     }
 
     /**
@@ -190,7 +193,10 @@ class Explorer implements iProvideMultiVersionApi
         $r->swagger = static::SWAGGER;
 
         $info = parse_url($this->restler->getBaseUrl());
-        $r->host = $info['host'];
+        $r->host = '';
+        if (isset($info['host'])) {
+            $r->host = $info['host'];
+        }
         if (isset($info['port'])) {
             $r->host .= ':' . $info['port'];
         }
@@ -460,8 +466,17 @@ class Explorer implements iProvideMultiVersionApi
 
     private function setType(&$object, ValidationInfo $info)
     {
+        // TEMP FIX: for multiple types, pick first one if not null
+        $type = $info->type;
+        if (is_array($info->type)) {
+            foreach ($info->type as $type) {
+                if (strtolower($type) != 'null') {
+                    break;
+                }
+            }
+        }
         //TODO: proper type management
-        $type = Util::getShortName($info->type);
+        $type = Util::getShortName($type);
         if ($info->type === 'array') {
             $object->type = 'array';
             if ($info->children) {
@@ -482,8 +497,10 @@ class Explorer implements iProvideMultiVersionApi
                     )
                 ));
             } elseif ($info->contentType && $info->contentType != 'indexed') {
-                if (is_string($info->contentType) && $t = Util::nestedValue(static::$dataTypeAlias,
-                        strtolower($info->contentType))) {
+                if (is_string($info->contentType) && $t = Util::nestedValue(
+                    static::$dataTypeAlias,
+                    strtolower($info->contentType)
+                )) {
                     if (is_array($t)) {
                         $object->items = (object)array(
                             'type'   => $t[0],
