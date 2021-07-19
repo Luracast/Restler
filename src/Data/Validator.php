@@ -480,7 +480,7 @@ class Validator implements iValidate
             }
 
             if (isset ($info->choice)) {
-                if (!$info->required && empty($input) && 0 !== $input) {
+                if (!$info->required && empty($input) && 0 !== $input && '0' !== $input) {
                     //since its optional, and empty let it pass.
                     $input = null;
                 } elseif (is_array($input)) {
