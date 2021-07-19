@@ -172,7 +172,7 @@ class ValidationInfo implements iValueObject
 
     public static function numericValue($value)
     {
-        return ( int )$value === $value
+        return ( int )$value == $value //dont use strict comparison
             ? ( int )$value
             : floatval($value);
     }
