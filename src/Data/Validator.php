@@ -468,7 +468,7 @@ class Validator implements iValidate
                 throw new RestException (400, $error);
             }
 
-            //patterns are supported only for non numeric types
+            //patterns are supported only for non-numeric types
             if (isset ($info->pattern)
                 && $info->type != 'int'
                 && $info->type != 'float'
@@ -480,7 +480,7 @@ class Validator implements iValidate
             }
 
             if (isset ($info->choice)) {
-                if (!$info->required && empty($input)) {
+                if (!$info->required && empty($input) && 0 !== $input) {
                     //since its optional, and empty let it pass.
                     $input = null;
                 } elseif (is_array($input)) {
