@@ -484,6 +484,13 @@ $r = new Restler(true); //turn on production mode by passing true.
 //...
 </code></pre>
 
+<blockquote>
+  <p><em>Note:-</em> When production mode is set to <code>true</code> it always uses the cache and does not detect 
+  changes and new routes if any. Your continuous integration pipeline or your git hook should delete 
+  this file during the deployment process. Alternatively you can pass second parameter to restler
+  constructor to refresh the cache when changes need to be applied.</p>
+</blockquote>
+
 <p><a id="change-log" class="anchor"></a></p>
 <h2>Change Log</h2>
 

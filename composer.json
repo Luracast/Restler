@@ -12,7 +12,7 @@
         }
     ],
     "suggest":{
-        "guzzle/guzzle":"RESTful api HTTP client framework (see require-dev for details)",
+        "guzzlehttp/guzzle":"RESTful api HTTP client framework (see require-dev for details)",
         "behat/behat":"Behaviour driven development testing framework (see require-dev for details)",
         "rodneyrehm/plist":"If you need Apple plist binary/xml format",
         "zendframework/zendamf":"If you need AMF format",
