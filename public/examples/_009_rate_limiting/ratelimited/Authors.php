@@ -164,6 +164,7 @@ class Authors
     /**
      * reset for tests
      * @class    RateLimit {@unit hour} {@usagePerUnit 1000}
+     * @return bool Success state of the reset
      */
     function patchReset()
     {

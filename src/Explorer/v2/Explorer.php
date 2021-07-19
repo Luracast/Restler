@@ -3,17 +3,16 @@
 
 namespace Luracast\Restler\Explorer\v2;
 
+use Luracast\Restler\Data\ValidationInfo;
+use Luracast\Restler\Defaults;
 use Luracast\Restler\iProvideMultiVersionApi;
 use Luracast\Restler\PassThrough;
 use Luracast\Restler\RestException;
 use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
+use Luracast\Restler\Scope;
 use Luracast\Restler\Util;
 use stdClass;
-use Luracast\Restler\Data\Text;
-use Luracast\Restler\Data\ValidationInfo;
-use Luracast\Restler\Scope;
-use Luracast\Restler\Defaults;
 
 /**
  * Class Explorer
@@ -470,17 +469,9 @@ class Explorer implements iProvideMultiVersionApi
                 $object->items = (object)array(
                     '$ref' => "#/definitions/$contentType"
                 );
-            } elseif ($info->contentType && $info->contentType === 'associative') {
+            } elseif ($info->contentType === 'associative') {
                 unset($info->contentType);
-                $this->model($info->type = 'Object', array(
-                    array(
-                        'name'        => 'property',
-                        'type'        => 'string',
-                        'default'     => '',
-                        'required'    => false,
-                        'description' => ''
-                    )
-                ));
+                $object->type = 'object';
             } elseif ($info->contentType && $info->contentType != 'indexed') {
                 if (is_string($info->contentType) && $t = Util::nestedValue(static::$dataTypeAlias,
                         strtolower($info->contentType))) {

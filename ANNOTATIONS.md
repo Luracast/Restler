@@ -149,11 +149,11 @@ Check out supported child attributes under [@param](PARAM.md) documentation.
 
 **Syntax:**
 
-    @throws RestException [httpStatusCode] [Reason]
+    @throws RestException [httpStatusCode] [Description]
     
 or
     
-    @throws AnyOtherException [Reason]
+    @throws AnyOtherException [Description]
 
 **Example:**
 
