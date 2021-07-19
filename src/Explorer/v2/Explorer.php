@@ -66,6 +66,45 @@ class Explorer implements iProvideMultiVersionApi
      */
     public static $infoClass = 'Luracast\Restler\Explorer\Info';
     /**
+     * @var array type mapping for converting data types to JSON-Schema Draft 4
+     * Which is followed by swagger 1.2 spec
+     */
+    public static $dataTypeAlias = array(
+        //'string' => 'string',
+        'int' => 'integer',
+        'number' => 'number',
+        'float' => array('number', 'float'),
+        'bool' => 'boolean',
+        //'boolean' => 'boolean',
+        //'NULL' => 'null',
+        'array' => 'array',
+        //'object'  => 'object',
+        'stdClass' => 'object',
+        'mixed' => 'string',
+        'date' => array('string', 'date'),
+        'datetime' => array('string', 'date-time'),
+
+        'time' => 'string',
+        'timestamp' => 'string',
+    );
+    /**
+     * @var array configurable symbols to differentiate public, hybrid and
+     * protected api
+     */
+    public static $apiDescriptionSuffixSymbols = array(
+        0 => ' 🔓', //'&nbsp; <i class="fa fa-lg fa-unlock-alt"></i>', //public api
+        1 => ' ◑', //'&nbsp; <i class="fa fa-lg fa-adjust"></i>', //hybrid api
+        2 => ' 🔐', //'&nbsp; <i class="fa fa-lg fa-lock"></i>', //protected api
+    );
+    protected static $prefixes = array(
+        'get' => 'retrieve',
+        'index' => 'list',
+        'post' => 'create',
+        'put' => 'update',
+        'patch' => 'modify',
+        'delete' => 'remove',
+    );
+    /**
      * Injected at runtime
      *
      * @var Restler instance of restler
@@ -76,63 +115,29 @@ class Explorer implements iProvideMultiVersionApi
      * used to set the extension manually
      */
     public $formatString = '';
-
-    /**
-     * @var array type mapping for converting data types to JSON-Schema Draft 4
-     * Which is followed by swagger 1.2 spec
-     */
-    public static $dataTypeAlias = array(
-        //'string' => 'string',
-        'int'      => 'integer',
-        'number'   => 'number',
-        'float'    => array('number', 'float'),
-        'bool'     => 'boolean',
-        //'boolean' => 'boolean',
-        //'NULL' => 'null',
-        'array'    => 'array',
-        //'object'  => 'object',
-        'stdClass' => 'object',
-        'mixed'    => 'string',
-        'date'     => array('string', 'date'),
-        'datetime' => array('string', 'date-time'),
-
-        'time'      => 'string',
-        'timestamp' => 'string',
-    );
-
-    /**
-     * @var array configurable symbols to differentiate public, hybrid and
-     * protected api
-     */
-    public static $apiDescriptionSuffixSymbols = array(
-        0 => ' 🔓', //'&nbsp; <i class="fa fa-lg fa-unlock-alt"></i>', //public api
-        1 => ' ◑', //'&nbsp; <i class="fa fa-lg fa-adjust"></i>', //hybrid api
-        2 => ' 🔐', //'&nbsp; <i class="fa fa-lg fa-lock"></i>', //protected api
-    );
-
     protected $models = array();
     /**
      * @var bool|stdClass
      */
     protected $_fullDataRequested = false;
     protected $crud = array(
-        'POST'   => 'create',
-        'GET'    => 'retrieve',
-        'PUT'    => 'update',
+        'POST' => 'create',
+        'GET' => 'retrieve',
+        'PUT' => 'update',
         'DELETE' => 'delete',
-        'PATCH'  => 'partial update'
-    );
-    protected static $prefixes = array(
-        'get'    => 'retrieve',
-        'index'  => 'list',
-        'post'   => 'create',
-        'put'    => 'update',
-        'patch'  => 'modify',
-        'delete' => 'remove',
+        'PATCH' => 'partial update'
     );
     protected $_authenticated = false;
     protected $cacheName = '';
 
+    /**
+     * Maximum api version supported by the api class
+     * @return int
+     */
+    public static function __getMaximumSupportedVersion()
+    {
+        return Scope::get('Restler')->getApiVersion();
+    }
 
     /**
      * Serve static files for exploring
@@ -175,8 +180,16 @@ class Explorer implements iProvideMultiVersionApi
         ) {
             $filename .= '.js';
         }
-        PassThrough::file(__DIR__ . '/client/' . (empty($filename) ? 'index.html' : $filename), false,
-            0); //60 * 60 * 24);
+        PassThrough::file(
+            __DIR__ . '/client/' . (empty($filename) ? 'index.html' : $filename),
+            false,
+            0
+        ); //60 * 60 * 24);
+    }
+
+    private function base()
+    {
+        return strtok($this->restler->url, '/');
     }
 
     /**
@@ -286,6 +299,31 @@ class Explorer implements iProvideMultiVersionApi
         return $r;
     }
 
+    private function operationId(array $route)
+    {
+        static $hash = array();
+        $id = $route['httpMethod'] . ' ' . $route['url'];
+        if (isset($hash[$id])) {
+            return $hash[$id];
+        }
+        $class = Util::getShortName($route['className']);
+        $method = $route['methodName'];
+
+        if (isset(static::$prefixes[$method])) {
+            $method = static::$prefixes[$method] . $class;
+        } else {
+            $method = str_replace(
+                array_keys(static::$prefixes),
+                array_values(static::$prefixes),
+                $method
+            );
+            $method = lcfirst($class) . ucfirst($method);
+        }
+        $hash[$id] = $method;
+
+        return $method;
+    }
+
     private function parameters(array $route)
     {
         $r = array();
@@ -338,12 +376,12 @@ class Explorer implements iProvideMultiVersionApi
                 $name = $this->modelName($route);
                 $r[] = $this->parameter(
                     new ValidationInfo(array(
-                        'name'     => $name,
-                        'type'     => $name,
-                        'from'     => 'body',
-                        'required' => $required,
-                        'children' => $children
-                    )),
+                                           'name' => $name,
+                                           'type' => $name,
+                                           'from' => 'body',
+                                           'required' => $required,
+                                           'children' => $children
+                                       )),
                     $description
                 );
             }
@@ -390,76 +428,12 @@ class Explorer implements iProvideMultiVersionApi
         return $p;
     }
 
-    private function responses(array $route)
-    {
-        $code = '200';
-        $r = array(
-            $code => (object)array(
-                'description' => 'Success',
-                'schema'      => new stdClass()
-            )
-        );
-        $return = Util::nestedValue($route, 'metadata', 'return');
-        if (!empty($return)) {
-            $this->setType($r[$code]->schema, new ValidationInfo($return));
-
-            if (!empty($return['description'])) {
-                $r[$code]->description = $return['description'];
-            }
-        }
-
-        if (is_array($throws = Util::nestedValue($route, 'metadata', 'throws'))) {
-            foreach ($throws as $message) {
-                $r[$message['code']] = array('description' => $message['message']);
-            }
-        }
-
-        return $r;
-    }
-
-    private function model($type, array $children)
-    {
-        if (isset($this->models[$type])) {
-            return $this->models[$type];
-        }
-        $r = new stdClass();
-        $r->properties = array();
-        $required = array();
-        foreach ($children as $child) {
-            $info = new ValidationInfo($child);
-            $p = new stdClass();
-            $this->setType($p, $info);
-            $p->description = isset($child['description']) ? $child['description'] : '';
-            if ($info->default) {
-                $p->defaultValue = $info->default;
-            }
-            if ($info->choice) {
-                $p->enum = $info->choice;
-            }
-            if ($info->min) {
-                $p->minimum = $info->min;
-            }
-            if ($info->max) {
-                $p->maximum = $info->max;
-            }
-            if ($info->required) {
-                $required[] = $info->name;
-            }
-            $r->properties[$info->name] = $p;
-        }
-        if (!empty($required)) {
-            $r->required = $required;
-        }
-        //TODO: add $r->subTypes https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#527-model-object
-        //TODO: add $r->discriminator https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#527-model-object
-        $this->models[$type] = $r;
-
-        return $r;
-    }
-
     private function setType(&$object, ValidationInfo $info)
     {
         //TODO: proper type management
+        if (is_array($info->type)) {
+            $info->type = end($info->type);
+        }
         $type = Util::getShortName($info->type);
         if ($info->type === 'array') {
             $object->type = 'array';
@@ -473,11 +447,13 @@ class Explorer implements iProvideMultiVersionApi
                 unset($info->contentType);
                 $object->type = 'object';
             } elseif ($info->contentType && $info->contentType != 'indexed') {
-                if (is_string($info->contentType) && $t = Util::nestedValue(static::$dataTypeAlias,
-                        strtolower($info->contentType))) {
+                if (is_string($info->contentType) && $t = Util::nestedValue(
+                        static::$dataTypeAlias,
+                        strtolower($info->contentType)
+                    )) {
                     if (is_array($t)) {
                         $object->items = (object)array(
-                            'type'   => $t[0],
+                            'type' => $t[0],
                             'format' => $t[1],
                         );
                     } else {
@@ -523,34 +499,76 @@ class Explorer implements iProvideMultiVersionApi
         }
     }
 
-    private function operationId(array $route)
+    private function model($type, array $children)
     {
-        static $hash = array();
-        $id = $route['httpMethod'] . ' ' . $route['url'];
-        if (isset($hash[$id])) {
-            return $hash[$id];
+        if (isset($this->models[$type])) {
+            return $this->models[$type];
         }
-        $class = Util::getShortName($route['className']);
-        $method = $route['methodName'];
-
-        if (isset(static::$prefixes[$method])) {
-            $method = static::$prefixes[$method] . $class;
-        } else {
-            $method = str_replace(
-                array_keys(static::$prefixes),
-                array_values(static::$prefixes),
-                $method
-            );
-            $method = lcfirst($class) . ucfirst($method);
+        $r = new stdClass();
+        $r->properties = array();
+        $required = array();
+        foreach ($children as $child) {
+            $info = new ValidationInfo($child);
+            $p = new stdClass();
+            $this->setType($p, $info);
+            $p->description = isset($child['description']) ? $child['description'] : '';
+            if ($info->default) {
+                $p->defaultValue = $info->default;
+            }
+            if ($info->choice) {
+                $p->enum = $info->choice;
+            }
+            if ($info->min) {
+                $p->minimum = $info->min;
+            }
+            if ($info->max) {
+                $p->maximum = $info->max;
+            }
+            if ($info->required) {
+                $required[] = $info->name;
+            }
+            $r->properties[$info->name] = $p;
         }
-        $hash[$id] = $method;
+        if (!empty($required)) {
+            $r->required = $required;
+        }
+        //TODO: add $r->subTypes https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#527-model-object
+        //TODO: add $r->discriminator https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#527-model-object
+        $this->models[$type] = $r;
 
-        return $method;
+        return $r;
     }
 
     private function modelName(array $route)
     {
         return $this->operationId($route) . 'Model';
+    }
+
+    private function responses(array $route)
+    {
+        $code = '200';
+        $r = array(
+            $code => (object)array(
+                'description' => 'Success',
+                'schema' => new stdClass()
+            )
+        );
+        $return = Util::nestedValue($route, 'metadata', 'return');
+        if (!empty($return)) {
+            $this->setType($r[$code]->schema, new ValidationInfo($return));
+
+            if (!empty($return['description'])) {
+                $r[$code]->description = $return['description'];
+            }
+        }
+
+        if (is_array($throws = Util::nestedValue($route, 'metadata', 'throws'))) {
+            foreach ($throws as $message) {
+                $r[$message['code']] = array('description' => $message['message']);
+            }
+        }
+
+        return $r;
     }
 
     private function securityDefinitions()
@@ -559,23 +577,9 @@ class Explorer implements iProvideMultiVersionApi
         $r->api_key = (object)array(
             'type' => 'apiKey',
             'name' => 'api_key',
-            'in'   => 'query',
+            'in' => 'query',
         );
 
         return $r;
-    }
-
-    private function base()
-    {
-        return strtok($this->restler->url, '/');
-    }
-
-    /**
-     * Maximum api version supported by the api class
-     * @return int
-     */
-    public static function __getMaximumSupportedVersion()
-    {
-        return Scope::get('Restler')->getApiVersion();
     }
 }
