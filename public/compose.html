@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Luracast Restler 4 Forms</title>
+<title>Luracast Restler 4 Compose</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" href="examples/resources/highlight.css">
 <link rel="stylesheet" type="text/css" href="examples/resources/style.css"/>
@@ -53,18 +53,12 @@ var _gaq = _gaq || [];
             <li><a href="annotations.html#supported-annotations" title="Supported Annotations">Annotations</a>
             </li>
             <li><a href="compose.html#compose" title="Compose">Compose</a>
+                <ul><li><a href="compose.html#what-does-it-do" title="Compose - What Does It Do?">What Does It Do?</a></li></ul>
+                <ul><li><a href="compose.html#how-does-it-work" title="Compose - How Does It Work?">How Does It Work?</a></li></ul>
+                <ul><li><a href="compose.html#how-to-customize" title="Compose - How To Customize">How To Customize</a></li></ul>
+                <ul><li><a href="compose.html#taking-full-control" title="Compose - Taking Full Control">Taking Full Control</a></li></ul>
             </li>
             <li><a href="forms.html#forms" title="Forms">Forms</a>
-                <ul><li><a href="forms.html#label" title="Forms - @label">@label</a></li></ul>
-                <ul><li><a href="forms.html#field" title="Forms - @field">@field</a></li></ul>
-                <ul><li><a href="forms.html#message" title="Forms - @message">@message</a></li></ul>
-                <ul><li><a href="forms.html#form" title="Forms - @form">@form</a></li></ul>
-                <ul><li><a href="forms.html#input" title="Forms - @input">@input</a></li></ul>
-                <ul><li><a href="forms.html#textarea" title="Forms - @textarea">@textarea</a></li></ul>
-                <ul><li><a href="forms.html#radio" title="Forms - @radio">@radio</a></li></ul>
-                <ul><li><a href="forms.html#select" title="Forms - @select">@select</a></li></ul>
-                <ul><li><a href="forms.html#submit" title="Forms - @submit">@submit</a></li></ul>
-                <ul><li><a href="forms.html#fieldset" title="Forms - @fieldset">@fieldset</a></li></ul>
             </li>
             <li><a href="param.html#param-and--var" title="@param and @var">Param</a>
             </li>
@@ -75,74 +69,120 @@ var _gaq = _gaq || [];
     </nav>
 <article>
 
-<p><a id="forms" class="anchor"></a></p>
-<h1>Forms</h1>
+<p><a id="compose" class="anchor"></a></p>
+<h1>Compose</h1>
 
-<p>Forms class generates html forms from http method and target url.</p>
+<p><a id="what-does-it-do" class="anchor"></a></p>
+<h2>What does it do?</h2>
 
-<p>Following attributes can be used for customizing the generated forms.</p>
+<p><code>iCompose</code> interface is the answer to the following questions:</p>
 
-<p><a id="label" class="anchor"></a></p>
-<h2>@label</h2>
+<ul>
+<li>What should restler return for an api call?</li>
+<li>Exactly what a particular api method returns or wrap it in some default properties?</li>
+<li>How should we convert an exception thrown into a clean error response?</li>
+<li>Should we include the debug information along with the error response? how much and how?</li>
+</ul>
 
-<p><a id="with--param" class="anchor"></a></p>
-<h3>With @param</h3>
+<p><a id="how-does-it-work" class="anchor"></a></p>
+<h2>How does it work?</h2>
 
-<p><strong>Syntax:</strong></p>
+<p>An implementation of iCompose interface is used to compose both success and error responses with two different methods:</p>
 
-<pre><code>@param type $name [Description] {@label Custom Name}
+<ul>
+<li>response method gets the return value of the api method, which can be returned directly or wrapped in a standard
+structure</li>
+<li>exception thrown is sent to the message method, which can format the exception into a error response</li>
+</ul>
+
+<pre><code class="php">namespace Luracast\Restler;
+
+interface iCompose {
+    /**
+     * @param mixed $result can be a primitive or array or object
+     */
+    public function response($result);
+
+    public function message(RestException $exception);
+}
 </code></pre>
 
-<p><strong>Example:</strong></p>
+<p><a id="how-to-customize" class="anchor"></a></p>
+<h2>How to customize</h2>
 
-<pre><code>@param string $name [Description] {@label Customer's Name}
+<p>There is a default implementation of this interface named <code>Compose</code> returns the success response as such, it formats the
+error message as follows</p>
+
+<p>if your exception is as follows</p>
+
+<pre><code class="php">throw new RestException(
+  400, 
+  'invalid user', 
+  ['error_code' =&gt; 12002]
+);
 </code></pre>
 
-<p>Restler automatically creates label for each param by using camelCasing and underscore in parameter names. For example <code>$firstName</code>, <code>$first_name</code> to <code>First Name</code>. If you want to override and specify a label yourself use the above annotation.</p>
+<p>The error response in production mode is</p>
 
-<hr>
-
-<p><a id="with--return" class="anchor"></a></p>
-<h3>With @return</h3>
-
-<p><strong>Syntax:</strong></p>
-
-<pre><code>@return type {@label Custom Name}
+<pre><code class="json">{
+  "error": {
+    "code": 400,
+    "message": "Bad Request: invalid user",
+    "error_code": 12002
+  }
+}
 </code></pre>
 
-<p><strong>Example:</strong></p>
+<p><em>Note:-</em> the third parameter of RestException is an array of properties which is appended to the response</p>
 
-<pre><code>@return array {@label Sign In}
+<p>Additional debug information is returned when restler is running in debug mode. It can be turned off by
+using <code>Compose::$includeDebugInfo=false;</code> otherwise the response will be</p>
+
+<pre><code class="php">{
+  "error": {
+    "code": 400,
+    "message": "Bad Request: invalid user",
+    "error_code": 12002
+  },
+  "debug": {
+    "source": "VerifyUser.php:115 at validate stage",
+    "stages": {
+      "success": [
+        "get",
+        "route",
+        "negotiate",
+        "validate"
+      ],
+      "failure": [
+        "call",
+        "message"
+      ]
+    }
+  }
+}
 </code></pre>
 
-<p>Restler by default uses <code>Submit</code> as the default text for form submit buttons. You can customize that using the above anotation.</p>
+<p><a id="taking-full-control" class="anchor"></a></p>
+<h2>Taking full control</h2>
 
-<p><a id="field" class="anchor"></a></p>
-<h2>@field</h2>
+<p>You can replace the default iCompose implementation with the following configuration</p>
 
-<p><a id="message" class="anchor"></a></p>
-<h2>@message</h2>
+<pre><code class="php">Luracast\Restler\Defaults::$composeClass = 'MyOwnCompose';
+</code></pre>
 
-<p><a id="form" class="anchor"></a></p>
-<h2>@form</h2>
+<p>Take a look at the <code>Luracast\Restler\Compose</code> class. Ideally just copy and paste the code from that
+and make your changes.</p>
 
-<p><a id="input" class="anchor"></a></p>
-<h2>@input</h2>
+<p>For example, your response method could be the following to provide a success property and data property.</p>
 
-<p><a id="textarea" class="anchor"></a></p>
-<h2>@textarea</h2>
-
-<p><a id="radio" class="anchor"></a></p>
-<h2>@radio</h2>
-
-<p><a id="select" class="anchor"></a></p>
-<h2>@select</h2>
-
-<p><a id="submit" class="anchor"></a></p>
-<h2>@submit</h2>
-
-<p><a id="fieldset" class="anchor"></a></p>
-<h2>@fieldset</h2>
+<pre><code class="php">class MyOwnCompose {
+    public function response($result)
+    {
+        return ['success' =&gt; true, 'data' =&gt; $result];
+    }
+    //...
+}
+</code></pre>
 
 </article id="top">
 <script>hljs.initHighlighting();</script>
