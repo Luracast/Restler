@@ -1,0 +1,13 @@
+{% extends "oauth2/client/base.twig" %}
+
+{% block content %}
+    <h3>Demo App</h3>
+    <p>
+        We would like to use your information in order to integrate with your friends,
+        use your personal information for nefarious purposes, and to make your life better somehow.
+    </p>
+    <p>
+        Click below to integrate with that service you belong to:
+    </p>
+    <a class="button" href="{{ response.authorize_url }}?response_type=code&client_id=demoapp&redirect_uri={{ response.authorize_redirect_url|url_encode() }}&state={{ session_id }}">Authorize</a>
+{% endblock %}

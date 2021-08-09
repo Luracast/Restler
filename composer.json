@@ -1,0 +1,109 @@
+{
+  "name": "arul/reactphp-restler",
+  "description": "Running Restler on ReactPHP",
+  "type": "project",
+  "require": {
+    "php": "^7.4|^8",
+    "ext-json": "*",
+    "psr/container": "^2.0 || ^1.1",
+    "guzzlehttp/guzzle": "~7",
+    "ralouphie/getallheaders": "^3.0",
+    "logicalsteps/async": "^2.0",
+    "hansott/psr7-cookies": "^3.0",
+    "ringcentral/psr7": "^1.3"
+  },
+  "require-dev": {
+    "ext-pdo": "*",
+    "ext-intl": "*",
+    "behat/behat": "~3",
+    "psy/psysh": "@stable",
+    "react/event-loop": "@stable",
+    "react/http": "^1.3.0",
+    "workerman/workerman": "^4.0",
+    "twig/twig": "^3",
+    "mustache/mustache": "^2",
+    "illuminate/view": "^8 || ^7",
+    "bshaffer/oauth2-server-php": "^1.11",
+    "swoole/ide-helper": "^4.6",
+    "box/spout": "^3.2",
+    "bref/bref": "^1.2",
+    "rize/uri-template": "^0.3.3",
+    "webonyx/graphql-php": "^14.6",
+    "gabordemooij/redbean": "^5.6",
+    "symplify/easy-coding-standard": "^9.2",
+    "firebase/php-jwt": "^5.2",
+    "rector/rector": "^0.11.7"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Luracast",
+      "email": "arul@luracast.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Luracast\\Restler\\": "src",
+      "Workerman\\Protocols\\": "interop/Workerman",
+      "Swoole\\Http\\": "interop/Swoole",
+      "OAuth2\\": "interop/OAuth2",
+      "Lambda\\": "interop/Lambda"
+    },
+    "files": [
+      "src/helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "classmap": [
+      "api/tests/param/",
+      "api/tests/helper/",
+      "api/tests/request_data/",
+      "api/tests/upload/",
+      "api/tests/storage/",
+      "api/tests/overrides/",
+      "api/common/",
+      "api/examples/-storage-/",
+      "api/examples/_001_helloworld/",
+      "api/examples/_002_minimal/",
+      "api/examples/_003_multiformat/",
+      "api/examples/_004_error_response/",
+      "api/examples/_005_protected_api/",
+      "api/examples/_006_routing/",
+      "api/examples/_007_crud/",
+      "api/examples/_008_documentation/improved",
+      "api/examples/_009_rate_limiting",
+      "api/examples/_009_rate_limiting/ratelimited",
+      "api/examples/_010_access_control",
+      "api/examples/_011_versioning/v1",
+      "api/examples/_011_versioning/v2",
+      "api/examples/_012_vendor_mime/SomeVendor/v1",
+      "api/examples/_012_vendor_mime/SomeVendor/v2",
+      "api/examples/_013_html",
+      "api/examples/_014_oauth2_client",
+      "api/examples/_015_oauth2_server",
+      "api/examples/_016_forms",
+      "api/examples/_017_navigation",
+      "api/examples/_018_graphql"
+    ]
+  },
+  "config": {
+    "bin-dir": "./",
+    "process-timeout": 0
+  },
+  "scripts": {
+    "test": "@php behat --stop-on-failure --profile=default --colors",
+    "serve": "@php -S 0.0.0.0:8080 -t public server.php",
+    "react-server": "@php public/index_react.php",
+    "swoole-server": "@php public/index_swoole.php",
+    "workerman-server": "@php public/index_workerman.php start",
+    "permissions": "sudo chmod -R 0777 api/common/store"
+  },
+  "scripts-descriptions": {
+    "test": "Runs behat tests",
+    "serve": "Starts php built-in web server",
+    "react-server": "Starts react-php http server ",
+    "swoole-server": "Starts swoole http server",
+    "workerman-server": "Starts workerman http server",
+    "permissions": "Fix file permissions for cache directory"
+  }
+}

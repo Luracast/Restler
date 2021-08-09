@@ -1,0 +1,18 @@
+# behat.yml
+default:
+  gherkin:
+    filters:
+      tags: ~@fpm&&~@cookie&&~@session
+  suites:
+    default:
+      contexts:
+        - RestContext:
+            - http://localhost:8080
+fpm:
+  suites:
+    default:
+      filters:
+        tags: ~@default&&~@cookie&&~@session
+      contexts:
+        - RestContext:
+            - http://localhost

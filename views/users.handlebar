@@ -1,0 +1,9 @@
+{{#isBootstrap4}}
+    {{> partials/bootstrap4 }}
+{{/isBootstrap4}}
+{{#isBootstrap3}}
+    {{> partials/bootstrap3 }}
+{{/isBootstrap3}}
+{{#isFoundation5}}
+    {{> partials/foundation5 }}
+{{/isFoundation5}}

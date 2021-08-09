@@ -1,0 +1,202 @@
+*{
+	/* Resetting the default styles of the page */
+	margin:0;
+	padding:0;
+}
+
+body{
+	/* Setting default text color, background and a font stack */
+	font-size:0.825em;
+	color:#666;
+	background-color:#fff;
+	font-family:Arial, Helvetica, sans-serif;
+}
+
+/* The todo items are grouped into an UL unordered list */
+
+ul.todoList{
+	margin:0 auto;
+	width:500px;
+	position:relative;
+}
+
+ul.todoList li{
+	background-color:#F9F9F9;
+	border:1px solid #EEEEEE;
+	list-style:none;
+	margin:6px;
+	padding:6px 9px;
+	position:relative;
+	cursor:n-resize;
+
+	/* CSS3 text shadow and rounded corners: */
+	
+	text-shadow:1px 1px 0 white;
+	
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+}
+
+ul.todoList li:hover{
+	border-color:#9be0f9;
+	
+	/* CSS3 glow effect: */
+	-moz-box-shadow:0 0 5px #A6E5FD;
+	-webkit-box-shadow:0 0 5px #A6E5FD;
+	box-shadow:0 0 5px #A6E5FD;
+}
+
+.todo .text{
+	color:#777777;
+	font-size:1.4em;
+}
+
+/* The edit and delete buttons */
+	
+.todo .actions{
+	position:absolute;
+	right:7px;
+	top:6px;
+}
+
+.todo .actions a{
+	display:block;
+	width:16px;
+	height:16px;
+	overflow:hidden;
+	float:left;
+	text-indent:-9999px;
+	margin:3px;
+}
+
+.todo .actions a.edit{
+	background:url("img/edit.png") no-repeat center center;
+}
+
+.todo .actions a.delete{
+	background:url("img/delete.png") no-repeat center center;
+}
+
+/* The edit textbox */
+
+.todo input{
+	border:1px solid #CCCCCC;
+	color:#666666;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:0.725em;
+	padding:3px 4px;
+	width:300px;
+}
+
+/* The Save and Cancel edit links: */
+
+.editTodo{
+	display:inline;
+	font-size:0.6em;
+	padding-left:9px;
+}
+
+.editTodo a{
+	font-weight:bold;
+}
+
+a.discardChanges{
+	color:#C00 !important;
+}
+
+a.saveChanges{
+	color:#4DB209 !important;
+}
+
+/* Overwriting some of the default jQuery UI styles */
+
+.ui-button,.ui-dialog-titlebar{
+	font-size:0.72em !important;
+}
+
+#dialog-confirm{
+	display:none;
+	font-size:0.9em;
+	padding:1em 1em 0;
+}
+
+#addButton{
+	margin:20px auto;
+}
+
+
+/* Green button class: */
+
+a.green-button,
+a.green-button:visited{
+	color:black;
+	display:block;
+	font-size:10px;
+	font-weight:bold;
+	height:15px;
+	padding:6px 5px 4px;
+	text-align:center;
+	width:60px;
+	
+	text-shadow:1px 1px 1px #DDDDDD;
+	background:url("img/button_green.png") no-repeat left top;
+}
+
+a.green-button:hover{
+	text-decoration:none;
+	background-position:left bottom;
+}
+
+
+/* The styles below are only necessary for the styling of the demo page: */
+
+#main{
+	position:relative;
+	margin:0 auto;
+	width:960px;
+}
+
+h1{
+	padding:30px 0;
+	text-align:center;
+	text-shadow:0 1px 1px white;
+	margin-bottom:30px;
+	background-color:#f8f8f8;
+	font-size:26px;
+}
+
+h1,h2{
+	font-family:"Myriad Pro",Arial,Helvetica,sans-serif;
+}
+
+h2{
+	font-size:14px;
+	font-weight:normal;
+	text-align:center;
+	
+	position:absolute;
+	right:40px;
+	top:40px;
+}
+
+.note{
+	font-size:12px;
+	font-style:italic;
+	padding-bottom:20px;
+	text-align:center;
+}
+
+a, a:visited {
+	color:#0196e3;
+	text-decoration:none;
+	outline:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
+a img{
+	border:none;
+}

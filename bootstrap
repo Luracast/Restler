@@ -1,0 +1,192 @@
+#!/opt/bin/php
+<?php
+
+use Lambda\Convert;
+use Luracast\Restler\Defaults;
+use Luracast\Restler\Middleware\StaticFiles;
+use Luracast\Restler\Restler;
+use Luracast\Restler\Utils\Dump;
+use React\Promise\PromiseInterface;
+
+
+require __DIR__ . '/api/bootstrap.php';
+
+Defaults::$cacheDirectory = '/tmp/store';
+StaticFiles::setBasePath('/dev');
+
+function url(string $path = ''): string
+{
+    return sprintf("http://%s/%s", $_ENV['AWS_LAMBDA_RUNTIME_API'] ?? '127.0.0.1:9001', ltrim($path, '/'));
+}
+
+function fetchCurl(string $uri, string $method = 'GET', array $headers = [], string $body = ''): array
+{
+    $headers['Content-Length'] = strlen($body);
+    $options = [
+        'debug' => false,
+        'http_port' => '80',
+        'user_agent' => 'CurlHttpClient',
+        'timeout' => 20,
+        'curlopts' => null,
+        'verifyssl' => true,
+    ];
+    $options['http_port'] = parse_url($uri, PHP_URL_PORT) ?? 80;
+    $responseHeaders = [];
+    $catchHeaders = function ($curl, $headerLine) use (&$responseHeaders) {
+        $parts = explode(': ', rtrim($headerLine));
+        if (count($parts) > 1)
+            $responseHeaders[$parts[0]] = $parts[1];
+        return strlen($headerLine);
+    };
+    $curlOptions = [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $body];
+    switch ($method) {
+        case 'POST':
+            break;
+        case 'PUT':
+        case 'DELETE':
+        case 'PATCH':
+            $curlOptions[CURLOPT_CUSTOMREQUEST] = strtoupper($method);
+            break;
+        default:
+            unset($curlOptions[CURLOPT_POST]);
+            unset($curlOptions[CURLOPT_POSTFIELDS]);
+    }
+    $h = [];
+    foreach ($headers as $k => $v) {
+        $h[] = is_string($k) ? "$k:$v" : $v;
+    }
+    $curlOptions += [
+        CURLOPT_HEADERFUNCTION => $catchHeaders,
+        CURLOPT_URL => $uri,
+        CURLOPT_PORT => $options['http_port'],
+        CURLOPT_USERAGENT => $options['user_agent'],
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => $options['timeout'],
+        CURLOPT_HTTPHEADER => $h,
+        CURLOPT_SSL_VERIFYPEER => $options['verifyssl'],
+    ];
+    if (ini_get('open_basedir') == '' && ini_get('safe_mode') != 'On') {
+        $curlOptions[CURLOPT_FOLLOWLOCATION] = true;
+    }
+    if (is_array($options['curlopts'])) {
+        $curlOptions += $options['curlopts'];
+    }
+    if (isset($options['proxy'])) {
+        $curlOptions[CURLOPT_PROXY] = $options['proxy'];
+    }
+    $curl = curl_init();
+
+    curl_setopt_array($curl, $curlOptions);
+
+    $body = curl_exec($curl);
+    $errorNumber = curl_errno($curl);
+    $errorMessage = curl_error($curl);
+    $status = curl_getinfo($curl, CURLINFO_RESPONSE_CODE);
+
+    curl_close($curl);
+    return [$status, $body, array_change_key_case($responseHeaders, CASE_LOWER)];
+}
+
+function fetch(string $url, string $method = 'GET', array $headers = [], string $body = ''): array
+{
+    $headerText = '';
+    foreach ($headers as $key => $value)
+        $headerText .= "$key: $value\r\n";
+    $context = stream_context_create([
+        "http" => [
+            "method" => $method,
+            "header" => $headerText,
+            "content" => $body,
+            "ignore_errors" => true,
+        ]]);
+
+    $response = @file_get_contents($url, false, $context);
+    if (!isset($http_response_header))
+        return [-1, '', []];
+
+    $responseHeaderLines = $http_response_header;
+    $status_line = array_shift($responseHeaderLines);
+    preg_match('{HTTP\/\S*\s(\d{3})}', $status_line, $match);
+    $status = $match[1];
+
+    $responseHeaders = [];
+    foreach ($responseHeaderLines as $value) {
+        $value = explode(': ', $value, 2);
+        $responseHeaders[$value[0]] = $value[1];
+    }
+    return [$status, $response, array_change_key_case($responseHeaders, CASE_LOWER)];
+}
+
+function lambda_request()
+{
+    [$statusCode, $requestBody, $headers] = fetch(url('/2018-06-01/runtime/invocation/next'));
+    $requestBody = json_decode($requestBody, true) ?? [];
+    $invocationId = $headers['lambda-runtime-aws-request-id'] ?? 'id';
+    return compact('invocationId', 'headers', 'statusCode', 'requestBody');
+}
+
+function lambda_response(string $invocationId, string $body)
+{
+    [$statusCode, $requestBody, $headers] = fetch(
+        url("/2018-06-01/runtime/invocation/{$invocationId}/response"),
+        'POST',
+        [],
+        $body
+    );
+    return $statusCode;
+}
+
+function wait(PromiseInterface $promise)
+{
+    $result = null;
+    $exception = null;
+    $isRejected = false;
+
+    $wait = true;
+    while ($wait) {
+        $promise
+            ->then(function ($r) use (&$result) {
+                $result = $r;
+            }, function ($e) use (&$exception, &$isRejected) {
+                $exception = $e;
+                $isRejected = true;
+            })
+            ->always(function () use (&$wait) {
+                $wait = false;
+            });
+    }
+
+    if ($isRejected) {
+        if (!$exception instanceof \Exception) {
+            $exception = new \UnexpectedValueException(
+                'Promise rejected with unexpected value of type ' . (is_object($exception) ? get_class($exception) : gettype($exception))
+            );
+        }
+
+        throw $exception;
+    }
+
+    return $result;
+}
+
+
+function loop()
+{
+    do {
+        $data = lambda_request();
+        if ('id' === $data['invocationId']) continue;
+        echo 'request: ' . json_encode($data, JSON_PRETTY_PRINT) . PHP_EOL;
+        $psrRequest = Convert::toPSR7($data['requestBody'], $data['headers']);
+        echo Dump::request($psrRequest);
+        $r = new Restler;
+        $psrResponse = wait($r->handle($psrRequest));
+        echo 'BASE: ' . $r->baseUrl . PHP_EOL;
+        echo Dump::response($psrResponse) . PHP_EOL . PHP_EOL;
+        //echo json_encode(Convert::fromPSR7($psrResponse), JSON_PRETTY_PRINT) . PHP_EOL;
+        echo '-----------------------------------------' . PHP_EOL;
+        lambda_response($data['invocationId'], json_encode(Convert::fromPSR7($psrResponse)));
+
+    } while (true);
+}
+
+loop();
