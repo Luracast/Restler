@@ -1,7 +1,10 @@
 {
-  "name": "arul/reactphp-restler",
-  "description": "Running Restler on ReactPHP",
-  "type": "project",
+  "name":"luracast/restler",
+  "description":"Restler is a simple and effective multi-format Web API Server framework written in PHP. Just deal with your business logic in php, Restler will take care of the REST!",
+  "type":"library",
+  "keywords":["server","api","framework","REST"],
+  "homepage":"https://luracast.com/products/restler/",
+  "license":"MIT",
   "require": {
     "php": "^7.4|^8",
     "ext-json": "*",
@@ -34,7 +37,6 @@
     "firebase/php-jwt": "^5.2",
     "rector/rector": "^0.11.7"
   },
-  "license": "MIT",
   "authors": [
     {
       "name": "Luracast",
