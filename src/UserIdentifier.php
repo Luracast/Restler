@@ -69,7 +69,7 @@ class UserIdentifier implements UserIdentificationInterface, JsonSerializable
     protected ?string $ipAddress;
     protected string $browser = 'Unknown';
     protected string $platform = 'Unknown';
-    private \Psr\Http\Message\ServerRequestInterface $request;
+    private ServerRequestInterface $request;
 
     public function __construct(ServerRequestInterface $request)
     {

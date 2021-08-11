@@ -103,10 +103,16 @@ class JsonWebToken implements ExplorableAuthenticationInterface, SelectivePathsI
         return false;
     }
 
+    /**
+     * @throws HttpException
+     */
     protected static function publicKey(): string
     {
         if (empty(self::$publicKey)) {
-            throw new HttpException(500, '`' . static::class . '::$publicKey` is needed for token verification');
+            throw new HttpException(
+                500,
+                '`' . static::class . '::$publicKey` is needed for token verification'
+            );
         }
         $start = "-----BEGIN PUBLIC KEY-----\n";
         if (0 === strpos(static::$publicKey, $start)) {
@@ -131,6 +137,11 @@ class JsonWebToken implements ExplorableAuthenticationInterface, SelectivePathsI
      */
     protected function accessDenied(string $reason, ?Throwable $previous = null)
     {
-        throw new HttpException(403, 'Access Denied. ' . $reason, [], $previous);
+        throw new HttpException(
+            403,
+            'Access Denied. ' . $reason,
+            [],
+            $previous
+        );
     }
 }

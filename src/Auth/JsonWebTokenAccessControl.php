@@ -17,13 +17,13 @@ class JsonWebTokenAccessControl extends JsonWebToken implements AccessControlInt
     public static array $permissionsAccessor = ['resource_access', 'account', 'roles'];
     //
     public string $role = 'user';
-    public $roleRequired = null;
+    public ?bool $roleRequired = null;
     //
-    public $scope = null;
-    public $scopeRequired = null;
+    public ?string $scope = null;
+    public ?bool $scopeRequired = null;
     //
-    public $permission = null;
-    public $permissionRequired = null;
+    public ?string $permission = null;
+    public ?bool $permissionRequired = null;
     //
     public $id = null;
 

@@ -42,15 +42,15 @@ abstract class Core
     /**
      * @var int
      */
-    public $requestedApiVersion = 1;
+    public int $requestedApiVersion = 1;
     /**
-     * @var ResponseMediaTypeInterface
+     * @var ResponseMediaTypeInterface|null
      */
-    public $responseFormat;
+    public ?ResponseMediaTypeInterface $responseFormat;
     /**
-     * @var RequestMediaTypeInterface
+     * @var RequestMediaTypeInterface|null
      */
-    public $requestFormat;
+    public ?RequestMediaTypeInterface $requestFormat;
     protected bool $_authenticated = false;
     protected bool $_authVerified = false;
     protected string $_requestMethod = 'GET';
@@ -61,16 +61,16 @@ abstract class Core
     protected array $query = [];
 
     /**
-     * @var ResponseHeaders
+     * @var ResponseHeaders|null
      */
-    protected $_responseHeaders = null;
-    protected $_responseCode = null;
+    protected ?ResponseHeaders $_responseHeaders = null;
+    protected ?int $_responseCode = null;
     /**
      * @var ContainerInterface
      */
-    protected $container;
+    protected ContainerInterface $container;
     /**
-     * @var StaticProperties
+     * @var StaticProperties|null|ArrayObject
      */
     protected $config;
     protected ?StaticProperties $defaults = null;
@@ -80,13 +80,14 @@ abstract class Core
      */
     protected int $startTime;
     protected ?Throwable $_exception = null;
-    private ?\Psr\Http\Message\UriInterface $_baseUrl = null;
+    private ?UriInterface $_baseUrl = null;
     private array $initPendingObjects = [];
 
     /**
      * Core constructor.
      * @param ContainerInterface|null $container
      * @param array|ArrayAccess $config
+     * @throws HttpException
      */
     public function __construct(ContainerInterface $container = null, &$config = [])
     {
@@ -123,7 +124,6 @@ abstract class Core
 
     private static function isPathSelected(string $class, string $path): bool
     {
-        /** @var $class SelectivePathsInterface */
         if (!Type::implements($class, SelectivePathsInterface::class)) {
             return true;
         }

@@ -21,7 +21,7 @@ use function GuzzleHttp\Psr7\stream_for;
 class Restler extends Core
 {
     public static array $middleware = [];
-    protected ?\Psr\Http\Message\ServerRequestInterface $request = null;
+    protected ?ServerRequestInterface $request = null;
     protected string $rawRequestBody = "";
 
     public function handle(ServerRequestInterface $request = null): PromiseInterface
@@ -39,7 +39,7 @@ class Restler extends Core
         $middleware[] = [$this, '_handle'];
         $promise = $this->handleMiddleware($middleware, $request);
         $promise = $promise->then(
-            function ($result): \Psr\Http\Message\ResponseInterface {
+            function ($result): ResponseInterface {
                 if ($result instanceof ResponseInterface) {
                     return $result;
                 }
@@ -48,7 +48,7 @@ class Restler extends Core
                 }
                 return $this->respond($result);
             },
-            function ($error): \Psr\Http\Message\ResponseInterface {
+            function ($error): ResponseInterface {
                 if ($error instanceof Throwable) {
                     $error = $this->message($error, '');
                 } else {
