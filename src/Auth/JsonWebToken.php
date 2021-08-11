@@ -62,7 +62,7 @@ class JsonWebToken implements ExplorableAuthenticationInterface, SelectivePathsI
     {
         return [
             //CLASS_NAME => vendor/project:version
-            JWT::class => 'firebase/php-jwt:^5.2'
+            JWT::class => 'firebase/php-jwt:^5.4'
         ];
     }
 
