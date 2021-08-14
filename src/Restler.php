@@ -1163,6 +1163,7 @@ class Restler extends EventDispatcher
         //handle throttling
         if (Defaults::$throttle) {
             $elapsed = time() - $this->startTime;
+            Defaults::$throttle = intval(Defaults::$throttle);
             if (Defaults::$throttle / 1e3 > $elapsed) {
                 usleep(1e6 * (Defaults::$throttle / 1e3 - $elapsed));
             }
