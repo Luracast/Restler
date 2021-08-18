@@ -48,6 +48,12 @@ class Forms implements iFilter
      * @var ValidationInfo
      */
     public static $validationInfo = null;
+    /**
+     * @var bool Should every instance of the form have unique form_key (csrf token)?
+     *
+     */
+    public static $form_key_regenerate = true;
+
     protected static $inputTypes = array(
         'hidden',
         'password',
@@ -434,6 +440,7 @@ class Forms implements iFilter
             $action = Scope::get('Restler')->url;
         }
         $target = "$method $action";
+        static::$key = static::$form_key_regenerate ? static::$key : $_SESSION[static::FORM_KEY];
         if (empty(static::$key[$target])) {
             static::$key[$target] = md5($target . User::getIpAddress() . uniqid(mt_rand()));
         }
