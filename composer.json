@@ -45,14 +45,14 @@
   ],
   "autoload": {
     "psr-4": {
-      "Luracast\\Restler\\": "src",
-      "Workerman\\Protocols\\": "interop/Workerman",
-      "Swoole\\Http\\": "interop/Swoole",
-      "OAuth2\\": "interop/OAuth2",
-      "Lambda\\": "interop/Lambda"
+      "Luracast\\Restler\\": "src/Luracast",
+      "Workerman\\Protocols\\": "src/Workerman",
+      "Swoole\\Http\\": "src/Swoole",
+      "OAuth2\\": "src/OAuth2",
+      "Lambda\\": "src/Lambda"
     },
     "files": [
-      "src/helpers.php"
+      "src/Luracast/helpers.php"
     ]
   },
   "autoload-dev": {

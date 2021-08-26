@@ -15,23 +15,26 @@ if (!function_exists('instance')) {
      *
      * @param string|null $make
      * @param array $parameters
+     * @param ServerRequestInterface|null $request
      * @return mixed|ContainerInterface
      * @throws HttpException
      */
-    function instance(string $make = null, array $parameters = [])
+    function instance(string $make = null, array $parameters = [], ServerRequestInterface $request = null)
     {
         /** @var ContainerInterface $container */
         static $container = null;
+        if (!$container) {
+            $class = ClassName::get(ContainerInterface::class);
+            $container = new $class(...$parameters);
+        }
         if (is_null($make)) {
             return $container;
         }
         if (ContainerInterface::class === $make) {
             $class = ClassName::get(ContainerInterface::class);
-            return new $class(...$parameters);
+            return $container = new $class(...$parameters);
         }
-        if (!$container) {
-            return null;
-        }
+
         return $container->make($make, $parameters);
     }
 }

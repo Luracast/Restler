@@ -46,11 +46,11 @@ abstract class Core
     /**
      * @var ResponseMediaTypeInterface|null
      */
-    public ?ResponseMediaTypeInterface $responseFormat;
+    public ?ResponseMediaTypeInterface $responseFormat = null;
     /**
      * @var RequestMediaTypeInterface|null
      */
-    public ?RequestMediaTypeInterface $requestFormat;
+    public ?RequestMediaTypeInterface $requestFormat = null;
     protected bool $_authenticated = false;
     protected bool $_authVerified = false;
     protected string $_requestMethod = 'GET';

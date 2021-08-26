@@ -3605,16 +3605,16 @@
         },
         {
             "name": "rector/rector",
-            "version": "0.11.46",
+            "version": "0.11.47",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "9802271920e82f8004882094a254b598d3279708"
+                "reference": "d252ae7f74f1c5588a18528ed41a9389459e16d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/9802271920e82f8004882094a254b598d3279708",
-                "reference": "9802271920e82f8004882094a254b598d3279708",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/d252ae7f74f1c5588a18528ed41a9389459e16d9",
+                "reference": "d252ae7f74f1c5588a18528ed41a9389459e16d9",
                 "shasum": ""
             },
             "require": {
@@ -3652,7 +3652,7 @@
             "description": "Prefixed and PHP 7.1 downgraded version of rector/rector",
             "support": {
                 "issues": "https://github.com/rectorphp/rector/issues",
-                "source": "https://github.com/rectorphp/rector/tree/0.11.46"
+                "source": "https://github.com/rectorphp/rector/tree/0.11.47"
             },
             "funding": [
                 {
@@ -3660,7 +3660,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-08-09T13:46:17+00:00"
+            "time": "2021-08-11T16:00:13+00:00"
         },
         {
             "name": "riverline/multipart-parser",
@@ -5728,16 +5728,16 @@
         },
         {
             "name": "symplify/easy-coding-standard",
-            "version": "9.4.26",
+            "version": "9.4.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symplify/easy-coding-standard.git",
-                "reference": "5ec2088a73af14e68cf74c811190e20f20f9ea17"
+                "reference": "4a023adb6a448cb581eafca771e98e12d1b6e0bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/5ec2088a73af14e68cf74c811190e20f20f9ea17",
-                "reference": "5ec2088a73af14e68cf74c811190e20f20f9ea17",
+                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/4a023adb6a448cb581eafca771e98e12d1b6e0bd",
+                "reference": "4a023adb6a448cb581eafca771e98e12d1b6e0bd",
                 "shasum": ""
             },
             "require": {
@@ -5762,7 +5762,7 @@
             ],
             "description": "Prefixed scoped version of ECS package",
             "support": {
-                "source": "https://github.com/symplify/easy-coding-standard/tree/9.4.26"
+                "source": "https://github.com/symplify/easy-coding-standard/tree/9.4.28"
             },
             "funding": [
                 {
@@ -5774,7 +5774,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-08-09T13:50:47+00:00"
+            "time": "2021-08-11T15:41:56+00:00"
         },
         {
             "name": "twig/twig",
@@ -6062,5 +6062,5 @@
         "ext-pdo": "*",
         "ext-intl": "*"
     },
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "2.1.0"
 }
