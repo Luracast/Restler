@@ -104,7 +104,7 @@ class Html extends MediaType implements ResponseMediaTypeInterface
             static::$cacheDirectory = Defaults::$cacheDirectory;
         }
         if (!static::$viewPath) {
-            static::$viewPath = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'views';
+            static::$viewPath = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'views';
         }
         //============ SESSION MANAGEMENT =============//
         if ($html->handleSession) {

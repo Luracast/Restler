@@ -35,11 +35,11 @@ class Defaults
     public static bool $productionMode = false;
 
     /**
-     * @var string full path of the directory where all the generated files will
+     * @var string|null full path of the directory where all the generated files will
      * be kept. When set to null (default) it will use the cache folder that is
      * in the same folder as index.php (gateway)
      */
-    public static string $cacheDirectory;
+    public static ?string $cacheDirectory = null;
 
     // ==================================================================
     //
