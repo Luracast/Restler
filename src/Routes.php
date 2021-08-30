@@ -743,6 +743,18 @@ class Routes
                 $children[$name][$dataName]['required'] = isset($required[$name]);
             }
         }
+
+        if ($parentClassName = get_parent_class($className)) {
+            $parentModel = static::getTypeAndModel(new ReflectionClass($parentClassName), $scope, $prefix, $rules);
+            //If class parent has children add them to current class
+            if (!empty($parentModel[1])) {
+                $children = array_merge_recursive(
+                    $parentModel[1],
+                    $children
+                );
+            }
+        }
+
         static::$models[$prefix.$className] = array($className, $children, $prefix.$className);
         return static::$models[$prefix.$className];
     }
