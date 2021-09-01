@@ -419,3 +419,13 @@ Feature: Type Attribute
       | {"name":"12","email":"a@b.c"}  |
       | {"email":"a@b.c"}              |
       | {"email":"ab.c","name":"1234"} |
+
+  Scenario: valid UUID version 4
+    Given that I want to make a new "ChildObject"
+    And his "name" is "Arul"
+    And his "age" is 16
+    When I request "tests/param/type/inheritedobject"
+    Then the response status code should be 200
+    And the response is JSON
+    And the response has a "name" property
+    And the response has a "age" property
