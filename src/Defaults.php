@@ -1,6 +1,7 @@
 <?php
 namespace Luracast\Restler;
 
+use Exception;
 use Luracast\Restler\Data\ValidationInfo;
 use Luracast\Restler\Data\Validator;
 
@@ -346,10 +347,11 @@ class Defaults
      *
      * @static
      *
-     * @param string $name  name of the static property
-     * @param mixed  $value value to set the property to
+     * @param string $name name of the static property
+     * @param mixed $value value to set the property to
      *
      * @return bool
+     * @throws Exception
      */
     public static function setProperty($name, $value)
     {

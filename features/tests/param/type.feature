@@ -420,7 +420,7 @@ Feature: Type Attribute
       | {"email":"a@b.c"}              |
       | {"email":"ab.c","name":"1234"} |
 
-  Scenario: valid UUID version 4
+  Scenario: Inherited properties should be available in request and response
     Given that I want to make a new "ChildObject"
     And his "name" is "Arul"
     And his "age" is 16
