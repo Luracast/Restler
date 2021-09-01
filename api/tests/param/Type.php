@@ -1,5 +1,7 @@
 <?php
 
+use Luracast\Restler\Data\ValueObject;
+
 class Type
 {
     /**
@@ -214,6 +216,18 @@ class Type
     {
         return $array;
     }
+
+    /**
+     * Inherited properties from parent class
+     *
+     * @param ChildObject $child
+     *
+     * @return ChildObject
+     */
+    function postInheritedObject($child)
+    {
+        return $child;
+    }
 }
 
 class Person
@@ -228,4 +242,14 @@ class Person
      * email id of the Author
      */
     public $email = 'name@domain.com';
+}
+
+class ParentObject extends ValueObject
+{
+    public $name = 'Parent';
+}
+
+class ChildObject extends ParentObject
+{
+    public $age = 32;
 }
