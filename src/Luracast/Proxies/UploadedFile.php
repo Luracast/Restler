@@ -9,11 +9,11 @@ use Psr\Http\Message\UploadedFileInterface;
 
 class UploadedFile implements UploadedFileInterface
 {
-    private \Psr\Http\Message\UploadedFileInterface $proxy;
+    private UploadedFileInterface $proxy;
 
     private ?int $error = null;
 
-    public ?\Exception $exception = null;
+    public ?Exception $exception = null;
 
     public function __construct(UploadedFileInterface $proxy)
     {
