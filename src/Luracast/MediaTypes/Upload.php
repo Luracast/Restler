@@ -98,14 +98,23 @@ class Upload extends MediaType implements RequestMediaTypeInterface
                 throw new HttpException($error > 5 ? 500 : 413, static::$errors[$error]);
             }
             if ($doMimeCheck && !(in_array($file->getClientMediaType(), self::$allowedMimeTypes))) {
-                throw new HttpException(403, "File type ({$file->getClientMediaType()}) is not supported.");
+                throw new HttpException(
+                    403,
+                    "File type ({$file->getClientMediaType()}) is not supported."
+                );
             }
             if ($doSizeCheck && $file->getSize() > self::$maximumFileSize) {
-                throw new HttpException(413, "Uploaded file ({$file->getClientFilename()}) is too big.");
+                throw new HttpException(
+                    413,
+                    "Uploaded file ({$file->getClientFilename()}) is too big."
+                );
             }
             if (self::$customValidationFunction) {
                 if (!call_user_func(self::$customValidationFunction, $file)) {
-                    throw new HttpException(403, "File ({$file->getClientFilename()}) is not supported.");
+                    throw new HttpException(
+                        403,
+                        "File ({$file->getClientFilename()}) is not supported."
+                    );
                 }
             }
         } catch (HttpException $e) {

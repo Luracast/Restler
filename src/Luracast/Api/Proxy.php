@@ -9,6 +9,8 @@ use GuzzleHttp\Psr7\Uri;
 use Luracast\Restler\Exceptions\HttpException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Luracast\Restler\MediaTypes\Upload;
+use Luracast\Restler\MediaTypes\Json;
 
 class Proxy
 {
@@ -32,6 +34,8 @@ class Proxy
      * @url PUT {name}
      * @url DELETE {name}
      * @url PATCH {name}
+     *
+     * @request-format Json,Upload
      */
     public function index($name): ResponseInterface
     {
