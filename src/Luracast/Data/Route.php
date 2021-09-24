@@ -96,7 +96,7 @@ class Route extends ValueObject
      */
     public array $parameters = [];
 
-    public ?\Luracast\Restler\Data\Returns $return = null;
+    public ?Returns $return = null;
 
     /**
      * @var int http status
@@ -568,7 +568,7 @@ class Route extends ValueObject
                     throw new HttpException(
                         500,
                         "Given media type is not present in overriding list. " .
-                        "Please call `Router::setOverriding{$key}MediaTypes(\"$value\");` before other router methods."
+                        "Please call `Routes::setOverriding{$key}MediaTypes(\"$value\");` before other route related methods."
                     );
                 }
             }

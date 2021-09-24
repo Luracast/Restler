@@ -787,7 +787,7 @@ class Routes
         if (empty(static::$routes)) {
             throw new HttpException(
                 500,
-                'No routes defined. Please call `Router::mapApiClasses` or `Router::addApi` first.'
+                'No routes defined. Please call `Routes::mapApiClasses` first.'
             );
         }
         if (!$p = static::$routes["v$version"] ?? false) {
