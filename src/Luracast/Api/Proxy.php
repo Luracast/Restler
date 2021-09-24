@@ -9,14 +9,14 @@ use GuzzleHttp\Psr7\Uri;
 use Luracast\Restler\Exceptions\HttpException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Luracast\Restler\MediaTypes\Upload;
-use Luracast\Restler\MediaTypes\Json;
 
 class Proxy
 {
     public static array $mappings = [
         'google' => 'https://www.google.com/search'
     ];
+    public static array $config = [];
+
     private ?ServerRequestInterface $request;
 
     public function __construct(ServerRequestInterface $request)
@@ -48,6 +48,6 @@ class Proxy
             ->withHost($uri->getHost())
             ->withPort($uri->getPort());
         $request = $this->request->withUri($newUri);
-        return (new Client)->send($request)->withoutHeader('transfer-encoding');
+        return (new Client(static::$config))->send($request)->withoutHeader('transfer-encoding');
     }
 }
