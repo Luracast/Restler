@@ -29,7 +29,7 @@ class Upload extends MediaType implements RequestMediaTypeInterface
      * setting it as an empty array allows all file types
      * default is to allow only png and jpeg images
      */
-    public static array $allowedMimeTypes = array('image/jpeg', 'image/png');
+    public static array $allowedMimeTypes = ['image/jpeg', 'image/png'];
     /**
      * use it to restrict uploads based on file size
      * set it to 0 to allow all sizes
@@ -65,7 +65,7 @@ class Upload extends MediaType implements RequestMediaTypeInterface
      * @return array
      * @throws HttpException
      */
-    public function decode(string $data)
+    public function decode(string $data): array
     {
         $doMimeCheck = !empty(self::$allowedMimeTypes);
         $doSizeCheck = (bool)self::$maximumFileSize;
@@ -85,6 +85,7 @@ class Upload extends MediaType implements RequestMediaTypeInterface
      * @param UploadedFileInterface $file
      * @param bool $doMimeCheck
      * @param bool $doSizeCheck
+     * @return UploadedFileInterface
      * @throws HttpException
      */
     protected static function checkFile(
