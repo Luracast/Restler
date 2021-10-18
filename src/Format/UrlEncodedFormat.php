@@ -25,8 +25,25 @@ class UrlEncodedFormat extends Format
 
     public function decode($data)
     {
-        parse_str($data, $r);
-        return self::decoderTypeFix($r);
+        $numberOfVariablesInQuery = substr_count($data, '&') + 1;
+
+        // if there are more input variables on the string than specified by max_input_vars directive, then further
+        // input variables are truncated from the request
+        if ($numberOfVariablesInQuery < (int) ini_get('max_input_vars')) {
+            parse_str($data, $result);
+
+            return self::decoderTypeFix($result);
+        }
+
+        $parsedVariables = [];
+
+        foreach (explode('&', $data) as $variableString) {
+            $parsedVariable = null;
+            parse_str($variableString, $parsedVariable);
+            $parsedVariables[] = $parsedVariable;
+        }
+
+        return self::decoderTypeFix(array_merge_recursive(...$parsedVariables));
     }
 
     public static function encoderTypeFix(array $data)
