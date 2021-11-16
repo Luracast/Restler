@@ -63,16 +63,19 @@ class StaticProperties implements ArrayAccess
         unset($this->properties[$name]);
     }
 
-    public function offsetExists($offset)
+    #[\ReturnTypeWillChange]
+    public function offsetExists($offset): bool
     {
         return $this->__isset($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function &offsetGet($offset)
     {
         return $this->__get($offset);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         return $this->__set($offset, $value);

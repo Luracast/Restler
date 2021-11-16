@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Filters;
 
 
@@ -89,8 +90,7 @@ class RateLimiter implements FilterInterface, SelectivePathsInterface, UsesAuthe
         ServerRequestInterface $request,
         UserIdentificationInterface $userIdentifier,
         ResponseHeaders $responseHeaders
-    ): bool
-    {
+    ): bool {
         $authenticated = $this->authenticated;
         $responseHeaders['X-Auth-Status'] = $authenticated ? 'true' : 'false';
         $unit = $this->runtimeValues->unit;
@@ -147,9 +147,9 @@ class RateLimiter implements FilterInterface, SelectivePathsInterface, UsesAuthe
     {
         $units = [
             'week' => (int)($secs / 86400 / 7),
-            'day' => $secs / 86400 % 7,
-            'hour' => $secs / 3600 % 24,
-            'minute' => $secs / 60 % 60,
+            'day' => (int)($secs / 86400) % 7,
+            'hour' => (int)($secs / 3600) % 24,
+            'minute' => (int)($secs / 60) % 60,
             'second' => $secs % 60
         ];
 

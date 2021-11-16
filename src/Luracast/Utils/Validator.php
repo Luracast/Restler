@@ -156,7 +156,7 @@ class Validator implements ValidationInterface
                 }
             }
 
-            if ('string' == $param->type && method_exists(
+            if ('string' === $param->type && $param->format && method_exists(
                     $class = static::class,
                     $param->format
                 ) && $param->format != 'validate') {

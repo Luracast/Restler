@@ -14,9 +14,9 @@ use Luracast\Restler\Contracts\ValueObjectInterface;
  */
 class Task implements ValueObjectInterface
 {
-    public $id = 0;
-    public $position = 0;
-    public $text = '';
+    public int $id = 0;
+    public int $position = 0;
+    public string $text = '';
 
     /**
      * This static method is called for creating an instance of the class by
@@ -54,6 +54,7 @@ class Task implements ValueObjectInterface
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return [

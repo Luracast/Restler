@@ -185,7 +185,7 @@ class UserIdentifier implements UserIdentificationInterface, JsonSerializable
     {
         return $this->browser;
     }
-
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         $arr = get_object_vars($this);

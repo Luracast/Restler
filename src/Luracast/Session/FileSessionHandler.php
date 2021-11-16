@@ -21,7 +21,7 @@ class FileSessionHandler implements SessionHandlerInterface, SessionIdInterface
         $this->open($savePath, '');
     }
 
-    public function open($savePath, $sessionName)
+    public function open($savePath, $sessionName): bool
     {
         $this->savePath = $savePath;
         if (!is_dir($this->savePath)) {
@@ -31,18 +31,19 @@ class FileSessionHandler implements SessionHandlerInterface, SessionIdInterface
         return true;
     }
 
-    public function close()
+    public function close(): bool
     {
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function read($id)
     {
         $this->data[$id] = (string)@file_get_contents("$this->savePath/sess_$id");
         return $this->data[$id];
     }
 
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         $file = "$this->savePath/sess_$id";
         if (isset($this->data[$id]) && $this->data[$id] == $data) {
@@ -51,7 +52,7 @@ class FileSessionHandler implements SessionHandlerInterface, SessionIdInterface
         return file_put_contents($file, $data) === false ? false : true;
     }
 
-    public function destroy($id)
+    public function destroy($id): bool
     {
         $file = "$this->savePath/sess_$id";
         if (file_exists($file)) {
@@ -61,6 +62,7 @@ class FileSessionHandler implements SessionHandlerInterface, SessionIdInterface
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function gc($maxlifetime)
     {
         foreach (glob("$this->savePath/sess_*") as $file) {
@@ -78,6 +80,7 @@ class FileSessionHandler implements SessionHandlerInterface, SessionIdInterface
      * @return string
      * @throws Exception
      */
+    #[\ReturnTypeWillChange]
     public function create_sid()
     {
         return bin2hex(random_bytes(32));

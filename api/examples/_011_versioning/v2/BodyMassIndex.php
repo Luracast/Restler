@@ -85,7 +85,7 @@ class BodyMassIndex
         $cm = $meter * 100;
         $inches = $meter * 39.3700787;
         $feet = round($inches / 12);
-        $inches = $inches % 12;
+        $inches = intval($inches) % 12;
 
         switch ($weight_unit) {
             case 'kg':

@@ -43,7 +43,7 @@ class BMI
         $meter = $cm / 100;
         $inches = $meter * 39.3700787;
         $feet = round($inches / 12);
-        $inches = $inches % 12;
+        $inches = intval($inches) % 12;
 
         $result->bmi = round($kg / ($meter * $meter), 2);
         $lb = round($kg / 0.45359237, 2);
@@ -63,8 +63,8 @@ class BMI
         $result->metric->weight = "$weight kilograms";
 
         $result->imperial = new BMIUnit();
-        $result->metric->height = "$feet feet $inches inches";
-        $result->metric->weight = "$lb pounds";
+        $result->imperial->height = "$feet feet $inches inches";
+        $result->imperial->weight = "$lb pounds";
         return $result;
     }
 }

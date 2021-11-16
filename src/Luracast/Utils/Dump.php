@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Utils;
 
 use Psr\Http\Message\ResponseInterface;
@@ -7,6 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class Dump
 {
     public const CRLF = "\r\n";
+    public static array $excludedHeaders = ['Transfer-Encoding'];
 
     public static function request(ServerRequestInterface $request): string
     {
@@ -31,7 +33,7 @@ class Dump
         bool $headerAsString = true
     ): string {
         $text = $includeHeader ? self::responseHeaders($response, $headerAsString) : '';
-        $text .= (string)$response->getBody();
+        $text .= $response->getBody();
         return $text;
     }
 
@@ -58,8 +60,11 @@ class Dump
         } else {
             header($http, true, $response->getStatusCode());
             foreach ($response->getHeaders() as $name => $values) {
-                if ('Date' == $name && PHP_SAPI == 'cli-server') {
+                if ('Date' === $name && PHP_SAPI === 'cli-server') {
                     continue;
+                }
+                if (in_array($name, static::$excludedHeaders)) {
+                    //continue;
                 }
                 $value = $response->getHeaderLine($name);
                 header("$name: $value", true);

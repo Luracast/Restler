@@ -11,7 +11,6 @@ use SessionIdInterface;
 
 class Session implements SessionInterface
 {
-    private array $oldIds = [];
     private int $status = PHP_SESSION_NONE;
     /**
      * @var array
@@ -20,8 +19,8 @@ class Session implements SessionInterface
     private array $flash_in = [];
     /** @var array */
     private $flash_out = [];
-    private \SessionHandlerInterface $handler;
-    private \SessionIdInterface $sessionId;
+    private SessionHandlerInterface $handler;
+    private SessionIdInterface $sessionId;
     private string $id;
 
     public function __construct(SessionHandlerInterface $handler, SessionIdInterface $sessionId, string $id = '')
@@ -185,22 +184,26 @@ class Session implements SessionInterface
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function current()
     {
         return current($this->contents);
     }
 
+    #[\ReturnTypeWillChange]
     public function next()
     {
         return next($this->contents);
     }
 
+    #[\ReturnTypeWillChange]
     public function key()
     {
         return key($this->contents);
     }
 
-    public function valid()
+    #[\ReturnTypeWillChange]
+    public function valid(): bool
     {
         return key($this->contents) !== null;
     }

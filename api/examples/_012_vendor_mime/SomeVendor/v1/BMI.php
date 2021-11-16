@@ -34,7 +34,7 @@ class BMI
         $meter = $cm / 100;
         $inches = $meter * 39.3700787;
         $feet = round($inches / 12);
-        $inches = $inches % 12;
+        $inches = intval($inches) % 12;
 
         $result->bmi = round($kg / ($meter * $meter), 2);
         $lb = round($kg / 0.45359237, 2);
@@ -48,14 +48,14 @@ class BMI
         } else {
             $result->message = 'Obesity';
         }
-        $result->metric = array(
+        $result->metric = [
             'height' => "$cm centimeters",
             'weight' => "$weight kilograms"
-        );
-        $result->imperial = array(
+        ];
+        $result->imperial = [
             'height' => "$feet feet $inches inches",
             'weight' => "$lb pounds"
-        );
+        ];
         return $result;
     }
 }
