@@ -287,18 +287,11 @@ class AutoLoader
      */
     private function loadThisLoader($className, $loader)
     {
-        if (is_array($loader)
-            && is_callable($loader)) {
-            $b = new $loader[0];
-            if (false !== $file = $b::$loader[1]($className)
-                    && $this->exists($className, $b::$loader[1])) {
-                return $file;
-            }
-        } elseif (is_callable($loader)
-            && false !== $file = $loader($className)
-                && $this->exists($className, $loader)) {
-            return $file;
-        }
+		if (is_callable($loader)
+			&& false !== $file = call_user_func($loader, $className)
+				&& $this->exists($className, $loader)) {
+			return $file;
+		}
         return false;
     }
 
