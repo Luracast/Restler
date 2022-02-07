@@ -186,7 +186,6 @@ class Tags implements ArrayAccess, Countable
         if (isset($this->attributes[$name])) {
             return $this->attributes[$name];
         }
-        return;
     }
 
     public function __set($name, $value)
@@ -215,9 +214,7 @@ class Tags implements ArrayAccess, Countable
     public function __call($attribute, $value): ?Tags
     {
         if (is_null($value)) {
-            return isset($this->attributes[$attribute])
-                ? $this->attributes[$attribute]
-                : null;
+            return $this->attributes[$attribute] ?? null;
         }
         $value = $value[0];
         if (is_null($value)) {
@@ -230,6 +227,7 @@ class Tags implements ArrayAccess, Countable
         return $this;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if ($this->offsetExists($offset)) {
@@ -243,6 +241,7 @@ class Tags implements ArrayAccess, Countable
         return isset($this->children[$offset]);
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value): bool
     {
         if ($offset) {
@@ -264,6 +263,7 @@ class Tags implements ArrayAccess, Countable
         return true;
     }
 
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset): bool
     {
         $this->children[$offset]->_parent = null;
