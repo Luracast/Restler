@@ -70,12 +70,15 @@ class Nav
             if (empty(static::$url)) {
                 static::$url = '';
             }
-            static::$activeTrail = $activeTrail = empty($activeTrail)
-                ? (empty($this->restler->url) || $this->restler->url == 'index'
+            if (!empty($activeTrail)) {
+                static::$activeTrail = $activeTrail;
+            } else {
+                $path = $this->restler->path;
+                static::$activeTrail = $activeTrail = empty($path) || 'index' === $path
                     ? static::$root
-                    : $this->restler->url
-                )
-                : $activeTrail;
+                    : $path;
+            }
+
             static::addUrls(static::$prepends);
             $version = $this->restler->requestedApiVersion;
             $map = Routes::findAll(
@@ -108,7 +111,7 @@ class Nav
         $activeTrail = explode('/', $activeTrail);
         $nested = &static::nested($tree, $activeTrail);
         if (is_array($nested)) {
-            $nested['active'] = true;
+            $nested['active'] = 'active';
         }
         if (!empty($for)) {
             $for = explode('/', $for);
@@ -121,7 +124,7 @@ class Nav
         $tags = Emmet::make('ul.nav.nav-tabs');
         foreach ($tree as $branch) {
             if (empty($branch['children'])) {
-                $tags[] = Emmet::make('li[role=presentation]>a[href=$href#]{$text#}', $branch);
+                $tags[] = Emmet::make('li.$active#[role=presentation]>a[href=$href#]{$text#}', $branch);
             } else {
                 $tag = Emmet::make(
                     'li.dropdown[role=presentation]>a.dropdown-toggle[data-toggle=dropdown href=$href# role=button aria-haspopup=true aria-expanded=false]{$text# }>span.caret^ul.dropdown-menu>li*children>a[href=$href#]{$text#}',
