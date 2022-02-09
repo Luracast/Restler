@@ -26,359 +26,335 @@ class Emmet
             return [];
         }
 
-        $implicitTag =
-            function () use (& $tag): void {
-                if (empty($tag->tag)) {
-                    switch ($tag->parent->tag) {
-                        case 'ul':
-                        case 'ol':
-                            $tag->tag = 'li';
-                            break;
-                        case 'em':
-                            $tag->tag = 'span';
-                            break;
-                        case 'table':
-                        case 'tbody':
-                        case 'thead':
-                        case 'tfoot':
-                            $tag->tag = 'tr';
-                            break;
-                        case 'tr':
-                            $tag->tag = 'td';
-                            break;
-                        case 'select':
-                        case 'optgroup':
-                            $tag->tag = 'option';
-                            break;
-                        default:
-                            $tag->tag = 'div';
-                    }
+        $implicitTag = function () use (& $tag): void {
+            if (empty($tag->tag)) {
+                switch ($tag->parent->tag) {
+                    case 'ul':
+                    case 'ol':
+                        $tag->tag = 'li';
+                        break;
+                    case 'em':
+                        $tag->tag = 'span';
+                        break;
+                    case 'table':
+                    case 'tbody':
+                    case 'thead':
+                    case 'tfoot':
+                        $tag->tag = 'tr';
+                        break;
+                    case 'tr':
+                        $tag->tag = 'td';
+                        break;
+                    case 'select':
+                    case 'optgroup':
+                        $tag->tag = 'option';
+                        break;
+                    default:
+                        $tag->tag = 'div';
                 }
-            };
+            }
+        };
 
-        $parseText =
-            function (
-                $text,
+        $parseText = function ($text, $round, $total, $data, $delimiter = null) use (&$tokens, &$tag) {
+            $digits = 0;
+            if ($delimiter == null) {
+                $delimiter = [
+                    '.' => true,
+                    '#' => true,
+                    '*' => true,
+                    '>' => true,
+                    '+' => true,
+                    '^' => true,
+                    '[' => true,
+                    ']' => true,
+                    '=' => true,
+                ];
+            }
+            while (!empty($tokens) &&
+                !isset($delimiter[$t = array_shift($tokens)])) {
+                while ('$' === $t) {
+                    $digits++;
+                    $t = array_shift($tokens);
+                }
+                if ($digits) {
+                    $negative = false;
+                    $offset = 0;
+                    if ('@' == $t) {
+                        if ('-' == ($t = array_shift($tokens))) {
+                            $negative = true;
+                            if (is_numeric(reset($tokens))) {
+                                $offset = array_shift($tokens);
+                            }
+                        } elseif (is_numeric($t)) {
+                            $offset = $t;
+                        } else {
+                            array_unshift($tokens, $t);
+                        }
+                    } elseif ('#' == ($h = array_shift($tokens))) {
+                        if (!empty($t)) {
+                            $data = $data[$t] ?? null;
+                            if (is_null($data)) {
+                                return null;
+                            }
+                        }
+                        if (is_numeric($data)) {
+                            $text .= sprintf("%0{$digits}d", (int)$data);
+                        } elseif (is_string($data)) {
+                            $text .= $data;
+                        }
+                        $digits = 0;
+                        continue;
+                    } else {
+                        array_unshift($tokens, $t, $h);
+                    }
+                    if ($negative) {
+                        $n = $total + 1 - $round + $offset;
+                    } else {
+                        $n = $round + $offset;
+                    }
+                    $text .= sprintf("%0{$digits}d", $n);
+                    $digits = 0;
+                } else {
+                    $text .= $t;
+                }
+            }
+            if (isset($t)) {
+                array_unshift($tokens, $t);
+            }
+            return $text;
+        };
+
+        $parseAttributes = function (callable $self, $round, $total, $data) use (& $tokens, & $tag, $parseText): void {
+            $a = $parseText(
+                '',
                 $round,
                 $total,
-                $data,
-                $delimiter = null
-            )
-            use (
-                & $tokens,
-                & $tag
-            ) {
-                $digits = 0;
-                if ($delimiter == null) {
-                    $delimiter = [
-                        '.' => true,
-                        '#' => true,
-                        '*' => true,
-                        '>' => true,
-                        '+' => true,
-                        '^' => true,
-                        '[' => true,
-                        ']' => true,
-                        '=' => true,
-                    ];
+                $data
+            );
+            if (is_null($a)) {
+                return;
+            }
+            if ('=' == ($v = array_shift($tokens))) {
+                //value
+                if ('"' == ($v = array_shift($tokens))) {
+                    $text = '';
+                    $tag->$a(
+                        $parseText(
+                            $text,
+                            $round,
+                            $total,
+                            $data,
+                            ['"' => true]
+                        )
+                    );
+                } else {
+                    array_unshift($tokens, $v);
+                    $text = '';
+                    $tag->$a(
+                        $parseText(
+                            $text,
+                            $round,
+                            $total,
+                            $data,
+                            [' ' => true, ']' => true]
+                        )
+                    );
                 }
-                while (!empty($tokens) &&
-                    !isset($delimiter[$t = array_shift($tokens)])) {
-                    while ('$' === $t) {
-                        $digits++;
-                        $t = array_shift($tokens);
-                    }
-                    if ($digits) {
-                        $negative = false;
-                        $offset = 0;
-                        if ('@' == $t) {
-                            if ('-' == ($t = array_shift($tokens))) {
-                                $negative = true;
-                                if (is_numeric(reset($tokens))) {
-                                    $offset = array_shift($tokens);
-                                }
-                            } elseif (is_numeric($t)) {
-                                $offset = $t;
-                            } else {
-                                array_unshift($tokens, $t);
-                            }
-                        } elseif ('#' == ($h = array_shift($tokens))) {
-                            if (!empty($t)) {
-                                $data = $data[$t] ?? null;
-                                if (is_null($data)) {
-                                    return null;
-                                }
-                            }
-                            if (is_numeric($data)) {
-                                $text .= sprintf("%0{$digits}d", (int)$data);
-                            } elseif (is_string($data)) {
-                                $text .= $data;
-                            }
-                            $digits = 0;
-                            continue;
-                        } else {
-                            array_unshift($tokens, $t, $h);
-                        }
-                        if ($negative) {
-                            $n = $total + 1 - $round + $offset;
-                        } else {
-                            $n = $round + $offset;
-                        }
-                        $text .= sprintf("%0{$digits}d", $n);
-                        $digits = 0;
-                    } else {
-                        $text .= $t;
-                    }
-                }
-                if (isset($t)) {
-                    array_unshift($tokens, $t);
-                }
-                return $text;
-            };
-
-        $parseAttributes =
-            function (callable $self, $round, $total, $data)
-            use (& $tokens, & $tag, $parseText): void {
-                $a = $parseText(
-                    '',
-                    $round,
-                    $total,
-                    $data
-                );
-                if (is_null($a)) {
-                    return;
-                }
-                if ('=' == ($v = array_shift($tokens))) {
-                    //value
-                    if ('"' == ($v = array_shift($tokens))) {
-                        $text = '';
-                        $tag->$a(
-                            $parseText(
-                                $text,
-                                $round,
-                                $total,
-                                $data,
-                                ['"' => true]
-                            )
-                        );
-                    } else {
-                        array_unshift($tokens, $v);
-                        $text = '';
-                        $tag->$a(
-                            $parseText(
-                                $text,
-                                $round,
-                                $total,
-                                $data,
-                                [' ' => true, ']' => true]
-                            )
-                        );
-                    }
-                    if (' ' == ($v = array_shift($tokens))) {
-                        $self($self, $round, $total, $data);
-                    }
-                } elseif (']' == $v) {
-                    //end
-                    $tag->$a('');
-                    return;
-                } elseif (' ' == $v) {
-                    $tag->$a('');
+                if (' ' == ($v = array_shift($tokens))) {
                     $self($self, $round, $total, $data);
                 }
-            };
+            } elseif (']' == $v) {
+                //end
+                $tag->$a('');
+                return;
+            } elseif (' ' == $v) {
+                $tag->$a('');
+                $self($self, $round, $total, $data);
+            }
+        };
 
         $tokens = static::tokenize($string);
         $tag = new T(array_shift($tokens));
         $parent = $root = new T();
 
-        $parse =
-            function (
-                callable $self,
-                $round = 1,
-                $total = 1
-            )
-            use (
-                & $tokens,
-                & $parent,
-                & $tag,
-                & $data,
-                $parseAttributes,
-                $implicitTag,
-                $parseText
-            ): void {
-                $offsetTokens = null;
-                $parent[] = $tag;
-                $isInChild = false;
-                while ($tokens) {
-                    switch (array_shift($tokens)) {
-                        //class
-                        case '.':
-                            $offsetTokens = array_values($tokens);
-                            array_unshift($offsetTokens, '.');
-                            $implicitTag();
-                            $e = $tag->class ? array_filter(explode(' ', $tag->class)) : [];
-                            $e[] = $parseText('', $round, $total, $data);
-                            $tag->class(implode(' ', array_unique($e)));
-                            break;
-                        //id
-                        case '#':
-                            $offsetTokens = array_values($tokens);
-                            array_unshift($offsetTokens, '#');
-                            $implicitTag();
-                            $tag->id(
-                                $parseText(
-                                    array_shift($tokens),
-                                    $round,
-                                    $total,
-                                    $data
-                                )
-                            );
-                            break;
-                        //attributes
-                        case '[':
-                            $offsetTokens = array_values($tokens);
-                            array_unshift($offsetTokens, '[');
-                            $implicitTag();
-                            $parseAttributes(
-                                $parseAttributes,
+        $parse = function (callable $self, $round = 1, $total = 1)
+        use (&$tokens, &$parent, &$tag, &$data, $parseAttributes, $implicitTag, $parseText): void {
+            $offsetTokens = null;
+            $parent[] = $tag;
+            $isInChild = false;
+            while ($tokens) {
+                switch (array_shift($tokens)) {
+                    //class
+                    case '.':
+                        $offsetTokens = array_values($tokens);
+                        array_unshift($offsetTokens, '.');
+                        $implicitTag();
+                        $e = $tag->class ? array_filter(explode(' ', $tag->class)) : [];
+                        $e[] = $parseText('', $round, $total, $data);
+                        $e = array_unique(array_filter($e));
+                        if (count($e)) {
+                            $tag->class(implode(' ', $e));
+                        }
+                        break;
+                    //id
+                    case '#':
+                        $offsetTokens = array_values($tokens);
+                        array_unshift($offsetTokens, '#');
+                        $implicitTag();
+                        $tag->id(
+                            $parseText(
+                                array_shift($tokens),
                                 $round,
                                 $total,
                                 $data
-                            );
+                            )
+                        );
+                        break;
+                    //attributes
+                    case '[':
+                        $offsetTokens = array_values($tokens);
+                        array_unshift($offsetTokens, '[');
+                        $implicitTag();
+                        $parseAttributes(
+                            $parseAttributes,
+                            $round,
+                            $total,
+                            $data
+                        );
+                        break;
+                    //child
+                    case '{':
+                        $text = '';
+                        $tag[] = $parseText(
+                            $text,
+                            $round,
+                            $total,
+                            $data,
+                            ['}' => true]
+                        );
+                        break;
+                    case '>':
+                        $isInChild = true;
+                        $offsetTokens = null;
+                        if ('{' == ($t = array_shift($tokens))) {
+                            array_unshift($tokens, $t);
+                            $child = new T();
+                            $tag[] = $child;
+                            $parent = $tag;
+                            $tag = $child;
+                        } elseif ('[' == $t) {
+                            array_unshift($tokens, $t);
+                        } else {
+                            $child = new T($t);
+                            $tag[] = $child;
+                            $parent = $tag;
+                            $tag = $child;
+                        }
+                        break;
+                    //sibling
+                    case '+':
+                        $offsetTokens = null;
+                        if (!$isInChild && $round != $total) {
+                            $tokens = [];
                             break;
-                        //child
-                        case '{':
-                            $text = '';
-                            $tag[] = $parseText(
-                                $text,
-                                $round,
-                                $total,
-                                $data,
-                                ['}' => true]
-                            );
-                            break;
-                        case '>':
-                            $isInChild = true;
-                            $offsetTokens = null;
-                            if ('{' == ($t = array_shift($tokens))) {
-                                array_unshift($tokens, $t);
-                                $child = new T();
-                                $tag[] = $child;
-                                $parent = $tag;
-                                $tag = $child;
-                            } elseif ('[' == $t) {
-                                array_unshift($tokens, $t);
-                            } else {
-                                $child = new T($t);
-                                $tag[] = $child;
-                                $parent = $tag;
-                                $tag = $child;
-                            }
-                            break;
-                        //sibling
-                        case '+':
-                            $offsetTokens = null;
-                            if (!$isInChild && $round != $total) {
-                                $tokens = [];
-                                break;
-                            }
-                            if ('{' == ($t = array_shift($tokens))) {
-                                $tag = $tag->parent;
-                                array_unshift($tokens, $t);
-                                break;
-                            } elseif ('[' == $t) {
-                                array_unshift($tokens, $t);
-                            } else {
-                                $child = new T($t);
-                                $tag = $tag->parent;
-                                $tag[] = $child;
-                                $tag = $child;
-                            }
-                            break;
-                        //sibling of parent
-                        case '^':
-                            if ($round != $total) {
-                                $tokens = [];
-                                break;
-                            }
+                        }
+                        if ('{' == ($t = array_shift($tokens))) {
                             $tag = $tag->parent;
+                            array_unshift($tokens, $t);
+                            break;
+                        } elseif ('[' == $t) {
+                            array_unshift($tokens, $t);
+                        } else {
+                            $child = new T($t);
+                            $tag = $tag->parent;
+                            $tag[] = $child;
+                            $tag = $child;
+                        }
+                        break;
+                    //sibling of parent
+                    case '^':
+                        if ($round != $total) {
+                            $tokens = [];
+                            break;
+                        }
+                        $tag = $tag->parent;
+                        if ($tag->parent) {
+                            $tag = $tag->parent;
+                        }
+                        while ('^' == ($t = array_shift($tokens))) {
                             if ($tag->parent) {
                                 $tag = $tag->parent;
                             }
-                            while ('^' == ($t = array_shift($tokens))) {
-                                if ($tag->parent) {
-                                    $tag = $tag->parent;
-                                }
-                            }
-                            $child = new T($t);
-                            $tag[] = $child;
-                            $tag = $child;
-                            break;
-                        //clone
-                        case '*':
-                            $times = array_shift($tokens);
-                            $removeCount = 2;
-                            $delimiter = [
-                                '.' => true,
-                                '#' => true,
-                                '*' => true,
-                                '>' => true,
-                                '+' => true,
-                                '^' => true,
-                                '[' => true,
-                                ']' => true,
-                                '=' => true,
-                            ];
-                            if (!is_numeric($times)) {
-                                if (is_string($times)) {
-                                    if (!isset($delimiter[$times])) {
-                                        $data = $data[$times] ?? $data;
-                                    } else {
-                                        $removeCount = 1;
-                                    }
-                                }
-                                if (is_array($data)) {
-                                    $data = array_values($data);
-                                    $times = count($data) ?? 0;
-                                }
-                            }
-                            $source = $tag;
-                            if (!empty($offsetTokens)) {
-                                if (false !== strpos($source->class, ' ')) {
-                                    $class = explode(' ', $source->class);
-                                    array_pop($class);
-                                    $class = implode(' ', $class);
+                        }
+                        $child = new T($t);
+                        $tag[] = $child;
+                        $tag = $child;
+                        break;
+                    //clone
+                    case '*':
+                        $times = array_shift($tokens);
+                        $removeCount = 2;
+                        $delimiter = [
+                            '.' => true,
+                            '#' => true,
+                            '*' => true,
+                            '>' => true,
+                            '+' => true,
+                            '^' => true,
+                            '[' => true,
+                            ']' => true,
+                            '=' => true,
+                        ];
+                        if (!is_numeric($times)) {
+                            if (is_string($times)) {
+                                if (!isset($delimiter[$times])) {
+                                    $data = $data[$times] ?? $data;
                                 } else {
-                                    $class = null;
+                                    $removeCount = 1;
                                 }
-                                $tag->class($class);
-                                $star = array_search('*', $offsetTokens);
-                                array_splice($offsetTokens, $star, $removeCount);
-                                $remainingTokens = $offsetTokens;
+                            }
+                            if (is_array($data)) {
+                                $data = array_values($data);
+                                $times = count($data) ?? 0;
+                            }
+                        }
+                        $source = $tag;
+                        if (!empty($offsetTokens)) {
+                            if (false !== strpos($source->class, ' ')) {
+                                $class = explode(' ', $source->class);
+                                array_pop($class);
+                                $class = implode(' ', $class);
                             } else {
-                                $remainingTokens = $tokens;
+                                $class = null;
                             }
-                            $source->parent = null;
-                            $sourceData = $data;
-                            $currentParent = $parent;
-                            for ($i = 1; $i <= $times; $i++) {
-                                $tag = clone $source;
-                                $parent = $currentParent;
-                                $data = is_array($sourceData)
-                                && isset($sourceData[$i - 1])
-                                    ? $sourceData[$i - 1]
-                                    : @(string)$sourceData;
-                                $tokens = array_values($remainingTokens);
-                                $self($self, $i, $times);
-                            }
-                            $round = 1;
-                            $offsetTokens = null;
-                            $tag = $source;
-                            $tokens = []; //$remainingTokens;
-                            break;
-                    }
+                            $tag->class($class);
+                            $star = array_search('*', $offsetTokens);
+                            array_splice($offsetTokens, $star, $removeCount);
+                            $remainingTokens = $offsetTokens;
+                        } else {
+                            $remainingTokens = $tokens;
+                        }
+                        $source->parent = null;
+                        $sourceData = $data;
+                        $currentParent = $parent;
+                        for ($i = 1; $i <= $times; $i++) {
+                            $tag = clone $source;
+                            $parent = $currentParent;
+                            $data = is_array($sourceData)
+                            && isset($sourceData[$i - 1])
+                                ? $sourceData[$i - 1]
+                                : @(string)$sourceData;
+                            $tokens = array_values($remainingTokens);
+                            $self($self, $i, $times);
+                        }
+                        $round = 1;
+                        $offsetTokens = null;
+                        $tag = $source;
+                        $tokens = []; //$remainingTokens;
+                        break;
                 }
-            };
+            }
+        };
         $parse($parse);
         return count($root) == 1 ? $root[0] : $root;
     }
