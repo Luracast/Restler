@@ -158,7 +158,7 @@ class Route extends ValueObject
     /**
      * @var array
      */
-    protected $arguments = [];
+    protected array $arguments = [];
 
     public static function fromMethod(ReflectionMethod $method, ?array $metadata = null, array $scope = []): self
     {
@@ -326,6 +326,9 @@ class Route extends ValueObject
         return $this->arguments;
     }
 
+    /**
+     * @throws HttpException
+     */
     public function toGraphQL(): array
     {
         $config = [
@@ -362,6 +365,10 @@ class Route extends ValueObject
         return $config;
     }
 
+    /**
+     * @throws HttpException
+     * @throws InvalidAuthCredentials
+     */
     public function authenticate(
         ServerRequestInterface $request,
         ResponseHeaders $responseHeaders,
@@ -405,7 +412,7 @@ class Route extends ValueObject
         if ($accessLevel > self::ACCESS_HYBRID && $unauthorized) {
             throw $unauthorized;
         }
-        return $unauthorized ? false : true;
+        return !$unauthorized;
     }
 
     public function call(array $arguments, bool $authenticated = false, bool $validate = true, callable $maker = null)
@@ -447,12 +454,15 @@ class Route extends ValueObject
         return $p;
     }
 
+    /**
+     * @throws HttpException
+     */
     public function validate(ValidationInterface $validator, callable $maker): void
     {
         foreach ($this->parameters as $param) {
             $i = $param->index;
             $info = &$param->rules;
-            if (!isset ($info['validate']) || $info['validate'] != false) {
+            if (!isset ($info['validate']) || $info['validate'] !== false) {
                 if (isset($info['method'])) {
                     $param->apiClassInstance = $maker($this->action[0]);
                 }
@@ -519,9 +529,9 @@ class Route extends ValueObject
 
     private function setAccess(
         string $name,
-        ?string $access = null,
+        ?string $access,
         ReflectionFunctionAbstract $function,
-        ?array $metadata = null,
+        ?array $metadata,
         array $scope = []
     ): void {
         if ($function->isProtected()) {
@@ -535,7 +545,7 @@ class Route extends ValueObject
 
     private function setClassProperties(
         string $name,
-        ?array $class = null,
+        ?array $class,
         ReflectionFunctionAbstract $function,
         ?array $metadata = null,
         array $scope = []
@@ -552,7 +562,7 @@ class Route extends ValueObject
 
     private function overrideFormats(
         string $name,
-        ?array $formats = null,
+        ?array $formats,
         ReflectionFunctionAbstract $function,
         ?array $metadata = null,
         array $scope = []
