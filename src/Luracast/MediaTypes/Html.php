@@ -51,6 +51,11 @@ class Html extends MediaType implements ResponseMediaTypeInterface
 
     public static ?string $view = null;
     public static string $errorView = 'debug.php';
+    public static array $customErrorViews = [
+        // 400 => 'client_found',
+        // 500 => 'server_error',
+        // 404 => 'not_found',
+    ];
     /** @var string Choose manual if you want to compute the html in your api method */
     public static string $template = 'php';
     public static bool $handleSession = true;
@@ -79,7 +84,6 @@ class Html extends MediaType implements ResponseMediaTypeInterface
      */
     protected bool $parseViewMetadata = true;
     /**
-     * /**
      */
     private Restler $restler;
     private StaticProperties $html;
@@ -173,7 +177,9 @@ class Html extends MediaType implements ResponseMediaTypeInterface
             } elseif (!$this->html['view']) {
                 $file = explode('/', $this->restler->path);
                 $file = end($file);
-                $this->html['view'] = $this->guessViewName($file);
+                $this->html['view'] = $success
+                    ? $this->guessViewName($file)
+                    : $this->guessErrorViewName($exception);
             }
             $data->merge(ArrayObject::fromArray($this->html['data']));
             if ($value) {
@@ -234,6 +240,17 @@ class Html extends MediaType implements ResponseMediaTypeInterface
         $this->html->data['guessedView'] = $file;
         return $this->html['useSmartViews'] && is_readable($file)
             ? $path
+            : $this->html->errorView;
+    }
+
+    public function guessErrorViewName(Throwable $exception)
+    {
+        $code = $exception instanceof HttpException ? $exception->getCode() : 500;
+        $view = static::$customErrorViews[$code] ?? $code;
+        $file = $this->html['viewPath'] . '/' . $view . '.' . $this->getViewExtension();
+        $this->html->data['guessedView'] = $file;
+        return $this->html['useSmartViews'] && is_readable($file)
+            ? $view
             : $this->html->errorView;
     }
 
