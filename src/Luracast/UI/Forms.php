@@ -86,12 +86,14 @@ class Forms implements FilterInterface, SelectivePathsInterface
         Restler $restler,
         Route $route,
         StaticProperties $forms,
-        SessionInterface $session
+        SessionInterface $session,
+        UserIdentificationInterface $userIdentifier
     ) {
         $this->restler = $restler;
         $this->currentRoute = $route;
         $this->forms = $forms;
         $this->session = $session;
+        $this->userIdentifier = $userIdentifier;
     }
 
     /**
