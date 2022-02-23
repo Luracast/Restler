@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Data;
 
 use Exception;
@@ -218,6 +219,9 @@ class Param extends Type
         return $param;
     }
 
+    /**
+     * @throws Exception
+     */
     protected static function from(?Reflector $reflector, array $metadata = [], array $scope = [])
     {
         $hasDefault = false;
@@ -304,21 +308,25 @@ class Param extends Type
                 ?? Routes::$formatsByName[$instance->name]
                 ?? null;
         }
+        if (!$hasDefault) {
+            if (array_key_exists('default', $properties)) {
+                $instance->default = [true, $properties['default']];
+                unset($properties['default']);
+                $hasDefault = true;
+            } elseif ($instance->nullable) {
+                $instance->default = [true, null];
+                $hasDefault = true;
+            }
+        }
         if ($access = self::ACCESS[$properties['access'] ?? ''] ?? false) {
             unset($properties['access']);
-            if (!$hasDefault) {
-                if (array_key_exists('default', $properties)) {
-                    $instance->default = [true, $properties['default']];
-                } elseif ($instance->nullable) {
-                    $instance->default = [true, null];
-                } else {
-                    throw new Exception(
-                        'Invalid parameter. private or protected parameter requires ' .
-                        'default value either in the function or with {@default value} comment'
-                    );
-                }
-            }
             $instance->access = $access;
+            if (!$hasDefault) {
+                throw new Exception(
+                    'Invalid parameter. private or protected parameter requires ' .
+                    'default value either in the function or with {@default value} comment'
+                );
+            }
         }
         $instance->rules = $properties;
         return $instance;
@@ -393,4 +401,3 @@ class Param extends Type
         return $data;
     }
 }
-

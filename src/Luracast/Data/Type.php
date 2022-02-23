@@ -116,6 +116,9 @@ abstract class Type extends ValueObject
                 //ignore
             }
         }
+        if (method_exists($property, 'hasDefaultValue') && $property->hasDefaultValue()) {
+            $var[CommentParser::$embeddedDataName]['default'] = $property->getDefaultValue();
+        }
         return static::from($property, $var, $scope);
     }
 
@@ -152,7 +155,7 @@ abstract class Type extends ValueObject
         $this->nullable = in_array('null', $types);
         if (empty($types) || in_array('mixed', $types) || ($this->nullable && 1 == count($types))) {
             $this->type = 'mixed';
-        } elseif ('array' == $name && count($subTypes)) {
+        } elseif ('array' === $name && count($subTypes)) {
             $this->multiple = true;
             $this->type = $subTypes[0];
             $this->scalar = TypeUtil::isScalar($subTypes[0]);
