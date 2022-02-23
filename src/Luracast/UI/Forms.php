@@ -235,7 +235,11 @@ class Forms implements FilterInterface, SelectivePathsInterface
     {
         $r = [];
         $values = $route->getArguments();
-        foreach ($route->parameters as $parameter) {
+        $parameters = $route->parameters;
+        if (1 === count($parameters) && count(end($parameters)->properties)) {
+            $parameters = end($parameters)->properties;
+        }
+        foreach ($parameters as $parameter) {
             if (!$this->fieldable($parameter)) {
                 continue;
             }
