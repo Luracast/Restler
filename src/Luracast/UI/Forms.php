@@ -328,7 +328,7 @@ class Forms implements FilterInterface, SelectivePathsInterface
         $options = [];
         $name = $p->name;
         $multiple = null;
-        if ($p->type == 'array' && $p->contentType != 'associative') {
+        if ($p->type == 'array' && $p->format != 'associative') {
             $name .= '[]';
             $multiple = true;
         }
