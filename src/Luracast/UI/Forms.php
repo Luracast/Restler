@@ -244,7 +244,15 @@ class Forms implements FilterInterface, SelectivePathsInterface
                 $value = null;
             }
             if (!empty($parameter->properties)) {
-                $t = Emmet::make($this->style('fieldset', $parameter), ['label' => $parameter->label]);
+                $t = !$dataOnly
+                    ? Emmet::make($this->style('fieldset', $parameter), ['label' => $parameter->label])
+                    : [
+                        'tag' => 'fieldset',
+                        'name' => $parameter->name,
+                        'type' => $parameter->type,
+                        'label' => $parameter->label,
+                        'fields' => [],
+                    ];
                 /**
                  * @var string|int $key
                  * @var  Param $property
@@ -259,11 +267,13 @@ class Forms implements FilterInterface, SelectivePathsInterface
                     }
                     $property = clone $property;
                     $property->name = sprintf("%s[%s]", $parameter->name, $property->name);
-                    $t[] = $this->field($property, $childValue, false);
+                    $dataOnly
+                        ? $t['fields'][] = $this->field($property, $childValue, $dataOnly)
+                        : $t[] = $this->field($property, $childValue, $dataOnly);
                 }
                 $r[] = $t;
             } else {
-                $f = $this->field($parameter, $value, false);
+                $f = $this->field($parameter, $value, $dataOnly);
                 $r[] = $f;
             }
         }
@@ -392,11 +402,6 @@ class Forms implements FilterInterface, SelectivePathsInterface
         if (isset($p->rules['autofocus'])) {
             $r['autofocus'] = 'autofocus';
         }
-        /*
-        echo "<pre>";
-        print_r($r);
-        echo "</pre>";
-        */
         if ($dataOnly) {
             return $r;
         }
@@ -416,8 +421,9 @@ class Forms implements FilterInterface, SelectivePathsInterface
             return $p->type == 'array' ? 'checkbox' : 'select';
         }
         switch ($p->$type) {
+            case 'bool':
             case 'boolean':
-                return 'radio';
+                return 'checkbox';
             case 'int':
             case 'number':
             case 'float':
