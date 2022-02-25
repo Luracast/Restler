@@ -231,7 +231,7 @@ class Forms implements FilterInterface, SelectivePathsInterface
         return $t;
     }
 
-    public function fields(Route $route, bool $dataOnly = false)
+    public function fields(Route $route, bool $dataOnly = false): array
     {
         $r = [];
         $values = $route->getArguments();
@@ -412,8 +412,7 @@ class Forms implements FilterInterface, SelectivePathsInterface
         if (isset($p->rules['form'])) {
             return Emmet::make($p->rules['form'], $r);
         }
-        $t = Emmet::make($this->style($type, $p) ?: $this->style($tag, $p), $r);
-        return $t;
+        return Emmet::make($this->style($type, $p) ?: $this->style($tag, $p), $r);
     }
 
     protected function guessFieldType(Param $p, $type = 'type'): string
@@ -439,6 +438,9 @@ class Forms implements FilterInterface, SelectivePathsInterface
         }
         if ($p->name == 'password') {
             return 'password';
+        }
+        if (Text::endsWith($p->name, 'url')) {
+            return 'url';
         }
         return 'text';
     }
