@@ -8,6 +8,7 @@ use improved\Authors as ImprovedAuthors;
 use Luracast\Restler\Data\ErrorResponse;
 use Luracast\Restler\Defaults;
 use Luracast\Restler\Filters\RateLimiter;
+use Luracast\Restler\MediaTypes\Csv;
 use Luracast\Restler\MediaTypes\Html;
 use Luracast\Restler\MediaTypes\Json;
 use Luracast\Restler\MediaTypes\Upload;
@@ -42,7 +43,8 @@ try {
     Routes::setOverridingResponseMediaTypes(
         Json::class,
         Xml::class,
-        Html::class
+        Html::class,
+        Csv::class,
     );
     Routes::setOverridingRequestMediaTypes(
         Json::class,
@@ -107,6 +109,7 @@ try {
             'tests/storage/session' => SessionTest::class,
             'tests/overrides/method' => Method::class,
             'tests/overrides/property' => Property::class,
+            'tests/response/stream' => Stream::class,
             //Explorer
             'explorer' => Explorer::class,
             //GraphQL

@@ -63,6 +63,7 @@
       "api/tests/upload/",
       "api/tests/storage/",
       "api/tests/overrides/",
+      "api/tests/response/",
       "api/common/",
       "api/examples/-storage-/",
       "api/examples/_001_helloworld/",
