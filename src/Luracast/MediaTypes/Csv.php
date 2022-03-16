@@ -15,6 +15,10 @@ class Csv extends MediaType implements StreamingRequestMediaTypeInterface, Respo
     public static string $enclosure = '"';
     public static string $escape = '\\';
     public static ?bool $haveHeaders = null;
+    /**
+     * @var resource
+     */
+    protected $stream;
 
     public function decode(string $data)
     {
@@ -101,39 +105,32 @@ class Csv extends MediaType implements StreamingRequestMediaTypeInterface, Respo
             $decoded [] = $row;
         }
 
-        $decoded = $this->convert->toArray($decoded);
-
-        return $decoded;
+        return $this->convert->toArray($decoded);
     }
 
+    /**
+     * @throws HttpException
+     */
     public function encode($data, ResponseHeaders $responseHeaders, bool $humanReadable = false)
     {
         $data = $this->convert->toArray($data);
         if (is_array($data) && array_values($data) == $data) {
+            $this->stream = fopen('php://temp', 'r+');
             //if indexed array
-            $lines = array();
-            $row = array_shift($data);
+            $row = reset($data);
             if (array_values($row) != $row) {
-                $lines[] = static::putRow(array_keys($row));
+                $this->putRow(array_keys($row));
             }
-            $lines[] = static::putRow(array_values($row));
             foreach ($data as $row) {
-                $lines[] = static::putRow(array_values($row));
+                $this->putRow(array_values($row));
             }
-
-            return implode(PHP_EOL, $lines) . PHP_EOL;
+            return $this->stream;
         }
         throw new HttpException(500, 'Unsupported data for ' . strtoupper(static::EXTENSION) . ' MediaType');
     }
 
-    protected static function putRow($data)
+    protected function putRow(array $data): void
     {
-        $fp = fopen('php://temp', 'r+');
-        fputcsv($fp, $data, static::$delimiter, static::$enclosure);
-        rewind($fp);
-        $data = fread($fp, 1_048_576);
-        fclose($fp);
-
-        return rtrim($data, PHP_EOL);
+        fputcsv($this->stream, $data, static::$delimiter, static::$enclosure);
     }
 }
