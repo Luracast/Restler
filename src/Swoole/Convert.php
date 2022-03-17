@@ -8,9 +8,12 @@ use GuzzleHttp\Psr7\ServerRequest;
 use Luracast\Restler\Utils\ClassName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Convert
 {
+    public static int $bufferSize = 8192;
+
     final public static function toPSR7(Request $request): ServerRequestInterface
     {
         $rawContent = (string)$request->rawcontent();
@@ -87,7 +90,22 @@ class Convert
     {
         $response->status($psr7Response->getStatusCode());
         static::populateHeaders($psr7Response, $response);
-        $response->end((string)$psr7Response->getBody());
+        $data = $psr7Response->getBody();
+        if ($data instanceof StreamInterface) {
+            $data = $data->detach();
+        }
+        if (is_resource($data)) {
+            rewind($data);
+            stream_set_read_buffer($data, self::$bufferSize);
+            while (!feof($data)) {
+                $buffer = fread($data, self::$bufferSize);
+                $response->write($buffer);
+            }
+            fclose($data);
+            $response->end('');
+        } else {
+            $response->end($data);
+        }
     }
 
     private static function populateHeaders(ResponseInterface $psr7Response, Response $response): void
