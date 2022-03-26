@@ -801,6 +801,9 @@ class Routes
         $message = null;
         $methods = [];
         $later = [];
+        if ($httpMethod === 'HEAD' || $httpMethod === 'OPTIONS') {
+            $httpMethod = 'GET';
+        }
         if (isset($p[$path][$httpMethod])) {
             //================== static routes ==========================
             return static::populate($p[$path][$httpMethod], $data, $request);
