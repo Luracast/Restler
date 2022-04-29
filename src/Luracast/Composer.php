@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler;
 
 
@@ -37,6 +38,14 @@ class Composer implements ComposerInterface
      */
     public function message(HttpException $exception): ErrorResponse
     {
+        if (Defaults::$productionMode && $exception->getCode() >= 500) {
+            $exception = new HttpException(
+                $exception->getCode(),
+                'Something went wrong!',
+                $exception->getDetails(),
+                $exception
+            );
+        }
         return new ErrorResponse($exception, !Defaults::$productionMode && self::$includeDebugInfo);
     }
 
