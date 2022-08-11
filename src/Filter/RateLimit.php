@@ -155,9 +155,9 @@ class RateLimit implements iFilter, iUseAuthentication
     {
         $units = array(
             'week' => (int)($secs / 86400 / 7),
-            'day' => $secs / 86400 % 7,
-            'hour' => $secs / 3600 % 24,
-            'minute' => $secs / 60 % 60,
+            'day' => (int)($secs / 86400) % 7,
+            'hour' => (int)($secs / 3600) % 24,
+            'minute' => (int)($secs / 60) % 60,
             'second' => $secs % 60);
 
         $ret = array();
