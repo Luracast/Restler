@@ -86,6 +86,9 @@ class RestException extends Exception
             $this->stage = $previous ? $events[count($events)-2] : end($events);
         }
         $this->details = $details;
+        if (is_null($errorMessage)) {
+            $errorMessage = '';
+        }
         parent::__construct($errorMessage, $httpStatusCode, $previous);
     }
 
