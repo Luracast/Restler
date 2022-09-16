@@ -33,7 +33,7 @@ class Explorer implements iProvideMultiVersionApi
     /**
      * @var bool should protected resources be shown to unauthenticated users?
      */
-    public static $hideProtected = true;
+    public static $hideProtected = false;
     /**
      * @var bool should we use format as extension?
      */
@@ -226,6 +226,7 @@ class Explorer implements iProvideMultiVersionApi
     private function paths($version = 1)
     {
         $map = Routes::findAll(static::$excludedPaths + array($this->base()), static::$excludedHttpMethods, $version);
+
         $prefix = Defaults::$useUrlBasedVersioning ? "/v$version" : '';
         $paths = array();
         foreach ($map as $path => $data) {
@@ -272,7 +273,7 @@ class Explorer implements iProvideMultiVersionApi
         $r->responses = $this->responses($route);
         //TODO: avoid hard coding. Properly detect security
         if ($route['accessLevel']) {
-            $r->security = array(array('api_key' => array()));
+            $r->security = array(array('Bearer' => array()));
         }
         /*
         $this->setType(
@@ -401,7 +402,7 @@ class Explorer implements iProvideMultiVersionApi
         if (empty($info->children) || $info->type != 'array') {
             //primitives
             if ($info->default) {
-                $p->defaultValue = $info->default;
+                $p->default = $info->default;
             }
             if ($info->choice) {
                 $p->enum = $info->choice;
@@ -574,11 +575,12 @@ class Explorer implements iProvideMultiVersionApi
     private function securityDefinitions()
     {
         $r = new stdClass();
-        $r->api_key = (object)array(
+        $r->Bearer = (object)array(
             'type' => 'apiKey',
-            'name' => 'api_key',
-            'in' => 'query',
+            'name' => 'Authorization',
+            'in' => 'header',
         );
+
 
         return $r;
     }
