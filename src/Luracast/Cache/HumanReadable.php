@@ -11,7 +11,7 @@ use Luracast\Restler\Defaults;
 class HumanReadable extends Base
 {
     /**
-     * @var string path of the folder to hold cache files
+     * @var string|null path of the folder to hold cache files
      */
     public static ?string $cacheDirectory = null;
 
@@ -25,7 +25,7 @@ class HumanReadable extends Base
     /**
      * @inheritDoc
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         $file = $this->_file($key);
         if (!file_exists($file)) {
@@ -34,19 +34,17 @@ class HumanReadable extends Base
         $value = include($file);
         if (($expires = $value['expires'] ?? false)) {
             if (time() <= $expires) {
-                $this->$this->delete($key);
-            } else {
-                $value['data'] ?? $default;
+                $this->delete($key);
+                return $default;
             }
-        } else {
-            return $value['data'] ?? $default;
         }
+        return $value['data'] ?? $default;
     }
 
     /**
      * @inheritDoc
      */
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
     {
         $timestamp = $this->timestamp($ttl);
         $value = ['expires' => $timestamp, 'data' => $value];
@@ -91,7 +89,7 @@ class HumanReadable extends Base
     /**
      * @inheritDoc
      */
-    public function delete($key)
+    public function delete(string $key): bool
     {
         return @unlink($this->_file($key));
     }
@@ -99,31 +97,18 @@ class HumanReadable extends Base
     /**
      * @inheritDoc
      */
-    public function clear(): void
+    public function clear(): bool
     {
-        array_map('unlink', array_filter((array)glob(static::$cacheDirectory . '/*.php')));
+        $result = array_map('unlink', array_filter((array)glob(static::$cacheDirectory . '/*.php')));
+        return count(array_filter($result)) > 0;
     }
 
     /**
      * @inheritDoc
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return file_exists($this->_file($key));
-    }
-
-    private function timestamp($ttl)
-    {
-        if (is_null($ttl)) {
-            return false;
-        }
-        $now = (new DateTime('now'));
-        if ($ttl instanceof DateInterval) {
-            return $now->add($ttl)->getTimestamp();
-        } elseif (is_int($ttl)) {
-            return $now->getTimestamp() + $ttl;
-        }
-        return 0;
     }
 
     private function _file($name)

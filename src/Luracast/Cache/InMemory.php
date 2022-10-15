@@ -8,27 +8,39 @@ class InMemory extends Base
 {
     private array $store = [];
 
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
-        return $this->store[$key] ?? $default;
+        $stored = $this->store[$key] ?? false;
+        if (!$stored) return $default;
+        [$value, $expires] = $stored;
+        if (false === $expires) return $default;
+        if (time() <= $expires) {
+            $this->delete($key);
+            return $default;
+        }
+        return $value;
     }
 
-    public function set($key, $value, $ttl = null): void
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
     {
-        $this->store[$key] = $value;
+        $timestamp = $this->timestamp($ttl);
+        $this->store[$key] = [$value, $timestamp];
+        return true;
     }
 
-    public function delete($key): void
+    public function delete(string $key): bool
     {
         unset($this->store[$key]);
+        return true;
     }
 
-    public function clear(): void
+    public function clear(): bool
     {
         $this->store = [];
+        return true;
     }
 
-    public function has($key)
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->store);
     }
