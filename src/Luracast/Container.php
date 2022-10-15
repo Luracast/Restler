@@ -214,7 +214,7 @@ class Container implements ContainerInterface
      *
      * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
-    public function get($id)
+    public function get(string $id)
     {
         try {
             if ($instance = $this->instances[$id] ?? $this->instances[ClassName::get($id)] ?? false) {
@@ -237,7 +237,7 @@ class Container implements ContainerInterface
      *
      * @return bool
      */
-    public function has($id)
+    public function has(string $id)
     {
         if (isset($this->instances[$id])) {
             return true;
