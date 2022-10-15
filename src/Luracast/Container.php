@@ -237,7 +237,7 @@ class Container implements ContainerInterface
      *
      * @return bool
      */
-    public function has(string $id)
+    public function has(string $id): bool
     {
         if (isset($this->instances[$id])) {
             return true;
