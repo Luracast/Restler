@@ -28,7 +28,7 @@
     "illuminate/view": "^8 || ^9",
     "bshaffer/oauth2-server-php": "^1.11",
     "swoole/ide-helper": "^4.6",
-    "box/spout": "^3.3.0",
+    "avadim/fast-excel-writer": "^2.3",
     "bref/bref": "^1.2",
     "rize/uri-template": "^0.3.3",
     "webonyx/graphql-php": "^14.6",
