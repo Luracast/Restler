@@ -39,4 +39,13 @@ class Validation
         return $password;
     }
 
-} 
+    /**
+     * Accept array of anything
+     * @param array $array
+     * @return array
+     */
+    function postArray(array $array)
+    {
+        return $array;
+    }
+}

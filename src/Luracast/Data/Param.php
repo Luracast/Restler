@@ -198,7 +198,7 @@ class Param extends Type
         if (is_null($doc)) {
             try {
                 $doc = CommentParser::parse($function->getDocComment());
-            } catch (Exception $e) {
+            } catch (Exception) {
                 //ignore
             }
         }
@@ -247,7 +247,7 @@ class Param extends Type
         } elseif (empty($types)) {
             array_unshift($types, 'string');
         } elseif (in_array('array', $types) && empty($itemTypes)) {
-            array_unshift($itemTypes, 'string');
+            array_unshift($itemTypes, 'mixed');
         }
         if ($reflector && method_exists($reflector, 'hasType') && $reflector->hasType()) {
             $reflectionType = $reflector->getType();

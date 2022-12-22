@@ -147,3 +147,19 @@ Feature: Validation
     | "arul"     |
     | "12345678" |
     | "ONEtwo"   |
+
+  Scenario Outline: Array of anything
+    Given that I send {"array":[<value>]}
+    And the request is sent as JSON
+    When I request "tests/param/validation/array"
+    Then the response status code should be 200
+    And the response is JSON
+
+    Examples:
+      | value             |
+      | null              |
+      | "string"          |
+      | 123433            |
+      | false             |
+      | {"some":"object"} |
+      | ["array"]         |
