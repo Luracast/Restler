@@ -154,7 +154,9 @@ class Route extends ValueObject
     /**
      * @var array|mixed|string[]
      */
-    public $scope;
+    public array $scope;
+    public array $data;
+    public $view;
     /**
      * @var array
      */
