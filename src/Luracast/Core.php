@@ -140,7 +140,7 @@ abstract class Core
      * @return mixed
      * @throws ReflectionException
      */
-    public function call(Route $route)
+    public function call(Route $route): mixed
     {
         return $route->handle([$this, 'make']);
     }
@@ -258,7 +258,6 @@ abstract class Core
             return false;
         }
         if ($detail = Defaults::$propertyValidations[$property] ?? false) {
-            /** @noinspection PhpParamsInspection */
             $value = Validator::validate($value, Param::__set_state($detail));
         }
         $this->defaults->{$property} = $value;
@@ -284,7 +283,7 @@ abstract class Core
                 $format = $this->make($this->routes->requestFormatMap[$mime], null);
                 $format->mediaType($mime);
             } elseif (!$this->requestFormatDiffered && isset($this->routes->requestFormatOverridesMap[$mime])) {
-                //if our api method is not using an @format comment
+                //if our api method is not using a @format comment
                 //to point to this $mime, we need to throw 403 as in below
                 //but since we don't know that yet, we need to defer that here
                 $format = $this->make($this->routes->requestFormatOverridesMap[$mime], null);
@@ -501,15 +500,13 @@ abstract class Core
                 }
             }
             if (!$found) {
-                if (strpos($acceptCharset, '*') !== false) {
-                    //use default charset
-                } else {
+                if (strpos($acceptCharset, '*') === false) {
                     throw new HttpException(
                         406,
                         'Content negotiation failed. ' .
                         'Requested charset is not supported'
                     );
-                }
+                } // else use default charset
             }
         }
     }
@@ -529,11 +526,9 @@ abstract class Core
                 }
             }
             if (!$found) {
-                if (strpos($acceptLanguage, '*') !== false) {
-                    //use default language
-                } /** @noinspection PhpStatementHasEmptyBodyInspection */ else {
+                if (!str_contains($acceptLanguage, '*')) {
                     //ignore for now! //TODO: find best response for language negotiation failure
-                }
+                } // else use default language
             }
         }
     }
@@ -544,7 +539,7 @@ abstract class Core
      * @param bool $postAuth
      * @throws HttpException
      */
-    protected function filter(ServerRequestInterface $request, bool $postAuth = false)
+    protected function filter(ServerRequestInterface $request, bool $postAuth = false): void
     {
         $name = $postAuth ? 'postAuthFilterClasses' : 'preAuthFilterClasses';
         foreach ($this->_route->{$name} as $i => $filerClass) {
@@ -563,12 +558,12 @@ abstract class Core
      * @throws InvalidAuthCredentials
      * @throws Exception
      */
-    protected function authenticate(ServerRequestInterface $request)
+    protected function authenticate(ServerRequestInterface $request): void
     {
         $o = &$this->_route;
         $accessLevel = max($this->defaults->apiAccessLevel, $o->access);
         if ($accessLevel) {
-            //when none of the auth classes apply and it's not a hybrid api
+            //when none of the auth classes apply, and it's not a hybrid api
             if (!count($o->authClasses) && $accessLevel > 1) {
                 throw new HttpException(
                     403,
@@ -701,7 +696,7 @@ abstract class Core
             if ($e) {
                 $code = $e->getCode();
             } elseif (!$this->_responseCode && isset($route->status)) {
-                $code = $route->status;
+                $code = $this->_responseHeaders->getStatus() ?? $route->status ?? $code;
             }
         }
         $this->_responseCode = $code;
@@ -709,9 +704,11 @@ abstract class Core
         $charset = $this->responseFormat->charset()
             ?: $this->defaults->charset;
 
-        $this->_responseHeaders['Content-Type'] =
-            $this->responseFormat->mediaType() . "; charset=$charset";
-        if ($e && $e instanceof HttpException) {
+        if (!isset($this->_responseHeaders['Content-Type'])) {
+            $this->_responseHeaders['Content-Type'] =
+                $this->responseFormat->mediaType() . "; charset=$charset";
+        }
+        if ($e instanceof HttpException) {
             foreach ($e->getHeaders() as $key => $value) {
                 $this->_responseHeaders[$key] = $value;
             }
