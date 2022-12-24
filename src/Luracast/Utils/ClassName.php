@@ -32,7 +32,7 @@ class ClassName
      * @param bool $embed
      * @return string
      */
-    public static function build(string $name, string $namespace, int $version, bool $embed = false)
+    public static function build(string $name, string $namespace, int $version, bool $embed = false): string
     {
         $versionString = $version > 1 || $embed ? "v$version" : '';
         return $namespace . self::NAMESPACE_SEPARATOR . $versionString . self::NAMESPACE_SEPARATOR . $name;
@@ -42,15 +42,15 @@ class ClassName
      * Parse version information from class name
      * @param $class
      * @param string|null $option
-     * @return array
+     * @return array|null
      */
-    public static function parse($class, ?string $option = null)
+    public static function parse($class, ?string $option = null): ?array
     {
         $parts = explode(self::NAMESPACE_SEPARATOR, strrev($class), 3);
         $name = strrev($parts[0]);
         $count = count($parts);
         $version_found = false;
-        if ($count > 1 && substr($parts[1], -1) == 'v' &&
+        if ($count > 1 && str_ends_with($parts[1], 'v') &&
             is_numeric($version = substr($parts[1], 0, -1)) &&
             $version = intval(strrev($version)) > 0
         ) {
@@ -71,10 +71,10 @@ class ClassName
     /**
      * Extract base class name
      *
-     * @param $name
+     * @param string $name
      * @return mixed
      */
-    public static function short($name)
+    public static function short(string $name): string
     {
         $name = explode('\\', $name);
         return end($name);
@@ -87,7 +87,7 @@ class ClassName
      * @return string
      * @throws HttpException
      */
-    public static function get(string $abstract)
+    public static function get(string $abstract): string
     {
         $interface = Defaults::$aliases[$abstract] ?? $abstract;
         if (($class = Defaults::$implementations[$interface][0] ?? Defaults::$implementations[$interface] ?? false)
@@ -128,9 +128,9 @@ class ClassName
      *
      * @return string|bool returns the class name or false
      */
-    public static function resolve(string $name, array $scope)
+    public static function resolve(string $name, array $scope): bool|string
     {
-        if (empty($name) || !is_string($name)) {
+        if (empty($name)) {
             return false;
         }
 
