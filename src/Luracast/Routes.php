@@ -5,14 +5,16 @@ namespace Luracast\Restler;
 
 use ErrorException;
 use Exception;
-use Luracast\Restler\Contracts\{AccessControlInterface,
+use Luracast\Restler\Contracts\{
+    AccessControlInterface,
     AuthenticationInterface,
     FilterInterface,
     ProvidesMultiVersionApiInterface,
     RequestMediaTypeInterface,
     ResponseMediaTypeInterface,
     UserIdentificationInterface,
-    UsesAuthenticationInterface};
+    UsesAuthenticationInterface
+};
 use Luracast\Restler\Data\Param;
 use Luracast\Restler\Data\Route;
 use Luracast\Restler\Exceptions\HttpException;
@@ -20,6 +22,7 @@ use Luracast\Restler\MediaTypes\Json;
 use Luracast\Restler\Utils\{ClassName, CommentParser, Text, Type};
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
 use ReflectionClass;
 use ReflectionMethod;
 use Throwable;
@@ -337,6 +340,10 @@ class Routes
         }
     }
 
+    /**
+     * @throws InvalidArgumentException
+     * @throws HttpException
+     */
     private static function handleCache(bool $save = false): bool
     {
         if (!$save && !empty(static::$routes)) {
@@ -422,8 +429,8 @@ class Routes
                 } catch (Exception $e) {
                     throw new HttpException(
                         500,
-                        "Error while parsing comments of `{$className}::{$method->getName()}` method. " . $e->getMessage(
-                        )
+                        "Error while parsing comments of `$className::{$method->getName()}` method. "
+                        . $e->getMessage()
                     );
                 }
             } else {
@@ -440,10 +447,10 @@ class Routes
             $route->resource['path'] = $resourcePath;
             $allowAmbiguity = (isset($metadata['smart-auto-routing']) && $metadata['smart-auto-routing'] != 'true')
                 || !Defaults::$smartAutoRouting;
-
+            $lastPathParam = null;
             // if manual route
             if (preg_match_all(
-                '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/s',
+                '/@url\s+(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)[ \t]*\/?(\S*)/',
                 $doc,
                 $matches,
                 PREG_SET_ORDER
@@ -614,7 +621,10 @@ class Routes
         return $res;
     }
 
-    public static function addRoute(Route $route, int $version = 1)
+    /**
+     * @throws HttpException
+     */
+    public static function addRoute(Route $route, int $version = 1): void
     {
         if (empty($route->path)) {
             //compute from the human readable url to machine computable typed route path
@@ -629,7 +639,7 @@ class Routes
             );
         }
         //check for wildcard routes
-        if (substr($route->path, -1, 1) == '*') {
+        if (str_ends_with($route->path, '*')) {
             $path = rtrim($route->path, '/*');
             /** @var Route|false $existing */
             if (
@@ -637,13 +647,13 @@ class Routes
                 $existing = static::$routes["v$version"]['*'][$path][$route->httpMethod] ?? false
             ) {
                 throw new HttpException(
-                    500,
-                    'Ambigous route mappings detected. ' .
-                    $existing . ' is overwritten by ' . $route
+                      500,
+                      'Ambiguous route mappings detected. ' .
+                      $existing . ' is overwritten by ' . $route
                     , [
-                        'existing' => $existing,
-                        'overwriting' => $route
-                    ]
+                          'existing' => $existing,
+                          'overwriting' => $route
+                      ]
                 );
             }
             static::$routes["v$version"]['*'][$path][$route->httpMethod] = $route;
@@ -654,20 +664,20 @@ class Routes
                 $existing = static::$routes["v$version"][$route->path][$route->httpMethod] ?? false
             ) {
                 throw new HttpException(
-                    500,
-                    'Ambigous route mappings detected. ' .
-                    $existing . ' is overwritten by ' . $route
+                      500,
+                      'Ambiguous route mappings detected. ' .
+                      $existing . ' is overwritten by ' . $route
                     , [
-                        'existing' => $existing,
-                        'overwriting' => $route
-                    ]
+                          'existing' => $existing,
+                          'overwriting' => $route
+                      ]
                 );
             }
             static::$routes["v$version"][$route->path][$route->httpMethod] = $route;
             //create an alias with index if the base name is index
             if (
-                (is_array($route->action) && 'index' == $route->action[1]) ||
-                (is_string($route->action) && 'index' == $route->action)
+                (is_array($route->action) && 'index' === $route->action[1]) ||
+                 'index' === $route->action
             ) {
                 $path = ltrim("$route->path/index", '/');
                 /** @var Route|false $existing */
@@ -676,13 +686,13 @@ class Routes
                     $existing = static::$routes["v$version"][$path][$route->httpMethod] ?? false
                 ) {
                     throw new HttpException(
-                        500,
-                        'Ambiguous route mappings detected. ' .
-                        $existing . ' is overwritten by ' . $route
+                          500,
+                          'Ambiguous route mappings detected. ' .
+                          $existing . ' is overwritten by ' . $route
                         , [
-                            'existing' => $existing,
-                            'overwriting' => $route
-                        ]
+                              'existing' => $existing,
+                              'overwriting' => $route
+                          ]
                     );
                 }
                 static::$routes["v$version"][$path][$route->httpMethod] = $route;
@@ -695,17 +705,15 @@ class Routes
      * @param string|null $type
      * @return string
      */
-    public static function typeChar(string $type = null)
+    public static function typeChar(string $type = null): string
     {
         if (!$type) {
             return 's';
         }
-        switch ($type[0]) {
-            case 'i':
-            case 'f':
-                return 'n';
-        }
-        return 's';
+        return match ($type[0]) {
+            'i', 'f' => 'n',
+            default => 's',
+        };
     }
 
     /**
@@ -783,7 +791,7 @@ class Routes
         ?ServerRequestInterface $request = null,
         int $version = 1,
         array $data = []
-    ) {
+    ): Route {
         if (empty(static::$routes)) {
             throw new HttpException(
                 500,
@@ -818,7 +826,7 @@ class Routes
                     if ($route = $value[$httpMethod] ?? false) {
                         $later[$httpMethod] = $route;
                     }
-                } elseif (strpos($path, $key) === 0 && isset($value[$httpMethod])) {
+                } elseif (str_starts_with($path, $key) && isset($value[$httpMethod])) {
                     //path found, convert rest of the path to parameters
                     $path = substr($path, strlen($key) + 1);
                     /** @var Route $route */
@@ -830,7 +838,7 @@ class Routes
         }
         //================== dynamic routes =============================
         //add newline char if trailing slash is found
-        if (substr($path, -1) == '/') {
+        if (str_ends_with($path, '/')) {
             $path .= PHP_EOL;
         }
         //if double slash is found fill in newline char;
@@ -860,7 +868,7 @@ class Routes
 
                     /** @var Param $param */
                     $param = $params[$index];
-                    if ($k[0] == 's' || strpos($k, static::pathVarTypeOf($v)) === 0) {
+                    if ($k[0] == 's' || str_starts_with($k, static::pathVarTypeOf($v))) {
                         //remove the newlines
                         $data[$param->name] = trim($v, PHP_EOL);
                     } else {
@@ -979,7 +987,7 @@ class Routes
     }
 
     /**
-     * @param ServerRequestInterface|null $request
+     * @param ServerRequestInterface $request
      * @param callable $maker
      * @param array $excludedPaths
      * @param array $excludedHttpMethods
@@ -1110,7 +1118,7 @@ class Routes
      * @return array|bool|mixed
      * @throws Exception
      */
-    protected static function parseMagic(ReflectionClass $class, bool $forResponse = true)
+    protected static function parseMagic(ReflectionClass $class, bool $forResponse = true): mixed
     {
         if (!$c = CommentParser::parse($class->getDocComment())) {
             return false;
