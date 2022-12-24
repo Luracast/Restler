@@ -40,7 +40,7 @@ class CommentParser
     /**
      * Delimiter used to split the array data.
      *
-     * When the name portion is of the embedded data is blank auto detection
+     * When the name portion is of the embedded data is blank auto-detection
      * will be used and if URLEncodedFormat is detected as the data format
      * the character specified will be used as the delimiter to find split
      * array data.
@@ -96,7 +96,7 @@ class CommentParser
      *
      * @param string $comment PhpDoc style comment
      *
-     * @return string comments with out the tags
+     * @return string comments without the tags
      */
     public static function removeCommentTags(string $comment): string
     {
@@ -108,7 +108,7 @@ class CommentParser
      * Extracts description and long description, uses other methods to get
      * parameters.
      *
-     * @param $comment
+     * @param string $comment
      *
      * @return array
      * @throws Exception
@@ -155,7 +155,7 @@ class CommentParser
                         $description = $summary;
                         $summary[] = array_shift($description);
                         $mode = 1;
-                    } elseif (substr($line, -1) == '.') {
+                    } elseif (str_ends_with($line, '.')) {
                         $mode = 1;
                     }
                     break;
@@ -174,8 +174,8 @@ class CommentParser
         }
         $summary = implode(' ', $summary);
         $description = implode(' ', $description);
-        $summary = preg_replace('/\s+/msu', ' ', $summary);
-        $description = preg_replace('/\s+/msu', ' ', $description);
+        $summary = preg_replace('/\s+/mu', ' ', $summary);
+        $description = preg_replace('/\s+/mu', ' ', $description);
         list(
             $summary, $d1
             )
@@ -189,11 +189,11 @@ class CommentParser
         if (!empty($d2)) {
             $this->_data[self::$embeddedDataName] = $d2;
         }
-        foreach ($params as $key => $line) {
+        foreach ($params as  $line) {
             list(, $param, $value) = preg_split('/@|\s/', $line, 3)
             + ['', '', ''];
             list($value, $embedded) = $this->parseEmbeddedData($value);
-            $value = array_filter(preg_split('/\s+/msu', $value), 'strlen');
+            $value = array_filter(preg_split('/\s+/mu', $value), 'strlen');
             $this->parseParam($param, $value, $embedded);
         }
         return $this->_data;
@@ -216,7 +216,7 @@ class CommentParser
             $subject = str_replace($matches[0], '', $subject);
             $data['pattern'] = $matches[2];
         }
-        while (preg_match('/{@(\w+)\s?([^}]*)}/ms', $subject, $matches)) {
+        while (preg_match('/{@(\w+)\s?([^}]*)}/m', $subject, $matches)) {
             $subject = str_replace($matches[0], '', $subject);
             $key = $matches[1];
             $val = $matches[2];
@@ -258,7 +258,6 @@ class CommentParser
                         . " $str"
                     );
                 }
-                $data = $d + $data;
             } else {
                 parse_str($str, $d);
                 //clean up
@@ -280,7 +279,7 @@ class CommentParser
                             } else {
                                 $d[$key] =
                                     preg_replace(
-                                        '/\s+/msu',
+                                        '/\s+/mu',
                                         ' ',
                                         $d[$key]
                                     );
@@ -288,8 +287,8 @@ class CommentParser
                         }
                     }
                 }
-                $data = $d + $data;
             }
+            $data = $d + $data;
         }
         return [$subject, $data];
     }
@@ -444,7 +443,7 @@ class CommentParser
                     array_unshift($type, $default);
                 } else {
                     array_shift($type);
-                    array_push($type, 'null');
+                    $type[] = 'null';
                 }
             }
         }
@@ -493,11 +492,11 @@ class CommentParser
 
     private function formatThrows(array $value): array
     {
-        $exception = count($value) && !is_numeric($value)
+        $exception = count($value) && !is_numeric($value[0])
             ? array_shift($value)
             : 'Exception';
-        $code = count($value) && is_numeric($value)
-            ? (HttpException::$codes[array_shift($value)] ?? 500)
+        $code = count($value) && is_numeric($value[0])
+            ? (array_shift($value))
             : 500;
         $message = implode(' ', $value);
         if (empty($message)) {
