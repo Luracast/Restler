@@ -1,8 +1,10 @@
 <?php
+
 namespace Luracast\Restler;
 
 use Exception;
 use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Utils;
 use LogicalSteps\Async\Async;
 use Luracast\Restler\Contracts\ComposerInterface;
 use Luracast\Restler\Contracts\MiddlewareInterface;
@@ -16,7 +18,6 @@ use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
 use Throwable;
 
-use function GuzzleHttp\Psr7\stream_for;
 
 class Restler extends Core
 {
@@ -29,7 +30,7 @@ class Restler extends Core
         if (!$request) {
             $request = ServerRequest::fromGlobals();
             if (isset($GLOBALS['HTTP_RAW_REQUEST_DATA'])) {
-                $request = $request->withBody(stream_for($GLOBALS['HTTP_RAW_REQUEST_DATA']));
+                $request = $request->withBody(Utils::streamFor($GLOBALS['HTTP_RAW_REQUEST_DATA']));
             }
         } elseif (is_null($this->defaults->returnResponse)) {
             $this->defaults->returnResponse = true;
@@ -62,7 +63,38 @@ class Restler extends Core
         }
         $promise->then(
             function ($response): void {
-                die(Dump::response($response, true, false));
+                Dump::responseHeaders($response, false);
+                $data = $response->getBody();
+                if ($data instanceof StreamInterface) {
+                    $data = $data->detach();
+                }
+                if (is_resource($data)) {
+                    //rewind($data);
+                    set_time_limit(0);
+                    stream_set_read_buffer($data, Defaults::$responseBufferSize);
+                    if (isset($this->_responseHeaders['Content-Range'])) {
+                        list($start, $end, $total) = $this->_responseHeaders->getRange();
+                        fseek($data, $start);
+                        while ($end >= Defaults::$responseBufferSize) {
+                            print(fread($data, Defaults::$responseBufferSize));
+                            $end -= Defaults::$responseBufferSize;
+                        }
+                        if ($total) {
+                            print(fread($data, $end));
+                        }
+                        fclose($data);
+                        exit();
+                    } else {
+                        while (!feof($data)) {
+                            echo fread($data, Defaults::$responseBufferSize);
+                            flush();
+                        }
+                        fclose($data);
+                        die();
+                    }
+                } else {
+                    die($data);
+                }
             }
         );
         return $promise;
@@ -109,7 +141,7 @@ class Restler extends Core
 
         // invoke middleware request handler with next handler
         $handler = $middleware[$position];
-        if (is_object($handler) && $handler instanceof MiddlewareInterface) {
+        if ($handler instanceof MiddlewareInterface) {
             return $handler($request, $next, $this->container);
         }
         return $handler($request, $next);
@@ -160,6 +192,7 @@ class Restler extends Core
 
     protected function stream($data): ResponseInterface
     {
+        $this->composeHeaders($this->_route, $this->request->getHeaderLine('origin'));
         return $this->container->make(
             ResponseInterface::class,
             [$this->_responseCode, $this->_responseHeaders->getArrayCopy(), $data ?? '']
@@ -171,7 +204,7 @@ class Restler extends Core
      * @return PromiseInterface
      * @throws Exception
      */
-    public function _handle(ServerRequestInterface $request)
+    public function _handle(ServerRequestInterface $request): mixed
     {
         $this->container->instance(ServerRequestInterface::class, $request);
         $body = $request->getBody();
@@ -210,13 +243,12 @@ class Restler extends Core
             return Async::await($this->call($this->_route))->then(
                 function ($data) {
                     if ($data instanceof ResponseInterface) {
-                        $this->composeHeaders(null, $this->request->getHeaderLine('origin'));
+                        $this->composeHeaders($this->_route, $this->request->getHeaderLine('origin'));
                         $headers = $data->getHeaders() + $this->_responseHeaders->getArrayCopy();
-                        $data = $this->container->make(
+                        return $this->container->make(
                             ResponseInterface::class,
                             [$data->getStatusCode(), $headers, $data->getBody()]
                         );
-                        return $data;
                     }
                     if ($data instanceof StreamInterface) {
                         return $this->stream($data->detach());
