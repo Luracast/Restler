@@ -18,6 +18,7 @@
   "require-dev": {
     "ext-pdo": "*",
     "ext-intl": "*",
+    "ext-posix": "*",
     "behat/behat": "~3",
     "psy/psysh": "@stable",
     "react/event-loop": "@stable",

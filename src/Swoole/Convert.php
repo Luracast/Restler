@@ -5,6 +5,7 @@ namespace Swoole\Http;
 
 
 use GuzzleHttp\Psr7\ServerRequest;
+use Luracast\Restler\Defaults;
 use Luracast\Restler\Utils\ClassName;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,8 +13,6 @@ use Psr\Http\Message\StreamInterface;
 
 class Convert
 {
-    public static int $bufferSize = 8192;
-
     final public static function toPSR7(Request $request): ServerRequestInterface
     {
         $rawContent = (string)$request->rawcontent();
@@ -96,10 +95,9 @@ class Convert
         }
         if (is_resource($data)) {
             rewind($data);
-            stream_set_read_buffer($data, self::$bufferSize);
+            stream_set_read_buffer($data, Defaults::$responseBufferSize);
             while (!feof($data)) {
-                $buffer = fread($data, self::$bufferSize);
-                $response->write($buffer);
+                $response->write(fread($data, Defaults::$responseBufferSize));
             }
             fclose($data);
             $response->end('');

@@ -175,6 +175,8 @@ class Defaults
      */
     public static ?bool $returnResponse = null;
 
+    public static int $responseBufferSize = 8192;
+
     /**
      * @var bool enables CORS support
      */
@@ -310,7 +312,7 @@ class Defaults
      *
      * Interfaces and a list of known implementing classes
      *
-     * @var array {@type associative}
+     * @var array {@format associative}
      */
     public static array $implementations = [
         CacheInterface::class => [HumanReadable::class],
@@ -333,7 +335,7 @@ class Defaults
      *
      * Shortcut names for classes
      *
-     * @var array {@type associative}
+     * @var array {@format associative}
      */
     public static array $aliases = [
         // Core
