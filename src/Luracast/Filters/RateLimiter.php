@@ -20,7 +20,7 @@ class RateLimiter implements FilterInterface, SelectivePathsInterface, UsesAuthe
 {
     use SelectivePathsTrait;
 
-    /** @var string class that implements CacheInterface */
+    /** @var string|null class that implements CacheInterface */
     public static ?string $cacheClass = null;
 
     public static int $usagePerUnit = 1200;
@@ -40,27 +40,30 @@ class RateLimiter implements FilterInterface, SelectivePathsInterface, UsesAuthe
         'month' => 2_592_000, // 60*60*24*30 seconds
     ];
     /**
-     * @var CacheInterface
+     * @var CacheInterface|null
      */
-    protected $cache;
+    protected ?CacheInterface $cache;
     /**
      * @var bool current auth status
      */
     protected bool $authenticated = false;
     private StaticProperties $runtimeValues;
 
+    /**
+     * @throws HttpException
+     */
     public function __construct(StaticProperties $rateLimiter)
     {
         $this->runtimeValues = $rateLimiter;
         $class = ClassName::get($rateLimiter->cacheClass ?? CacheInterface::class);
-        /** @var CacheInterface cache */
+        /** @var CacheInterface $class cache */
         $this->cache = new $class();
     }
 
     /**
      * @param string $unit
      * @param int $usagePerUnit
-     * @param int|null $authenticatedUsagePerUnit set it to false to give unlimited access
+     * @param int|null $authenticatedUsagePerUnit set it as -1 to give unlimited access
      *
      * @return void
      * @throws InvalidArgumentException
