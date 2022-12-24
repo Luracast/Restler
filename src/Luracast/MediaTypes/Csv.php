@@ -2,12 +2,13 @@
 
 namespace Luracast\Restler\MediaTypes;
 
-use Luracast\Restler\Contracts\ResponseMediaTypeInterface;
+use Generator;
+use Luracast\Restler\Contracts\ChunkedResponseMediaTypeInterface;
 use Luracast\Restler\Contracts\StreamingRequestMediaTypeInterface;
 use Luracast\Restler\Exceptions\HttpException;
 use Luracast\Restler\ResponseHeaders;
 
-class Csv extends MediaType implements StreamingRequestMediaTypeInterface, ResponseMediaTypeInterface
+class Csv extends MediaType implements StreamingRequestMediaTypeInterface, ChunkedResponseMediaTypeInterface
 {
     public const MIME = 'text/csv';
     public const EXTENSION = 'csv';
@@ -44,12 +45,10 @@ class Csv extends MediaType implements StreamingRequestMediaTypeInterface, Respo
             $decoded [] = $row;
         }
 
-        $decoded = $this->convert->toArray($decoded);
-
-        return $decoded;
+        return $this->convert->toArray($decoded);
     }
 
-    protected static function getRow($data, $keys = false)
+    protected static function getRow($data, $keys = false): bool|array
     {
         if (empty($data)) {
             return false;
@@ -86,7 +85,7 @@ class Csv extends MediaType implements StreamingRequestMediaTypeInterface, Respo
     /**
      * @param $resource resource for a data stream
      *
-     * @return array {@type associative}
+     * @return array {@format associative}
      */
     public function streamDecode($resource): array
     {
@@ -113,20 +112,53 @@ class Csv extends MediaType implements StreamingRequestMediaTypeInterface, Respo
      */
     public function encode($data, ResponseHeaders $responseHeaders, bool $humanReadable = false)
     {
-        $data = $this->convert->toArray($data);
-        if (is_array($data) && array_values($data) == $data) {
-            $this->stream = fopen('php://temp', 'r+');
-            //if indexed array
+        if (is_array($data) && array_values($data) == $data) { //if indexed array
             $row = reset($data);
+            $row = $this->convert->toArray($row);
+            $this->stream = fopen('php://temp', 'r+');
             if (array_values($row) != $row) {
                 $this->putRow(array_keys($row));
             }
             foreach ($data as $row) {
                 $this->putRow(array_values($row));
             }
+            fputs($this->stream, PHP_EOL);
             return $this->stream;
         }
-        throw new HttpException(500, 'Unsupported data for ' . strtoupper(static::EXTENSION) . ' MediaType');
+        throw new HttpException(
+            500, 'Unsupported data for '
+               . strtoupper(static::EXTENSION) . ' MediaType'
+        );
+    }
+
+    /**
+     * @throws HttpException
+     */
+    public function encodeChunks(Generator $data, ResponseHeaders $responseHeaders, bool $humanReadable = false)
+    {
+        try {
+            $first = true;
+            foreach ($data as $chunk) {
+                $chunk = $this->convert->toArray($chunk);
+                foreach ($chunk as $row) {
+                    if ($first) {
+                        $first = false;
+                        $this->stream = fopen('php://temp', 'r+');
+                        if (array_values($row) != $row) {
+                            $this->putRow(array_keys($row));
+                        }
+                    }
+                    $this->putRow(array_values($row));
+                }
+            }
+            fputs($this->stream, PHP_EOL);
+            return $this->stream;
+        } catch (\Exception $e) {
+            throw new HttpException(
+                500, 'Unsupported data for '
+                   . strtoupper(static::EXTENSION) . ' MediaType. ' . $e->getMessage()
+            );
+        }
     }
 
     protected function putRow(array $data): void
