@@ -6,7 +6,7 @@ namespace Luracast\Restler\OpenApi3\Security;
 
 class Implicit extends OAuth2Flow
 {
-    private string $authorizationUrl;
+    protected string $authorizationUrl;
 
     /**
      * Implicit OAuth2 Flow.
@@ -18,6 +18,6 @@ class Implicit extends OAuth2Flow
     {
         $this->authorizationUrl = $authorizationUrl;
         $this->refreshUrl = $refreshUrl;
-        $this->scopes = $scopes;
+        $this->scopes = (object)$scopes;
     }
 }

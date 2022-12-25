@@ -31,6 +31,7 @@ Defaults::$useUrlBasedVersioning = true;
 Defaults::$apiVendor = "SomeVendor";
 Defaults::$useVendorMIMEVersioning = true;
 Defaults::$implementations[HttpClientInterface::class] = [SimpleHttpClient::class];
+Defaults::$crossOriginResourceSharing = true;
 Routes::setApiVersion(2);
 Html::$template = 'blade'; //'handlebar'; //'twig'; //'php';
 Restler::$middleware[] = new SessionMiddleware();

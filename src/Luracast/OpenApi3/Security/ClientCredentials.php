@@ -16,8 +16,8 @@ class ClientCredentials extends OAuth2Flow
      */
     public function __construct(string $tokenUrl, string $refreshUrl, array $scopes)
     {
-        $this->refreshUrl = $refreshUrl;
-        $this->scopes = $scopes;
         $this->tokenUrl = $tokenUrl;
+        $this->refreshUrl = $refreshUrl;
+        $this->scopes = (object)$scopes;
     }
 }

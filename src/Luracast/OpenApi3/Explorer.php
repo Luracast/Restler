@@ -21,6 +21,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use ReflectionClass;
+use ReflectionException;
 use stdClass;
 
 class Explorer implements ProvidesMultiVersionApiInterface
@@ -42,7 +43,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
         'deepLinking' => false,
         'displayOperationId' => false,
         'syntaxHighlight' => [
-            'theme' => 'tomorrow-night', //agate or arta or monokai or nord" or obsidian or tomorrow-night
+            'theme' => 'tomorrow-night', //agate or arta or monokai or nord or obsidian or tomorrow-night
         ],
         'filter' => true, //null or a string to filter by
         'validatorUrl' => null //disables validation change to "https://validator.swagger.io/validator" to enable
@@ -97,6 +98,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
         'datetime' => ['string', 'date-time'],
         'time' => 'string',
         'timestamp' => 'string',
+        'void' => 'string',
     ];
     protected static array $prefixes = [
         'get' => 'retrieve',
@@ -107,14 +109,14 @@ class Explorer implements ProvidesMultiVersionApiInterface
         'delete' => 'remove',
     ];
 
-    protected static $tagger = TagByBasePath::class;
+    protected static string $tagger = TagByBasePath::class;
 
     protected array $tags = [];
     protected array $models = [];
     protected array $requestBodies = [];
-    private \Psr\Http\Message\ServerRequestInterface $request;
-    private \Luracast\Restler\Core $restler;
-    private \Luracast\Restler\Data\Route $route;
+    private ServerRequestInterface $request;
+    private Core $restler;
+    private Route $route;
 
     /**
      * @var AuthenticationInterface[]
@@ -173,13 +175,15 @@ class Explorer implements ProvidesMultiVersionApiInterface
         return PassThrough::file($file, $this->request->getHeaderLine('If-Modified-Since'));
     }
 
-    public function config()
+    public function config(): object
     {
         return (object)static::$uiConfig;
     }
 
     /**
      * @return object
+     * @throws HttpException
+     * @throws ReflectionException
      */
     public function docs(): stdClass
     {
@@ -198,7 +202,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
             ) {
                 $paths = $this->paths($version);
                 foreach ($paths as $path => $value) {
-                    $s->paths[1 === $version ? $path : "/v$version{$path}"] = $value;
+                    $s->paths[1 === $version ? $path : "/v$version$path"] = $value;
                 }
             }
         } else {
@@ -244,6 +248,8 @@ class Explorer implements ProvidesMultiVersionApiInterface
     /**
      * @param int $version
      * @return array
+     * @throws HttpException
+     * @throws ReflectionException
      */
     private function paths(int $version = 1): array
     {
@@ -259,7 +265,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
             $version
         );
         $paths = [];
-        foreach ($map as $path => $data) {
+        foreach ($map as $data) {
             foreach ($data as $item) {
                 /** @var Route $route */
                 $route = $item['route'];
@@ -276,7 +282,11 @@ class Explorer implements ProvidesMultiVersionApiInterface
         return $paths;
     }
 
-    private function operation(Route $route, int $version): stdClass
+    /**
+     * @throws ReflectionException
+     * @throws HttpException
+     */
+    private function operation(Route $route, int $version): object
     {
         $r = new stdClass();
         $r->operationId = $this->operationId($route, $version);
@@ -368,7 +378,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
         return [$r, $requestBody];
     }
 
-    private function parameter(Param $param, $description = '')
+    private function parameter(Param $param, $description = ''): object
     {
         $p = (object)[
             'name' => $param->name ?? '',
@@ -484,7 +494,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
         }
     }
 
-    private function requestBody(Route $route, Param $param, $description = '')
+    private function requestBody(Route $route, Param $param, $description = ''): object
     {
         $p = $this->parameter($param, $description);
         $content = [];
@@ -492,7 +502,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
             $content[$mime] = ['schema' => $p->schema];
         }
         $this->requestBodies[$param->type] = compact('content');
-        return (object)['$ref' => "#/components/requestBodies/{$param->type}"];
+        return (object)['$ref' => "#/components/requestBodies/$param->type"];
     }
 
     private function modelName(Route $route, int $version): string
@@ -503,6 +513,8 @@ class Explorer implements ProvidesMultiVersionApiInterface
     /**
      * @param Route $route
      * @return array[]
+     * @throws HttpException
+     * @throws ReflectionException
      */
     private function responses(Route $route): array
     {
@@ -541,6 +553,10 @@ class Explorer implements ProvidesMultiVersionApiInterface
         return $r;
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws HttpException
+     */
     private function response($code, string $message, array $mimes): array
     {
         static $composer = null;
@@ -558,7 +574,7 @@ class Explorer implements ProvidesMultiVersionApiInterface
         return ['description' => $message, 'content' => $content];
     }
 
-    private function components()
+    private function components(): object
     {
         $c = (object)[
             'schemas' => new stdClass(),
@@ -571,13 +587,13 @@ class Explorer implements ProvidesMultiVersionApiInterface
         return $c;
     }
 
-    private function securitySchemes()
+    private function securitySchemes(): object
     {
         $schemes = [];
         foreach ($this->authClasses as $class) {
             if (TypeUtil::matches($class, ExplorableAuthenticationInterface::class)) {
                 $schemes[ClassName::short($class)] = (object)$class::scheme()->toArray(
-                    $this->restler->baseUrl->getPath() . '/'
+                    $this->restler->baseUrl->getPath()
                 );
             }
         }

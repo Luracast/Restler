@@ -19,8 +19,8 @@ class AuthorizationCode extends OAuth2Flow
     public function __construct(string $authorizationUrl, string $tokenUrl, string $refreshUrl, array $scopes)
     {
         $this->authorizationUrl = $authorizationUrl;
-        $this->refreshUrl = $refreshUrl;
-        $this->scopes = $scopes;
         $this->tokenUrl = $tokenUrl;
+        $this->refreshUrl = $refreshUrl;
+        $this->scopes = (object)$scopes;
     }
 }
