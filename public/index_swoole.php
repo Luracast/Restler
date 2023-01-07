@@ -9,13 +9,13 @@ use Swoole\Http\Request;
 use Swoole\Http\Response;
 use Swoole\Http\Server;
 
-require __DIR__ . '/../api/bootstrap.php';
+$port = require __DIR__ . '/../api/bootstrap.php';
 
 Swoole\Runtime::enableCoroutine(true, SWOOLE_HOOK_ALL );
 
 Defaults::$implementations[HttpClientInterface::class] = [SwooleHttpClient::class];
 
-$http = new Server("0.0.0.0", 8080);
+$http = new Server("0.0.0.0", $port);
 
 $http->set([
     C::OPTION_WORKER_NUM => 1, // The number of worker processes
@@ -34,8 +34,8 @@ $http->set([
     */
 ]);
 
-$http->on('start', function ($server) {
-    echo "Swoole http server is started at http://127.0.0.1:8080\n";
+$http->on('start', function ($server) use ($port) {
+    echo "Swoole http server is started at http://127.0.0.1:$port\n";
 });
 
 $http->on('request', function (Request $req, Response $res) {

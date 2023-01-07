@@ -118,6 +118,7 @@ try {
         ]
     );
     require __DIR__ . '/examples/_018_graphql/routes.php';
+    return 8080;
 
 } catch (Throwable $t) {
     die(json_encode((new ErrorResponse($t, true))->jsonSerialize(), JSON_PRETTY_PRINT));
