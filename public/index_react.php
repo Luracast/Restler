@@ -5,6 +5,7 @@ declare(strict_types=1);
 $port = require __DIR__ . '/../api/bootstrap.php';
 
 use Luracast\Restler\Defaults;
+use Luracast\Restler\Middleware\ServerNameFix;
 use Luracast\Restler\Middleware\StaticFiles;
 use Luracast\Restler\Restler;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,6 +13,7 @@ use React\Http\Server;
 
 //serve static files
 Restler::$middleware[] = new StaticFiles(BASE . '/public');
+Restler::$middleware[] = new ServerNameFix();
 
 $loop = React\EventLoop\Factory::create();
 
