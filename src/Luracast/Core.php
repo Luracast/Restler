@@ -428,13 +428,13 @@ abstract class Core
             // client accepts all media types.
             $acceptHeader = '*/*';
         }
-        if (strpos($acceptHeader, '*') !== false) {
-            if (false !== strpos($acceptHeader, 'application/*')) {
-                $format = $this->make(Json::class, null);
-            } elseif (false !== strpos($acceptHeader, 'text/*')) {
-                $format = $this->make(Xml::class, null);
-            } elseif (false !== strpos($acceptHeader, '*/*')) {
-                $format = $this->make($map['default'], null);
+        if (str_contains($acceptHeader, '*')) {
+            if (str_contains($acceptHeader, 'application/*')) {
+                $format = $this->make(Json::class);
+            } elseif (str_contains($acceptHeader, 'text/*')) {
+                $format = $this->make(Xml::class);
+            } elseif (str_contains($acceptHeader, '*/*')) {
+                $format = $this->make($map['default']);
             }
         }
         if (empty($format)) {
@@ -525,11 +525,13 @@ abstract class Core
                     }
                 }
             }
+            /*
             if (!$found) {
                 if (!str_contains($acceptLanguage, '*')) {
                     //ignore for now! //TODO: find best response for language negotiation failure
                 } // else use default language
             }
+            */
         }
     }
 
