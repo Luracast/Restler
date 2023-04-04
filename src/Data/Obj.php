@@ -95,7 +95,10 @@ class Obj
                 return $array;
             }
         }
-        if (is_array($object) || is_object($object)) {
+        if (is_object($object)) {
+            $object = (array)$object;
+        }
+        if (is_array($object)) {
             $count = 0;
             $array = array();
             foreach ($object as $key => $value) {
