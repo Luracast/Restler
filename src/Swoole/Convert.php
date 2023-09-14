@@ -123,7 +123,7 @@ class Convert
             rewind($data);
             stream_set_read_buffer($data, Defaults::$responseBufferSize);
             while (!feof($data)) {
-                $response->write(fread($data, Defaults::$responseBufferSize));
+                @$response->write(fread($data, Defaults::$responseBufferSize));
             }
             fclose($data);
             $response->end('');
