@@ -57,8 +57,8 @@ class Storage
         class_exists(React\Promise\RejectedPromise::class);
         class_exists(ClassName::get('HttpClientInterface'));
         $assets = [
-            'src/OpenApi3/client/index.html',
-            'src/OpenApi3/client/oauth2-redirect.html',
+            'src/Luracast/OpenApi3/client/index.html',
+            'src/Luracast/OpenApi3/client/oauth2-redirect.html',
         ];
         $files = get_included_files();
         $targets = [];
@@ -98,7 +98,7 @@ class Storage
             return exec($command);
         };
         $pack('views');
-        $pack('src/views');
+        $pack('src/Luracast/views');
         $pack('public');
         if (file_exists($file = Defaults::$cacheDirectory . '/package/bootstrap')) {
             exec('chmod +x "' . $file . '"');
