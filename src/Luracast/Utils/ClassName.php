@@ -13,15 +13,19 @@ class ClassName
     public const NAMESPACE_SEPARATOR = '\\';
 
     /**
-     * @var array class => [ package, used by class ]
+     * @var array class => [ package, used by class ] or class => error message to display
      */
     public static array $dependencies = [
+        // missing packages
         'ZendAmf\Parser\Amf3\Deserializer' => ['zendframework/zendamf', Amf::class],
         'CFPropertyList\CFPropertyList' => ['rodneyrehm/plist', Plist::class],
         'Symfony\Component\Yaml\Yaml' => ['symfony/yaml', Yaml::class],
         'Twig_Loader_Filesystem' => ['twig/twig:^2.0', Html::class],
         'Mustache_Loader_FilesystemLoader' => ['mustache/mustache', Html::class],
         'Illuminate\View\Engines\EngineResolver' => ['illuminate/view', Html::class],
+        // custom solutions
+        'SessionHandlerInterface' => Html::class . ' requires session middleware. Add it using the following code. '
+            . 'Luracast\Restler\Restler::$middleware[] = new Luracast\Restler\Middleware\SessionMiddleware();'
     ];
 
     /**
@@ -109,8 +113,9 @@ class ClassName
             return $interface;
         }
         if ($info = static::$dependencies[$interface] ?? false) {
-            $message = $info[1] . ' has external dependency. Please run `composer require ' .
-                $info[0] . '` from the project root. Read https://getcomposer.org for more info';
+            $message = is_array($info) ? $info[1] . ' has an external dependency. Please run `composer require ' .
+                $info[0] . '` from the project root. Read https://getcomposer.org for more info'
+                : $info;
         } else {
             $message = 'Could not find a class for ' . $interface;
         }
