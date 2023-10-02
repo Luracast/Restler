@@ -13,6 +13,7 @@ use Luracast\Restler\MediaTypes\Html;
 use Luracast\Restler\MediaTypes\Json;
 use Luracast\Restler\MediaTypes\Upload;
 use Luracast\Restler\MediaTypes\Xml;
+use Luracast\Restler\Middleware\ServerNameFix;
 use Luracast\Restler\Middleware\SessionMiddleware;
 use Luracast\Restler\OpenApi3\Explorer;
 use Luracast\Restler\Restler;
@@ -27,15 +28,16 @@ include BASE . "/vendor/autoload.php";
 
 Defaults::$cacheDirectory = BASE . '/api/common/store';
 Defaults::$implementations[DataProviderInterface::class] = [SerializedFileDataProvider::class];
+Defaults::$implementations[HttpClientInterface::class] = [SimpleHttpClient::class];
 Defaults::$useUrlBasedVersioning = true;
 Defaults::$apiVendor = "SomeVendor";
 Defaults::$useVendorMIMEVersioning = true;
-Defaults::$implementations[HttpClientInterface::class] = [SimpleHttpClient::class];
 Defaults::$crossOriginResourceSharing = true;
 Routes::setApiVersion(2);
 Html::$template = 'blade'; //'handlebar'; //'twig'; //'php';
-Restler::$middleware[] = new SessionMiddleware();
-
+//Restler::$middleware[] = new SessionMiddleware();
+//Restler::$middleware[] = new ServerNameFix();
+Luracast\Restler\Restler::$middleware[] = new Luracast\Restler\Middleware\SessionMiddleware();
 try {
     Defaults::$productionMode = false;
     //
