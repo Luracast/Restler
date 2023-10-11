@@ -18,3 +18,4 @@ phpstan
 rector
 yaml-lint
 phpstan.phar
+/api/common/store/
