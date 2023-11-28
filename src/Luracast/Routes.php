@@ -539,7 +539,8 @@ class Routes
             define('T_NAME_QUALIFIED', 314);
         }
         $tokens = token_get_all($code);
-        $namespace = $class = $classLevel = $level = null;
+        $namespace = $class = $classLevel = null;
+        $level = 0;
         $res = $uses = [];
         while ($token = current($tokens)) {
             next($tokens);
