@@ -90,17 +90,19 @@ class Scope
 
     public static function get($name)
     {
+        $i = null;
         $r = null;
         $initialized = false;
         $properties = array();
         if (array_key_exists($name, static::$instances)) {
             $initialized = true;
-            $r = static::$instances[$name]->instance;
+            $r = static::$instances[$name];
+            $i = $r->instance;
         } elseif (!empty(static::$registry[$name])) {
             $function = static::$registry[$name]->function;
-            $r = $function();
+            $i = $function();
             if (static::$registry[$name]->singleton) {
-                static::$instances[$name] = (object)array('instance' => $r);
+               $r = static::$instances[$name] = (object)array('instance' => $i);
             }
         } elseif (is_callable(static::$resolver) && false === stristr($name, 'Luracast\Restler')) {
             $fullName = $name;
@@ -109,9 +111,9 @@ class Scope
             }
             /** @var Callable $function */
             $function = static::$resolver;
-            $r = $function($fullName);
-            static::$instances[$name] = (object)array('instance' => $r);
-            static::$instances[$name]->initPending = true;
+            $i = $function($fullName);
+            $r = static::$instances[$name] = (object)array('instance' => $i);
+            $r->initPending = true;
         } else {
             $fullName = $name;
             if (isset(static::$classAliases[$name])) {
@@ -119,12 +121,15 @@ class Scope
             }
             if (class_exists($fullName)) {
                 $shortName = Util::getShortName($name);
-                $r = new $fullName();
-                static::$instances[$name] = (object)array('instance' => $r);
+                $i = new $fullName();
+                $r = static::$instances[$name] = (object)array('instance' => $i);
                 if ($name != 'Restler') {
-                    /** @var Restler restler */
-                    $r->restler = static::get('Restler');
-                    $m = Util::nestedValue($r->restler, 'apiMethodInfo', 'metadata');
+                    $restler = static::get('Restler');
+                    static::$instances[$name]->restler = $restler;
+                    if(property_exists($i, 'restler')) {
+                        $i->restler = $restler;
+                    }
+                    $m = Util::nestedValue($restler, 'apiMethodInfo', 'metadata');
                     if ($m) {
                         $properties = Util::nestedValue(
                             $m, 'class', $fullName,
@@ -134,21 +139,21 @@ class Scope
                             CommentParser::$embeddedDataName
                         ) ?: array());
                     } else {
-                        static::$instances[$name]->initPending = true;
+                       $r->initPending = true;
                     }
                 }
             }
         }
         if (
-            $r instanceof iUseAuthentication &&
+            $i instanceof iUseAuthentication &&
             $r->restler && $r->restler->_authVerified &&
             !isset(static::$instances[$name]->authVerified)
         ) {
-            static::$instances[$name]->authVerified = true;
-            $r->__setAuthenticationStatus($r->restler->_authenticated);
+            $r->authVerified = true;
+            $i->__setAuthenticationStatus($r->restler->_authenticated);
         }
         if (isset(static::$instances[$name]->initPending)) {
-            $m = Util::nestedValue($r->restler, 'apiMethodInfo', 'metadata');
+            $m = Util::nestedValue($i->restler, 'apiMethodInfo', 'metadata');
             $fullName = $name;
             if (class_exists($name)) {
                 $shortName = Util::getShortName($name);
@@ -170,20 +175,20 @@ class Scope
                 $initialized = false;
             }
         }
-        if (!$initialized && is_object($r)) {
+        if (!$initialized && is_object($i)) {
             $properties += static::$properties;
-            $objectVars = get_object_vars($r);
-            $className = get_class($r);
+            $objectVars = get_object_vars($i);
+            $className = get_class($i);
             foreach ($properties as $property => $value) {
                 if (property_exists($className, $property)) {
                     //if not a static property
                     array_key_exists($property, $objectVars)
-                        ? $r->{$property} = $value
-                        : $r::$$property = $value;
+                        ? $i->{$property} = $value
+                        : $i::$$property = $value;
                 }
             }
         }
-        return $r;
+        return $i;
     }
 
     /**
