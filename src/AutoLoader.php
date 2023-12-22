@@ -290,10 +290,12 @@ class AutoLoader
         if (is_array($loader)
             && is_callable($loader)) {
             $b = new $loader[0];
-            if (false !== $file = $b::$loader[1]($className)
-                    && $this->exists($className, $b::$loader[1])) {
-                return $file;
-            }
+			if(property_exists($b, $loader[1])) {
+                if (false !== $file = $b::$loader[1]($className)
+                        && $this->exists($className, $b::$loader[1])) {
+                    return $file;
+                }
+			}
         } elseif (is_callable($loader)
             && false !== $file = $loader($className)
                 && $this->exists($className, $loader)) {
