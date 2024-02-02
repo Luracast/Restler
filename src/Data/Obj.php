@@ -86,9 +86,9 @@ class Obj
                     $value = self::toArray($object->{$key},
                         $forceObjectTypeWhenEmpty);
                     if (self::$stringEncoderFunction && is_string($value)) {
-                        $value = self::$stringEncoderFunction ($value);
+                        $value = self::$stringEncoderFunction($value);
                     } elseif (self::$numberEncoderFunction && is_numeric($value)) {
-                        $value = self::$numberEncoderFunction ($value);
+                        $value = self::$numberEncoderFunction($value);
                     }
                     $array [$key] = $value;
                 }
@@ -124,9 +124,9 @@ class Obj
                 }
                 $value = self::toArray($value, $forceObjectTypeWhenEmpty);
                 if (self::$stringEncoderFunction && is_string($value)) {
-                    $value = self::$encoderFunctionName ($value);
+                    $value = self::$stringEncoderFunction($value);
                 } elseif (self::$numberEncoderFunction && is_numeric($value)) {
-                    $value = self::$numberEncoderFunction ($value);
+                    $value = self::$numberEncoderFunction($value);
                 }
                 $array [$key] = $value;
                 $count++;
@@ -139,7 +139,7 @@ class Obj
 
     public function __get($name)
     {
-        isset(self::$fix[$name]) ? self::$fix[$name] : null;
+        return isset(self::$fix[$name]) ? self::$fix[$name] : null;
     }
 
     public function __set($name, $function)
