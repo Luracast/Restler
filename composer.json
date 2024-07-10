@@ -22,7 +22,7 @@
     "behat/behat": "~3",
     "psy/psysh": "@stable",
     "react/event-loop": "@stable",
-    "react/http": "^1.9",
+    "react/http": "@stable",
     "workerman/workerman": "^4",
     "twig/twig": "^3",
     "mustache/mustache": "^2",
