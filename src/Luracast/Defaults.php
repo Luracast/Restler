@@ -184,6 +184,9 @@ class Defaults
     public static string $accessControlAllowOrigin = '*';
     public static string $accessControlAllowMethods =
         'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD';
+    public static string $accessControlExposeHeaders = 'X-Total-Count, Content-Range';
+    public static bool $accessControlAllowCredentials = true;
+    public static int $accessControlMaxAge = 86400;
 
     // ==================================================================
     //

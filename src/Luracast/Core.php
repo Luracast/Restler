@@ -13,7 +13,8 @@ use Luracast\Restler\Contracts\{AuthenticationInterface,
     SelectivePathsInterface,
     UserIdentificationInterface,
     UsesAuthenticationInterface,
-    ValidationInterface};
+    ValidationInterface
+};
 use Luracast\Restler\Data\{Param, Route};
 use Luracast\Restler\Exceptions\{HttpException, InvalidAuthCredentials};
 use Luracast\Restler\MediaTypes\{Json, UrlEncoded, Xml};
@@ -468,7 +469,8 @@ abstract class Core
         string $accessControlRequestMethod = '',
         string $accessControlRequestHeaders = '',
         string $origin = ''
-    ): void {
+    ): void
+    {
         if (!$this->defaults->crossOriginResourceSharing || $requestMethod != 'OPTIONS') {
             return;
         }
@@ -478,7 +480,7 @@ abstract class Core
         if (!empty($accessControlRequestHeaders)) {
             $this->_responseHeaders['Access-Control-Allow-Headers'] = $accessControlRequestHeaders;
         }
-        $e = new HttpException(200);
+        $e = new HttpException(201);
         $e->emptyMessageBody = true;
         throw $e;
     }
@@ -676,12 +678,21 @@ abstract class Core
                     = $this->defaults->accessControlAllowOrigin == '*'
                     ? $origin
                     : $this->defaults->accessControlAllowOrigin;
-                $this->_responseHeaders['Access-Control-Allow-Credentials'] = 'true';
-                $this->_responseHeaders['Access-Control-Max-Age'] = 86400;
+                if ($this->defaults->accessControlAllowCredentials) {
+                    $this->_responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+                }
+                if ($this->defaults->accessControlExposeHeaders) {
+                    $this->_responseHeaders['Access-Control-Expose-Headers'] = $this->defaults->accessControlExposeHeaders;
+                }
+                if($this->defaults->accessControlMaxAge) {
+                    $this->_responseHeaders['Access-Control-Max-Age'] = 86400;
+                }
             } elseif ($this->_requestMethod == 'OPTIONS') {
                 $this->_responseHeaders['Access-Control-Allow-Origin']
                     = $this->defaults->accessControlAllowOrigin;
-                $this->_responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+                if ($this->defaults->accessControlAllowCredentials) {
+                    $this->_responseHeaders['Access-Control-Allow-Credentials'] = 'true';
+                }
             }
         }
         $this->_responseHeaders['Content-Language'] = $this->defaults->language;
