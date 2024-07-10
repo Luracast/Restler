@@ -44,16 +44,20 @@ class Client
         $this->html = $html;
         $session->start();
         $this->html->data['session_id'] = $session->getId();
+        $path = rtrim($restler->baseUrl, '/') . '/' . $restler->path;
+        $base = explode('_014_oauth2_client', $path)[0];
+        static::$replyBackUrl = $base . '_014_oauth2_client/authorized';
         if (!static::$serverUrl) {
-            $path = rtrim($restler->baseUrl, '/') . '/' . $restler->path;
-            $base = explode('_014_oauth2_client', $path)[0];
-            static::$serverUrl =
-                $base . '_015_oauth2_server';
-            static::$replyBackUrl = $base . '_014_oauth2_client/authorized';
-            static::$authorizeRoute = static::fullURL(static::$authorizeRoute);
-            static::$tokenRoute = static::fullURL(static::$tokenRoute);
-            static::$resourceRoute = static::fullURL(static::$resourceRoute);
+            static::setServerUrl($base . '_015_oauth2_server');
         }
+    }
+
+    public static function setServerUrl($url): void
+    {
+        static::$serverUrl = $url;
+        static::$authorizeRoute = static::fullURL(static::$authorizeRoute);
+        static::$tokenRoute = static::fullURL(static::$tokenRoute);
+        static::$resourceRoute = static::fullURL(static::$resourceRoute);
     }
 
     /**
@@ -62,7 +66,7 @@ class Client
      * @param string $path full url or relative path
      * @return string proper url
      */
-    private function fullURL($path)
+    private static function fullURL(string $path): string
     {
         return 0 === strpos($path, 'http')
             ? $path
@@ -114,7 +118,8 @@ class Client
         $code = null,
         $error_description = null,
         $error_uri = null
-    ) {
+    )
+    {
         // the user denied the authorization request
         if (!$code) {
             $this->html->view = 'oauth2/client/denied.twig';

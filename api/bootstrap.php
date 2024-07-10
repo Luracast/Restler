@@ -77,6 +77,8 @@ try {
     //
     //---------------------------- API CLASSES ----------------------------
     //
+    // set the oauth server url here
+    // Auth\Client::setServerUrl('http://localhost:8081/examples/_015_oauth2_server');
     Routes::mapApiClasses(
         [
             //utility api for running behat tests
