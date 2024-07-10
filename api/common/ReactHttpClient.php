@@ -4,8 +4,6 @@
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\LoopInterface;
 use React\Http\Browser;
-use React\HttpClient\Client;
-use React\HttpClient\Response;
 
 class ReactHttpClient implements HttpClientInterface
 {
