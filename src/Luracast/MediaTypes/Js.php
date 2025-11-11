@@ -34,8 +34,12 @@ class Js extends MediaType implements ResponseMediaTypeInterface
         }
         $r['data'] = $data;
         if (isset($_GET[static::$callbackOverrideQueryString])) {
-            static::$callbackMethodName
-                = (string)$_GET[static::$callbackOverrideQueryString];
+            $callback = (string)$_GET[static::$callbackOverrideQueryString];
+            if ($this->isValidCallback($callback)) {
+                static::$callbackMethodName = $callback;
+            } else {
+                throw new HttpException(400, 'Invalid JSONP callback name');
+            }
         }
         $options = static::$encodeOptions;
         if ($humanReadable) {
@@ -48,5 +52,31 @@ class Js extends MediaType implements ResponseMediaTypeInterface
         }
 
         return static::$callbackMethodName . '(' . $encoded . ');';
+    }
+
+    /**
+     * Validates if the callback name is a valid JavaScript identifier
+     * Allows:
+     * - Simple identifiers: callback, myCallback, _callback, $callback
+     * - Namespaced identifiers: jQuery.callback, myApp.module.callback
+     * - Array-style access: callbacks[0], callbacks["name"]
+     *
+     * @param string $callback
+     * @return bool
+     */
+    protected function isValidCallback(string $callback): bool
+    {
+        // Check length to prevent DoS
+        if (strlen($callback) > 200) {
+            return false;
+        }
+
+        // Valid JavaScript identifier pattern
+        // Allows: letters, digits, underscores, dollar signs, dots (for namespaces)
+        // Supports array-style access with brackets
+        // Each segment must start with letter, underscore, or dollar sign
+        $pattern = '/^[a-zA-Z_$][a-zA-Z0-9_$]*(\.[a-zA-Z_$][a-zA-Z0-9_$]*)*(\[["\']?[a-zA-Z0-9_$]+["\']?\])*$/';
+
+        return preg_match($pattern, $callback) === 1;
     }
 }
