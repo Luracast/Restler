@@ -122,18 +122,18 @@ class Container implements ContainerInterface
                 $byRef
                     ? $dependencies[] = &$arguments[$index]
                     : $dependencies[] = $arguments[$index];
-            } elseif (is_null($dependency = @$parameter->getClass())) {
+            } elseif (is_null($dependency = $this->getParameterClassName($parameter))) {
                 $byRef
                     ? $dependencies[] = &$this->resolvePrimitive($parameter)
                     : $dependencies[] = $this->resolvePrimitive($parameter);
-            } elseif ($dependency->name === StaticProperties::class) {
+            } elseif ($dependency === StaticProperties::class) {
                 $byRef
                     ? $dependencies[] = &$this->resolveStaticProperties($parameter)
                     : $dependencies[] = $this->resolveStaticProperties($parameter);
             } else {
                 $byRef
-                    ? $dependencies[] = &$this->resolve($dependency->name)
-                    : $dependencies[] = $this->resolve($dependency->name);
+                    ? $dependencies[] = &$this->resolve($dependency)
+                    : $dependencies[] = $this->resolve($dependency);
             }
         }
 
@@ -147,7 +147,7 @@ class Container implements ContainerInterface
      */
     protected function &resolvePrimitive(ReflectionParameter $parameter)
     {
-        if (@$parameter->isArray()) {
+        if ($this->isParameterArray($parameter)) {
             if (($value = $this->config[$parameter->name] ?? false) && is_array($value)) {
                 return $value;
             }
@@ -248,5 +248,48 @@ class Container implements ContainerInterface
             return false;
         }
         return isset($this->instances[$class]);
+    }
+
+    /**
+     * Get the class name for a parameter's type hint.
+     * Returns the class name if the parameter is type-hinted with a class, null otherwise.
+     *
+     * @param ReflectionParameter $parameter
+     * @return string|null
+     */
+    private function getParameterClassName(\ReflectionParameter $parameter): ?string
+    {
+        $type = $parameter->getType();
+
+        if ($type === null) {
+            return null;
+        }
+
+        if ($type instanceof \ReflectionNamedType && !$type->isBuiltin()) {
+            return $type->getName();
+        }
+
+        return null;
+    }
+
+    /**
+     * Check if a parameter is type-hinted as array.
+     *
+     * @param ReflectionParameter $parameter
+     * @return bool
+     */
+    private function isParameterArray(\ReflectionParameter $parameter): bool
+    {
+        $type = $parameter->getType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        if ($type instanceof \ReflectionNamedType) {
+            return $type->getName() === 'array';
+        }
+
+        return false;
     }
 }
