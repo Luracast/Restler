@@ -12,10 +12,12 @@ behat-guzzle-cookie-data.json
 /build/
 /enc/
 bref
+bref-local
 carbon
 ecs
 phpstan
 rector
+var-dump-server
 yaml-lint
 phpstan.phar
 /api/common/store/
