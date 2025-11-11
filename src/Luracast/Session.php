@@ -19,6 +19,8 @@ class Session implements SessionInterface
     private array $flash_in = [];
     /** @var array */
     private $flash_out = [];
+    /** @var array */
+    private array $oldIds = [];
     private SessionHandlerInterface $handler;
     private SessionIdInterface $sessionId;
     private string $id;
