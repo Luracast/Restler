@@ -36,7 +36,7 @@ Just deal with your business logic in PHP, Restler will take care of the REST!
 
 ### ⚡ Async & Performance
 * **ReactPHP** HTTP server support for async operations
-* **Swoole** server support for high performance
+* **Swoole / OpenSwoole** server support for high performance (both supported)
 * **Workerman** server support
 * **AWS Lambda** support via Bref
 * **Chunked streaming** responses for large datasets
@@ -122,7 +122,7 @@ Just deal with your business logic in PHP, Restler will take care of the REST!
 * PHP Built-in Server (development)
 * Apache / Nginx (traditional)
 * ReactPHP (async)
-* Swoole (high performance)
+* Swoole / OpenSwoole (high performance)
 * Workerman (event-driven)
 * AWS Lambda (serverless)
 
@@ -369,13 +369,23 @@ composer react-server
 php public/index_react.php
 ```
 
-### Swoole (High Performance)
+### Swoole / OpenSwoole (High Performance)
+
+Restler supports both **Swoole** and **OpenSwoole** (they're interchangeable - use either one):
 
 ```bash
+# Install Swoole extension (choose one)
+pecl install swoole
+# OR
+pecl install openswoole
+
+# Start server
 composer swoole-server
 # or
 php public/index_swoole.php
 ```
+
+**Note**: OpenSwoole is a fork of Swoole with the same API. Install only one, not both.
 
 ### Workerman (Event-Driven)
 
@@ -500,7 +510,7 @@ Try them at: `http://localhost:8080/examples/`
 * **PHP 8.0+** required with full PHP 8 support
 * **PSR-7** HTTP message interfaces
 * **PSR-11** Container interface
-* **Async support** via ReactPHP, Swoole, Workerman
+* **Async support** via ReactPHP, Swoole/OpenSwoole, Workerman
 * **AWS Lambda** support
 * **GraphQL** integration
 * **Excel** export support

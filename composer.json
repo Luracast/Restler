@@ -38,6 +38,11 @@
     "firebase/php-jwt": "^6",
     "rector/rector": "^0.18"
   },
+  "suggest": {
+    "ext-swoole": "For high-performance async server support (install either ext-swoole OR ext-openswoole, not both)",
+    "ext-openswoole": "Alternative to ext-swoole for high-performance async server support (install either ext-swoole OR ext-openswoole, not both)",
+    "ext-pdo_sqlite": "For OAuth2 server examples and session storage"
+  },
   "authors": [
     {
       "name": "Luracast",
