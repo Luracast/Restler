@@ -138,7 +138,12 @@ class RestContext implements Context
         // after all tests completed
         $client = new Client(['base_uri' => $baseUrl]);
         //load explorer dependencies
-        $client->get('explorer/docs.json');
+        try {
+            $client->get('explorer/docs.json');
+        } catch (\Exception $e) {
+            // Ignore errors - some examples may require optional dependencies
+            // like SQLite for OAuth2 server
+        }
         $result = $client->get('examples/-storage-/pack');
     }
 

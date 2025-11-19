@@ -2,7 +2,7 @@
 default:
   gherkin:
     filters:
-      tags: ~@fpm&&~@cookie&&~@session
+      tags: ~@fpm&&~@cookie&&~@session&&~@oauth
   suites:
     default:
       contexts:
