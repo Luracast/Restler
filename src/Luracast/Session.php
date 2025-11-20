@@ -19,6 +19,8 @@ class Session implements SessionInterface
     private array $flash_in = [];
     /** @var array */
     private $flash_out = [];
+    /** @var array */
+    private array $oldIds = [];
     private SessionHandlerInterface $handler;
     private SessionIdInterface $sessionId;
     private string $id;
@@ -31,7 +33,11 @@ class Session implements SessionInterface
 
         if ($this->id !== '') {
             $this->status = PHP_SESSION_ACTIVE;
-            $data = unserialize($handler->read($id));
+            $sessionData = $handler->read($id);
+            $data = $sessionData ? json_decode($sessionData, true) : null;
+            if (!is_array($data)) {
+                $data = [];
+            }
             $this->contents = $data['contents'] ?? [];
             $this->flash_out = $data['flash'] ?? [];
         }
@@ -150,7 +156,7 @@ class Session implements SessionInterface
             return false;
         }
         $data = ['contents' => $this->contents, 'flash' => $this->flash_in];
-        return $this->handler->write($this->id, serialize($data));
+        return $this->handler->write($this->id, json_encode($data));
     }
 
     public function save(): bool

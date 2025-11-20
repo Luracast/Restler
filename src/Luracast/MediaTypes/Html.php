@@ -293,7 +293,7 @@ class Html extends MediaType implements ResponseMediaTypeInterface
                 );
             }
             $_ = function () use ($data, $path) {
-                extract($data->getArrayCopy());
+                extract($data->getArrayCopy(), EXTR_SKIP);
                 $args = func_get_args();
                 $task = array_shift($args);
                 switch ($task) {
@@ -317,7 +317,7 @@ class Html extends MediaType implements ResponseMediaTypeInterface
                                         $arr = $arr->jsonSerialize();
                                     }
                                     if (is_array($arr)) {
-                                        extract($arr);
+                                        extract($arr, EXTR_SKIP);
                                     }
                                     $str .= include $file;
                                 }
@@ -343,7 +343,7 @@ class Html extends MediaType implements ResponseMediaTypeInterface
                 }
                 return '';
             };
-            extract($data->getArrayCopy());
+            extract($data->getArrayCopy(), EXTR_SKIP);
             return @include $view;
         };
         $value = $template($view);

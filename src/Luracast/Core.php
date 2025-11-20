@@ -685,7 +685,7 @@ abstract class Core
                     $this->_responseHeaders['Access-Control-Expose-Headers'] = $this->defaults->accessControlExposeHeaders;
                 }
                 if($this->defaults->accessControlMaxAge) {
-                    $this->_responseHeaders['Access-Control-Max-Age'] = 86400;
+                    $this->_responseHeaders['Access-Control-Max-Age'] = $this->defaults->accessControlMaxAge;
                 }
             } elseif ($this->_requestMethod == 'OPTIONS') {
                 $this->_responseHeaders['Access-Control-Allow-Origin']
