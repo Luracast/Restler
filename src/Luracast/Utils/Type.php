@@ -22,7 +22,7 @@ class Type
      */
     public static function isScalar(string $type): bool
     {
-        return (boolean)stripos(static::SCALAR, strtolower($type));
+        return (bool)stripos(static::SCALAR, strtolower($type));
     }
 
     /**
@@ -31,7 +31,7 @@ class Type
      */
     public static function isPrimitive(string $type): bool
     {
-        return (boolean)stripos(static::PRIMITIVE, strtolower($type));
+        return (bool)stripos(static::PRIMITIVE, strtolower($type));
     }
 
     /**
@@ -40,7 +40,7 @@ class Type
      */
     public static function isObject(string $type): bool
     {
-        return !(boolean)stripos(static::SIMPLE, strtolower($type));
+        return !(bool)stripos(static::SIMPLE, strtolower($type));
     }
 
     public static function implements(string $class, string $interface): bool

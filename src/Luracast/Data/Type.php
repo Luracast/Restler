@@ -393,9 +393,14 @@ abstract class Type extends ValueObject
         return $str;
     }
 
-    public function __sleep(): array
+    public function __serialize(): array
     {
         return $this->jsonSerialize();
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->applyProperties($data);
     }
 
     public function jsonSerialize(): array
