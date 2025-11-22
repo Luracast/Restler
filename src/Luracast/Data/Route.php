@@ -501,7 +501,6 @@ class Route extends ValueObject
                     $object,
                     $action[1]
                 );
-                $reflectionMethod->setAccessible(true);
                 return $reflectionMethod->invokeArgs(
                     $object,
                     $arguments

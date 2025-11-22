@@ -63,8 +63,8 @@ class Convert
             $nested = true;
             if ($object instanceof JsonSerializable) {
                 $object = $object->jsonSerialize();
-            } elseif (method_exists($object, '__sleep')) {
-                $properties = $object->__sleep();
+            } elseif (method_exists($object, '__serialize')) {
+                $properties = array_keys($object->__serialize());
                 $array = [];
                 foreach ($properties as $key) {
                     $value = $this->toArray(

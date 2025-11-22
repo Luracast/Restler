@@ -26,8 +26,6 @@ $h = new Restler();
 
 $m = new ReflectionMethod($h, 'negotiateResponseMediaType');
 
-$m->setAccessible(true);
-
 /*
 var_dump($m->invoke($h, 'http://localhost:8080/v2/examples/_011_versioning/bmi?height=190cm',
     'application/vnd.SomeVendor-v2+json'));
