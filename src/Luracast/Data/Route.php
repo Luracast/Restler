@@ -417,7 +417,7 @@ class Route extends ValueObject
         return !$unauthorized;
     }
 
-    public function call(array $arguments, bool $authenticated = false, bool $validate = true, callable $maker = null)
+    public function call(array $arguments, bool $authenticated = false, bool $validate = true, ?callable $maker = null)
     {
         if (!$maker) {
             $maker = fn($class) => new $class();
