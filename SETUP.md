@@ -1,6 +1,6 @@
-# Development Setup Guide
+# Installation & Setup Guide
 
-This guide explains how to set up the development environment for Restler v6, including required PHP extensions and how to run tests.
+This guide explains how to install Restler v6 and set up your environment, including required PHP extensions and optional async server support.
 
 ## PHP Version Requirements
 
