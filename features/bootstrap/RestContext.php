@@ -405,7 +405,7 @@ class RestContext implements Context
             $this->_startTime = microtime(true);
             $this->_requestUrl = $this->baseUrl . $path;
             $url = false !== strpos($path, '{')
-                ? (new UriTemplate)->expand($path, (array)$this->_restObject)
+                ? @(new UriTemplate)->expand($path, (array)$this->_restObject)
                 : $path;
 
             $method = strtoupper($this->_restObjectMethod);
@@ -452,7 +452,7 @@ class RestContext implements Context
         switch ($cType) {
             case 'application/json':
                 $this->_type = 'json';
-                $this->_data = json_decode($this->_response->getBody(true));
+                $this->_data = json_decode((string)$this->_response->getBody());
                 switch (json_last_error()) {
                     case JSON_ERROR_NONE :
                         return;
@@ -488,7 +488,7 @@ class RestContext implements Context
                     libxml_disable_entity_loader(true);
                 }
                 $this->_data = @simplexml_load_string(
-                    $this->_response->getBody(true)
+                    (string)$this->_response->getBody()
                 );
                 if (!$this->_data) {
                     $message = '';
@@ -856,7 +856,7 @@ class RestContext implements Context
         } else {
             throw new Exception(
                 "Response was not JSON\n\n"
-                . $this->_response->getBody(true)
+                . (string)$this->_response->getBody()
             );
         }
     }
@@ -900,7 +900,7 @@ class RestContext implements Context
         } else {
             throw new Exception(
                 "Response was not JSON\n"
-                . $this->_response->getBody(true)
+                . (string)$this->_response->getBody()
             );
         }
     }
