@@ -19,7 +19,7 @@ if (!function_exists('instance')) {
      * @return mixed|ContainerInterface
      * @throws HttpException
      */
-    function instance(string $make = null, array $parameters = [], ServerRequestInterface $request = null)
+    function instance(?string $make = null, array $parameters = [], ?ServerRequestInterface $request = null)
     {
         /** @var ContainerInterface $container */
         static $container = null;
