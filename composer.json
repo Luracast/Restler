@@ -17,9 +17,8 @@
   },
   "require-dev": {
     "ext-pdo": "*",
-    "ext-intl": "*",
     "ext-posix": "*",
-    "behat/behat": "~3",
+    "behat/behat": "^3.13",
     "psy/psysh": "@stable",
     "react/event-loop": "@stable",
     "react/http": "@stable",
