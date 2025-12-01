@@ -32,8 +32,8 @@ class StaticFiles implements MiddlewareInterface
 
     public function __invoke(
         ServerRequestInterface $request,
-        callable $next = null,
-        ContainerInterface $container = null
+        ?callable $next = null,
+        ?ContainerInterface $container = null
     ) {
         $path = $request->getUri()->getPath();
         if (!empty(static::$basePath)) {

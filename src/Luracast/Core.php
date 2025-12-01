@@ -652,7 +652,7 @@ abstract class Core
      * @param string $origin
      * @param HttpException|null $e
      */
-    protected function composeHeaders(?Route $route, string $origin = '', HttpException $e = null): void
+    protected function composeHeaders(?Route $route, string $origin = '', ?HttpException $e = null): void
     {
         //only GET method should be cached if allowed by API developer
         $expires = $this->_requestMethod == 'GET' ? $this->defaults->headerExpires : 0;

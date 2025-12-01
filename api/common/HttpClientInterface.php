@@ -8,6 +8,6 @@ interface HttpClientInterface
         string $uri,
         array $headers = [],
         string $body = '',
-        callable $callback = null
+        ?callable $callback = null
     );
 }

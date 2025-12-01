@@ -32,7 +32,7 @@ class Plist extends Dependent implements RequestMediaTypeInterface, ResponseMedi
         ];
     }
 
-    public function mediaType(string $type = null)
+    public function mediaType(?string $type = null)
     {
         if (!is_null($type)) {
             static::$compact = $type == 'application/x-plist';

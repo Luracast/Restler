@@ -19,7 +19,7 @@ class ReactHttpClient implements HttpClientInterface
         string $uri,
         array $headers = [],
         string $body = '',
-        callable $callback = null
+        ?callable $callback = null
     ) {
         if (!static::$loop) {
             throw new Error('Please call ReactHttpClient::setLoop before calling ReactHttpClient::request');

@@ -58,7 +58,7 @@ interface BaseInterface
 
     public function compose($response = null);
 
-    public function composeHeaders(?Route $info, string $origin = '', HttpException $e = null): void;
+    public function composeHeaders(?Route $info, string $origin = '', ?HttpException $e = null): void;
 
     public function message(Throwable $e);
 

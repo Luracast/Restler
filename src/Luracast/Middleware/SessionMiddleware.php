@@ -45,7 +45,7 @@ class SessionMiddleware implements MiddlewareInterface
      * @param SessionIdInterface|null $sessionId
      * @throws Exception
      */
-    public function __construct(SessionHandlerInterface $handler = null, SessionIdInterface $sessionId = null)
+    public function __construct(?SessionHandlerInterface $handler = null, ?SessionIdInterface $sessionId = null)
     {
         if ($handler) {
             $this->handler = $handler;
@@ -63,8 +63,8 @@ class SessionMiddleware implements MiddlewareInterface
 
     public function __invoke(
         ServerRequestInterface $request,
-        callable $next = null,
-        ContainerInterface $container = null
+        ?callable $next = null,
+        ?ContainerInterface $container = null
     ) {
         $id = $request->getCookieParams()[static::$cookieName] ?? '';
         $session = new Session($this->handler, $this->sessionId, $id);

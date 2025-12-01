@@ -25,7 +25,7 @@ class Restler extends Core
     protected ?ServerRequestInterface $request = null;
     protected string $rawRequestBody = "";
 
-    public function handle(ServerRequestInterface $request = null): PromiseInterface
+    public function handle(?ServerRequestInterface $request = null): PromiseInterface
     {
         if (!$request) {
             $request = ServerRequest::fromGlobals();

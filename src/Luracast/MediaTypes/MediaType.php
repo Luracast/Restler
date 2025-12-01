@@ -35,7 +35,7 @@ abstract class MediaType implements MediaTypeInterface, SelectivePathsInterface
     /**
      * @throws HttpException
      */
-    public function mediaType(string $type = null)
+    public function mediaType(?string $type = null)
     {
         if (is_null($type)) {
             return $this->mime ?: static::MIME;
@@ -71,7 +71,7 @@ abstract class MediaType implements MediaTypeInterface, SelectivePathsInterface
     /**
      * @throws HttpException
      */
-    public function extension(string $extension = null)
+    public function extension(?string $extension = null)
     {
         if (is_null($extension)) {
             return $this->extension ?: static::EXTENSION;
@@ -84,7 +84,7 @@ abstract class MediaType implements MediaTypeInterface, SelectivePathsInterface
         throw new HttpException(500, "Invalid Extension `$extension`");
     }
 
-    public function charset(string $charset = null)
+    public function charset(?string $charset = null)
     {
         if (is_null($charset)) {
             return $this->charset;

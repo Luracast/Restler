@@ -251,7 +251,7 @@ class Xml extends MediaType implements RequestMediaTypeInterface, ResponseMediaT
         }
     }
 
-    public function read(SimpleXMLElement $xml, $namespaces = null)
+    public function read(SimpleXMLElement $xml, ?array $namespaces = null)
     {
         $r = [];
         $text = (string)$xml;

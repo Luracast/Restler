@@ -12,9 +12,9 @@ interface MediaTypeInterface
      */
     public static function supportedMediaTypes(): array;
 
-    public function mediaType(string $type = null);
+    public function mediaType(?string $type = null);
 
-    public function charset(string $charset = null);
+    public function charset(?string $charset = null);
 
-    public function extension(string $extension = null);
+    public function extension(?string $extension = null);
 }

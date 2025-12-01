@@ -32,8 +32,8 @@ class ServerNameFix implements MiddlewareInterface
 
     public function __invoke(
         ServerRequestInterface $request,
-        callable $next = null,
-        ContainerInterface $container = null
+        ?callable $next = null,
+        ?ContainerInterface $container = null
     ) {
         return resolve($next($this->fixBase($request)));
     }
