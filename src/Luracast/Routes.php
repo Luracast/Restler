@@ -706,7 +706,7 @@ class Routes
      * @param string|null $type
      * @return string
      */
-    public static function typeChar(string $type = null): string
+    public static function typeChar(?string $type = null): string
     {
         if (!$type) {
             return 's';
