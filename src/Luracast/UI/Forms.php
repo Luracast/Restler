@@ -114,7 +114,7 @@ class Forms implements FilterInterface, SelectivePathsInterface
      */
     public function get(
         string $method = 'POST',
-        string $action = null,
+        ?string $action = null,
         bool $dataOnly = false,
         string $prefix = '',
         string $indent = '    '
@@ -454,7 +454,7 @@ class Forms implements FilterInterface, SelectivePathsInterface
      *
      * @return string generated form key
      */
-    public function key(string $method = 'POST', string $action = null): string
+    public function key(string $method = 'POST', ?string $action = null): string
     {
         if (is_null($action)) {
             $action = $this->restler->path;
