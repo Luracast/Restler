@@ -11,7 +11,7 @@ use Swoole\Http\Server;
 
 $port = require __DIR__ . '/../api/bootstrap.php';
 
-Swoole\Runtime::enableCoroutine(true, SWOOLE_HOOK_ALL );
+Swoole\Runtime::enableCoroutine(SWOOLE_HOOK_ALL);
 
 Defaults::$implementations[HttpClientInterface::class] = [SwooleHttpClient::class];
 
