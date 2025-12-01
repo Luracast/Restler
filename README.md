@@ -784,9 +784,8 @@ Actual numbers depend on your application logic and hardware.
 
 ## Support & Community
 
-- **📖 Documentation:** [Full docs](https://github.com/Luracast/Restler/tree/v6)
+- **📖 Documentation:** [Full docs](https://github.com/Luracast/Restler/tree/master)
 - **🐛 Bug Reports:** [GitHub Issues](https://github.com/Luracast/Restler/issues)
-- **💬 Discussions:** [GitHub Discussions](https://github.com/Luracast/Restler/discussions)
 - **🔒 Security:** [SECURITY.md](SECURITY.md)
 - **🌟 Star us on GitHub** if you find Restler useful!
 
@@ -832,21 +831,7 @@ Free for commercial and personal use.
 
 Special thanks to all [contributors](https://github.com/Luracast/Restler/graphs/contributors) who have helped make Restler better over the years!
 
----
 
-## Roadmap
-
-Future plans for v6.x:
-- [ ] Built-in WebSocket support
-- [ ] gRPC integration
-- [ ] Native API gateway features (throttling, caching)
-- [ ] Real-time API monitoring dashboard
-- [ ] Code generation tools (client SDKs)
-- [ ] Enhanced TypeScript support
-
-Vote on features: [GitHub Discussions](https://github.com/Luracast/Restler/discussions)
-
----
 
 <div align="center">
 
