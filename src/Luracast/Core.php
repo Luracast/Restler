@@ -90,7 +90,7 @@ abstract class Core
      * @param array|ArrayAccess $config
      * @throws HttpException
      */
-    public function __construct(ContainerInterface $container = null, &$config = [])
+    public function __construct(?ContainerInterface $container = null, &$config = [])
     {
         if (is_null($config)) {
             $config = new ArrayObject();
@@ -146,7 +146,7 @@ abstract class Core
         return $route->handle([$this, 'make']);
     }
 
-    abstract public function handle(ServerRequestInterface $request = null): PromiseInterface;
+    abstract public function handle(?ServerRequestInterface $request = null): PromiseInterface;
 
     public function __get($name)
     {
@@ -303,7 +303,7 @@ abstract class Core
         return $format;
     }
 
-    public function make($className, Route $route = null, bool $recreate = false)
+    public function make($className, ?Route $route = null, bool $recreate = false)
     {
         if (!$route) {
             $route = $this->_route;
