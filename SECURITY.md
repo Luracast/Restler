@@ -114,13 +114,17 @@ $r = new Restler(true); // Disables debug info
 ### 3. Implement Authentication
 
 ```php
-$r->addAuthenticationClass('YourAuth');
+use Luracast\Restler\Routes;
+
+Routes::addAuthenticator(YourAuth::class);
 ```
 
 ### 4. Use Rate Limiting
 
 ```php
-$r->addFilterClass('RateLimit');
+use Luracast\Restler\Routes;
+
+Routes::setFilters(RateLimit::class);
 ```
 
 ### 5. Validate All Input
