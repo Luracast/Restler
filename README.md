@@ -9,15 +9,17 @@
 > **Production-ready since 2010. Battle-tested. Now rebuilt for modern PHP 8+ with async superpowers.**
 
 ```php
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
+
 class Products {
     function get(int $id): array {
         return Database::findProduct($id);
     }
 }
 
-$api = new Restler();
-$api->addAPIClass(Products::class);
-$api->handle();
+Routes::mapApiClasses([Products::class]);
+(new Restler)->handle();
 ```
 
 **That's it.** You just created a REST API that:
@@ -165,9 +167,8 @@ class Hello {
 <?php
 require __DIR__ . '/../vendor/autoload.php';
 
-$api = new Luracast\Restler\Restler();
-$api->addAPIClass('Hello');
-$api->handle();
+Luracast\Restler\Routes::mapApiClasses([Hello::class]);
+(new Luracast\Restler\Restler)->handle();
 ```
 
 **3. URL Rewriting** (`.htaccess` or `nginx.conf`)
@@ -335,8 +336,12 @@ class Users {
 }
 
 // index.php
-$api->addAPIClass('v1\\Users', 'v1/users');
-$api->addAPIClass('v2\\Users', 'v2/users');
+use Luracast\Restler\Routes;
+
+Routes::mapApiClasses([
+    'v1/users' => 'v1\\Users',
+    'v2/users' => 'v2\\Users'
+]);
 ```
 
 **Usage:**
@@ -357,11 +362,13 @@ class ApiKeyAuth implements AuthenticationInterface {
     }
 }
 
-$api = new Restler();
-$api->addAuthenticationClass(ApiKeyAuth::class);
-$api->addFilterClass(RateLimit::class);  // Built-in rate limiting
-$api->addAPIClass(ProtectedAPI::class);
-$api->handle();
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
+
+Routes::addAuthenticator(ApiKeyAuth::class);
+Routes::setFilters(RateLimit::class);  // Built-in rate limiting
+Routes::mapApiClasses([ProtectedAPI::class]);
+(new Restler)->handle();
 ```
 
 ### Database Integration
@@ -499,12 +506,15 @@ class Products {
 ### GraphQL Support
 
 ```php
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
 use Luracast\Restler\OpenApi3\Explorer;
 
-$api = new Restler();
-$api->addAPIClass(GraphQLEndpoint::class, 'graphql');
-$api->addAPIClass(Explorer::class, 'explorer');
-$api->handle();
+Routes::mapApiClasses([
+    'graphql' => GraphQLEndpoint::class,
+    'explorer' => Explorer::class
+]);
+(new Restler)->handle();
 
 // POST /graphql
 // Query and mutation support built-in
@@ -520,9 +530,11 @@ Defaults::$accessControlAllowMethods = 'GET, POST, PUT, DELETE';
 Defaults::$accessControlAllowHeaders = 'Content-Type, Authorization';
 Defaults::$accessControlMaxAge = 86400;
 
-$api = new Restler();
-$api->addAPIClass(MyAPI::class);
-$api->handle();
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
+
+Routes::mapApiClasses([MyAPI::class]);
+(new Restler)->handle();
 ```
 
 ---
@@ -532,13 +544,16 @@ $api->handle();
 Restler includes a built-in Swagger UI explorer:
 
 ```php
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
 use Luracast\Restler\OpenApi3\Explorer;
 
-$api = new Restler();
-$api->addAPIClass(Products::class);
-$api->addAPIClass(Users::class);
-$api->addAPIClass(Explorer::class, 'explorer');  // Add explorer
-$api->handle();
+Routes::mapApiClasses([
+    Products::class,
+    Users::class,
+    'explorer' => Explorer::class  // Add explorer
+]);
+(new Restler)->handle();
 ```
 
 Visit `http://localhost:8080/explorer` to:

@@ -61,7 +61,9 @@ $r->onComplete(function () use ($r) {
     print_r($log); //your logging function here!
 });
 
-$r->addAPIClass('Say');
+use Luracast\Restler\Routes;
+
+Routes::mapApiClasses([Say::class]);
 $r->handle();
 ```
 
@@ -79,7 +81,9 @@ Restler::onCall(function () {
     Forms::setStyles(new Foundation5Form());
 });
 
-$r = new Restler();
-$r->addAPIClass('Something');
-$r->handle();
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
+
+Routes::mapApiClasses([Something::class]);
+(new Restler)->handle();
 ```

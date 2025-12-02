@@ -133,10 +133,12 @@ Choose your server runtime:
 
 **Traditional PHP-FPM:**
 ```php
-// public/index.php (unchanged)
-$r = new Restler();
-$r->addAPIClass('UserAPI');
-$r->handle();
+// public/index.php
+use Luracast\Restler\Restler;
+use Luracast\Restler\Routes;
+
+Routes::mapApiClasses([UserAPI::class]);
+(new Restler)->handle();
 ```
 
 **ReactPHP (Async):**
