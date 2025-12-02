@@ -4,7 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/luracast/restler/downloads.png)](https://packagist.org/packages/luracast/restler)
 [![License](https://poser.pugx.org/luracast/restler/license.png)](https://packagist.org/packages/luracast/restler)
 
-### **Write your API logic in PHP. Get JSON, XML, CSV, Excel, GraphQL, OpenAPI docs, and more—automatically.**
+### **Write your API logic in PHP. Get routing, validation, and OpenAPI docs—automatically.**
 
 > **Production-ready since 2010. Battle-tested. Now rebuilt for modern PHP 8+ with async superpowers.**
 
@@ -24,11 +24,11 @@ Routes::mapApiClasses([Products::class]);
 
 **That's it.** You just created a REST API that:
 - ✅ Automatically validates `$id` as an integer
-- ✅ Returns JSON by default (`.xml`, `.csv`, `.yaml` also work)
+- ✅ Returns JSON by default
 - ✅ Handles routing (`GET /products/123`)
 - ✅ Generates OpenAPI/Swagger docs
 - ✅ Provides proper HTTP status codes
-- ✅ Supports content negotiation
+- ✅ Supports content negotiation (configure other formats as needed)
 
 **No controllers. No routing files. No configuration. Just PHP.**
 
@@ -58,18 +58,18 @@ Run on **Swoole/OpenSwoole** for 10-20x throughput vs traditional PHP-FPM. Or us
 composer swoole-server
 ```
 
-### 🌐 **Multi-Format by Default**
-Your API automatically speaks JSON, XML, YAML, CSV, Excel, and HTML. Perfect for:
-- **Mobile apps** → JSON
+### 🌐 **Multi-Format Output**
+JSON is the default format. Configure additional formats (XML, CSV, Excel, HTML) via `Routes::setOverridingResponseMediaTypes()`. Perfect for:
+- **Mobile apps** → JSON (default)
 - **Legacy systems** → XML
 - **Data exports** → CSV/Excel
 - **Admin panels** → HTML with Blade/Twig
 
 ```bash
-curl api.example.com/products/123       # JSON
-curl api.example.com/products/123.xml   # XML
-curl api.example.com/products.csv       # CSV export
-curl api.example.com/products.xlsx      # Excel download
+curl api.example.com/products/123       # JSON (default)
+curl api.example.com/products/123.xml   # XML (if configured)
+curl api.example.com/products.csv       # CSV (if configured)
+curl api.example.com/products.xlsx      # Excel (if configured)
 ```
 
 ### 🚀 **Modern PHP 8+**
