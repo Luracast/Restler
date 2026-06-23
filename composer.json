@@ -34,7 +34,7 @@
     "webonyx/graphql-php": "^15",
     "gabordemooij/redbean": "^5",
     "symplify/easy-coding-standard": "^12",
-    "firebase/php-jwt": "^6",
+    "firebase/php-jwt": "^7",
     "rector/rector": "^0.18"
   },
   "suggest": {
@@ -61,6 +61,9 @@
     ]
   },
   "autoload-dev": {
+    "exclude-from-classmap": [
+      "api/common/store/"
+    ],
     "classmap": [
       "api/tests/param/",
       "api/tests/helper/",

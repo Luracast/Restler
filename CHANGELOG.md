@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [6.0.1] - 2026-06-23
+
+### Security
+- Updated vulnerable Composer dependencies reported by Dependabot, including Guzzle, PSR-7, Twig, Symfony Process/Yaml, PsySH, Firebase JWT, and GraphQL PHP.
+
+### Fixed
+- Excluded generated storage snapshots from the development classmap so test-created package copies cannot override the project autoloader.
+
+---
+
 ## [6.0.0] - 2024-11-11
 
 ### Added
