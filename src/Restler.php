@@ -438,7 +438,7 @@ class Restler extends EventDispatcher
             $_SERVER['SCRIPT_NAME']
                 = '/' . Util::removeCommonPath($_SERVER['SCRIPT_FILENAME'], $_SERVER['DOCUMENT_ROOT']);
 
-        $fullPath = urldecode($_SERVER['REQUEST_URI']);
+        $fullPath = $_SERVER['REQUEST_URI'];
         $path = Util::removeCommonPath(
             $fullPath,
             $_SERVER['SCRIPT_NAME']
