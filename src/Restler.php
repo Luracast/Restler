@@ -503,7 +503,7 @@ class Restler extends EventDispatcher
                 = '/' . substr($_SERVER['SCRIPT_FILENAME'], strlen($_SERVER['DOCUMENT_ROOT']) + 1);
 
         list($base, $path) = Util::splitCommonPath(
-            strtok(urldecode($_SERVER['REQUEST_URI']), '?'), //remove query string
+            strtok($_SERVER['REQUEST_URI'], '?'), //remove query string
             $_SERVER['SCRIPT_NAME']
         );
 
