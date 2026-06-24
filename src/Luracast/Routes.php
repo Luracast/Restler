@@ -871,7 +871,7 @@ class Routes
                     $param = $params[$index];
                     if ($k[0] == 's' || str_starts_with($k, static::pathVarTypeOf($v))) {
                         //remove the newlines
-                        $data[$param->name] = trim($v, PHP_EOL);
+                        $data[$param->name] = rawurldecode(trim($v, PHP_EOL));
                     } else {
                         $status = 400;
                         $message = 'invalid value specified for `'

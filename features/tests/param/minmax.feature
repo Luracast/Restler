@@ -32,6 +32,13 @@ Feature: Minimum and Maximum
     And the type is "string"
     And the value equals "me"
 
+  Scenario: URL encoded slash in string path parameter
+    When I request "tests/param/minmax/string/a%2Fb"
+    Then the response status code should be 200
+    And the response is JSON
+    And the type is "string"
+    And the value equals "a/b"
+
   Scenario: Short String
     When I request "tests/param/minmax/string/i"
     Then the response status code should be 400
