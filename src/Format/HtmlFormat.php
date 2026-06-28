@@ -78,6 +78,15 @@ class HtmlFormat extends DependentFormat
      */
     public $restler;
 
+    /**
+     * @var array customized the error views
+     */
+    public static $customErrorViews = array(
+        // 400 => 'client_found',
+        // 500 => 'server_error',
+        // 404 => 'not_found',
+    );
+
     public function __construct()
     {
         //============ SESSION MANAGEMENT =============//
@@ -389,7 +398,9 @@ class HtmlFormat extends DependentFormat
                     self::$view = $metadata[$view];
                 }
             } elseif (!self::$view) {
-                self::$view = static::guessViewName($this->restler->url);
+                self::$view = $success
+                    ? $this->guessViewName($this->restler->url)
+                    : $this->guessErrorViewName($exception);
             }
             if (
                 isset($metadata['param'])
@@ -455,6 +466,16 @@ class HtmlFormat extends DependentFormat
         }
         $file = static::$viewPath . '/' . $path . '.' . static::getViewExtension();
 
+        return static::$useSmartViews && is_readable($file)
+            ? $path
+            : static::$errorView;
+    }
+
+    public function guessErrorViewName($exception)
+    {
+        $code = $exception instanceof RestException ? $exception->getCode() : 500;
+        $path = isset(static::$customErrorViews[$code]) ? static::$customErrorViews[$code] : $code;
+        $file = static::$viewPath . '/' . $path . '.' . static::getViewExtension();
         return static::$useSmartViews && is_readable($file)
             ? $path
             : static::$errorView;

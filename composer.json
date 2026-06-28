@@ -30,11 +30,11 @@
         "ext-libxml": "*",
         "guzzlehttp/guzzle":"~7",
         "bshaffer/oauth2-server-php":"dev-master",
-        "behat/behat": "^3.8@dev",
+        "behat/behat": "^3.10@dev",
         "rize/uri-template": "dev-master",
         "illuminate/view": "^8 || ^7",
         "twig/twig": "^3",
-        "mustache/mustache": "dev-master"
+        "mustache/mustache": "dev-main"
     },
     "repositories":[
         {

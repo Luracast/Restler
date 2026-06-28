@@ -1,4 +1,5 @@
 <?php
+
 namespace Luracast\Restler\Data;
 
 /**
@@ -62,9 +63,9 @@ class Obj
      *
      * @static
      *
-     * @param mixed $object                          that needs to be converted
+     * @param mixed $object that needs to be converted
      *
-     * @param bool  $forceObjectTypeWhenEmpty        when set to true outputs
+     * @param bool $forceObjectTypeWhenEmpty when set to true outputs
      *                                               actual type  (array or
      *                                               object) rather than
      *                                               always an array when the
@@ -95,7 +96,10 @@ class Obj
                 return $array;
             }
         }
-        if (is_array($object) || is_object($object)) {
+        if (is_object($object)) {
+            $object = (array)$object;
+        }
+        if (is_array($object)) {
             $count = 0;
             $array = array();
             foreach ($object as $key => $value) {
@@ -121,7 +125,7 @@ class Obj
                 }
                 $value = self::toArray($value, $forceObjectTypeWhenEmpty);
                 if (self::$stringEncoderFunction && is_string($value)) {
-                    $value = self::$encoderFunctionName ($value);
+                    $value = self::$stringEncoderFunction ($value);
                 } elseif (self::$numberEncoderFunction && is_numeric($value)) {
                     $value = self::$numberEncoderFunction ($value);
                 }
@@ -136,7 +140,7 @@ class Obj
 
     public function __get($name)
     {
-        isset(self::$fix[$name]) ? self::$fix[$name] : null;
+        return isset(self::$fix[$name]) ? self::$fix[$name] : null;
     }
 
     public function __set($name, $function)
@@ -154,4 +158,3 @@ class Obj
         unset(self::$fix[$name]);
     }
 }
-
