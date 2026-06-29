@@ -455,6 +455,9 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $r->apiVersion = (string)$this->restler->_requestedApiVersion;
         $r->swaggerVersion = "1.1";
         $r->basePath = $this->restler->getBaseUrl();
+        if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
+            $r->basePath = str_replace("http:", $_SERVER["HTTP_X_FORWARDED_PROTO"].":", $r->basePath);
+        }
         $r->produces = $this->restler->getWritableMimeTypes();
         $r->consumes = $this->restler->getReadableMimeTypes();
         $r->apis = array();
