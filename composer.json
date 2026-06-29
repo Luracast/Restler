@@ -29,7 +29,7 @@
     "require-dev":{
         "ext-libxml": "*",
         "guzzlehttp/guzzle":"~7",
-        "bshaffer/oauth2-server-php":"dev-master",
+        "bshaffer/oauth2-server-php":"dev-main",
         "behat/behat": "^3.10@dev",
         "rize/uri-template": "dev-master",
         "illuminate/view": "^8 || ^7",
