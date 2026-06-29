@@ -120,8 +120,10 @@ class RateLimit implements iFilter, iUseAuthentication
             $id = "RateLimit_" . $maxPerUnit . '_per_' . static::$unit
                 . '_for_' . static::$group
                 . '_' . $user::getUniqueIdentifier();
-            $lastRequest = $this->restler->cache->get($id, true)
-                ? : array('time' => 0, 'used' => 0);
+            $lastRequest = $this->restler->cache->get($id, true);
+            if (!is_array($lastRequest)) {
+                $lastRequest = array('time' => 0, 'used' => 0);
+            }
             $time = $lastRequest['time'];
             $diff = time() - $time; # in seconds
             $used = $lastRequest['used'];
