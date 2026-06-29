@@ -1090,7 +1090,7 @@ class Restler extends EventDispatcher
             );
     }
 
-    public function composeHeaders(RestException $e = null)
+    public function composeHeaders(?RestException $e = null)
     {
         //only GET method should be cached if allowed by API developer
         $expires = $this->requestMethod === 'GET' ? Defaults::$headerExpires : 0;
