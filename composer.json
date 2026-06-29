@@ -23,13 +23,13 @@
         "bshaffer/oauth2-server-php":"If you want to use OAuth2 for authentication"
     },
     "require":{
-        "php": ">=5.4",
+        "php": ">=7.1",
         "ext-json": "*"
     },
     "require-dev":{
         "ext-libxml": "*",
         "guzzlehttp/guzzle":"~7",
-        "bshaffer/oauth2-server-php":"dev-master",
+        "bshaffer/oauth2-server-php":"dev-main",
         "behat/behat": "^3.10@dev",
         "rize/uri-template": "dev-master",
         "illuminate/view": "^8 || ^7",
