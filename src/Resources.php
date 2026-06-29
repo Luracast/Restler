@@ -225,7 +225,7 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
                 }
-                $fullPath = $route['url'];
+                $fullPath = $route['url'] ?? null;
                 if ($fullPath !== $target && !Text::beginsWith($fullPath, $target)) {
                     continue;
                 }
