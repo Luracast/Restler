@@ -225,7 +225,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
                 if (in_array($httpMethod, static::$excludedHttpMethods)) {
                     continue;
                 }
-                $fullPath = $route['url'] ?? null;
+                if (!isset($route['url'])) {
+                    continue;
+                }
+                $fullPath = $route['url'];
                 if ($fullPath !== $target && !Text::beginsWith($fullPath, $target)) {
                     continue;
                 }
@@ -456,7 +459,10 @@ class Resources implements iUseAuthentication, iProvideMultiVersionApi
         $r->swaggerVersion = "1.1";
         $r->basePath = $this->restler->getBaseUrl();
         if (isset($_SERVER["HTTP_X_FORWARDED_PROTO"])) {
-            $r->basePath = str_replace("http:", $_SERVER["HTTP_X_FORWARDED_PROTO"].":", $r->basePath);
+            $proto = strtolower(trim(explode(',', $_SERVER["HTTP_X_FORWARDED_PROTO"])[0]));
+            if ($proto === 'http' || $proto === 'https') {
+                $r->basePath = preg_replace('/^https?:/', $proto . ':', $r->basePath);
+            }
         }
         $r->produces = $this->restler->getWritableMimeTypes();
         $r->consumes = $this->restler->getReadableMimeTypes();
