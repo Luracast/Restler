@@ -14,8 +14,8 @@ use Luracast\Restler\Utils\Dump;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use React\Promise\FulfilledPromise;
 use React\Promise\PromiseInterface;
+use function React\Promise\resolve;
 use Throwable;
 
 
@@ -265,7 +265,7 @@ class Restler extends Core
             if (!$this->responseFormat) {
                 $this->responseFormat = $this->container->make(Json::class);
             }
-            return new FulfilledPromise(
+            return resolve(
                 $this->respond(
                     $this->message(
                         $error,
