@@ -5,7 +5,7 @@ use Luracast\Restler\Restler;
 use Luracast\Restler\Routes;
 use Luracast\Restler\Utils\Dump;
 use Psr\Http\Message\ResponseInterface;
-use RingCentral\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\ServerRequest;
 
 include __DIR__ . "/../vendor/autoload.php";
 
@@ -43,6 +43,5 @@ echo Dump::request($request);
 $h->handle($request)->then(function (ResponseInterface $response) {
     echo Dump::response($response, true);
 });
-
 
 

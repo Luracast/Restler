@@ -46,7 +46,6 @@ function getPath(UriInterface $uri, string $scriptName = ''): string
 
 getPath($request->getUri(), $data['requestBody']['requestContext']['path'] . trim($request->getUri()->getPath(), '/') . 'index.php');
 
-//$response = new \RingCentral\Psr7\Response(201,['ContentType'=>'application/json'],'{}');
+//$response = new \GuzzleHttp\Psr7\Response(201,['ContentType'=>'application/json'],'{}');
 
 //var_dump(Convert::fromPSR7($response));
-

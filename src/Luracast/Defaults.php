@@ -27,8 +27,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\{SimpleCache\CacheInterface};
-use RingCentral\Psr7\Response;
-use RingCentral\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 
 class Defaults
 {

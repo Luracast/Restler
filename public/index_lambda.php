@@ -4,7 +4,7 @@ use Luracast\Restler\Exceptions\HttpException;
 use Luracast\Restler\Utils\Text;
 use Swoole\Http\Response;
 use Swoole\Http\Request;
-use function RingCentral\Psr7\parse_query;
+use GuzzleHttp\Psr7\Query;
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -63,7 +63,7 @@ class LambdaTasks
                     'X-Forwarded-Port' => PORT,
                     'X-Forwarded-Proto' => 'http',
                 ],
-            'queryStringParameters' => parse_query($request->server['query_string'] ?? ''),
+            'queryStringParameters' => Query::parse($request->server['query_string'] ?? ''),
             'body' => (string)$request->rawContent(),
             'isBase64Encoded' => false,
             'pathParameters' => null,
