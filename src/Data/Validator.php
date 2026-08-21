@@ -5,6 +5,7 @@ namespace Luracast\Restler\Data;
 use Luracast\Restler\CommentParser;
 use Luracast\Restler\Format\HtmlFormat;
 use Luracast\Restler\RestException;
+use Luracast\Restler\Restler;
 use Luracast\Restler\Scope;
 use Luracast\Restler\Util;
 
@@ -22,6 +23,10 @@ use Luracast\Restler\Util;
  */
 class Validator implements iValidate
 {
+    /**
+     * @var Restler instance of restler
+     */
+    public $restler;
     public static $holdException = false;
     public static $exceptions = array();
 
