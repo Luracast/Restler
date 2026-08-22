@@ -107,6 +107,10 @@ class Curl
         $errorNumber = curl_errno($curl);
         $errorMessage = curl_error($curl);
 
+        if (version_compare(phpversion(), '8.0.0', '<')) {
+            curl_close($curl);
+        }
+
         return compact('response', 'headers', 'errorNumber', 'errorMessage');
     }
 
