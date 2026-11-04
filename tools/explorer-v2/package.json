@@ -1,0 +1,14 @@
+{
+  "name": "restler-explorer-v2-build",
+  "private": true,
+  "scripts": {
+    "build": "node build.cjs",
+    "test": "node test.cjs"
+  },
+  "devDependencies": {
+    "acorn": "8.15.0",
+    "handlebars": "4.7.10",
+    "jsdom": "27.0.0",
+    "terser": "5.51.2"
+  }
+}

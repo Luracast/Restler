@@ -1,0 +1,19 @@
+<div class='info' id='api_info'>
+</div>
+<div class='container' id='resources_container'>
+    <ul id='resources'>
+    </ul>
+
+    <div class="footer">
+        <ul id="footer-nav">
+            {{#if info}}
+                {{#if info.termsOfServiceUrl}}<li><a href="{{info.termsOfServiceUrl}}" title="Terms of Service"><i class="fa fa-lg fa-bullhorn"></i> Terms</a></li>{{/if}}
+                {{#if info.contact}}<li><a href="mailto:{{info.contact}}"><i class="fa fa-lg fa-send"></i> Contact</a></li>{{/if}}
+                {{#if info.license}}<li><a href="{{info.licenseUrl}}" title="{{info.license}}"><i class="fa fa-lg fa-certificate"></i> License</a></li>{{/if}}
+            {{/if}}
+            <li>
+                {{basePath}}{{#if apiVersion}} v{{apiVersion}}{{/if}} Powered by Restler & Swagger
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<td class='code required'>{{name}}: <tag>{{{dataType}}}</tag></td>
+<td>
+	{{#if isBody}}
+		{{#if defaultValue}}
+			<textarea class='body-textarea' placeholder='(required)' name='{{name}}'>{{defaultValue}}</textarea>
+		{{else}}
+		    <textarea class='body-textarea' placeholder='(required)' name='{{name}}'></textarea>
+		{{/if}}
+		
+	{{else}}
+		{{#if defaultValue}}
+		    <input class='required' minlength='1' name='{{name}}' placeholder='(required)' type='text' value='{{defaultValue}}'/>
+		{{else}}
+		    <input class='required' minlength='1' name='{{name}}' placeholder='(required)' type='text' value=''/>
+		{{/if}}
+	{{/if}}
+</td>
+<td>
+    <strong>{{{description}}}</strong>
+</td>

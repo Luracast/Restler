@@ -1,0 +1,9 @@
+<td class='code'>{{name}}: <tag>{{dataType}}</tag></td>
+<td>
+    {{#if isBody}}
+        <textarea class='body-textarea' readonly='readonly' name='{{name}}'>{{defaultValue}}</textarea>
+    {{else}}
+        {{defaultValue}}
+    {{/if}}
+</td>
+<td>{{{description}}}</td>

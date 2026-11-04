@@ -55,7 +55,7 @@ use Luracast\Restler\Format\UrlEncodedFormat;
  */
 class Restler extends EventDispatcher
 {
-    const VERSION = '5';
+    const VERSION = '5.0.17';
 
     // ==================================================================
     //

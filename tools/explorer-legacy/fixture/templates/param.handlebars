@@ -1,0 +1,18 @@
+<td class='code'>{{name}}: <tag>{{dataType}}</tag></td>
+<td>
+	{{#if isBody}}
+		{{#if defaultValue}}
+			<textarea class='body-textarea' name='{{name}}'>{{defaultValue}}</textarea>
+		{{else}}
+		    <textarea class='body-textarea' name='{{name}}'></textarea>
+		{{/if}}
+		
+	{{else}}
+		{{#if defaultValue}}
+			<input minlength='0' name='{{name}}' placeholder='' type='text' value='{{defaultValue}}'/>
+		{{else}}
+		    <input minlength='0' name='{{name}}' placeholder='' type='text' value=''/>
+		{{/if}}
+	{{/if}}
+</td>
+<td>{{{description}}}</td>
