@@ -5,6 +5,7 @@ namespace Luracast\Restler\Auth;
 
 
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 use Luracast\Restler\Contracts\DependentTrait;
 use Luracast\Restler\Contracts\ExplorableAuthenticationInterface;
 use Luracast\Restler\Contracts\SelectivePathsInterface;
@@ -62,7 +63,7 @@ class JsonWebToken implements ExplorableAuthenticationInterface, SelectivePathsI
     {
         return [
             //CLASS_NAME => vendor/project:version
-            JWT::class => 'firebase/php-jwt:^5.4'
+            JWT::class => 'firebase/php-jwt:^7'
         ];
     }
 
@@ -71,13 +72,14 @@ class JsonWebToken implements ExplorableAuthenticationInterface, SelectivePathsI
         UserIdentificationInterface $userIdentifier,
         ResponseHeaders $responseHeaders
     ): bool {
+        $this->token = null;
         if ($request->hasHeader('authorization') === false) {
             return false;
         }
         try {
             $header = $request->getHeaderLine('authorization');
             $jwt = trim((string)preg_replace('/^(?:\s+)?Bearer\s/', '', $header));
-            $this->token = $token = JWT::decode($jwt, static::publicKey(), ['RS256']);
+            $token = JWT::decode($jwt, new Key(static::publicKey(), 'RS256'));
             if (static::$matchedIssuer && static::$matchedIssuer !== ($token->{'iss'} ?? null)) {
                 $this->accessDenied('Invalid Issuer.');
             }
@@ -94,6 +96,7 @@ class JsonWebToken implements ExplorableAuthenticationInterface, SelectivePathsI
                 $this->accessDenied('Invalid User Identifier.');
             }
             $userIdentifier->setUniqueIdentifier($id);
+            $this->token = $token;
             return true;
         } catch (HttpException $httpException) {
             throw $httpException;

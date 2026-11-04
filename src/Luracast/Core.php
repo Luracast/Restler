@@ -39,7 +39,7 @@ use TypeError;
  */
 abstract class Core
 {
-    public const VERSION = '6.0.0';
+    public const VERSION = '6.0.4';
     /**
      * @var int
      */

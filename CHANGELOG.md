@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [6.0.4] - 2026-11-04
+
+### Security
+- Raise the development React HTTP dependency floor to 1.11.1 and update the lockfile, with bounded regression cases for chunk decoding and oversized headers.
+- Update the locked Symfony YAML dependency to 7.4.18, with depth-limit and recovery checks.
+
+### Fixed
+- Migrate RSA JWT decoding to the Firebase JWT 7 `Key` API with explicit RS256, and clear authentication state between attempts.
+
+### Validation
+- Candidate integration suite: 311 scenarios / 1,651 steps passed through the React server.
+- Focused JWT, HTTP and YAML regression checks passed; Composer audit reported no known lockfile advisories.
+
+React HTTP, Symfony YAML and Firebase JWT are development/integration dependencies here. An application's own dependency resolution and enabled integrations determine exposure. This release does not upgrade deployed PHP. The declared PHP requirement remains `^8`.
+
+---
+
 ## [6.0.1] - 2026-06-23
 
 ### Security
