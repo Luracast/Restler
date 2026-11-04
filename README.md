@@ -4,6 +4,8 @@
 [![Total Downloads](https://poser.pugx.org/luracast/restler/downloads.png)](https://packagist.org/packages/luracast/restler)
 [![License](https://poser.pugx.org/luracast/restler/license.png)](https://packagist.org/packages/luracast/restler)
 
+For the current security patch rationale and integration upgrade steps, see [Upgrading to 6.0.4](UPGRADING-6.0.4.md) and the [changelog](CHANGELOG.md).
+
 ### **Write your API logic in PHP. Get routing, validation, and OpenAPI docs—automatically.**
 
 > **Production-ready since 2010. Battle-tested. Now rebuilt for modern PHP 8+ with async superpowers.**

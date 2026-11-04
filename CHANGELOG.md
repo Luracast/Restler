@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.4] - 2026-11-04
 
+See [security rationale and upgrade guidance](UPGRADING-6.0.4.md) for affected paths, optional dependency installation and compatibility details.
+
 ### Security
 - Raise the development React HTTP dependency floor to 1.11.1 and update the lockfile, with bounded regression cases for chunk decoding and oversized headers.
 - Update the locked Symfony YAML dependency to 7.4.18, with depth-limit and recovery checks.
