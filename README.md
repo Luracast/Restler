@@ -6,6 +6,8 @@
 [![Latest Unstable Version](https://poser.pugx.org/luracast/restler/v/unstable.png)](https://packagist.org/packages/luracast/restler)
 [![License](https://poser.pugx.org/luracast/restler/license.png)](https://packagist.org/packages/luracast/restler)
 
+For the Explorer security update, rationale and asset deployment steps, see the [5.0.17 release notes](RELEASE_NOTES.md).
+
 ### Version 5
 
 > upgraded from version 3 RC6 for latest PHP support
